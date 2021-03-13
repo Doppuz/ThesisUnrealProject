@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MazeGeneratorBase.h"
-#include "MazeCell.h"
+#include "MazeCellController.h"
+#include "MazeCellActor.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMazeGeneratorBase::AMazeGeneratorBase(){
@@ -13,30 +15,29 @@ AMazeGeneratorBase::AMazeGeneratorBase(){
 void AMazeGeneratorBase::BeginPlay(){
 	Super::BeginPlay();
 	
-	//std::vector<std::vector<ABo>> TempMaze(length,std::vector<ABo>(heigth));
-	TArray<AMazeCell*> a;
-	//a.Init(10,5);
-	TArray<TArray<AMazeCell>> b;
-	//b.Add(a);
-	//b[0][0] = 2;
-	AMazeCell cell;
-	for(int i = 0; i < heigth; i++){
-		for(int j = 0; j < length; j++){
-			//a.Add(&cell);
-		}	
-	}
+	std::vector<std::vector<MazeCellController>> TempMaze(length,std::vector<MazeCellController>(heigth));
+	Maze = &TempMaze;
 
 	//UE_LOG(LogTemp,Warning, TEXT("%i"), a[0][0]);
 	//Maze = &TempMaze; 
 	//UE_LOG(LogTemp,Warning, TEXT("Start the generation of the maze %i %i"), length, heigth);
 
-	//createObstacle(100);
-	//printMaze();
+	createObstacle(10);
+	printMaze();
 
-	/*FVector p(0,0,0);
-	FRotator p2(0,0,0);
-	
-	AActor* wall = GetWorld()->SpawnActor<AActor>(One_Wall,p,p2);*/
+	FVector Origin(0,0,0);
+	FRotator Rotation(0,0,0);
+	FTransform SpawnTransform(Rotation, Origin);
+
+	AMazeCellActor* MyDeferredActor = Cast<AMazeCellActor>(UGameplayStatics::BeginDeferredActorSpawnFromClass(this, CellClass, SpawnTransform));
+	if (MyDeferredActor != nullptr){
+    	MyDeferredActor->Init(Three_Wall);
+ 
+    	UGameplayStatics::FinishSpawningActor(MyDeferredActor, SpawnTransform);
+	}else{
+		UE_LOG(LogTemp,Warning, TEXT("Null"));
+	}
+	//AMazeCellActor* wall = GetWorld()->SpawnActor<AMazeCellActor>(CellClass,Origin,Rotation);
 }
 
 // Called every frame
@@ -46,19 +47,19 @@ void AMazeGeneratorBase::Tick(float DeltaTime){
 }
 
 void AMazeGeneratorBase::printMaze(){
-/*	FString row;
+	FString row;
 	for(int i=0; i < heigth; i++){
 		row = "";
 		UE_LOG(LogTemp,Warning, TEXT(""));
 		for(int j=0; j < length; j++){
-			//row = row + (*Maze)[i][j].PrintCell() + " ";
+			row = row + (*Maze)[i][j].PrintCell() + " ";
 		}
 		UE_LOG(LogTemp,Warning, TEXT("%s"), *row);
-	}*/
+	}
 }
 
 void AMazeGeneratorBase::createObstacle(int Obstacles){
-	/*std::vector<int> AlreadySelectedNumbers(0);
+	std::vector<int> AlreadySelectedNumbers(0);
 
 	for(int i = 0; i < Obstacles; i++){
 		
@@ -74,7 +75,7 @@ void AMazeGeneratorBase::createObstacle(int Obstacles){
 		
 		}else
 			i -= 1;
-	}	*/
+	}	
 }
 
 void AMazeGeneratorBase::createRoom() {

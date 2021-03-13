@@ -8,6 +8,9 @@
 #include "GameFramework/Actor.h"
 #include "MazeGeneratorBase.generated.h"
 
+class MazeCellController;
+class AMazeCellActor;
+
 UCLASS()
 class THESISUNREALPROJECT_API AMazeGeneratorBase : public AActor{
 	GENERATED_BODY()
@@ -30,15 +33,18 @@ private:
 	int heigth = 10;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	TSubclassOf<AActor> One_Wall;
+	UStaticMesh* One_Wall;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	TSubclassOf<AActor> Two_Wall;
+	UStaticMesh* Two_Wall;
 	
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	TSubclassOf<AActor> Three_Wall;
+	UStaticMesh* Three_Wall;
+	
+	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
+	TSubclassOf<AMazeCellActor> CellClass;
 
-	//std::vector<std::vector<ABo>> *Maze = nullptr;
+	std::vector<std::vector<MazeCellController>> *Maze = nullptr;
 
 	//Methods
 	void printMaze();
