@@ -10,7 +10,7 @@
 class THESISUNREALPROJECT_API MazeCellController
 {
 public:
-	MazeCellController();
+	MazeCellController(int PosX,int PosY);
 	~MazeCellController();
 
 	bool IsObstacle = false;
@@ -19,6 +19,8 @@ public:
 	bool RightWall = true;
 	bool UpWall = true;
 	bool DownWall = true;
+	int PosX;
+	int PosY;
 
 	FString PrintCell();
 };

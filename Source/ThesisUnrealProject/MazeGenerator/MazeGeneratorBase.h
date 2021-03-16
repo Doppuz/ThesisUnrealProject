@@ -18,6 +18,7 @@ class THESISUNREALPROJECT_API AMazeGeneratorBase : public AActor{
 public:	
 	// Sets default values for this actor's properties
 	AMazeGeneratorBase();
+	~AMazeGeneratorBase();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -44,10 +45,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	TSubclassOf<AMazeCellActor> CellClass;
 
-	std::vector<std::vector<MazeCellController>> *Maze = nullptr;
+	TArray<TArray<MazeCellController>> *Maze = nullptr;
+	TArray<MazeCellController> *Stack = nullptr;
+
 
 	//Methods
-	void printMaze();
-	void createObstacle(int Obstacles);
-	void createRoom();
+	void PrintMaze();
+	void InitializeMaze();
+	void CreateObstacle(int Obstacles);
+	void CreateRoom();
+	void CreateMazeWrapper(int i, int j);
+	void CheckForNeighbors(TArray<MazeCellController>& neighbors,int i,int j);
+	void CreateMaze();
 };
