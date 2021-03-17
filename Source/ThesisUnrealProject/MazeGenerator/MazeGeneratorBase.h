@@ -8,8 +8,7 @@
 #include "GameFramework/Actor.h"
 #include "MazeGeneratorBase.generated.h"
 
-class MazeCellController;
-class AMazeCellActor;
+class AMazeCell;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeGeneratorBase : public AActor{
@@ -28,25 +27,16 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int length = 10;
+	int Length = 10;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int heigth = 10;
+	int Heigth = 10;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	UStaticMesh* One_Wall;
+	TSubclassOf<AMazeCell> CellClass;
 
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	UStaticMesh* Two_Wall;
-	
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	UStaticMesh* Three_Wall;
-	
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	TSubclassOf<AMazeCellActor> CellClass;
-
-	TArray<TArray<MazeCellController>> *Maze = nullptr;
-	TArray<MazeCellController> *Stack = nullptr;
+	TArray<TArray<AMazeCell*>> *Maze = nullptr;
+	TArray<AMazeCell*> *Stack = nullptr;
 
 
 	//Methods
@@ -55,6 +45,6 @@ private:
 	void CreateObstacle(int Obstacles);
 	void CreateRoom();
 	void CreateMazeWrapper(int i, int j);
-	void CheckForNeighbors(TArray<MazeCellController>& neighbors,int i,int j);
+	void CheckForNeighbors(TArray<AMazeCell*>& neighbors,int i,int j);
 	void CreateMaze();
 };
