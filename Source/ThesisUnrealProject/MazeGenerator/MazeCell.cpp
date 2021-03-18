@@ -30,9 +30,37 @@ AMazeCell::AMazeCell(){
 }
 
 // Called when the game starts or when spawned
-void AMazeCell::BeginPlay()
-{
+void AMazeCell::BeginPlay(){
 	Super::BeginPlay();
+	
+}
+
+void AMazeCell::HideObstacleWall() {
+	MeshPlaneComponent->SetStaticMesh(nullptr);
+	MeshWall1Component->SetStaticMesh(nullptr);
+	MeshWall2Component->SetStaticMesh(nullptr);
+	MeshWall3Component->SetStaticMesh(nullptr);
+	MeshWall4Component->SetStaticMesh(nullptr);
+}
+
+void AMazeCell::HideWall(int WallNumber) {
+	switch(WallNumber){
+		case 1:
+			MeshWall1Component->SetStaticMesh(nullptr);
+			break;
+		case 2:
+			MeshWall2Component->SetStaticMesh(nullptr);
+			break;
+		case 3:
+			MeshWall3Component->SetStaticMesh(nullptr);
+			break;
+		case 4:
+			MeshWall4Component->SetStaticMesh(nullptr);
+			break;
+		default:
+			UE_LOG(LogTemp,Warning,TEXT("Not valid wall number"));
+			break;
+	}
 	
 }
 

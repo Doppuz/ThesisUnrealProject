@@ -15,10 +15,16 @@ public:
 	// Sets default values for this actor's properties
 	AMazeCell();
 	
-	bool IsObstacle = false;
-	bool IsVisited = false;
+	bool bIsObstacle = false;
+	bool bIsVisited = false;
+	
+	UPROPERTY(VisibleAnywhere, Category = "MazeInformation")
 	int I;
+	UPROPERTY(VisibleAnywhere, Category = "MazeInformation")
 	int J;
+
+	void HideObstacleWall();
+	void HideWall(int WallNumber);
 
 protected:
 	// Called when the game starts or when spawned
