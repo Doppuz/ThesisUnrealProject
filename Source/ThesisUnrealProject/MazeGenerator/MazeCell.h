@@ -17,7 +17,8 @@ public:
 	
 	bool bIsObstacle = false;
 	bool bIsVisited = false;
-	
+	int NumberRoom = -1;
+
 	UPROPERTY(VisibleAnywhere, Category = "MazeInformation")
 	int I;
 	UPROPERTY(VisibleAnywhere, Category = "MazeInformation")

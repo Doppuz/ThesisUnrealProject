@@ -10,15 +10,7 @@
 		}
 	],
 	"settings": {
-		"typescript.tsc.autoDetect": "off",
-		"files.associations": {
-			"deque": "cpp",
-			"list": "cpp",
-			"vector": "cpp",
-			"xstring": "cpp",
-			"__split_buffer": "cpp",
-			"string": "cpp"
-		}
+		"typescript.tsc.autoDetect": "off"
 	},
 	"extensions": {
 		"recommendations": [

@@ -2,13 +2,13 @@
 
 #pragma once
 
-
 #include <vector>
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MazeGeneratorBase.generated.h"
 
 class AMazeCell;
+class RoomMaze;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeGeneratorBase : public AActor{
@@ -30,21 +30,34 @@ private:
 	int Length = 10;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int Heigth = 10;
+	int Height = 10;
+
+	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
+	int MazeObstacle = 0;
+
+	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
+	int Maze2Room = 4;
+	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
+	int Maze3Room = 0;
+	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
+	int Maze4Room = 0;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	TSubclassOf<AMazeCell> CellClass;
 
 	TArray<TArray<AMazeCell*>> *Maze = nullptr;
-	TArray<AMazeCell*> *Stack = nullptr;
-
+	TArray<RoomMaze> *Rooms = nullptr;
+	int NumberOfCells = (Length*Height) - MazeObstacle - 2 * Maze2Room - 3 * Maze3Room - 4 * Maze4Room;
 
 	//Methods
 	void PrintMaze();
 	void InitializeMaze();
-	void CreateObstacle(int Obstacles);
-	void CreateRoom();
-	void CreateMazeWrapper(int i, int j);
+	void CreateObstacle(int ObstaclesNumber);
+	void CreateRooms();
+	void CreateRoomSize2();
+	void CheckRoomIntersection(int Row, int Column, bool& bIntersection);
+	void RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr, int columnExtr, int Pos);
+	void CreateMazeWrapper(int i, int j, int& CellProcessed);
 	void CheckForNeighbors(TArray<AMazeCell*>& neighbors,int i,int j);
 	void CreateMaze();
 };
