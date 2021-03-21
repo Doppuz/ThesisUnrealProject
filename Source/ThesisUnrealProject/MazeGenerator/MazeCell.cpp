@@ -61,7 +61,35 @@ void AMazeCell::HideWall(int WallNumber) {
 			UE_LOG(LogTemp,Warning,TEXT("Not valid wall number"));
 			break;
 	}
-	
+
 }
 
-
+//Return true if a wall is hidden, false otherwise.
+bool AMazeCell::HideWallBool(int WallNumber){
+	switch (WallNumber) {
+	case 1:
+		if (MeshWall1Component->GetStaticMesh() == nullptr)
+			return false;
+		MeshWall1Component->SetStaticMesh(nullptr);
+		break;
+	case 2:
+		if (MeshWall2Component->GetStaticMesh() == nullptr)
+			return false;
+		MeshWall2Component->SetStaticMesh(nullptr);
+		break;
+	case 3:
+		if (MeshWall3Component->GetStaticMesh() == nullptr)
+			return false;
+		MeshWall3Component->SetStaticMesh(nullptr);
+		break;
+	case 4:
+		if (MeshWall4Component->GetStaticMesh() == nullptr)
+			return false;
+		MeshWall4Component->SetStaticMesh(nullptr);
+		break;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Not valid wall number"));
+		break;
+	}
+	return true;
+}

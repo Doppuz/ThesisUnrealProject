@@ -16,4 +16,6 @@ public:
 	bool bDoor = false;
 
 	TArray<AMazeCell*> Room;
+	
+	void CreateDoors(int DoorsNumber);
 };

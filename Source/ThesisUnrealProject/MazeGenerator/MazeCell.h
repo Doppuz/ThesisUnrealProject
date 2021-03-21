@@ -26,6 +26,7 @@ public:
 
 	void HideObstacleWall();
 	void HideWall(int WallNumber);
+	bool HideWallBool(int WallNumber);
 
 protected:
 	// Called when the game starts or when spawned

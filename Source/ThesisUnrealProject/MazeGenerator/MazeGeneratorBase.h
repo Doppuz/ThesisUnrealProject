@@ -47,7 +47,7 @@ private:
 
 	TArray<TArray<AMazeCell*>> *Maze = nullptr;
 	TArray<RoomMaze> *Rooms = nullptr;
-	int NumberOfCells = (Length*Height) - MazeObstacle - 2 * Maze2Room - 3 * Maze3Room - 4 * Maze4Room;
+	int NumberOfCells;
 
 	//Methods
 	void PrintMaze();
@@ -55,7 +55,7 @@ private:
 	void CreateObstacle(int ObstaclesNumber);
 	void CreateRooms();
 	void CreateRoomSize2();
-	void CheckRoomIntersection(int Row, int Column, bool& bIntersection);
+	bool CheckRoomIntersection(int Row, int Column);
 	void RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr, int columnExtr, int Pos);
 	void CreateMazeWrapper(int i, int j, int& CellProcessed);
 	void CheckForNeighbors(TArray<AMazeCell*>& neighbors,int i,int j);

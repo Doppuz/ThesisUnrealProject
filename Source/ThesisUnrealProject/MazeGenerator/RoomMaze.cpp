@@ -11,3 +11,14 @@ RoomMaze::RoomMaze(TArray<AMazeCell*> Room){
 RoomMaze::~RoomMaze()
 {
 }
+
+void RoomMaze::CreateDoors(int DoorsNumber) {
+	int CellExtr;
+	int WallExtr;
+	for (int i = 0; i < DoorsNumber; i++) {
+		do {
+			CellExtr = FMath::RandRange(0, Room.Num() - 1);
+			WallExtr = FMath::RandRange(1, 4);
+		} while (!Room[CellExtr]->HideWallBool(WallExtr));
+	}
+}
