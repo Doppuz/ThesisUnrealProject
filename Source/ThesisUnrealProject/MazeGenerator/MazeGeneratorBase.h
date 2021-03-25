@@ -18,6 +18,7 @@ public:
 	// Sets default values for this actor's properties
 	AMazeGeneratorBase();
 	~AMazeGeneratorBase();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -26,6 +27,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	int Length = 10;
 
@@ -33,7 +35,7 @@ private:
 	int Height = 10;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int MazeObstacle = 0;
+	int MazeObstacle = 10;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	int Maze2Room = 4;
@@ -47,6 +49,7 @@ private:
 
 	TArray<TArray<AMazeCell*>> *Maze = nullptr;
 	TArray<RoomMaze> *Rooms = nullptr;
+	TArray<AMazeCell*> Passed;
 	int NumberOfCells;
 
 	//Methods
@@ -54,6 +57,7 @@ private:
 	void InitializeMaze();
 	void CreateObstacle(int ObstaclesNumber);
 	void CreateRooms();
+	void CreateDoor(TArray<AMazeCell*>);
 	void CreateRoomSize2();
 	bool CheckRoomIntersection(int Row, int Column);
 	void RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr, int columnExtr, int Pos);

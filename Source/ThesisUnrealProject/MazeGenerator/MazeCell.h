@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CoupleStruct.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MazeCell.generated.h"
@@ -26,7 +27,7 @@ public:
 
 	void HideObstacleWall();
 	void HideWall(int WallNumber);
-	bool HideWallBool(int WallNumber);
+	bool HideWallBool(int WallNumber, Coord& OppositeCell,int& WallToDelete);
 
 protected:
 	// Called when the game starts or when spawned

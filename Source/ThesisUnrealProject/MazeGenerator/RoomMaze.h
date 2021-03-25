@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CoupleStruct.h"
 #include "CoreMinimal.h"
 #include "MazeCell.h"
 
@@ -17,5 +18,4 @@ public:
 
 	TArray<AMazeCell*> Room;
 	
-	void CreateDoors(int DoorsNumber);
 };

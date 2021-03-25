@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Containers/Array.h"
 #include "RoomMaze.h"
+#include "CoupleStruct.h"
 
 
 // Sets default values
@@ -23,15 +24,15 @@ AMazeGeneratorBase::~AMazeGeneratorBase()
 void AMazeGeneratorBase::BeginPlay(){
 	Super::BeginPlay();
 
-	NumberOfCells = (Length*Height) - MazeObstacle - 4 * Maze2Room - 9 * Maze3Room - 16 * Maze4Room;
+	NumberOfCells = (Length*Height) - (MazeObstacle) - 4 * Maze2Room - 9 * Maze3Room - 16 * Maze4Room;
 	
 	//Maze = new std::vector<std::vector<MazeCellController>>(length,std::vector<MazeCellController>(heigth));
 	Maze = new TArray<TArray<AMazeCell*>>();
 	Rooms = new TArray<RoomMaze>();
-	
+
 	InitializeMaze();
 
-	//CreateObstacle(MazeObstacle);
+	CreateObstacle(MazeObstacle);
 	CreateRooms();
 	CreateMaze();
 	
@@ -67,7 +68,7 @@ void AMazeGeneratorBase::InitializeMaze() {
 	for(int i = 0; i < Height; i++){
 		TArray<AMazeCell*> Row;
 		for(int j = 0; j < Length; j++){
-			FVector Origin(i*(-1100),j*1100,0);
+			FVector Origin(i*(-1100) * 1.5 ,j*1100 * 1.5,0);
 			FRotator Rotation(0,0,0);
 			AMazeCell* CellActor = GetWorld()->SpawnActor<AMazeCell>(CellClass,Origin,Rotation);
 			CellActor->I = i;
@@ -80,21 +81,23 @@ void AMazeGeneratorBase::InitializeMaze() {
 
 void AMazeGeneratorBase::CreateObstacle(int Obstacles){
 	std::vector<int> AlreadySelectedNumbers(0);
+	int RowExtr, ColumnExtr;
 
 	for(int i = 0; i < Obstacles; i++){
 		
-		int numExtr = FMath::RandRange(0,(Height * Length) - 1);
+		RowExtr = FMath::RandRange(0, Length - 1);
+		ColumnExtr = FMath::RandRange(0, Height - 1);
 		
 		if(std::find(AlreadySelectedNumbers.begin(), AlreadySelectedNumbers.end(),
-			numExtr) == AlreadySelectedNumbers.end()){
+			(RowExtr + 1) * (ColumnExtr + 1)) == AlreadySelectedNumbers.end() &&
+			(*Maze)[RowExtr][ColumnExtr]->NumberRoom == -1){
 		
 			//It doesn't worll for Legth != Heigth
-			int row = (int) numExtr / Length;
-			int column = numExtr % Height;
-			(*Maze)[row][column]->bIsObstacle = true;
-			(*Maze)[row][column]->bIsVisited = true;
-			(*Maze)[row][column]->HideObstacleWall();
-			AlreadySelectedNumbers.push_back(numExtr);
+			(*Maze)[RowExtr][ColumnExtr]->bIsObstacle = true;
+			(*Maze)[RowExtr][ColumnExtr]->bIsVisited = true;
+			(*Maze)[RowExtr][ColumnExtr]->HideObstacleWall();
+			AlreadySelectedNumbers.push_back((RowExtr + 1) * (ColumnExtr + 1));
+			Passed.Add((*Maze)[RowExtr][ColumnExtr]);
 			
 		}else
 			i -= 1;
@@ -119,14 +122,29 @@ void AMazeGeneratorBase::CreateRoomSize2() {
 	TArray<AMazeCell*> Room;
 
 	RoomWallHide(Room, RowExtr, ColumnExtr, Rooms->Num());
+	//CreateDoor(Room);
 	RoomMaze m(Room);
-	m.CreateDoors(1);
 	Rooms->Add(m);
 }
 
+void AMazeGeneratorBase::CreateDoor(TArray<AMazeCell*> Room) {
+	int CellExtr;
+	int WallExtr;
+	Coord OppositeCell;
+	int WallToDelete;
+	do {
+		CellExtr = FMath::RandRange(0, Room.Num() - 1);
+		WallExtr = FMath::RandRange(1, 4);
+	} while (!Room[CellExtr]->HideWallBool(WallExtr, OppositeCell, WallToDelete));
+	(*Maze)[OppositeCell.CoordI][OppositeCell.CoordJ]->HideWall(WallToDelete);
+}
+
 bool AMazeGeneratorBase::CheckRoomIntersection(int Row, int Column){
+
 	return (*Maze)[Row][Column]->NumberRoom != -1 || (*Maze)[Row][Column + 1]->NumberRoom != -1 ||
-		(*Maze)[Row + 1][Column]->NumberRoom != -1 || (*Maze)[Row + 1][Column + 1]->NumberRoom != -1;
+		(*Maze)[Row + 1][Column]->NumberRoom != -1 || (*Maze)[Row + 1][Column + 1]->NumberRoom != -1 ||
+		(*Maze)[Row][Column]->bIsObstacle || (*Maze)[Row][Column + 1]->bIsObstacle ||
+		(*Maze)[Row + 1][Column]->bIsObstacle || (*Maze)[Row + 1][Column + 1]->bIsObstacle;
 }
 
 void AMazeGeneratorBase::RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr,int columnExtr, int Pos) {
@@ -141,6 +159,8 @@ void AMazeGeneratorBase::RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr,int c
 			(*Maze)[rowExtr + i][columnExtr + j]->HideWall(FirstIndice);
 			(*Maze)[rowExtr + i][columnExtr + j]->HideWall(SecondIndice);
 			Room.Add((*Maze)[rowExtr + i][columnExtr + j]);
+			//if(!Passed.Contains((*Maze)[rowExtr + i][columnExtr + j]))
+			Passed.Add((*Maze)[rowExtr + i][columnExtr + j]);
 		}
 	}
 }
@@ -148,10 +168,12 @@ void AMazeGeneratorBase::RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr,int c
 //Wrapper for recursion depth visit
 void AMazeGeneratorBase::CreateMazeWrapper(int I, int J, int& CellProcessed) {
 	TArray<AMazeCell*> Neighbors;
-	if (!(*Maze)[I][J]->bIsVisited && (*Maze)[I][J]->NumberRoom == -1)
-		CellProcessed += 1;
+	//if (!(*Maze)[I][J]->bIsVisited && (*Maze)[I][J]->NumberRoom == -1 && !(*Maze)[I][J]->bIsObstacle)
+	//	CellProcessed += 1;
+	if(!Passed.Contains((*Maze)[I][J]))
+		Passed.Add((*Maze)[I][J]);
 	(*Maze)[I][J]->bIsVisited = true;
-	//if((*Maze)[I][J]->NumberRoom == -1){
+	if((*Maze)[I][J]->NumberRoom == -1){
 		CheckForNeighbors(Neighbors,I,J);
 		while (Neighbors.Num() != 0) {
 			int numExtr = FMath::RandRange(0, Neighbors.Num() - 1);
@@ -181,18 +203,21 @@ void AMazeGeneratorBase::CreateMazeWrapper(int I, int J, int& CellProcessed) {
 		Neighbors.Empty();
 		CheckForNeighbors(Neighbors, I, J);
 		}
-	//}
-	//else
-	//	(*Rooms)[(*Maze)[I][J]->NumberRoom].bDoor = true;
+	}
+	else
+		(*Rooms)[(*Maze)[I][J]->NumberRoom].bDoor = true;
 }
 
 //Start the maze creation from (0,0)
 void AMazeGeneratorBase::CreateMaze() {
 	int CellProcessed = 0;
-	while (CellProcessed != NumberOfCells) {
+
+	//while (CellProcessed != NumberOfCells) {
+	while (Passed.Num() != Length * Length) {
 		int RowExtr = FMath::RandRange(0, Length - 1);
 		int ColumnExtr = FMath::RandRange(0, Height - 1);
-		CreateMazeWrapper(RowExtr, ColumnExtr, CellProcessed);
+		if(!(*Maze)[RowExtr][ColumnExtr]->bIsObstacle && (*Maze)[RowExtr][ColumnExtr]->NumberRoom == -1)
+			CreateMazeWrapper(RowExtr, ColumnExtr, CellProcessed);
 		//for (int i = 0; i < (*Rooms).Num(); i++) {
 		//	(*Rooms)[i].bDoor = false;
 		//}
@@ -201,18 +226,18 @@ void AMazeGeneratorBase::CreateMaze() {
 
 void AMazeGeneratorBase::CheckForNeighbors(TArray<AMazeCell*>& Neighbors,int i,int j){
 	if(i != 0 && !(*Maze)[i - 1][j]->bIsVisited &&
-		(*Maze)[i - 1][j]->NumberRoom == -1)// || !(*Rooms)[(*Maze)[i - 1][j]->NumberRoom].bDoor))
+		((*Maze)[i - 1][j]->NumberRoom == -1 || !(*Rooms)[(*Maze)[i - 1][j]->NumberRoom].bDoor))
 		Neighbors.Push((*Maze)[i - 1][j]);
 
 	if(i != (Length - 1) && !(*Maze)[i + 1][j]->bIsVisited &&
-		(*Maze)[i + 1][j]->NumberRoom == -1)// || !(*Rooms)[(*Maze)[i + 1][j]->NumberRoom].bDoor))
+		((*Maze)[i + 1][j]->NumberRoom == -1 || !(*Rooms)[(*Maze)[i + 1][j]->NumberRoom].bDoor))
 		Neighbors.Push((*Maze)[i + 1][j]);
 
 	if(j != 0 && !(*Maze)[i][j - 1]->bIsVisited &&
-		(*Maze)[i][j - 1]->NumberRoom == -1) //|| !(*Rooms)[(*Maze)[i][j - 1]->NumberRoom].bDoor))
+		((*Maze)[i][j - 1]->NumberRoom == -1  || !(*Rooms)[(*Maze)[i][j - 1]->NumberRoom].bDoor))
 		Neighbors.Push((*Maze)[i][j - 1]);
 
 	if(j != (Length - 1) && !(*Maze)[i][j + 1]->bIsVisited &&
-		(*Maze)[i][j + 1]->NumberRoom == -1)// || !(*Rooms)[(*Maze)[i][j + 1]->NumberRoom].bDoor))
+		((*Maze)[i][j + 1]->NumberRoom == -1 || !(*Rooms)[(*Maze)[i][j + 1]->NumberRoom].bDoor))
 		Neighbors.Push((*Maze)[i][j + 1]);
 }
