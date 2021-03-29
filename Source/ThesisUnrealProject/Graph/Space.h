@@ -13,5 +13,5 @@ public:
 	float Y;
 	float SizeX;
 	float SizeY;
-
+	float Size;
 };

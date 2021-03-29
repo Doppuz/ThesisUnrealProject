@@ -9,5 +9,4 @@ public:
 	Node();
 	~Node();
 
-	Node* Parent;
 };

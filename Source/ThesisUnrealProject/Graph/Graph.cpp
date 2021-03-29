@@ -7,6 +7,14 @@ Graph::Graph(){
 }
 
 Graph::~Graph(){
+	TArray<Node*> Nodes;
+	Map.GenerateKeyArray(Nodes);
+	for (Node* N : Nodes) {
+		for (Side* S : Map[N]){
+			delete S;
+		}
+		delete N;
+	}
 }
 
 //It now check only the adress. Need to check to not enter equals Node. AAAA Search this in future!!!!
@@ -18,16 +26,15 @@ void Graph::AddNode(Node* N) {
 		UE_LOG(LogTemp, Warning, TEXT("Node already present in the list"));
 }
 
-void Graph::AddSide(Side* S) {
-	if (!Map.Contains(S->From))
-		Map.Add(S->From);
-	if (!Map.Contains(S->To))
-		Map.Add(S->To);
-	if (!Map[S->From].Contains(S))
-		Map[S->From].Add(S);
+void Graph::AddSide(Node* Begin, Node* End, float Weight) {
+	Side* NewSide = new Side(Begin,End,Weight);
+	Side* NewSideParent = new Side(End, Begin, Weight);
+	if (!Map[Begin].Contains(NewSide))
+		Map[Begin].Add(NewSide);
+	if (!Map[End].Contains(NewSideParent))
+		Map[End].Add(NewSideParent);
 }
 
-//Valuto se utile.
 TArray<Node*> Graph::GetNodes(){
 	TArray<Node*> Nodes;
 	Map.GenerateKeyArray(Nodes);

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "../Graph/GraphSpaces.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "SpacePartitionMazeGenerator.generated.h"
@@ -15,14 +16,21 @@ public:
 	// Sets default values for this actor's properties
 	ASpacePartitionMazeGenerator();
 
-	void DrawLine(FVector Start, FVector End);
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+private:
+
+	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
+	float RoomSizeLimit = 1500000000;
+
+	void CreateMaze();
+	void DrawLine(FVector Start, FVector End);
+	void DrawSquare(float, float, float, float);
+	GraphSpaces Maze;
 
 };

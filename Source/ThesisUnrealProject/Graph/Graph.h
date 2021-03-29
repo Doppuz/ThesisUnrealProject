@@ -13,16 +13,16 @@ class THESISUNREALPROJECT_API Graph{
 
 public:
 	Graph();
-	~Graph();
-
-	TMap<Node*, TArray<Side*>> Map;
-	TArray<Node*> Leaves;
+	virtual ~Graph();
 
 	void AddNode(Node*);
 
-	void AddSide(Side*);
+	void AddSide(Node*, Node*, float);
 
 	TArray<Node*> GetNodes();
 	TArray<Side*> GetSides(Node* N);
 
+protected:
+
+	TMap<Node*, TArray<Side*>> Map;
 };
