@@ -12,6 +12,7 @@
 AMazeGeneratorBase::AMazeGeneratorBase(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
 }
 
 AMazeGeneratorBase::~AMazeGeneratorBase() 
@@ -98,7 +99,6 @@ void AMazeGeneratorBase::CreateObstacle(int Obstacles){
 			(*Maze)[RowExtr][ColumnExtr]->HideObstacleWall();
 			AlreadySelectedNumbers.push_back((RowExtr + 1) * (ColumnExtr + 1));
 			Passed.Add((*Maze)[RowExtr][ColumnExtr]);
-			
 		}else
 			i -= 1;
 	}	

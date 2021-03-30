@@ -17,11 +17,11 @@ ASpacePartitionMazeGenerator::ASpacePartitionMazeGenerator()
 // Called when the game starts or when spawned
 void ASpacePartitionMazeGenerator::BeginPlay(){
 	Super::BeginPlay();
-	Space* RootSpace = new Space(0,0, 50000, 50000);
+	Space* RootSpace = new Space(0,0, 25000, 25000);
 	Maze.AddNode(RootSpace);
 	TArray<Node*> b = Maze.GetNodes();
 	Space* tmp = (Space*) b[0];
-	DrawSquare(0, 0, 50000, 50000);
+	DrawSquare(0, 0, 25000, 25000);
 	CreateMaze();
 }
 
@@ -35,6 +35,8 @@ void ASpacePartitionMazeGenerator::Tick(float DeltaTime){
 
 void  ASpacePartitionMazeGenerator::CreateMaze() {
 	TArray<Node*> Leaves = Maze.GetLeaves(RoomSizeLimit);
+	
+	//Space creation
 	int i = 0;
 	int Direction = 0;
 	do{
@@ -43,15 +45,22 @@ void  ASpacePartitionMazeGenerator::CreateMaze() {
 		
 		float NewLine;
 		float NewFatherPos;
+		int Limit = 6000;
 
 		switch (Direction){	
 		case 0: {
 			float LeftPos = Father->X - (Father->SizeX) / 2;
 			float RightPos = Father->X + (Father->SizeX) / 2;
+			int I = 0;
 			do {
 				NewLine = FMath::RandRange(-(Father->SizeX) / 2, (Father->SizeX) / 2);
 				NewFatherPos = Father->X + NewLine;
-			} while (NewFatherPos - LeftPos < 5000 || RightPos - NewFatherPos < 5000);
+				if(I > 20){
+					Limit -= 500;
+					I = 0;
+				}
+				I += 1;	
+			} while (NewFatherPos - LeftPos < Limit || RightPos - NewFatherPos < Limit);
 
 			Space* LeftRoom = new Space(LeftPos + (NewFatherPos - LeftPos) / 2, Father->Y, NewFatherPos - LeftPos, Father->SizeY);
 			Space* RightRoom = new Space(NewFatherPos + (RightPos - NewFatherPos) / 2, Father->Y, RightPos - NewFatherPos, Father->SizeY);
@@ -71,10 +80,16 @@ void  ASpacePartitionMazeGenerator::CreateMaze() {
 
 			float LeftPos = Father->Y - (Father->SizeY) / 2;
 			float RightPos = Father->Y + (Father->SizeY) / 2;
+			int I = 0;
 			do{
 				NewLine = FMath::RandRange(-(Father->SizeY) / 2, (Father->SizeY) / 2);
 				NewFatherPos = Father->Y + NewLine;
-			} while (NewFatherPos - LeftPos < 5000 || RightPos - NewFatherPos < 5000);
+				if(I > 20){
+					Limit -= 500;
+					I = 0;
+				}
+				I += 1;
+			} while (NewFatherPos - LeftPos < Limit || RightPos - NewFatherPos < Limit);
 
 			Space* LeftRoom = new Space(Father->X, LeftPos + (NewFatherPos - LeftPos) / 2, Father->SizeX, NewFatherPos - LeftPos);
 			Space* RightRoom = new Space(Father->X, NewFatherPos + (RightPos - NewFatherPos) / 2, Father->SizeX, RightPos - NewFatherPos);
@@ -97,6 +112,42 @@ void  ASpacePartitionMazeGenerator::CreateMaze() {
 		Leaves = Maze.GetLeaves(RoomSizeLimit);
 		Direction = (Direction + 1) % 2;
 	} while (Leaves.Num() != 0);
+
+	//Room creation
+	Leaves = Maze.GetLeavesNoSpace();
+	CreateRooms(Leaves);
+	
+}
+
+void ASpacePartitionMazeGenerator::CreateRooms(TArray<Node *> Leaves) {
+	for(Node* N: Leaves){
+		Space* TempSpace = (Space*) N;
+		float XDist = FMath::RandRange(TempSpace->X - (TempSpace->SizeX)/2,TempSpace->X + (TempSpace->SizeX)/2);
+		float YDist = FMath::RandRange(TempSpace->Y - (TempSpace->SizeY)/2,TempSpace->Y + (TempSpace->SizeY)/2);
+		float XStartPos = FMath::RandRange(0,2) ? TempSpace->X  - XDist : TempSpace->X  + XDist;
+		float YStartPos = FMath::RandRange(0,2) ? TempSpace->Y  - YDist : TempSpace->Y  + YDist;
+
+
+		/*int XCellNumber = (TempSpace->SizeX + XDist) / CellSize;
+		int YCellNumber = (TempSpace->SizeY + YDist) / CellSize;*/
+		
+		float XScale = FMath::RandRange(7.f,(TempSpace->SizeX - 2000) / CellSize);
+		float YScale = FMath::RandRange(7.f,(TempSpace->SizeY - 2000) / CellSize);
+		
+
+		FVector Origin(TempSpace->X,TempSpace->Y,0);
+		FRotator Rotation(0,0,0);
+		FVector Scale(XScale,YScale,0);
+		ACell* Cell = GetWorld()->SpawnActor<ACell>(CellClass,Origin,Rotation);
+		Cell->SetActorScale3D(Scale);
+		/*for(int i = 0; i < CellNumber; i++){
+			for(int i = 0; i < CellNumber; i++){
+				FVector Origin(i*(CellSize),);
+				FRotator Rotation(0,0,0);
+				AMazeCell* CellActor = GetWorld()->SpawnActor<AMazeCell>(CellClass,Origin,Rotation);
+			}
+		}*/
+	}
 }
 
 void ASpacePartitionMazeGenerator::DrawLine(FVector Start, FVector End) {

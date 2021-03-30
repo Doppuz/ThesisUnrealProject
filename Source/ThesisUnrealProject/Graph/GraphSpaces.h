@@ -15,5 +15,6 @@ public:
 	~GraphSpaces();
 
 	TArray<Node*> GetLeaves(float RoomLimit);
+	TArray<Node*> GetLeavesNoSpace();
 
 };

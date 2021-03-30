@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Cell.h"
 #include "../Graph/GraphSpaces.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -28,7 +29,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	float RoomSizeLimit = 1500000000;
 
+	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
+	TSubclassOf<ACell> CellClass;
+
+	float CellSize = 500;
+
 	void CreateMaze();
+	void CreateRooms(TArray<Node *>);
 	void DrawLine(FVector Start, FVector End);
 	void DrawSquare(float, float, float, float);
 	GraphSpaces Maze;

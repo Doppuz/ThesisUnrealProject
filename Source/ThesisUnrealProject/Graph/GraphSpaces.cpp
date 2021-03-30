@@ -31,3 +31,24 @@ TArray<Node*> GraphSpaces::GetLeaves(float RoomLimit) {
 	}
 	return Result;
 }
+
+TArray<Node*> GraphSpaces::GetLeavesNoSpace() {
+	TArray<Node*> Leaves = GetNodes();
+	TArray<Node*> Result;
+
+	for (int i = 0; i < Leaves.Num(); i++) {
+		Space* TmpSpace = (Space *)Leaves[i];
+	}
+
+	if(Leaves.Num() > 1)
+		Leaves.RemoveAt(0);
+
+	for (Node* N: Leaves) {
+		Space* TmpSpace = (Space *) N;
+
+		if (Map[TmpSpace].Num() < 2)
+			Result.Add(N);
+		
+	}
+	return Result;
+}
