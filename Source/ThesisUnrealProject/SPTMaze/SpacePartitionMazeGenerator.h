@@ -35,9 +35,11 @@ private:
 	float CellSize = 500;
 
 	void CreateMaze();
-	void CreateRooms(TArray<Node *>);
+	void CreateRooms(TArray<Space *>);
+	void CreateCorridors();
+	void GenerateCorridors(Space*,Space*);
 	void DrawLine(FVector Start, FVector End);
 	void DrawSquare(float, float, float, float);
-	GraphSpaces Maze;
+	Graph Maze;
 
 };

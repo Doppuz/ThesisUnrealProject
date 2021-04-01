@@ -2,15 +2,17 @@
 
 #pragma once
 
+#include "Space.h"
 #include "Node.h"
 #include "CoreMinimal.h"
 
+//template<typename F>
 class THESISUNREALPROJECT_API Side{
 public:
-	Side(Node* From,Node* To, float Weight);
+	Side(Space* From,Space* To, float Weight);
 	~Side();
 
-	Node* From;
-	Node* To;
+	Space* From;
+	Space* To;
 	float Weight;
 };

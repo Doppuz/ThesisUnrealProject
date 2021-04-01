@@ -19,8 +19,7 @@ void ASpacePartitionMazeGenerator::BeginPlay(){
 	Super::BeginPlay();
 	Space* RootSpace = new Space(0,0, 25000, 25000);
 	Maze.AddNode(RootSpace);
-	TArray<Node*> b = Maze.GetNodes();
-	Space* tmp = (Space*) b[0];
+	TArray<Space*> b = Maze.GetNodes();
 	DrawSquare(0, 0, 25000, 25000);
 	CreateMaze();
 }
@@ -34,14 +33,14 @@ void ASpacePartitionMazeGenerator::Tick(float DeltaTime){
 }
 
 void  ASpacePartitionMazeGenerator::CreateMaze() {
-	TArray<Node*> Leaves = Maze.GetLeaves(RoomSizeLimit);
+	TArray<Space*> Leaves = Maze.GetLeaves(RoomSizeLimit);
 	
 	//Space creation
 	int i = 0;
 	int Direction = 0;
 	do{
 		int NumExtr = FMath::RandRange(0, Leaves.Num() - 1);
-		Space* Father = (Space*) Leaves[NumExtr];
+		Space* Father = Leaves[NumExtr];
 		
 		float NewLine;
 		float NewFatherPos;
@@ -116,12 +115,12 @@ void  ASpacePartitionMazeGenerator::CreateMaze() {
 	//Room creation
 	Leaves = Maze.GetLeavesNoSpace();
 	CreateRooms(Leaves);
+	CreateCorridors();
 	
 }
 
-void ASpacePartitionMazeGenerator::CreateRooms(TArray<Node *> Leaves) {
-	for(Node* N: Leaves){
-		Space* TempSpace = (Space*) N;
+void ASpacePartitionMazeGenerator::CreateRooms(TArray<Space *> Leaves) {
+	for(Space* TempSpace: Leaves){
 		float XDist = FMath::RandRange(TempSpace->X - (TempSpace->SizeX)/2,TempSpace->X + (TempSpace->SizeX)/2);
 		float YDist = FMath::RandRange(TempSpace->Y - (TempSpace->SizeY)/2,TempSpace->Y + (TempSpace->SizeY)/2);
 		float XStartPos = FMath::RandRange(0,2) ? TempSpace->X  - XDist : TempSpace->X  + XDist;
@@ -140,14 +139,50 @@ void ASpacePartitionMazeGenerator::CreateRooms(TArray<Node *> Leaves) {
 		FVector Scale(XScale,YScale,0);
 		ACell* Cell = GetWorld()->SpawnActor<ACell>(CellClass,Origin,Rotation);
 		Cell->SetActorScale3D(Scale);
-		/*for(int i = 0; i < CellNumber; i++){
-			for(int i = 0; i < CellNumber; i++){
-				FVector Origin(i*(CellSize),);
-				FRotator Rotation(0,0,0);
-				AMazeCell* CellActor = GetWorld()->SpawnActor<AMazeCell>(CellClass,Origin,Rotation);
-			}
-		}*/
+		TempSpace->Room = Cell;
 	}
+}
+
+void ASpacePartitionMazeGenerator::CreateCorridors() {
+	Graph GraphCopy = Maze;
+	TArray<Space*> Leaves;
+	Leaves = GraphCopy.GetNodesMaxDistance();
+	do{
+		int TotalNumber = Leaves.Num();
+		for(int i = 0; i < TotalNumber; i++) {
+			TArray<Side*> TmpSide = GraphCopy.GetSides(Leaves[0]);
+			if(TmpSide.Num() == 3){
+				//UE_LOG(LogTemp,Warning,TEXT("%x link %x"),TmpSide[1]->To,TmpSide[2]->To);
+				GenerateCorridors(TmpSide[1]->To,TmpSide[2]->To);
+				GraphCopy.DeleteNode(TmpSide[1]->To);
+				GraphCopy.DeleteNode(TmpSide[2]->To);
+			}else{
+				//UE_LOG(LogTemp,Warning,TEXT("%x link %x"),TmpSide[0]->To,TmpSide[1]->To);
+				GenerateCorridors(TmpSide[0]->To,TmpSide[1]->To);
+				GraphCopy.DeleteNode(TmpSide[0]->To);
+				GraphCopy.DeleteNode(TmpSide[1]->To);
+			}
+			Leaves.RemoveAt(0);
+		}
+		Leaves = GraphCopy.GetNodesMaxDistance();
+	}while(Leaves.Num() != 0);
+	int h = 1;
+}
+
+void ASpacePartitionMazeGenerator::GenerateCorridors(Space* Spc1,Space* Spc2) {
+	FVector Point = FVector((Spc1->X + Spc2->X)/2,(Spc1->Y + Spc2->Y)/2,0);
+	FRotator Rotation(0,0,0);
+	UE_LOG(LogTemp,Warning,TEXT("%f link %f"),FMath::Square(Spc2->X - Spc1->X),FMath::Square(Spc2->Y - Spc1->Y));
+	float XScale = 1,YScale = 1;
+	if(FMath::Square(Spc2->X - Spc1->X) == 0){
+		XScale = (FMath::Sqrt(FMath::Square(Point.X - Spc1->X)) * 2) / 500;
+	}else{
+		YScale = (FMath::Sqrt(FMath::Square(Point.Y - Spc1->Y)) * 2) / 500;
+	}
+	FVector Scale(XScale,YScale,0);
+	UE_LOG(LogTemp,Warning,TEXT("%f bo %f"),(FMath::Sqrt(FMath::Square(Point.X - Spc1->X)) * 2) / 500, (FMath::Sqrt(FMath::Square(Point.Y - Spc1->Y)) * 2) / 500);
+	ACell* Cell = GetWorld()->SpawnActor<ACell>(CellClass,Point,Rotation);
+	Cell->SetActorScale3D(Scale);
 }
 
 void ASpacePartitionMazeGenerator::DrawLine(FVector Start, FVector End) {

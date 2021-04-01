@@ -6,15 +6,12 @@
 #include "Graph.h"
 #include "CoreMinimal.h"
 
-/**
- * 
- */
-class THESISUNREALPROJECT_API GraphSpaces : public Graph{
-public:
-	GraphSpaces();
-	~GraphSpaces();
 
-	TArray<Node*> GetLeaves(float RoomLimit);
-	TArray<Node*> GetLeavesNoSpace();
+class THESISUNREALPROJECT_API GraphSpaces {
+public:
+
+	/*TArray<Space*> GetLeaves(float RoomLimit);
+	TArray<Space*> GetLeavesNoSpace();
+	int GetDepth(Space*);*/
 
 };

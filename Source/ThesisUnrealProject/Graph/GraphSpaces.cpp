@@ -4,51 +4,43 @@
 #include "GraphSpaces.h"
 #include "Space.h"
 
-GraphSpaces::GraphSpaces()
-{
-}
-
-GraphSpaces::~GraphSpaces(){
-}
-
-TArray<Node*> GraphSpaces::GetLeaves(float RoomLimit) {
-	TArray<Node*> Leaves = GetNodes();
-	TArray<Node*> Result;
-
-	for (int i = 0; i < Leaves.Num(); i++) {
-		Space* TmpSpace = (Space *)Leaves[i];
-	}
+/*
+TArray<Space*> GraphSpaces::GetLeaves(float RoomLimit) {
+	TArray<Space*> Leaves = GetNodes();
+	TArray<Space*> Result;
 
 	if(Leaves.Num() > 1)
 		Leaves.RemoveAt(0);
 
-	for (Node* N: Leaves) {
-		Space* TmpSpace = (Space *) N;
+	for (Space* TmpSpace: Leaves) {
 
 		if (Map[TmpSpace].Num() < 2 && TmpSpace->Size > RoomLimit)
-			Result.Add(N);
+			Result.Add(TmpSpace);
 		
 	}
 	return Result;
 }
 
-TArray<Node*> GraphSpaces::GetLeavesNoSpace() {
-	TArray<Node*> Leaves = GetNodes();
-	TArray<Node*> Result;
-
-	for (int i = 0; i < Leaves.Num(); i++) {
-		Space* TmpSpace = (Space *)Leaves[i];
-	}
+TArray<Space*> GraphSpaces::GetLeavesNoSpace() {
+	TArray<Space*> Leaves = GetNodes();
+	TArray<Space*> Result;
 
 	if(Leaves.Num() > 1)
 		Leaves.RemoveAt(0);
 
-	for (Node* N: Leaves) {
-		Space* TmpSpace = (Space *) N;
+	for (Space* TmpSpace: Leaves) {
 
 		if (Map[TmpSpace].Num() < 2)
-			Result.Add(N);
+			Result.Add(TmpSpace);
 		
 	}
 	return Result;
 }
+
+int GraphSpaces::GetDepth(Space* Spc) {
+	if(Map[Spc].Num() == 2)
+		return 0;
+	else
+		return 1 + GetDepth(Map[Spc][0]->To);	
+}*/
+

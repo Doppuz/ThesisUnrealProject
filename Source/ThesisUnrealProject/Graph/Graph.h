@@ -6,23 +6,30 @@
 #include "Node.h"
 #include "CoreMinimal.h"
 
-/**
- * 
- */
+//template<class F,class S>
 class THESISUNREALPROJECT_API Graph{
 
 public:
-	Graph();
-	virtual ~Graph();
+	//Graph();
+	//~Graph();
 
-	void AddNode(Node*);
+	void AddNode(Space*);
 
-	void AddSide(Node*, Node*, float);
+	void AddSide(Space*, Space*, float);
 
-	TArray<Node*> GetNodes();
-	TArray<Side*> GetSides(Node* N);
+	TArray<Space*> GetNodes();
+	TArray<Side*> GetSides(Space* N);
+
+	void DeleteNode(Space*);
+
+	TArray<Space*> GetLeaves(float RoomLimit);
+	TArray<Space*> GetLeavesNoSpace();
+	TArray<Space*> GetNodesMaxDistance();
 
 protected:
 
-	TMap<Node*, TArray<Side*>> Map;
+	TMap<Space*, TArray<Side*>> Map;
+
+private:
+	int GetDepth(Space*);
 };
