@@ -15,6 +15,10 @@ public:
 	// Sets default values for this actor's properties
 	ACell();
 
+	float SizeX;
+	float SizeY;
+	FVector Pos;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

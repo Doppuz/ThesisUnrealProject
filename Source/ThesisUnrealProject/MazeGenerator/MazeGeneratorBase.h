@@ -50,6 +50,7 @@ private:
 	TArray<TArray<AMazeCell*>> *Maze = nullptr;
 	TArray<RoomMaze> *Rooms = nullptr;
 	TArray<AMazeCell*> Passed;
+	TArray<TArray<AMazeCell*>> TempMaze;
 	int NumberOfCells;
 
 	//Methods
@@ -60,6 +61,7 @@ private:
 	void CreateDoor(TArray<AMazeCell*>);
 	void CreateRoomSize2();
 	bool CheckRoomIntersection(int Row, int Column);
+	bool CheckNearbyRoom(int Row, int Column, int RoomSize, bool Left);
 	void RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr, int columnExtr, int Pos);
 	void CreateMazeWrapper(int i, int j, int& CellProcessed);
 	void CheckForNeighbors(TArray<AMazeCell*>& neighbors,int i,int j);

@@ -27,7 +27,7 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	float RoomSizeLimit = 1500000000;
+	float RoomSizeLimit = 500000000;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	TSubclassOf<ACell> CellClass;

@@ -33,9 +33,11 @@ void AMazeGeneratorBase::BeginPlay(){
 
 	InitializeMaze();
 
+	TempMaze = (*Maze);
+
 	CreateObstacle(MazeObstacle);
 	CreateRooms();
-	CreateMaze();
+	//CreateMaze();
 	
 	//UE_LOG(LogTemp,Warning, TEXT("%i"), a[0][0]);
 	//Maze = &TempMaze; 
@@ -140,11 +142,63 @@ void AMazeGeneratorBase::CreateDoor(TArray<AMazeCell*> Room) {
 }
 
 bool AMazeGeneratorBase::CheckRoomIntersection(int Row, int Column){
+	bool NeighBoardRoomLeft = false;
+	bool NeighBoardRoomRight = false;	
+	bool RoomInters =  (*Maze)[Row][Column]->NumberRoom != -1 || (*Maze)[Row][Column + 1]->NumberRoom != -1 ||
+						(*Maze)[Row + 1][Column]->NumberRoom != -1 || (*Maze)[Row + 1][Column + 1]->NumberRoom != -1 ||
+						(*Maze)[Row][Column]->bIsObstacle || (*Maze)[Row][Column + 1]->bIsObstacle ||
+						(*Maze)[Row + 1][Column]->bIsObstacle || (*Maze)[Row + 1][Column + 1]->bIsObstacle;
+	
+	if(RoomInters)
+		return true;
 
-	return (*Maze)[Row][Column]->NumberRoom != -1 || (*Maze)[Row][Column + 1]->NumberRoom != -1 ||
-		(*Maze)[Row + 1][Column]->NumberRoom != -1 || (*Maze)[Row + 1][Column + 1]->NumberRoom != -1 ||
-		(*Maze)[Row][Column]->bIsObstacle || (*Maze)[Row][Column + 1]->bIsObstacle ||
-		(*Maze)[Row + 1][Column]->bIsObstacle || (*Maze)[Row + 1][Column + 1]->bIsObstacle;
+	if(Row != 0 && Column != 0)
+		NeighBoardRoomLeft = CheckNearbyRoom(Row - 1 ,Column - 1,2, true);
+
+	if(NeighBoardRoomLeft)
+		return true;
+
+	if(Row + 2 <= Length - 1 || Column + 2 <= Length - 1)
+		NeighBoardRoomLeft = CheckNearbyRoom(Row + 2,Column + 2,2, false);
+
+	if(NeighBoardRoomRight)
+		return true;
+	
+	return false;
+	
+}
+
+bool AMazeGeneratorBase::CheckNearbyRoom(int Row, int Column,int RoomSize, bool Left){
+	if(Left){
+		for(int i = 0; i < 2 * RoomSize - 1; i++){
+			if((*Maze)[Row][Column + i]->NumberRoom != -1)
+				return true;
+		}
+		if(Column + 2 * RoomSize - 1 <= Length - 1){
+			if((*Maze)[Row][Column + 2 * RoomSize - 1]->NumberRoom != -1)
+				return true;
+		}
+		for(int i = 0; i < 2 * RoomSize - 1; i++){
+			if((*Maze)[Row + i][Column]->NumberRoom != -1)
+				return true;
+		}
+		if(Row + 2 * RoomSize - 1 <= Length - 1){	
+			if((*Maze)[Row + 2 * RoomSize - 1][Column]->NumberRoom != -1)
+				return true;
+		}
+		return false;
+	}else{
+		for(int i = 0; i < 2 * RoomSize - 1; i++){
+			if((*Maze)[Row][Column - i]->NumberRoom != -1)
+				return true;
+		}
+		for(int i = 0; i < 2 * RoomSize - 1; i++){
+			if((*Maze)[Row - i][Column]->NumberRoom != -1)
+				return true;
+		}
+
+		return false;
+	}
 }
 
 void AMazeGeneratorBase::RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr,int columnExtr, int Pos) {
@@ -158,6 +212,7 @@ void AMazeGeneratorBase::RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr,int c
 			(*Maze)[rowExtr + i][columnExtr + j]->NumberRoom = Pos;
 			(*Maze)[rowExtr + i][columnExtr + j]->HideWall(FirstIndice);
 			(*Maze)[rowExtr + i][columnExtr + j]->HideWall(SecondIndice);
+			TempMaze[rowExtr + i].Remove((*Maze)[rowExtr + i][columnExtr + j]);
 			Room.Add((*Maze)[rowExtr + i][columnExtr + j]);
 			//if(!Passed.Contains((*Maze)[rowExtr + i][columnExtr + j]))
 			Passed.Add((*Maze)[rowExtr + i][columnExtr + j]);
@@ -172,30 +227,33 @@ void AMazeGeneratorBase::CreateMazeWrapper(int I, int J, int& CellProcessed) {
 	//	CellProcessed += 1;
 	if(!Passed.Contains((*Maze)[I][J]))
 		Passed.Add((*Maze)[I][J]);
+	TempMaze[I].Remove((*Maze)[I][J]);
 	(*Maze)[I][J]->bIsVisited = true;
 	if((*Maze)[I][J]->NumberRoom == -1){
 		CheckForNeighbors(Neighbors,I,J);
 		while (Neighbors.Num() != 0) {
 			int numExtr = FMath::RandRange(0, Neighbors.Num() - 1);
 
-		//Delete the wall from the 2 cells.
-			if (I != Neighbors[numExtr]->I)
-				if (I > Neighbors[numExtr]->I) {
-					(*Maze)[I][J]->HideWall(1);
-					(*Maze)[I - 1][J]->HideWall(3);
-				}
+			//Delete the wall from the 2 cells.
+			if((*Maze)[I][J]->NumberRoom == -1){
+				if (I != Neighbors[numExtr]->I)
+					if (I > Neighbors[numExtr]->I) {
+						(*Maze)[I][J]->HideWall(1);
+						(*Maze)[I - 1][J]->HideWall(3);
+					}
+					else {
+						(*Maze)[I][J]->HideWall(3);
+						(*Maze)[I + 1][J]->HideWall(1);
+					}
 				else {
-					(*Maze)[I][J]->HideWall(3);
-					(*Maze)[I + 1][J]->HideWall(1);
-				}
-			else {
-				if (J > Neighbors[numExtr]->J) {
-					(*Maze)[I][J]->HideWall(4);
-					(*Maze)[I][J - 1]->HideWall(2);
-				}
-				else {
-					(*Maze)[I][J]->HideWall(2);
-					(*Maze)[I][J + 1]->HideWall(4);
+					if (J > Neighbors[numExtr]->J) {
+						(*Maze)[I][J]->HideWall(4);
+						(*Maze)[I][J - 1]->HideWall(2);
+					}
+					else {
+						(*Maze)[I][J]->HideWall(2);
+						(*Maze)[I][J + 1]->HideWall(4);
+					}
 				}
 			}
 
@@ -211,17 +269,21 @@ void AMazeGeneratorBase::CreateMazeWrapper(int I, int J, int& CellProcessed) {
 //Start the maze creation from (0,0)
 void AMazeGeneratorBase::CreateMaze() {
 	int CellProcessed = 0;
+	int RowExtr;
+	int ColumnExtr;
 
 	//while (CellProcessed != NumberOfCells) {
-	while (Passed.Num() != Length * Length) {
-		int RowExtr = FMath::RandRange(0, Length - 1);
-		int ColumnExtr = FMath::RandRange(0, Height - 1);
-		if(!(*Maze)[RowExtr][ColumnExtr]->bIsObstacle && (*Maze)[RowExtr][ColumnExtr]->NumberRoom == -1)
-			CreateMazeWrapper(RowExtr, ColumnExtr, CellProcessed);
+	//while (Passed.Num() != Length * Length) {
+	do{
+		RowExtr = FMath::RandRange(0, Length - 1);
+		ColumnExtr = FMath::RandRange(0, Height - 1);
+	}while((*Maze)[RowExtr][ColumnExtr]->NumberRoom != -1);
+		//if(!(*Maze)[RowExtr][ColumnExtr]->bIsObstacle && (*Maze)[RowExtr][ColumnExtr]->NumberRoom == -1)
+	CreateMazeWrapper(RowExtr, ColumnExtr, CellProcessed);
 		//for (int i = 0; i < (*Rooms).Num(); i++) {
 		//	(*Rooms)[i].bDoor = false;
 		//}
-	}
+	//}
 }
 
 void AMazeGeneratorBase::CheckForNeighbors(TArray<AMazeCell*>& Neighbors,int i,int j){

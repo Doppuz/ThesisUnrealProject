@@ -139,6 +139,9 @@ void ASpacePartitionMazeGenerator::CreateRooms(TArray<Space *> Leaves) {
 		FVector Scale(XScale,YScale,0);
 		ACell* Cell = GetWorld()->SpawnActor<ACell>(CellClass,Origin,Rotation);
 		Cell->SetActorScale3D(Scale);
+		Cell->SizeX = XScale * CellSize;
+		Cell->SizeY = YScale * CellSize;
+		Cell->Pos = Origin;
 		TempSpace->Room = Cell;
 	}
 }
@@ -170,17 +173,76 @@ void ASpacePartitionMazeGenerator::CreateCorridors() {
 }
 
 void ASpacePartitionMazeGenerator::GenerateCorridors(Space* Spc1,Space* Spc2) {
-	FVector Point = FVector((Spc1->X + Spc2->X)/2,(Spc1->Y + Spc2->Y)/2,0);
+	FVector Point;
+	FVector Room1;
+	FVector Room2;
+
+	if(Spc1->Room != nullptr)
+		Room1 = FVector(Spc1->Room->SizeX,Spc1->Room->SizeY,0);
+	
+	if(Spc2->Room != nullptr)
+		Room2 = FVector(Spc2->Room->SizeX,Spc2->Room->SizeY,0);
+
+	/*if(Spc1->Room != nullptr && Spc2->Room != nullptr){
+		if(Spc2->X >= Spc1->X){
+			if(Spc2->Y >= Spc1->Y)
+				Point = FVector((Spc1->X + Room1.X + Spc2->X - Room2.X)/2,(Spc1->Y + Room1.Y + Spc2->Y - Room2.Y)/2,0);
+			else
+				Point = FVector((Spc1->X + Room1.X + Spc2->X - Room2.X)/2,(Spc1->Y - Room1.Y + Spc2->Y + Room2.Y)/2,0);
+		}else{
+			if(Spc2->Y >= Spc1->Y)
+				Point = FVector((Spc1->X - Room1.X + Spc2->X + Room2.X)/2,(Spc1->Y + Room1.Y + Spc2->Y - Room2.Y)/2,0);
+			else
+				Point = FVector((Spc1->X - Room1.X + Spc2->X + Room2.X)/2,(Spc1->Y - Room1.Y + Spc2->Y + Room2.Y)/2,0);
+		}
+	}
+	/*if(Spc1->Room != nullptr && Spc2->Room == nullptr)
+		Point = FVector((Spc1->X + Room1.X + Spc2->X)/2,(Spc1->Y + Room1.Y + Spc2->Y)/2,0);
+
+	if(Spc1->Room == nullptr && Spc2->Room != nullptr)
+		Point = FVector((Spc1->X + Spc2->X - Room2.X)/2,(Spc1->Y + Spc2->Y - Room2.Y)/2,0);
+
+	if(Spc1->Room == nullptr && Spc2->Room == nullptr)
+		Point = FVector((Spc1->X + Spc2->X)/2,(Spc1->Y + Spc2->Y)/2,0);	*/
+
+	Point = FVector((Spc1->X + Spc2->X)/2,(Spc1->Y + Spc2->Y)/2,0);
 	FRotator Rotation(0,0,0);
-	UE_LOG(LogTemp,Warning,TEXT("%f link %f"),FMath::Square(Spc2->X - Spc1->X),FMath::Square(Spc2->Y - Spc1->Y));
+	//UE_LOG(LogTemp,Warning,TEXT("%f link %f"),FMath::Square(Spc2->X - Spc1->X),FMath::Square(Spc2->Y - Spc1->Y));
 	float XScale = 1,YScale = 1;
 	if(FMath::Square(Spc2->X - Spc1->X) == 0){
-		XScale = (FMath::Sqrt(FMath::Square(Point.X - Spc1->X)) * 2) / 500;
+		/*if(Spc1->Room != nullptr && Spc2->Room != nullptr)
+			Point.Y = Spc2->Y >= Spc1->Y ? (Spc1->Y + Room1.Y+ Spc2->Y - Room2.Y)/2 : (Spc1->Y + Room1.Y + Spc2->Y - Room2.Y)/2;
+		else
+			Point = FVector(0,0,0);
+		YScale = (FMath::Sqrt(FMath::Square(Point.Y - Spc1->Y)) * 2);	
+		if(Spc1->Room != nullptr){
+			UE_LOG(LogTemp,Warning,TEXT("%f link %f link %f"),YScale,(Spc1->Room->SizeY)/2);
+			YScale = YScale - (Spc1->Room->SizeY)/2;		
+			UE_LOG(LogTemp,Warning,TEXT("%f link"),YScale);
+		}
+
+		if(Spc2->Room != nullptr)
+			YScale -= (Spc2->Room->SizeY)/2;*/
+			
+		YScale = (FMath::Sqrt(FMath::Square(Point.Y - Spc1->Y)) * 2);	
+		YScale /= 500;
 	}else{
-		YScale = (FMath::Sqrt(FMath::Square(Point.Y - Spc1->Y)) * 2) / 500;
+		/*if(Spc1->Room != nullptr && Spc2->Room != nullptr)
+			Point.X = Spc2->X >= Spc1->X ? (Spc1->X + Room1.X + Spc2->X - Room2.X)/2 : (Spc1->X + Room1.X + Spc2->X - Room2.X)/2;
+		else
+			Point = FVector(0,0,0);	
+			
+		XScale = (FMath::Sqrt(FMath::Square(Point.X - Spc1->X)) * 2);
+		if(Spc1->Room != nullptr)
+			XScale -= (Spc1->Room->SizeX)/2;
+		if(Spc2->Room != nullptr)
+			XScale -= (Spc2->Room->SizeX)/2;*/
+			
+		XScale = (FMath::Sqrt(FMath::Square(Point.X - Spc1->X)) * 2);
+		XScale /= 500;
 	}
 	FVector Scale(XScale,YScale,0);
-	UE_LOG(LogTemp,Warning,TEXT("%f bo %f"),(FMath::Sqrt(FMath::Square(Point.X - Spc1->X)) * 2) / 500, (FMath::Sqrt(FMath::Square(Point.Y - Spc1->Y)) * 2) / 500);
+	//UE_LOG(LogTemp,Warning,TEXT("%f bo %f"),(FMath::Sqrt(FMath::Square(Point.X - Spc1->X)) * 2) / 500, (FMath::Sqrt(FMath::Square(Point.Y - Spc1->Y)) * 2) / 500);
 	ACell* Cell = GetWorld()->SpawnActor<ACell>(CellClass,Point,Rotation);
 	Cell->SetActorScale3D(Scale);
 }
