@@ -37,7 +37,7 @@ void AMazeGeneratorBase::BeginPlay(){
 
 	CreateObstacle(MazeObstacle);
 	CreateRooms();
-	//CreateMaze();
+	CreateMaze();
 	
 	//UE_LOG(LogTemp,Warning, TEXT("%i"), a[0][0]);
 	//Maze = &TempMaze; 
@@ -142,8 +142,6 @@ void AMazeGeneratorBase::CreateDoor(TArray<AMazeCell*> Room) {
 }
 
 bool AMazeGeneratorBase::CheckRoomIntersection(int Row, int Column){
-	bool NeighBoardRoomLeft = false;
-	bool NeighBoardRoomRight = false;	
 	bool RoomInters =  (*Maze)[Row][Column]->NumberRoom != -1 || (*Maze)[Row][Column + 1]->NumberRoom != -1 ||
 						(*Maze)[Row + 1][Column]->NumberRoom != -1 || (*Maze)[Row + 1][Column + 1]->NumberRoom != -1 ||
 						(*Maze)[Row][Column]->bIsObstacle || (*Maze)[Row][Column + 1]->bIsObstacle ||
@@ -152,25 +150,127 @@ bool AMazeGeneratorBase::CheckRoomIntersection(int Row, int Column){
 	if(RoomInters)
 		return true;
 
-	if(Row != 0 && Column != 0)
-		NeighBoardRoomLeft = CheckNearbyRoom(Row - 1 ,Column - 1,2, true);
-
-	if(NeighBoardRoomLeft)
-		return true;
-
-	if(Row + 2 <= Length - 1 || Column + 2 <= Length - 1)
-		NeighBoardRoomLeft = CheckNearbyRoom(Row + 2,Column + 2,2, false);
-
-	if(NeighBoardRoomRight)
-		return true;
-	
-	return false;
-	
+	return CheckNearbyRoom(Row,Column,2);
 }
 
-bool AMazeGeneratorBase::CheckNearbyRoom(int Row, int Column,int RoomSize, bool Left){
-	if(Left){
-		for(int i = 0; i < 2 * RoomSize - 1; i++){
+
+bool AMazeGeneratorBase::CheckNearbyRoom(int Row, int Column,int RoomSize){
+	bool NeighBoardRoom = false;
+	bool Left = true;
+	bool Right = true;
+	bool Top = true;
+	bool Bot = true;
+
+	//TopCheck
+	if(Row != 0){
+		NeighBoardRoom = CheckNearbyRoomWrapper(Row - 1,Column,RoomSize, 0);
+		if(NeighBoardRoom)
+			return true;
+	}else
+		Top = false;
+
+	//LeftCheck
+	if(Column != 0){
+		NeighBoardRoom = CheckNearbyRoomWrapper(Row ,Column - 1,RoomSize, 1);
+		if(NeighBoardRoom)
+			return true;
+	}else
+		Left = false;
+
+	//BoyCheck
+	if(Row < Length - 2){
+		NeighBoardRoom = CheckNearbyRoomWrapper(Row + 2,Column,RoomSize, 2);
+		if(NeighBoardRoom)
+			return true;
+	}else
+		Bot = false;
+
+	//RightCheck
+	if(Column < Length - 2){
+		NeighBoardRoom = CheckNearbyRoomWrapper(Row  ,Column + 2,RoomSize, 3);
+		if(NeighBoardRoom)
+			return true;
+	}else
+		Right = false;
+	
+	if(Top){
+		
+		if(Left){
+			if((*Maze)[Row - 1][Column - 1]->NumberRoom != -1 ||
+				 (*Maze)[Row - 1][Column - 1]->bIsObstacle)
+				return true;
+		}
+
+		if(Right){
+			if((*Maze)[Row - 1][Column + RoomSize]->NumberRoom != -1 ||
+				 (*Maze)[Row - 1][Column + RoomSize]->bIsObstacle)
+				return true;
+		}
+
+	}
+
+	if(Bot){
+		if(Right){
+			if((*Maze)[Row + RoomSize][Column + RoomSize]->NumberRoom != -1 ||
+				 (*Maze)[Row + RoomSize][Column + RoomSize]->bIsObstacle)
+				return true;
+		}
+		if(Left){
+			if((*Maze)[Row + RoomSize][Column - 1]->NumberRoom != -1 ||
+				 (*Maze)[Row + RoomSize][Column - 1]->bIsObstacle)
+				return true;
+		}
+
+	}
+
+	return false;
+}
+
+bool AMazeGeneratorBase::CheckNearbyRoomWrapper(int Row, int Column,int RoomSize,int Side){
+	switch (Side){
+	case 0:
+
+		for(int i = 0; i < RoomSize; i++){
+			if((*Maze)[Row][Column + i]->NumberRoom != -1 ||
+				(*Maze)[Row][Column + i]->bIsObstacle)
+				return true;
+		}
+		break;
+	
+	case 1:
+	
+		for(int i = 0; i < RoomSize; i++){
+			if((*Maze)[Row + i][Column]->NumberRoom != -1 ||
+				(*Maze)[Row + i][Column]->bIsObstacle)
+				return true;
+		}
+		break;
+
+	case 2:
+	
+		for(int i = 0; i < RoomSize; i++){
+			if((*Maze)[Row][Column + i]->NumberRoom != -1 ||
+				(*Maze)[Row][Column + i]->bIsObstacle)
+				return true;
+		}
+		break;
+
+	case 3:
+	
+		for(int i = 0; i < RoomSize; i++){
+			if((*Maze)[Row + i][Column]->NumberRoom != -1 ||
+				(*Maze)[Row + i][Column]->bIsObstacle)
+				return true;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	return false;
+	//if(Left){
+		/*for(int i = 0; i < 2 * RoomSize - 1; i++){
 			if((*Maze)[Row][Column + i]->NumberRoom != -1)
 				return true;
 		}
@@ -186,19 +286,20 @@ bool AMazeGeneratorBase::CheckNearbyRoom(int Row, int Column,int RoomSize, bool 
 			if((*Maze)[Row + 2 * RoomSize - 1][Column]->NumberRoom != -1)
 				return true;
 		}
+		
 		return false;
 	}else{
-		for(int i = 0; i < 2 * RoomSize - 1; i++){
+		/*for(int i = 0; i < 2 * RoomSize - 1; i++){
 			if((*Maze)[Row][Column - i]->NumberRoom != -1)
 				return true;
 		}
 		for(int i = 0; i < 2 * RoomSize - 1; i++){
 			if((*Maze)[Row - i][Column]->NumberRoom != -1)
 				return true;
-		}
+		}*/
 
-		return false;
-	}
+	//	return false;
+	//}
 }
 
 void AMazeGeneratorBase::RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr,int columnExtr, int Pos) {

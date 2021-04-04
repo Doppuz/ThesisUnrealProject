@@ -61,7 +61,8 @@ private:
 	void CreateDoor(TArray<AMazeCell*>);
 	void CreateRoomSize2();
 	bool CheckRoomIntersection(int Row, int Column);
-	bool CheckNearbyRoom(int Row, int Column, int RoomSize, bool Left);
+	bool CheckNearbyRoom(int Row, int Column, int RoomSize);
+	bool CheckNearbyRoomWrapper(int Row, int Column, int RoomSize, int Side);
 	void RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr, int columnExtr, int Pos);
 	void CreateMazeWrapper(int i, int j, int& CellProcessed);
 	void CheckForNeighbors(TArray<AMazeCell*>& neighbors,int i,int j);
