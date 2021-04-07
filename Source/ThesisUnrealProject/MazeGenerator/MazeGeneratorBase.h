@@ -5,6 +5,7 @@
 #include <vector>
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Graph/Graph.h"
 #include "MazeGeneratorBase.generated.h"
 
 class AMazeCell;
@@ -51,6 +52,7 @@ private:
 	TArray<RoomMaze> *Rooms = nullptr;
 	TArray<AMazeCell*> Passed;
 	TArray<TArray<AMazeCell*>> TempMaze;
+	Graph MazeGraph;
 	int NumberOfCells;
 
 	//Methods
@@ -58,7 +60,6 @@ private:
 	void InitializeMaze();
 	void CreateObstacle(int ObstaclesNumber);
 	void CreateRooms();
-	void CreateDoor(TArray<AMazeCell*>);
 	void CreateRoomSize2();
 	bool CheckRoomIntersection(int Row, int Column);
 	bool CheckNearbyRoom(int Row, int Column, int RoomSize);

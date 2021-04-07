@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "../MazeGenerator/MazeCell.h"
 #include "Side.h"
 #include "Node.h"
 #include "CoreMinimal.h"
@@ -10,26 +11,24 @@
 class THESISUNREALPROJECT_API Graph{
 
 public:
-	//Graph();
-	//~Graph();
 
-	void AddNode(Space*);
+	void AddNode(AMazeCell*);
 
-	void AddSide(Space*, Space*, float);
+	void AddSide(AMazeCell*, AMazeCell*, float);
 
-	TArray<Space*> GetNodes();
-	TArray<Side*> GetSides(Space* N);
+	TArray<AMazeCell*> GetNodes();
+	TArray<Side*> GetSides(AMazeCell* N);
 
-	void DeleteNode(Space*);
+	void DeleteNode(AMazeCell*);
 
-	TArray<Space*> GetLeaves(float RoomLimit);
-	TArray<Space*> GetLeavesNoSpace();
-	TArray<Space*> GetNodesMaxDistance();
+	TArray<AMazeCell*> GetLeaves(float RoomLimit);
+	TArray<AMazeCell*> GetLeavesNoSpace();
+	TArray<AMazeCell*> GetNodesMaxDistance();
 
 protected:
 
-	TMap<Space*, TArray<Side*>> Map;
+	TMap<AMazeCell*, TArray<Side*>> Map;
 
 private:
-	int GetDepth(Space*);
+	int GetDepth(AMazeCell*);
 };

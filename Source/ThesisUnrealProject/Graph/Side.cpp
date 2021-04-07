@@ -3,10 +3,10 @@
 
 #include "Side.h"
 #include "Node.h"
-#include "Space.h"
+#include "../MazeGenerator/MazeCell.h"
 
 //template<typename F>
-Side::Side(Space* From, Space* To, float Weight){
+Side::Side(AMazeCell* From, AMazeCell* To, float Weight){
 	this->From = From;
 	this->To = To;
 	this->Weight = Weight;

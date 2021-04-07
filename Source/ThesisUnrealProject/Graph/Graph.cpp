@@ -19,7 +19,7 @@ Graph<F,S>::~Graph(){
 
 //It now check only the adress. Need to check to not enter equals Node. AAAA Search this in future!!!!
 //template<typename F,typename S>
-void Graph::AddNode(Space* N) {
+void Graph::AddNode(AMazeCell* N) {
 	if (!Map.Contains(N)) {
 		TArray<Side*> List;
 		Map.Add(N, List);
@@ -28,7 +28,7 @@ void Graph::AddNode(Space* N) {
 }
 
 //template<typename F,typename S>
-void Graph::AddSide(Space* Begin, Space* End, float Weight) {
+void Graph::AddSide(AMazeCell* Begin, AMazeCell* End, float Weight) {
 	Side* NewSide = new Side(Begin,End,Weight);
 	Side* NewSideParent = new Side(End, Begin, Weight);
 	if (!Map[Begin].Contains(NewSide))
@@ -38,14 +38,14 @@ void Graph::AddSide(Space* Begin, Space* End, float Weight) {
 }
 
 //template<typename F,typename S>
-TArray<Space*> Graph::GetNodes(){
-	TArray<Space*> Nodes;
+TArray<AMazeCell*> Graph::GetNodes(){
+	TArray<AMazeCell*> Nodes;
 	Map.GenerateKeyArray(Nodes);
 	return Nodes;
 }
 
 //template<typename F,typename S>
-TArray<Side*> Graph::GetSides(Space * N){
+TArray<Side*> Graph::GetSides(AMazeCell * N){
 	if (!Map.Contains(N))
 		return TArray<Side*>();
 	else
@@ -53,37 +53,37 @@ TArray<Side*> Graph::GetSides(Space * N){
 }
 
 //template<class F, class S>
-void Graph::DeleteNode(Space* Spc) {
+void Graph::DeleteNode(AMazeCell* Spc) {
 	Map.Remove(Spc);
 }
 
 
 //template<typename F,typename S>
-TArray<Space*> Graph::GetLeaves(float RoomLimit) {
-	TArray<Space*> Leaves = GetNodes();
-	TArray<Space*> Result;
+TArray<AMazeCell*> Graph::GetLeaves(float RoomLimit) {
+	TArray<AMazeCell*> Leaves = GetNodes();
+	TArray<AMazeCell*> Result;
 
 	if(Leaves.Num() > 1)
 		Leaves.RemoveAt(0);
 
-	for (Space* TmpSpace: Leaves) {
+	for (AMazeCell* TmpSpace: Leaves) {
 
-		if (Map[TmpSpace].Num() < 2 && TmpSpace->Size > RoomLimit)
-			Result.Add(TmpSpace);
+		//if (Map[TmpSpace].Num() < 2 && TmpSpace->Size > RoomLimit)
+		//	Result.Add(TmpSpace);
 		
 	}
 	return Result;
 }
 
 //template<typename F,typename S>
-TArray<Space*> Graph::GetLeavesNoSpace() {
-	TArray<Space*> Leaves = GetNodes();
-	TArray<Space*> Result;
+TArray<AMazeCell*> Graph::GetLeavesNoSpace() {
+	TArray<AMazeCell*> Leaves = GetNodes();
+	TArray<AMazeCell*> Result;
 
 	if(Leaves.Num() > 1)
 		Leaves.RemoveAt(0);
 
-	for (Space* TmpSpace: Leaves) {
+	for (AMazeCell* TmpSpace: Leaves) {
 
 		if (Map[TmpSpace].Num() < 2)
 			Result.Add(TmpSpace);
@@ -93,10 +93,10 @@ TArray<Space*> Graph::GetLeavesNoSpace() {
 }
 
 //template<class F, class S>
-TArray<Space*> Graph::GetNodesMaxDistance() {
-	TArray<Space*> Leaves;
+TArray<AMazeCell*> Graph::GetNodesMaxDistance() {
+	TArray<AMazeCell*> Leaves;
 	int MaxDepth = 0;
-	for(Space* S: GetNodes()){
+	for(AMazeCell* S: GetNodes()){
 		int Depth = GetDepth(S);
 		if(Depth > MaxDepth){
 			MaxDepth = Depth;
@@ -105,8 +105,8 @@ TArray<Space*> Graph::GetNodesMaxDistance() {
 		}else if(Depth == MaxDepth && MaxDepth != 0)
 			Leaves.Add(S);
 	}
-	TArray<Space*> Fathers;
-	for(Space* Spc: Leaves){
+	TArray<AMazeCell*> Fathers;
+	for(AMazeCell* Spc: Leaves){
 		if(!Fathers.Contains(Map[Spc][0]->To))
 			Fathers.Add(Map[Spc][0]->To);
 	}
@@ -114,7 +114,7 @@ TArray<Space*> Graph::GetNodesMaxDistance() {
 }
 
 //template<typename F,typename S>
-int Graph::GetDepth(Space* Spc) {
+int Graph::GetDepth(AMazeCell* Spc) {
 	if(Map[Spc].Num() == 2)
 		return 0;
 	else
