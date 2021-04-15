@@ -50,7 +50,6 @@ private:
 
 	TArray<TArray<AMazeCell*>> *Maze = nullptr;
 	TArray<RoomMaze> *Rooms = nullptr;
-	TArray<AMazeCell*> Passed;
 	TArray<TArray<AMazeCell*>> TempMaze;
 	Graph MazeGraph;
 	int NumberOfCells;

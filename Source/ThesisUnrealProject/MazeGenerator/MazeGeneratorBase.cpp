@@ -42,12 +42,13 @@ void AMazeGeneratorBase::BeginPlay() {
     CreateRooms();
     CreateMaze();
 
-    PrintMaze();
+    //PrintMaze();
 }
 
 // Called every frame
 void AMazeGeneratorBase::Tick(float DeltaTime) { Super::Tick(DeltaTime); }
 
+//Used to draw the line for the visual graph
 void AMazeGeneratorBase::PrintMaze() {
     TArray<AMazeCell*> Nodes = MazeGraph.GetNodes();
 
@@ -65,6 +66,7 @@ void AMazeGeneratorBase::PrintMaze() {
     }
 }
 
+//Create the different maze cells.
 void AMazeGeneratorBase::InitializeMaze() {
     for (int i = 0; i < Height; i++) {
         TArray<AMazeCell*> Row;
@@ -75,6 +77,7 @@ void AMazeGeneratorBase::InitializeMaze() {
                 GetWorld()->SpawnActor<AMazeCell>(CellClass, Origin, Rotation);
             CellActor->I = i;
             CellActor->J = j;
+            CellActor->SetFolderPath(TEXT("MazePieces"));
             MazeGraph.AddNode(CellActor);
             Row.Add(CellActor);
         }
@@ -82,6 +85,7 @@ void AMazeGeneratorBase::InitializeMaze() {
     }
 }
 
+//Generate the obstacle in the maze.
 void AMazeGeneratorBase::CreateObstacle(int Obstacles) {
     std::vector<int> AlreadySelectedNumbers(0);
     int RowExtr, ColumnExtr;
@@ -100,7 +104,6 @@ void AMazeGeneratorBase::CreateObstacle(int Obstacles) {
             (*Maze)[RowExtr][ColumnExtr]->bIsVisited = true;
             (*Maze)[RowExtr][ColumnExtr]->HideObstacleWall();
             AlreadySelectedNumbers.push_back((RowExtr + 1) * (ColumnExtr + 1));
-            Passed.Add((*Maze)[RowExtr][ColumnExtr]);
         } else
             i -= 1;
     }
@@ -110,6 +113,7 @@ void AMazeGeneratorBase::CreateRooms() {
     for (int i = 0; i < Maze2Room; i++) CreateRoomSize2();
 }
 
+//Check for intersection and generate the room.
 void AMazeGeneratorBase::CreateRoomSize2() {
     int RowExtr;
     int ColumnExtr;
@@ -129,9 +133,9 @@ void AMazeGeneratorBase::CreateRoomSize2() {
 // Wrapper for recursion depth visit
 void AMazeGeneratorBase::CreateMazeWrapper(int I, int J, int& CellProcessed) {
     TArray<AMazeCell*> Neighbors;
-    if (!Passed.Contains((*Maze)[I][J])) Passed.Add((*Maze)[I][J]);
     TempMaze[I].Remove((*Maze)[I][J]);
     (*Maze)[I][J]->bIsVisited = true;
+    //if I am not a room.
     if ((*Maze)[I][J]->NumberRoom == -1) {
         CheckForNeighbors(Neighbors, I, J);
         while (Neighbors.Num() != 0) {
@@ -342,7 +346,6 @@ void AMazeGeneratorBase::RoomWallHide(TArray<AMazeCell*>& Room, int rowExtr,
             (*Maze)[rowExtr + i][columnExtr + j]->HideWall(SecondIndice);
             TempMaze[rowExtr + i].Remove((*Maze)[rowExtr + i][columnExtr + j]);
             Room.Add((*Maze)[rowExtr + i][columnExtr + j]);
-            Passed.Add((*Maze)[rowExtr + i][columnExtr + j]);
         }
     }
 }
