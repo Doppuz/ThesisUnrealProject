@@ -22,10 +22,11 @@ public:
 
 	void StandardMazeCreation();
 
+	void PrintMaze();
+	
 private:
 	//Methods
 
-	void PrintMaze();
 	void InitializeMaze();
 	void CreateObstacle(int ObstaclesNumber);
 	void CreateRooms();

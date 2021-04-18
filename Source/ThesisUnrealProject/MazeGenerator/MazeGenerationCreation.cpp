@@ -46,8 +46,8 @@ void MazeGenerationCreation::PrintMaze() {
     for (AMazeCell* Cell : Nodes) {
 		for(Side* Edge: MazeGraph->GetSides(Cell)){
 			DrawDebugLine(World,
-			FVector(Edge->From->GetActorLocation().X, Edge->From->GetActorLocation().Y, Edge->From->GetActorLocation().Z + 700),
-			FVector(Edge->To->GetActorLocation().X,Edge->To->GetActorLocation().Y,Edge->To->GetActorLocation().Z + 700),
+			FVector(Edge->From->GetActorLocation().X, Edge->From->GetActorLocation().Y, Edge->From->GetActorLocation().Z + 695), //700
+			FVector(Edge->To->GetActorLocation().X,Edge->To->GetActorLocation().Y,Edge->To->GetActorLocation().Z + 695),
 			FColor(20, 50, 90),
 			true,
 			50.f,

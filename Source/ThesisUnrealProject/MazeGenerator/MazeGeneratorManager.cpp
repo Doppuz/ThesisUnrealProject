@@ -10,6 +10,7 @@
 #include "MazeCell.h"
 #include "RoomMaze.h"
 #include "MazeGenerationCreation.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMazeGeneratorManager::AMazeGeneratorManager() {
@@ -29,8 +30,6 @@ AMazeGeneratorManager::~AMazeGeneratorManager() {
 void AMazeGeneratorManager::BeginPlay() {
     Super::BeginPlay();
 
-    // Maze = new
-    // std::vector<std::vector<MazeCellController>>(length,std::vector<MazeCellController>(heigth));
     Maze = new TArray<TArray<AMazeCell*>>();
     Rooms = new TArray<RoomMaze>();
     MazeGraph = new Graph();
@@ -39,10 +38,16 @@ void AMazeGeneratorManager::BeginPlay() {
         Maze,Rooms,MazeGraph,GetWorld());
 
     Generator->StandardMazeCreation();
+    
+    /*PlayerPosition = (*Maze)[0][0]->GetActorLocation();
 
-    int a = 0;
+    TArray<AActor *> OutActors;
+    UGameplayStatics::GetAllActorsWithTag(GetWorld(),TEXT("PlayerPos"),OutActors);
 
-    //PrintMaze();
+    if(OutActors.Num() > 0)
+        OutActors[0]->SetActorLocation(PlayerPosition);
+    else
+		UE_LOG(LogTemp, Warning, TEXT("No PlayerPos found"));*/
 }
 
 // Called every frame

@@ -30,7 +30,7 @@ protected:
 
 private:
 	
-	//Parameter for Maze generation
+//---------- Parameter for Maze generation ------------------
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	int Length = 10;
 
@@ -60,4 +60,8 @@ private:
 
 	//Pointer to the MazeGenerationCreation class
 	MazeGenerationCreation* Generator;
+
+	FVector PlayerPosition;
+//---------------------------------------------------
+
 };
