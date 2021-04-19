@@ -24,13 +24,13 @@ protected:
 private:
 
 
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	USceneComponent* Root;
 
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	class UCapsuleComponent* ChestCollider;
 
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ChestMesh;
 
 };

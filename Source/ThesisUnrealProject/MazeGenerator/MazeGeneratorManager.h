@@ -11,6 +11,8 @@
 class AMazeCell;
 class RoomMaze;
 class MazeGenerationCreation;
+class MazeGenerationPopulate;
+class AChestController;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeGeneratorManager : public AActor{
@@ -23,6 +25,8 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	static int NumberOfChest; 
 
 protected:
 	// Called when the game starts or when spawned
@@ -61,7 +65,11 @@ private:
 	//Pointer to the MazeGenerationCreation class
 	MazeGenerationCreation* Generator;
 
+	//Pointer to the MazeGenerationPopolate class
+	MazeGenerationPopulate* Populate;
+
 	FVector PlayerPosition;
 //---------------------------------------------------
-
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AChestController> ChestClass;
 };

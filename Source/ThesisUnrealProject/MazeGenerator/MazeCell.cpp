@@ -45,21 +45,27 @@ void AMazeCell::HideObstacleWall() {
 }
 
 void AMazeCell::HideWall(int WallNumber) {
+	LastHiddenWall = WallNumber;
 	switch(WallNumber){
 		case 1:
 			MeshWall1Component->SetStaticMesh(nullptr);
+			WallNumbers -= 1;
 			break;
 		case 2:
 			MeshWall2Component->SetStaticMesh(nullptr);
+			WallNumbers -= 1;
 			break;
 		case 3:
 			MeshWall3Component->SetStaticMesh(nullptr);
+			WallNumbers -= 1;
 			break;
 		case 4:
 			MeshWall4Component->SetStaticMesh(nullptr);
+			WallNumbers -= 1;
 			break;
 		default:
 			UE_LOG(LogTemp,Warning,TEXT("Not valid wall number"));
+			LastHiddenWall = -1;
 			break;
 	}
 

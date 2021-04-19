@@ -35,7 +35,7 @@ private:
 	bool CheckNearbyRoom(int Row, int Column, int RoomSize);
 	bool CheckNearbyRoomWrapper(int Row, int Column, int RoomSize, int Side);
 	void RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr, int columnExtr, int Pos);
-	void CreateMazeWrapper(int i, int j, int& CellProcessed);
+	void CreateMazeWrapper(int i, int j);
 	void CheckForNeighbors(TArray<AMazeCell*>& neighbors,int i,int j);
 	void CreateMaze();
 

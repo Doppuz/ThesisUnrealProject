@@ -46,14 +46,19 @@ void MazeGenerationCreation::PrintMaze() {
     for (AMazeCell* Cell : Nodes) {
 		for(Side* Edge: MazeGraph->GetSides(Cell)){
 			DrawDebugLine(World,
-			FVector(Edge->From->GetActorLocation().X, Edge->From->GetActorLocation().Y, Edge->From->GetActorLocation().Z + 695), //700
-			FVector(Edge->To->GetActorLocation().X,Edge->To->GetActorLocation().Y,Edge->To->GetActorLocation().Z + 695),
+			FVector(Edge->From->GetActorLocation().X, Edge->From->GetActorLocation().Y, Edge->From->GetActorLocation().Z + 700), //700
+			FVector(Edge->To->GetActorLocation().X,Edge->To->GetActorLocation().Y,Edge->To->GetActorLocation().Z + 700),
 			FColor(20, 50, 90),
 			true,
 			50.f,
 			0,
 			50.f);
 		}
+    }
+
+    
+    for (AMazeCell* Cell : Nodes) {
+		UE_LOG(LogTemp,Warning,TEXT("%d %d: %i"), Cell->I,Cell->J,MazeGraph->GetSides(Cell).Num());
     }
 }
 
@@ -62,7 +67,7 @@ void MazeGenerationCreation::InitializeMaze() {
     for (int i = 0; i < Height; i++) {
         TArray<AMazeCell*> Row;
         for (int j = 0; j < Length; j++) {
-            FVector Origin(i * (-1100) * 1.5, j * 1100 * 1.5, 0);
+            FVector Origin(i * (-1100) * 1.5, j * 1100 * 1.5, 0); //1100
             FRotator Rotation(0, 0, 0);
             AMazeCell* CellActor =
                 World->SpawnActor<AMazeCell>(CellClass, Origin, Rotation);
@@ -122,7 +127,7 @@ void MazeGenerationCreation::CreateRoomSize2() {
 }
 
 // Wrapper for recursion depth visit
-void MazeGenerationCreation::CreateMazeWrapper(int I, int J, int& CellProcessed) {
+void MazeGenerationCreation::CreateMazeWrapper(int I, int J) {
     TArray<AMazeCell*> Neighbors;
     TempMaze[I].Remove((*Maze)[I][J]);
     (*Maze)[I][J]->bIsVisited = true;
@@ -152,8 +157,7 @@ void MazeGenerationCreation::CreateMazeWrapper(int I, int J, int& CellProcessed)
                 }
             }
 
-            CreateMazeWrapper(Neighbors[NumExtr]->I, Neighbors[NumExtr]->J,
-                              CellProcessed);
+            CreateMazeWrapper(Neighbors[NumExtr]->I, Neighbors[NumExtr]->J);
             Neighbors.Empty();
             CheckForNeighbors(Neighbors, I, J);
         }
@@ -161,7 +165,7 @@ void MazeGenerationCreation::CreateMazeWrapper(int I, int J, int& CellProcessed)
         (*Rooms)[(*Maze)[I][J]->NumberRoom].bDoor = true;
 }
 
-// Start the maze creation from (0,0)
+// Start the maze creation from (RowExtr, ColumnExtr)
 void MazeGenerationCreation::CreateMaze() {
     int CellProcessed = 0;
     int RowExtr;
@@ -171,7 +175,7 @@ void MazeGenerationCreation::CreateMaze() {
         ColumnExtr = FMath::RandRange(0, Height - 1);
     } while ((*Maze)[RowExtr][ColumnExtr]->NumberRoom != -1 ||
              (*Maze)[RowExtr][ColumnExtr]->bIsObstacle);
-    CreateMazeWrapper(RowExtr, ColumnExtr, CellProcessed);
+    CreateMazeWrapper(RowExtr, ColumnExtr);
 }
 
 //check for intersection: first i check the 4 square that composed the room, then the nearby cells.

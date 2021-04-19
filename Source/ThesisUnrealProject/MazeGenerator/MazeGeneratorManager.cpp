@@ -11,6 +11,10 @@
 #include "RoomMaze.h"
 #include "MazeGenerationCreation.h"
 #include "Kismet/GameplayStatics.h"
+#include "MazeGenerationPopulate.h"
+#include "../Elements/ChestController.h"
+
+int AMazeGeneratorManager::NumberOfChest = 2;
 
 // Sets default values
 AMazeGeneratorManager::AMazeGeneratorManager() {
@@ -24,6 +28,7 @@ AMazeGeneratorManager::~AMazeGeneratorManager() {
     delete Rooms;
     delete MazeGraph;
     delete Generator;
+    delete Populate;
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +44,12 @@ void AMazeGeneratorManager::BeginPlay() {
 
     Generator->StandardMazeCreation();
     
+    Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, GetWorld());
+
+    Populate->DepthVisit((*Maze)[0][0]);
+    Populate->PopulateChest();
+
+    //Generator->PrintMaze();
     /*PlayerPosition = (*Maze)[0][0]->GetActorLocation();
 
     TArray<AActor *> OutActors;
@@ -48,6 +59,7 @@ void AMazeGeneratorManager::BeginPlay() {
         OutActors[0]->SetActorLocation(PlayerPosition);
     else
 		UE_LOG(LogTemp, Warning, TEXT("No PlayerPos found"));*/
+    int b = 5;
 }
 
 // Called every frame

@@ -20,11 +20,18 @@ public:
 	bool bIsVisited = false;
 	int NumberRoom = -1;
 
+	//Number of walls
+	int WallNumbers = 4;
+
+	//Used to keep trace of the only hidden wall in cell with 3 walls.
+	int LastHiddenWall;
+
 	UPROPERTY(VisibleAnywhere, Category = "MazeInformation")
 	int I;
 	UPROPERTY(VisibleAnywhere, Category = "MazeInformation")
 	int J;
 
+	//Methods
 	void HideObstacleWall();
 	void HideWall(int WallNumber);
 	bool HideWallBool(int WallNumber, Coord& OppositeCell,int& WallToDelete);
