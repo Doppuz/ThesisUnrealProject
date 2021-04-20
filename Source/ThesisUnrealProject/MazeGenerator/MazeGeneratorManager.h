@@ -13,6 +13,7 @@ class RoomMaze;
 class MazeGenerationCreation;
 class MazeGenerationPopulate;
 class AChestController;
+class ACoinController;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeGeneratorManager : public AActor{
@@ -72,4 +73,7 @@ private:
 //---------------------------------------------------
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AChestController> ChestClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ACoinController> CoinClass;
 };

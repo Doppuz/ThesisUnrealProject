@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MazeGenerationPopulate.h"
 #include "../Elements/ChestController.h"
+#include "../Elements/CoinController.h"
 
 int AMazeGeneratorManager::NumberOfChest = 2;
 
@@ -44,7 +45,7 @@ void AMazeGeneratorManager::BeginPlay() {
 
     Generator->StandardMazeCreation();
     
-    Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, GetWorld());
+    Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, CoinClass, GetWorld());
 
     Populate->DepthVisit((*Maze)[0][0]);
     Populate->PopulateChest();

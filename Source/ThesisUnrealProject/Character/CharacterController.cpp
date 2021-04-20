@@ -2,6 +2,10 @@
 
 
 #include "CharacterController.h"
+#include "Components/CapsuleComponent.h"
+#include "../Elements/CoinController.h"
+#include "../CustomGameMode.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ACharacterController::ACharacterController(){
@@ -51,7 +55,7 @@ void ACharacterController::MoveRight(float Axis) {
 // Called when the game starts or when spawned
 void ACharacterController::BeginPlay(){
 	Super::BeginPlay();
-	
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ACharacterController::OnOverlap);
 }
 
 // Called every frame
@@ -72,5 +76,17 @@ void ACharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	PlayerInputComponent->BindAxis("MoveForward",this,&ACharacterController::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight",this,&ACharacterController::MoveRight);
+}
+
+void ACharacterController::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
+	if(OtherActor->IsA(ACoinController::StaticClass())){
+		ACustomGameMode* MyGameMode = Cast<ACustomGameMode>(GetWorld()->GetAuthGameMode());
+		MyGameMode->IncreaseCoins();
+		OtherActor->Destroy();
+		UE_LOG(LogTemp,Warning,TEXT("%d"),MyGameMode->GetCoins());
+		UUserWidget* UI = MyGameMode->GetCurrentWidgetUI();
+		UI->GetRootWidget()->GetC
+	}
+
 }
 
