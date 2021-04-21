@@ -41,6 +41,13 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+
+	UPROPERTY(EditAnywhere)
+	USceneComponent* SceneComponent;
+
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* BoxTrigger;
+
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* MeshPlaneComponent;
 
@@ -55,8 +62,5 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* MeshWall4Component;
-
-	UPROPERTY(EditAnywhere)
-	USceneComponent* Root;
 
 };

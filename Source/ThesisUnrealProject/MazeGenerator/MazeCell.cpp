@@ -3,6 +3,7 @@
 
 #include "MazeCell.h"
 #include "CoupleStruct.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 AMazeCell::AMazeCell(){
@@ -10,8 +11,11 @@ AMazeCell::AMazeCell(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = Root;
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = SceneComponent;
+
+	BoxTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
+	BoxTrigger->SetupAttachment(RootComponent);
 
 	MeshPlaneComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane Mesh"));
 	MeshPlaneComponent->SetupAttachment(RootComponent);

@@ -6,6 +6,7 @@
 #include "../Elements/CoinController.h"
 #include "../CustomGameMode.h"
 #include "Blueprint/UserWidget.h"
+#include "../UI/UIWidget.h"
 
 // Sets default values
 ACharacterController::ACharacterController(){
@@ -83,9 +84,10 @@ void ACharacterController::OnOverlap(UPrimitiveComponent * HitComponent, AActor 
 		ACustomGameMode* MyGameMode = Cast<ACustomGameMode>(GetWorld()->GetAuthGameMode());
 		MyGameMode->IncreaseCoins();
 		OtherActor->Destroy();
-		UE_LOG(LogTemp,Warning,TEXT("%d"),MyGameMode->GetCoins());
-		UUserWidget* UI = MyGameMode->GetCurrentWidgetUI();
-		UI->GetRootWidget()->GetC
+		UUIWidget* UI = Cast<UUIWidget>(MyGameMode->GetCurrentWidgetUI());
+		UI->SetCoinsText(MyGameMode->GetCoins());
+	}else{
+		UE_LOG(LogTemp,Warning,TEXT("%s"), *OtherActor->GetName());
 	}
 
 }
