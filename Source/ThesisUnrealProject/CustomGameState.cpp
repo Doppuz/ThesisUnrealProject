@@ -5,4 +5,5 @@
 
 ACustomGameState::ACustomGameState() {
     CoinNumber = 0;
+    MapPercentage = 0;
 }

@@ -22,5 +22,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CoinsText;
 
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MapText;
+
 	void SetCoinsText(int CoinAmount);
+	void SetMapText(float MapPercentage);
 };

@@ -25,10 +25,22 @@ public:
 	TArray<AMazeCell*> GetLeavesNoSpace();
 	TArray<AMazeCell*> GetNodesMaxDistance();
 
+	AMazeCell* GetCurrentNode();
+
+	void SetVisitedToZero();
+
+	//Move the current node to the next cell.
+	void MoveCurrentNode(AMazeCell* );
+
+	int GetGraphSize();
+
 protected:
 
 	TMap<AMazeCell*, TArray<Side*>> Map;
 
 private:
 	int GetDepth(AMazeCell*);
+
+	//Used to store the current node the player is in right now.
+	AMazeCell* CurrentNode = nullptr;
 };

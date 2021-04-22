@@ -7,6 +7,7 @@
 #include "../CustomGameMode.h"
 #include "Blueprint/UserWidget.h"
 #include "../UI/UIWidget.h"
+#include "../MazeGenerator/MazeCell.h"
 
 // Sets default values
 ACharacterController::ACharacterController(){
@@ -80,14 +81,30 @@ void ACharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 }
 
 void ACharacterController::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
+	//Collision with the coins.
 	if(OtherActor->IsA(ACoinController::StaticClass())){
+	
 		ACustomGameMode* MyGameMode = Cast<ACustomGameMode>(GetWorld()->GetAuthGameMode());
 		MyGameMode->IncreaseCoins();
 		OtherActor->Destroy();
 		UUIWidget* UI = Cast<UUIWidget>(MyGameMode->GetCurrentWidgetUI());
 		UI->SetCoinsText(MyGameMode->GetCoins());
-	}else{
-		UE_LOG(LogTemp,Warning,TEXT("%s"), *OtherActor->GetName());
+	
+	//Collision with a Cell.
+	}else if(OtherActor->IsA(AMazeCell::StaticClass())){
+
+		ACustomGameMode* MyGameMode = Cast<ACustomGameMode>(GetWorld()->GetAuthGameMode());
+		AMazeCell* MazeActor = Cast<AMazeCell>(OtherActor);
+		MyGameMode->MazeGraph->MoveCurrentNode(MazeActor);
+		
+		//Increase the percentage of the map if it is the first time I visited the cell.
+		if(MazeActor->bIsVisited != true){
+			MazeActor->bIsVisited = true;
+			MyGameMode->IncreasePercentage();
+			UUIWidget* UI = Cast<UUIWidget>(MyGameMode->GetCurrentWidgetUI());
+			UI->SetMapText(MyGameMode->GetPercentage());
+		}	
+	
 	}
 
 }

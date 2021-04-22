@@ -6,7 +6,7 @@
 #include "../Graph/Graph.h"
 #include "../Elements/ChestController.h"
 #include "../Elements/CoinController.h"
-#include "MazeGeneratorManager.h"
+#include "../CustomGameMode.h"
 
 MazeGenerationPopulate::MazeGenerationPopulate(Graph* MazeGraph, TSubclassOf<AChestController> ChestClass, TSubclassOf<ACoinController> CoinClass, UWorld* World){
     this->MazeGraph = MazeGraph;
@@ -19,29 +19,42 @@ MazeGenerationPopulate::~MazeGenerationPopulate(){
 
 }
 
+//DepthVisit to search 3 walls-cells and to search the longest path.
 void MazeGenerationPopulate::DepthVisit(AMazeCell* Start) {
-    SetVisitedToZero();
-    DepthVisitWrapper(Start,0);
+    MazeGraph->SetVisitedToZero();
+    TArray<AMazeCell*> MazeCellMax;
+    DepthVisitWrapper(Start,0, TArray<AMazeCell*>(),MazeCellMax);
     int a = 0;
+    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(1);
+    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(2);
+    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(3);
+    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(4);
+    UE_LOG(LogTemp,Warning,TEXT("%d , %d, %d"),  MazeCellMax[MazeCellMax.Num() - 1]->I,MazeCellMax[MazeCellMax.Num() - 1]->J, MazeCellMax.Num());
 }
 
-void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost) {
+void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,
+        TArray<AMazeCell*> & MazeCellMax) {
     TArray<Side*> Sides = MazeGraph->GetSides(Current); 
     Current->bIsVisited = true;
+    CurrentVisitedCell.Add(Current);
 
     //UE_LOG(LogTemp, Warning, TEXT("%d %d"), Current->I, Current->J);
     if(Current->WallNumbers == 3 && !(Current->I == 0 && Current->J == 0))
         Wall3Cells.Add(Current,Cost);
     for(Side* S: MazeGraph->GetSides(Current)){
         if(S->To->bIsVisited != true)
-            DepthVisitWrapper(S->To, Cost + 1);
+            DepthVisitWrapper(S->To, Cost + 1, CurrentVisitedCell, MazeCellMax);
     }
+
+    //Last Cell of the current path. 
+    AMazeCell* LastCell = CurrentVisitedCell[CurrentVisitedCell.Num() - 1];
+
+    //Search for the maximum path
+    if(CurrentVisitedCell.Num() > MazeCellMax.Num() && (LastCell->I == 0 || LastCell->I == 9 ||
+                                                        LastCell->J == 0 || LastCell->J == 9))
+        MazeCellMax = CurrentVisitedCell;
 }
 
-void MazeGenerationPopulate::SetVisitedToZero() {
-    for(AMazeCell* Cell: MazeGraph->GetNodes())
-        Cell->bIsVisited = false;
-}
 
 //Spawn the chests in the position where there are 3 walls.
 void MazeGenerationPopulate::PopulateChest() {
@@ -54,12 +67,14 @@ void MazeGenerationPopulate::PopulateChest() {
     });
 
     Wall3Cells.GetKeys(Cells);
+
+    int ChestNumber = Cast<ACustomGameMode>(World->GetAuthGameMode())->NumberOfChest;
     
-    if(Cells.Num() < AMazeGeneratorManager::NumberOfChest)
+    if(Cells.Num() < ChestNumber)
         UE_LOG(LogTemp,Warning,TEXT("Not enough cells to put chests in."));
 
     //First I take the one with the bigger distance and than I divided it to make it always closer to me.
-    for(int I = 0; I < AMazeGeneratorManager::NumberOfChest && Cells.Num() > I; I++){
+    for(int I = 0; I < ChestNumber && Cells.Num() > I; I++){
         Position = FVector(Cells[(int) Cells.Num() / (I+1) - 1]->GetActorLocation().X,
             Cells[(int) Cells.Num() / (I+1) - 1]->GetActorLocation().Y,
             Cells[(int) Cells.Num() / (I+1) - 1]->GetActorLocation().Z + 500);
@@ -68,6 +83,7 @@ void MazeGenerationPopulate::PopulateChest() {
         Cells.RemoveAt((int) Cells.Num() / (I+1) - 1);
     }
 
+    //The rest of the 3 walls-cells are popolated with coins.
     for(int I = 0; I < Cells.Num(); I++){
         Position = FVector(Cells[I]->GetActorLocation().X,
             Cells[I]->GetActorLocation().Y,
@@ -77,3 +93,4 @@ void MazeGenerationPopulate::PopulateChest() {
     }
 
 }
+

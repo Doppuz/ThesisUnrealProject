@@ -113,6 +113,42 @@ TArray<AMazeCell*> Graph::GetNodesMaxDistance() {
 	return Fathers;	
 }
 
+//template<class F, class S>
+AMazeCell* Graph::GetCurrentNode() {
+	return CurrentNode;
+}
+
+void Graph::SetVisitedToZero() {
+	for(AMazeCell* Cell: GetNodes())
+    	Cell->bIsVisited = false;
+}
+
+//template<class F, class S>
+void Graph::MoveCurrentNode(AMazeCell* NewNode) {
+	if(CurrentNode == nullptr)
+		CurrentNode = NewNode;
+	else{
+		TArray<Side *> Sides = GetSides(CurrentNode);
+		for(Side* S: Sides){
+			if(S->To == NewNode){
+				CurrentNode = NewNode;
+				break;
+			}	
+		}
+		if(CurrentNode != NewNode){
+			UE_LOG(LogTemp,Warning,TEXT("Error, %s doesn't cointain %s as adjacent node"),
+				*CurrentNode->GetName(), *NewNode->GetName());
+			//Needed for not updating the UI.
+			NewNode->bIsVisited = true;
+		}
+	}
+}
+
+//template<class F, class S>
+int Graph::GetGraphSize() {
+	return Map.Num();	
+}
+
 //template<typename F,typename S>
 int Graph::GetDepth(AMazeCell* Spc) {
 	if(Map[Spc].Num() == 2)

@@ -37,6 +37,6 @@ private:
 	UWorld* World;
 
 	//Methods
-	void DepthVisitWrapper(AMazeCell* Current, float Cost);
-	void SetVisitedToZero();
+	void DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,
+		TArray<AMazeCell*> & MazeCellList);
 };
