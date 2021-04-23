@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MazeCell.h"
 #include "RoomMaze.h"
+#include "../Character/CustomPlayerStart.h"
 
 MazeGenerationCreation::MazeGenerationCreation(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell> CellClass,
         TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph* MazeGraph, UWorld* World) {
@@ -117,7 +118,7 @@ void MazeGenerationCreation::CreateRoomSize2() {
     do {
         RowExtr = FMath::RandRange(0, Length - 2);
         ColumnExtr = FMath::RandRange(0, Height - 2);
-    } while (CheckRoomIntersection(RowExtr, ColumnExtr));
+    } while (CheckRoomIntersection(RowExtr, ColumnExtr) || (RowExtr == 0 && ColumnExtr == 1));
 
     TArray<AMazeCell*> Room;
 
@@ -175,6 +176,13 @@ void MazeGenerationCreation::CreateMaze() {
         ColumnExtr = FMath::RandRange(0, Height - 1);
     } while ((*Maze)[RowExtr][ColumnExtr]->NumberRoom != -1 ||
              (*Maze)[RowExtr][ColumnExtr]->bIsObstacle);
+    
+    //Change Player start pos, but useless.
+    /*TArray<AActor*> FoundActors;
+    UGameplayStatics::GetAllActorsOfClass(World, ACustomPlayerStart::StaticClass(), FoundActors);
+    FVector CellLocation = (*Maze)[RowExtr][ColumnExtr]->GetActorLocation();
+    FoundActors[0]->SetActorLocation(FVector(CellLocation.X,CellLocation.Y,1000));*/
+
     CreateMazeWrapper(RowExtr, ColumnExtr);
 }
 

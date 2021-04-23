@@ -58,6 +58,7 @@ void ACharacterController::MoveRight(float Axis) {
 void ACharacterController::BeginPlay(){
 	Super::BeginPlay();
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ACharacterController::OnOverlap);
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACharacterController::OnHit);
 }
 
 // Called every frame
@@ -107,5 +108,9 @@ void ACharacterController::OnOverlap(UPrimitiveComponent * HitComponent, AActor 
 	
 	}
 
+}
+
+void ACharacterController::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
+	UE_LOG(LogTemp,Warning,TEXT("AA %s"), *OtherActor->GetName());
 }
 
