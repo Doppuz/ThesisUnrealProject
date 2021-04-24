@@ -4,6 +4,7 @@
 #include "Crate.h"
 #include "Components/BoxComponent.h"
 #include "DestructibleComponent.h"
+#include "CoinController.h"
 
 // Sets default values
 ACrate::ACrate()
@@ -14,25 +15,31 @@ ACrate::ACrate()
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
 
-	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
-	BoxCollider->SetupAttachment(RootComponent);
-
-	CrateMesh = CreateDefaultSubobject<UDestructibleComponent>(TEXT("Crate Mesh DM"));
-	CrateMesh->SetupAttachment(BoxCollider);
+	DestructibleComponent = CreateDefaultSubobject<UDestructibleComponent>(TEXT("Crate Mesh DM"));
+	DestructibleComponent->SetupAttachment(RootComponent);
 
 }
 
 // Called when the game starts or when spawned
-void ACrate::BeginPlay()
-{
+void ACrate::BeginPlay(){
 	Super::BeginPlay();
-	
+	DestructibleComponent->OnComponentFracture.AddDynamic(this,&ACrate::OnComponentFracture);
 }
 
 // Called every frame
-void ACrate::Tick(float DeltaTime)
-{
+void ACrate::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
-
 }
+
+void ACrate::OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection) {
+	if(!IAmDestructed){
+		FVector Position = FVector(GetActorLocation().X,
+            GetActorLocation().Y, 300.f);
+    	FRotator Rotation = FRotator(0,0,0);
+    	AActor* Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass,Position,Rotation);
+    	Coin->SetFolderPath(TEXT("Coins"));
+	}
+	IAmDestructed = true;
+}
+
 

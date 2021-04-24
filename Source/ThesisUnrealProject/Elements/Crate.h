@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Crate.generated.h"
 
+class ACoinController;
+
 UCLASS()
 class THESISUNREALPROJECT_API ACrate : public AActor
 {
@@ -14,6 +16,8 @@ class THESISUNREALPROJECT_API ACrate : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ACrate();
+
+	bool IAmDestructed = false;
 
 protected:
 	// Called when the game starts or when spawned
@@ -24,14 +28,15 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true))
+	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
 	USceneComponent* Root;
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAcces = true))
-	class UDestructibleComponent* CrateMesh;	
+	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
+	class UDestructibleComponent* DestructibleComponent;
 
-	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true))
-	class UBoxComponent* BoxCollider;	
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
+	TSubclassOf<ACoinController> CoinClass;
 
-
+	UFUNCTION()
+	void OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection);
 };
