@@ -24,12 +24,7 @@ void MazeGenerationPopulate::DepthVisit(AMazeCell* Start) {
     MazeGraph->SetVisitedToZero();
     TArray<AMazeCell*> MazeCellMax;
     DepthVisitWrapper(Start,0, TArray<AMazeCell*>(),MazeCellMax);
-    int a = 0;
-    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(1);
-    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(2);
-    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(3);
-    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(4);
-    UE_LOG(LogTemp,Warning,TEXT("%d , %d, %d"),  MazeCellMax[MazeCellMax.Num() - 1]->I,MazeCellMax[MazeCellMax.Num() - 1]->J, MazeCellMax.Num());
+    MazeCellMax[MazeCellMax.Num() - 1]->HideObstacleWall();
 }
 
 void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,

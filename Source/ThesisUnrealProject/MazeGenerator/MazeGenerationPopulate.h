@@ -36,6 +36,9 @@ private:
 
 	UWorld* World;
 
+	//Class for chest spawn.
+	//TSubclassOf<
+
 	//Methods
 	void DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,
 		TArray<AMazeCell*> & MazeCellList);

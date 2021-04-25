@@ -63,4 +63,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* MeshWall4Component;
 
+	TArray<UStaticMeshComponent*> Walls;
+
 };

@@ -37,7 +37,10 @@ AMazeCell::AMazeCell(){
 // Called when the game starts or when spawned
 void AMazeCell::BeginPlay(){
 	Super::BeginPlay();
-	
+	Walls.Add(MeshWall1Component);
+	Walls.Add(MeshWall2Component);
+	Walls.Add(MeshWall3Component);
+	Walls.Add(MeshWall4Component);
 }
 
 void AMazeCell::HideObstacleWall() {
@@ -46,6 +49,8 @@ void AMazeCell::HideObstacleWall() {
 	MeshWall2Component->SetStaticMesh(nullptr);
 	MeshWall3Component->SetStaticMesh(nullptr);
 	MeshWall4Component->SetStaticMesh(nullptr);
+
+	Walls.Empty();
 }
 
 void AMazeCell::HideWall(int WallNumber) {
@@ -53,18 +58,22 @@ void AMazeCell::HideWall(int WallNumber) {
 	switch(WallNumber){
 		case 1:
 			MeshWall1Component->SetStaticMesh(nullptr);
+			Walls.Remove(MeshWall1Component);
 			WallNumbers -= 1;
 			break;
 		case 2:
 			MeshWall2Component->SetStaticMesh(nullptr);
+			Walls.Remove(MeshWall2Component);
 			WallNumbers -= 1;
 			break;
 		case 3:
 			MeshWall3Component->SetStaticMesh(nullptr);
+			Walls.Remove(MeshWall3Component);
 			WallNumbers -= 1;
 			break;
 		case 4:
 			MeshWall4Component->SetStaticMesh(nullptr);
+			Walls.Remove(MeshWall4Component);
 			WallNumbers -= 1;
 			break;
 		default:

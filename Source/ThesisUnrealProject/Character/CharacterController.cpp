@@ -4,12 +4,11 @@
 #include "CharacterController.h"
 #include "Components/CapsuleComponent.h"
 #include "../Elements/CoinController.h"
-#include "../Elements/Crate.h"
+#include "../Elements/CrateElements.h"
 #include "../CustomGameMode.h"
 #include "Blueprint/UserWidget.h"
 #include "../UI/UIWidget.h"
 #include "../MazeGenerator/MazeCell.h"
-#include "../Elements/Crate.h"
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
 
@@ -115,10 +114,10 @@ void ACharacterController::OnOverlap(UPrimitiveComponent * HitComponent, AActor 
 }
 
 void ACharacterController::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
-	if(OtherActor->IsA(ACrate::StaticClass())){
+	if(OtherActor->IsA(ACrateElements::StaticClass()) && OtherComponent->IsA(UDestructibleComponent::StaticClass())){
 		//UGameplayStatics::ApplyDamage(OtherActor,10,this->GetController(),this,UDamageType::StaticClass());
 		UDestructibleComponent* DC = Cast<UDestructibleComponent>(OtherComponent);
-		ACrate* Actor = Cast<ACrate>(OtherActor);
+		ACrateElements* Actor = Cast<ACrateElements>(OtherActor);
 		
 		if(!Actor->IAmDestructed)
 			DC->ApplyRadiusDamage(100.f,Hit.ImpactPoint, 10.f,30000.f,true);
