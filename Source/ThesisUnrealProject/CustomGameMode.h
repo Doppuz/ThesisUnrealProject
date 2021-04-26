@@ -14,6 +14,7 @@ class MazeGenerationCreation;
 class MazeGenerationPopulate;
 class AChestController;
 class ACoinController;
+class ACrateElements;
 
 UCLASS()
 class THESISUNREALPROJECT_API ACustomGameMode : public AGameModeBase
@@ -100,6 +101,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ACoinController> CoinClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ACrateElements> CrateElementsClass;
 
 //World percentage increment
     float MapIncrement;

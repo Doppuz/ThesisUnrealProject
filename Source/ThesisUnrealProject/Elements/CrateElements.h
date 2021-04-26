@@ -18,6 +18,7 @@ public:
 	ACrateElements();
 
 	bool IAmDestructed;
+	bool ItHasCoin;
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,6 +31,9 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
 	USceneComponent* Root;
+
+	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
+	USceneComponent* SpawnCoinPosition;
 
 	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
 	class UDestructibleComponent* DestructibleComponent;

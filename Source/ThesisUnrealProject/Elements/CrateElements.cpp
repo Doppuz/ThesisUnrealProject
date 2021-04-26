@@ -15,6 +15,9 @@ ACrateElements::ACrateElements()
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
 
+	SpawnCoinPosition = CreateDefaultSubobject<USceneComponent>(TEXT("CoinSpawnPosition"));
+	SpawnCoinPosition->SetupAttachment(RootComponent);
+
 	DestructibleComponent = CreateDefaultSubobject<UDestructibleComponent>(TEXT("Crate Mesh DM"));
 	DestructibleComponent->SetupAttachment(RootComponent);
 
@@ -28,6 +31,7 @@ ACrateElements::ACrateElements()
 	MeshComponent3->SetupAttachment(RootComponent);
 
 	IAmDestructed = false;
+	ItHasCoin = false;
 
 }
 
@@ -56,11 +60,8 @@ void ACrateElements::Tick(float DeltaTime){
 
 void ACrateElements::OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection) {
 	if(!IAmDestructed){
-		/*FVector Position = FVector(DestructibleComponent->GetRelativeLocation().X ,
-           DestructibleComponent->GetRelativeLocation().Y - 100.f, 500.f);*/
-		FVector Position = FVector(GetActorLocation().X + DestructibleComponent->GetRelativeLocation().X ,
-            GetActorLocation().Y + DestructibleComponent->GetRelativeLocation().Y,
-			GetActorLocation().Z + DestructibleComponent->GetRelativeLocation().Z + 100);
+
+		FVector Position = SpawnCoinPosition->GetComponentLocation();
     	
 		FRotator Rotation = FRotator(0,0,0);
 		

@@ -8,11 +8,13 @@
 #include "../Elements/CoinController.h"
 #include "../CustomGameMode.h"
 
-MazeGenerationPopulate::MazeGenerationPopulate(Graph* MazeGraph, TSubclassOf<AChestController> ChestClass, TSubclassOf<ACoinController> CoinClass, UWorld* World){
+MazeGenerationPopulate::MazeGenerationPopulate(Graph* MazeGraph, TSubclassOf<AChestController> ChestClass, TSubclassOf<ACoinController> CoinClass,
+                                            TSubclassOf<ACrateElements> CrateElementsClass, UWorld* World){
     this->MazeGraph = MazeGraph;
     this->ChestClass = ChestClass;
     this->World = World;
     this->CoinClass = CoinClass;
+    this->CrateElementsClass = CrateElementsClass;
 }
 
 MazeGenerationPopulate::~MazeGenerationPopulate(){
@@ -24,7 +26,12 @@ void MazeGenerationPopulate::DepthVisit(AMazeCell* Start) {
     MazeGraph->SetVisitedToZero();
     TArray<AMazeCell*> MazeCellMax;
     DepthVisitWrapper(Start,0, TArray<AMazeCell*>(),MazeCellMax);
-    MazeCellMax[MazeCellMax.Num() - 1]->HideObstacleWall();
+    MaxPath = MazeCellMax;
+    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(1);
+    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(2);
+    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(3);
+    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(4);
+    
 }
 
 void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,
@@ -33,14 +40,16 @@ void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, T
     Current->bIsVisited = true;
     CurrentVisitedCell.Add(Current);
 
-    //UE_LOG(LogTemp, Warning, TEXT("%d %d"), Current->I, Current->J);
-    if(Current->WallNumbers == 3 && !(Current->I == 0 && Current->J == 0))
-        Wall3Cells.Add(Current,Cost);
     for(Side* S: MazeGraph->GetSides(Current)){
         if(S->To->bIsVisited != true)
             DepthVisitWrapper(S->To, Cost + 1, CurrentVisitedCell, MazeCellMax);
     }
 
+    if(Current->WallNumbers == 3 && !(Current->I == 0 && Current->J == 0))
+        Wall3Cells.Add(Current,Cost);
+    else if (Current->NumberRoom == -1)
+        Current->PopulateElem(CrateElementsClass);
+    
     //Last Cell of the current path. 
     AMazeCell* LastCell = CurrentVisitedCell[CurrentVisitedCell.Num() - 1];
 
@@ -48,6 +57,7 @@ void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, T
     if(CurrentVisitedCell.Num() > MazeCellMax.Num() && (LastCell->I == 0 || LastCell->I == 9 ||
                                                         LastCell->J == 0 || LastCell->J == 9))
         MazeCellMax = CurrentVisitedCell;
+
 }
 
 
@@ -76,6 +86,7 @@ void MazeGenerationPopulate::PopulateChest() {
         Rotation = FRotator(0,-90 + 90 * (Cells[(int) Cells.Num() / (I+1) - 1]->LastHiddenWall - 1),0);
         AActor* Chest = World->SpawnActor<AChestController>(ChestClass,Position,Rotation);
         Chest->SetFolderPath(TEXT("Chests"));
+        Cells[(int) Cells.Num() / (I+1) - 1]->AddElem(Chest);
         Cells.RemoveAt((int) Cells.Num() / (I+1) - 1);
     }
 
@@ -86,8 +97,11 @@ void MazeGenerationPopulate::PopulateChest() {
             Cells[I]->GetActorLocation().Z + 200);
         Rotation = FRotator(0,0,0);
         AActor* Coin = World->SpawnActor<ACoinController>(CoinClass,Position,Rotation);
+        Cells[(int) Cells.Num() / (I+1) - 1]->AddElem(Coin);
         Coin->SetFolderPath(TEXT("Coins"));
     }
+
+    MaxPath[MaxPath.Num() - 1]->RemoveAllElem();
 
 }
 

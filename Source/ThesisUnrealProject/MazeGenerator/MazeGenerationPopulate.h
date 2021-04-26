@@ -8,6 +8,7 @@ class Graph;
 class AMazeCell;
 class AChestController;
 class ACoinController;
+class ACrateElements;
 
 /**
  * 
@@ -15,7 +16,8 @@ class ACoinController;
 class THESISUNREALPROJECT_API MazeGenerationPopulate
 {
 public:
-	MazeGenerationPopulate(Graph*, TSubclassOf<AChestController>, TSubclassOf<ACoinController>, UWorld*);
+	MazeGenerationPopulate(Graph*, TSubclassOf<AChestController>, TSubclassOf<ACoinController>,
+		TSubclassOf<ACrateElements>, UWorld*);
 	~MazeGenerationPopulate();
 
 	void DepthVisit(AMazeCell* Start);
@@ -31,13 +33,15 @@ private:
 	//Class for chest spawn.
 	TSubclassOf<AChestController> ChestClass;
 
-	//Class for chest spawn.
+	//Class for coins spawn.
 	TSubclassOf<ACoinController> CoinClass;
 
 	UWorld* World;
 
-	//Class for chest spawn.
-	//TSubclassOf<
+	//Class for Elements spawn.
+	TSubclassOf<ACrateElements> CrateElementsClass;
+
+	TArray<AMazeCell*> MaxPath;
 
 	//Methods
 	void DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,

@@ -14,6 +14,7 @@
 #include "MazeGenerator/MazeGenerationPopulate.h"
 #include "Elements/ChestController.h"
 #include "Elements/CoinController.h"
+#include "Elements/CrateElements.h"
 
 
 ACustomGameMode::ACustomGameMode() {
@@ -25,7 +26,7 @@ ACustomGameMode::ACustomGameMode() {
 ACustomGameMode::~ACustomGameMode() {
     delete Maze;
     delete Rooms;
-    //delete MazeGraph;
+    delete MazeGraph;
     delete Generator;
     delete Populate;
 }
@@ -46,7 +47,7 @@ void ACustomGameMode::BeginPlay() {
 
     MapIncrement = 100.0/(MazeGraph->GetGraphSize() - 3.0 * Maze2Room);
     
-    Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, CoinClass, GetWorld());
+    Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, CoinClass, CrateElementsClass, GetWorld());
 
     //Check for cells with 3 walls.
     Populate->DepthVisit((*Maze)[0][0]);

@@ -118,7 +118,7 @@ void MazeGenerationCreation::CreateRoomSize2() {
     do {
         RowExtr = FMath::RandRange(0, Length - 2);
         ColumnExtr = FMath::RandRange(0, Height - 2);
-    } while (CheckRoomIntersection(RowExtr, ColumnExtr) || (RowExtr == 0 && ColumnExtr == 1));
+    } while (CheckRoomIntersection(RowExtr, ColumnExtr) || (RowExtr == 0 && ColumnExtr == 0));
 
     TArray<AMazeCell*> Room;
 

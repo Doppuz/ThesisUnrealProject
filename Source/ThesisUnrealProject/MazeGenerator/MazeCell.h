@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "MazeCell.generated.h"
 
+class ACrateElements;
+
 UCLASS()
 class THESISUNREALPROJECT_API AMazeCell : public AActor
 {
@@ -36,6 +38,12 @@ public:
 	void HideWall(int WallNumber);
 	bool HideWallBool(int WallNumber, Coord& OppositeCell,int& WallToDelete);
 
+	void AddElem(AActor*);
+	void RemoveElem(AActor*);
+	void RemoveAllElem();
+
+	void PopulateElem(TSubclassOf<ACrateElements>);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -44,6 +52,12 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	USceneComponent* SceneComponent;
+
+	UPROPERTY(EditAnywhere)
+	USceneComponent* Meshes;
+
+	UPROPERTY(EditAnywhere)
+	USceneComponent* SpawnPoints;
 
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* BoxTrigger;
@@ -63,6 +77,20 @@ private:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* MeshWall4Component;
 
-	TArray<UStaticMeshComponent*> Walls;
+	UPROPERTY(EditAnywhere)
+	USceneComponent* SpawnPointWall1;
+
+	UPROPERTY(EditAnywhere)
+	USceneComponent* SpawnPointWall2;
+
+	UPROPERTY(EditAnywhere)
+	USceneComponent* SpawnPointWall3;
+
+	UPROPERTY(EditAnywhere)
+	USceneComponent* SpawnPointWall4;
+
+	TArray<int> Walls;
+
+	TArray<AActor*> ObjectsInside;
 
 };
