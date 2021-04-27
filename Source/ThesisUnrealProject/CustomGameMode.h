@@ -14,7 +14,7 @@ class MazeGenerationCreation;
 class MazeGenerationPopulate;
 class AChestController;
 class ACoinController;
-class ACrateElements;
+class AGeneralElem;
 
 UCLASS()
 class THESISUNREALPROJECT_API ACustomGameMode : public AGameModeBase
@@ -46,6 +46,9 @@ public:
 
     //Graph of the maze
 	Graph* MazeGraph;
+
+	//Pointer to the MazeGenerationPopolate class
+	MazeGenerationPopulate* Populate;
 
 protected:
 
@@ -91,9 +94,6 @@ private:
 	//Pointer to the MazeGenerationCreation class
 	MazeGenerationCreation* Generator;
 
-	//Pointer to the MazeGenerationPopolate class
-	MazeGenerationPopulate* Populate;
-
 	FVector PlayerPosition;
 //---------------------------------------------------
 	UPROPERTY(EditAnywhere, Category = "Elements")
@@ -103,7 +103,7 @@ private:
 	TSubclassOf<ACoinController> CoinClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<ACrateElements> CrateElementsClass;
+	TSubclassOf<AGeneralElem> CrateElementsClass;
 
 //World percentage increment
     float MapIncrement;

@@ -11,6 +11,7 @@
 #include "../MazeGenerator/MazeCell.h"
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
+#include "../MazeGenerator/MazegenerationPopulate.h"
 
 // Sets default values
 ACharacterController::ACharacterController(){
@@ -108,6 +109,8 @@ void ACharacterController::OnOverlap(UPrimitiveComponent * HitComponent, AActor 
 			UUIWidget* UI = Cast<UUIWidget>(MyGameMode->GetCurrentWidgetUI());
 			UI->SetMapText(MyGameMode->GetPercentage());
 		}	
+
+		MyGameMode->Populate->DynamicDepthVisit(MyGameMode->MazeGraph->GetCurrentNode());
 	
 	}
 

@@ -4,7 +4,7 @@
 #include "MazeCell.h"
 #include "CoupleStruct.h"
 #include "Components/BoxComponent.h"
-#include "../Elements/CrateElements.h"
+#include "../Elements/GeneralElem.h"
 
 // Sets default values
 AMazeCell::AMazeCell(){
@@ -158,10 +158,11 @@ void AMazeCell::RemoveAllElem() {
 	for(int i=0; i < ObjectsInside.Num(); i++){
 		ObjectsInside[i]->Destroy();
 	}
+	ObjectsInside.Empty();
 }
 
 //Method for spawning the CrateElems in front of a wall.
-void AMazeCell::PopulateElem(TSubclassOf<ACrateElements> ElemClass) {
+void AMazeCell::PopulateElem(TSubclassOf<AGeneralElem> ElemClass) {
 	
 	int NumExtr = FMath::RandRange(0,Walls.Num() - 1);
 	
@@ -177,28 +178,28 @@ void AMazeCell::PopulateElem(TSubclassOf<ACrateElements> ElemClass) {
 		//Position = GetActorLocation() + FVector( MeshWall1Component->GetRelativeLocation().X + 50,0,-333); //+ MeshWall1Component->GetRelativeLocation();
 		Position = SpawnPointWall1->GetComponentLocation();
 		Rotation = FRotator(0,90,0);
-		Actor = GetWorld()->SpawnActor<ACrateElements>(ElemClass,Position,Rotation);
+		Actor = GetWorld()->SpawnActor<AGeneralElem>(ElemClass,Position,Rotation);
 		AddElem(Actor);
 		break;
 	case 2:
 		//Position = GetActorLocation() + FVector(0, MeshWall2Component->GetRelativeLocation().Y + 50,-333); // + MeshWall2Component->GetRelativeLocation();
 		Position = SpawnPointWall2->GetComponentLocation();
 		Rotation = FRotator(0,180,0);
-		Actor = GetWorld()->SpawnActor<ACrateElements>(ElemClass,Position,Rotation);
+		Actor = GetWorld()->SpawnActor<AGeneralElem>(ElemClass,Position,Rotation);
 		AddElem(Actor);
 		break;
 	case 3:
 		//Position = GetActorLocation() + FVector( MeshWall3Component->GetRelativeLocation().X - 200,0,-333);// + MeshWall3Component->GetRelativeLocation();
 		Position = SpawnPointWall3->GetComponentLocation();
 		Rotation = FRotator(0,-90,0);
-		Actor = GetWorld()->SpawnActor<ACrateElements>(ElemClass,Position,Rotation);
+		Actor = GetWorld()->SpawnActor<AGeneralElem>(ElemClass,Position,Rotation);
 		AddElem(Actor);
 		break;
 	case 4:
 		//Position = GetActorLocation()  + FVector(0, MeshWall4Component->GetRelativeLocation().Y - 200,-333); // + MeshWall4Component->GetRelativeLocation();
 		Position = SpawnPointWall4->GetComponentLocation();
 		Rotation = FRotator(0,0,0);
-		Actor = GetWorld()->SpawnActor<ACrateElements>(ElemClass,Position,Rotation);
+		Actor = GetWorld()->SpawnActor<AGeneralElem>(ElemClass,Position,Rotation);
 		AddElem(Actor);
 		break;
 	

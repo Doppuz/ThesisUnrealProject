@@ -8,7 +8,7 @@ class Graph;
 class AMazeCell;
 class AChestController;
 class ACoinController;
-class ACrateElements;
+class AGeneralElem;
 
 /**
  * 
@@ -17,10 +17,11 @@ class THESISUNREALPROJECT_API MazeGenerationPopulate
 {
 public:
 	MazeGenerationPopulate(Graph*, TSubclassOf<AChestController>, TSubclassOf<ACoinController>,
-		TSubclassOf<ACrateElements>, UWorld*);
+		TSubclassOf<AGeneralElem>, UWorld*);
 	~MazeGenerationPopulate();
 
 	void DepthVisit(AMazeCell* Start);
+	void DynamicDepthVisit(AMazeCell* Current);
 	void PopulateChest();
 
 private:
@@ -39,11 +40,22 @@ private:
 	UWorld* World;
 
 	//Class for Elements spawn.
-	TSubclassOf<ACrateElements> CrateElementsClass;
+	TSubclassOf<AGeneralElem> CrateElementsClass;
 
+	//Contains the path the leads to the exit.
 	TArray<AMazeCell*> MaxPath;
+
+	//Contains the last path of the Dynamic visit.
+	TArray<AMazeCell*> OldPath;
+
+	//Used to substitute the NewPath to the OldPath during the Dynamic visit.
+	TArray<AMazeCell*> NewPath;
 
 	//Methods
 	void DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,
 		TArray<AMazeCell*> & MazeCellList);
+
+	void DynamicDepthVisitWrapper(AMazeCell* Current, int DepthLimit);
+
+	void SetDynamicVisitedToZero();
 };

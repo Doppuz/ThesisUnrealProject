@@ -9,7 +9,7 @@
 #include "../CustomGameMode.h"
 
 MazeGenerationPopulate::MazeGenerationPopulate(Graph* MazeGraph, TSubclassOf<AChestController> ChestClass, TSubclassOf<ACoinController> CoinClass,
-                                            TSubclassOf<ACrateElements> CrateElementsClass, UWorld* World){
+                                            TSubclassOf<AGeneralElem> CrateElementsClass, UWorld* World){
     this->MazeGraph = MazeGraph;
     this->ChestClass = ChestClass;
     this->World = World;
@@ -58,6 +58,43 @@ void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, T
                                                         LastCell->J == 0 || LastCell->J == 9))
         MazeCellMax = CurrentVisitedCell;
 
+}
+
+//Dynamic visit that is computed every time I reach a new cell.
+void MazeGenerationPopulate::DynamicDepthVisit(AMazeCell* Current) {
+    NewPath.Empty();
+    SetDynamicVisitedToZero();
+    DynamicDepthVisitWrapper(Current,5);
+    for(AMazeCell* Cell: OldPath){
+        Cell->RemoveAllElem();
+    }
+    OldPath = NewPath;
+}
+
+//Wrapper to the visit. New path has the new Nodes. OldPath has the nodes that are not present in the new path anymore.
+void MazeGenerationPopulate::DynamicDepthVisitWrapper(AMazeCell* Current, int DepthLimit) {
+    
+    Current->bDynamicIsVisited = true;
+
+    TArray<Side*> Sides = MazeGraph->GetSides(Current);
+    
+    for(Side* S: MazeGraph->GetSides(Current)){
+        if(S->To->bDynamicIsVisited != true && DepthLimit != 0)
+            DynamicDepthVisitWrapper(S->To, DepthLimit - 1);
+    }
+
+    if (Current->NumberRoom == -1 && !OldPath.Contains(Current))
+        Current->PopulateElem(CrateElementsClass);
+
+    OldPath.Remove(Current);
+    NewPath.Add(Current);
+
+}
+
+//Set at 0 the value of bDynamicVisited variable in AMazeCell to 0.
+void MazeGenerationPopulate::SetDynamicVisitedToZero() {
+	for(AMazeCell* Cell: OldPath)
+    	Cell->bDynamicIsVisited = false;
 }
 
 

@@ -50,8 +50,11 @@ void ACustomGameMode::BeginPlay() {
     Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, CoinClass, CrateElementsClass, GetWorld());
 
     //Check for cells with 3 walls.
-    Populate->DepthVisit((*Maze)[0][0]);
-    Populate->PopulateChest();
+    //Populate->DepthVisit((*Maze)[0][0]);
+    
+    //MazeGraph->SetVisitedToZero();
+    //Populate->DynamicDepthVisit((*Maze)[0][0],5);
+    //Populate->PopulateChest();
 
     MazeGraph->SetVisitedToZero();
 }

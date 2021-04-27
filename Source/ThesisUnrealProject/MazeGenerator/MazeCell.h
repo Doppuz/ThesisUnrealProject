@@ -7,7 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "MazeCell.generated.h"
 
-class ACrateElements;
+class AGeneralElem;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeCell : public AActor
@@ -20,6 +20,7 @@ public:
 	
 	bool bIsObstacle = false;
 	bool bIsVisited = false;
+	bool bDynamicIsVisited = false;
 	int NumberRoom = -1;
 
 	//Number of walls
@@ -42,7 +43,7 @@ public:
 	void RemoveElem(AActor*);
 	void RemoveAllElem();
 
-	void PopulateElem(TSubclassOf<ACrateElements>);
+	void PopulateElem(TSubclassOf<AGeneralElem>);
 
 protected:
 	// Called when the game starts or when spawned
