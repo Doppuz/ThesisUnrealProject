@@ -18,4 +18,9 @@ public:
 	ACustomGameState();
 	int CoinNumber;
 	float MapPercentage;
+
+	float Achiever;
+	float Explorer;
+	float Killer;
+	float Socializer;
 };

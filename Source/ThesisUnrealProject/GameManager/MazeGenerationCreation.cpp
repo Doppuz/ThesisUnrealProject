@@ -5,7 +5,6 @@
 
 #include "../Graph/Graph.h"
 #include "Containers/Array.h"
-#include "CoupleStruct.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "MazeCell.h"

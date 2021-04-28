@@ -2,7 +2,7 @@
 
 
 #include "CustomPlayerStart.h"
-#include "COmponents/CapsuleComponent.h"
+#include "Components/CapsuleComponent.h"
 
 void ACustomPlayerStart::BeginPlay() {    
     UCapsuleComponent* CapsuleCollider = FindComponentByClass<UCapsuleComponent>();    

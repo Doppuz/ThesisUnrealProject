@@ -15,6 +15,7 @@ class MazeGenerationPopulate;
 class AChestController;
 class ACoinController;
 class AGeneralElem;
+class AdaptingExperienceManager;
 
 UCLASS()
 class THESISUNREALPROJECT_API ACustomGameMode : public AGameModeBase
@@ -31,6 +32,11 @@ public:
 
     float GetPercentage() const;
 	void IncreasePercentage();
+
+    float GetAchieverValue() const;
+    float GetKillerValue() const;
+    float GetExplorerValue() const;
+    float GetSocializerValue() const;
 
 	/** Remove the current menu widget and create a new one from the specified class, if provided. */
     UFUNCTION(BlueprintCallable, Category = "UMG Game")
@@ -93,6 +99,9 @@ private:
 
 	//Pointer to the MazeGenerationCreation class
 	MazeGenerationCreation* Generator;
+
+	//Pointer to the AdaptingExperienceManager class
+	AdaptingExperienceManager* Adapting;
 
 	FVector PlayerPosition;
 //---------------------------------------------------

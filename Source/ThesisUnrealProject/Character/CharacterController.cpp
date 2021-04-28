@@ -8,10 +8,10 @@
 #include "../CustomGameMode.h"
 #include "Blueprint/UserWidget.h"
 #include "../UI/UIWidget.h"
-#include "../MazeGenerator/MazeCell.h"
+#include "../GameManager/MazeCell.h"
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
-#include "../MazeGenerator/MazegenerationPopulate.h"
+#include "../GameManager/MazegenerationPopulate.h"
 
 // Sets default values
 ACharacterController::ACharacterController(){

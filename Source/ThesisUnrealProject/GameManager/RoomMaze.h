@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "CoupleStruct.h"
 #include "CoreMinimal.h"
 #include "MazeCell.h"
 

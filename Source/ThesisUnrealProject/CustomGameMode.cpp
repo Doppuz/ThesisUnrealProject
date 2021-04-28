@@ -7,11 +7,12 @@
 #include "Containers/Array.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
-#include "MazeGenerator/MazeCell.h"
-#include "MazeGenerator/RoomMaze.h"
-#include "MazeGenerator/MazeGenerationCreation.h"
+#include "GameManager/MazeCell.h"
+#include "GameManager/RoomMaze.h"
+#include "GameManager/MazeGenerationCreation.h"
+#include "GameManager/AdaptingExperienceManager.h"
 #include "Kismet/GameplayStatics.h"
-#include "MazeGenerator/MazeGenerationPopulate.h"
+#include "GameManager/MazeGenerationPopulate.h"
 #include "Elements/ChestController.h"
 #include "Elements/CoinController.h"
 #include "Elements/CrateElements.h"
@@ -29,6 +30,7 @@ ACustomGameMode::~ACustomGameMode() {
     delete MazeGraph;
     delete Generator;
     delete Populate;
+    delete Adapting;
 }
 
 void ACustomGameMode::BeginPlay() {
@@ -49,6 +51,15 @@ void ACustomGameMode::BeginPlay() {
     
     Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, CoinClass, CrateElementsClass, GetWorld());
 
+    float p = 0;
+
+    Adapting = new AdaptingExperienceManager(
+        &GetGameState<ACustomGameState>()->Achiever,
+        &GetGameState<ACustomGameState>()->Killer,
+        &GetGameState<ACustomGameState>()->Socializer,
+        &GetGameState<ACustomGameState>()->Explorer);
+
+    Adapting->EquallyDistributedUpdate(Type::Achiever, 4, TArray<Type>{Type::Killer, Type::Explorer});
     //Check for cells with 3 walls.
     //Populate->DepthVisit((*Maze)[0][0]);
     
@@ -95,6 +106,22 @@ float ACustomGameMode::GetPercentage() const{
 
 void ACustomGameMode::IncreasePercentage() {
     GetGameState<ACustomGameState>()->MapPercentage += MapIncrement;
+}
+
+float ACustomGameMode::GetAchieverValue() const{
+    return GetGameState<ACustomGameState>()->Achiever;
+}
+
+float ACustomGameMode::GetKillerValue() const{
+    return GetGameState<ACustomGameState>()->Killer;    
+}
+
+float ACustomGameMode::GetExplorerValue() const{
+    return GetGameState<ACustomGameState>()->Explorer;
+}
+
+float ACustomGameMode::GetSocializerValue() const{
+    return GetGameState<ACustomGameState>()->Socializer;    
 }
 
 //-------------

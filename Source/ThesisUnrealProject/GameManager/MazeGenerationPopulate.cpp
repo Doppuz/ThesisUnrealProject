@@ -64,7 +64,7 @@ void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, T
 void MazeGenerationPopulate::DynamicDepthVisit(AMazeCell* Current) {
     NewPath.Empty();
     SetDynamicVisitedToZero();
-    DynamicDepthVisitWrapper(Current,5);
+    DynamicDepthVisitWrapper(Current,9);
     for(AMazeCell* Cell: OldPath){
         Cell->RemoveAllElem();
     }

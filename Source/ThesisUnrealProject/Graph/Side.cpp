@@ -3,7 +3,7 @@
 
 #include "Side.h"
 #include "Node.h"
-#include "../MazeGenerator/MazeCell.h"
+#include "../GameManager/MazeCell.h"
 
 //template<typename F>
 Side::Side(AMazeCell* From, AMazeCell* To, float Weight){
