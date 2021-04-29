@@ -30,8 +30,6 @@ MazeGenerationCreation::~MazeGenerationCreation()
 
 void MazeGenerationCreation::StandardMazeCreation() {
     InitializeMaze();
-
-    TempMaze = (*Maze);
     
     CreateObstacle(MazeObstacle);
     CreateRooms();
@@ -129,7 +127,6 @@ void MazeGenerationCreation::CreateRoomSize2() {
 // Wrapper for recursion depth visit
 void MazeGenerationCreation::CreateMazeWrapper(int I, int J) {
     TArray<AMazeCell*> Neighbors;
-    TempMaze[I].Remove((*Maze)[I][J]);
     (*Maze)[I][J]->bIsVisited = true;
     //if I am not a room.
     if ((*Maze)[I][J]->NumberRoom == -1) {
@@ -161,8 +158,25 @@ void MazeGenerationCreation::CreateMazeWrapper(int I, int J) {
             Neighbors.Empty();
             CheckForNeighbors(Neighbors, I, J);
         }
-    } else
+    } else{
         (*Rooms)[(*Maze)[I][J]->NumberRoom].bDoor = true;
+
+    //I was developping the 
+        /*if(J+2 < 10){
+         
+            (*Maze)[I][J + 1]->HideWall(2);
+            (*Maze)[I][J + 2]->HideWall(4);
+
+            CreateMazeWrapper(I, J + 2); 
+
+        }else if (I+2 < 10){
+            
+            (*Maze)[I + 1][J]->HideWall(3);
+            (*Maze)[I + 2][J]->HideWall(1);
+
+            CreateMazeWrapper(I + 2, J);
+        }*/
+    }
 }
 
 // Start the maze creation from (RowExtr, ColumnExtr)
@@ -348,7 +362,6 @@ void MazeGenerationCreation::RoomWallHide(TArray<AMazeCell*>& Room, int rowExtr,
             (*Maze)[rowExtr + i][columnExtr + j]->NumberRoom = Pos;
             (*Maze)[rowExtr + i][columnExtr + j]->HideWall(FirstIndice);
             (*Maze)[rowExtr + i][columnExtr + j]->HideWall(SecondIndice);
-            TempMaze[rowExtr + i].Remove((*Maze)[rowExtr + i][columnExtr + j]);
             Room.Add((*Maze)[rowExtr + i][columnExtr + j]);
         }
     }
