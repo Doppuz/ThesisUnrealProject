@@ -13,6 +13,8 @@
 
 #include "CharacterController.generated.h"
 
+class AGunController;
+
 UCLASS()
 class THESISUNREALPROJECT_API ACharacterController : public ACharacter{
 	GENERATED_BODY()
@@ -35,6 +37,7 @@ public:
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis); 
+	void Shoot();
 
 protected:
 	// Called when the game starts or when spawned
@@ -48,4 +51,10 @@ private:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AGunController> GunClass;
+
+	UPROPERTY()
+	AGunController* Gun;
 };

@@ -12,24 +12,23 @@
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
 #include "../GameManager/MazegenerationPopulate.h"
+#include "../Gun/GunController.h"
 
 // Sets default values
 ACharacterController::ACharacterController(){
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationRoll = false;
-	bUseControllerRotationYaw = false;
-
-	GetCharacterMovement()->bOrientRotationToMovement = true;
+	//GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 600.0f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
 	CameraArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("ArmComponent"));
 	CameraArmComponent->SetupAttachment(RootComponent);
-	CameraArmComponent->TargetArmLength = 500.f;
+	
+	CameraArmComponent->bUsePawnControlRotation = true;
+	CameraArmComponent->TargetArmLength = 1000.f;
 	CameraArmComponent->bUsePawnControlRotation = true;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
@@ -38,29 +37,16 @@ ACharacterController::ACharacterController(){
 	CameraComponent->bUsePawnControlRotation = false;
 }
 
-void ACharacterController::MoveForward(float Axis) {
-	
-	FRotator Rotation = Controller->GetControlRotation();
-	FRotator YawRotation(0.f,Rotation.Yaw,0.f);
-
-	FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-
-	AddMovementInput(Direction,Axis);
-
-}
-
-void ACharacterController::MoveRight(float Axis) {
-	FRotator Rotation = Controller->GetControlRotation();
-	FRotator YawRotation(0.f,Rotation.Yaw,0.f);
-
-	FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-	AddMovementInput(Direction,Axis);
-}
 
 // Called when the game starts or when spawned
 void ACharacterController::BeginPlay(){
 	Super::BeginPlay();
+
+	Gun = GetWorld()->SpawnActor<AGunController>(GunClass);
+	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
+	Gun->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform,TEXT("WeaponSocket"));
+	Gun->SetOwner(this);
+
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ACharacterController::OnOverlap);
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACharacterController::OnHit);
 }
@@ -80,9 +66,32 @@ void ACharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	PlayerInputComponent->BindAction("Jump",IE_Pressed,this,&ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump",IE_Released,this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Shoot",IE_Pressed,this, &ACharacterController::Shoot);
 
 	PlayerInputComponent->BindAxis("MoveForward",this,&ACharacterController::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight",this,&ACharacterController::MoveRight);
+}
+
+void ACharacterController::MoveForward(float Axis) {
+	/*FRotator Rotation = Controller->GetControlRotation();
+	FRotator YawRotation(0.f,Rotation.Yaw,0.f);
+
+	FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);*/
+
+	AddMovementInput(GetActorForwardVector() * Axis);
+}
+
+void ACharacterController::MoveRight(float Axis) {
+	/*FRotator Rotation = Controller->GetControlRotation();
+	FRotator YawRotation(0.f,Rotation.Yaw,0.f);
+
+	FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);*/
+
+	AddMovementInput(GetActorRightVector() * Axis);
+}
+
+void ACharacterController::Shoot() {
+	Gun->PullTrigger();
 }
 
 void ACharacterController::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
