@@ -28,11 +28,10 @@ ACharacterController::ACharacterController(){
 	CameraArmComponent->SetupAttachment(RootComponent);
 	
 	CameraArmComponent->bUsePawnControlRotation = true;
-	CameraArmComponent->TargetArmLength = 1000.f;
-	CameraArmComponent->bUsePawnControlRotation = true;
+	CameraArmComponent->TargetArmLength = 500.f;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	CameraComponent->SetupAttachment(CameraArmComponent,USpringArmComponent::SocketName);
+	CameraComponent->SetupAttachment(CameraArmComponent);
 
 	CameraComponent->bUsePawnControlRotation = false;
 }
@@ -54,7 +53,6 @@ void ACharacterController::BeginPlay(){
 // Called every frame
 void ACharacterController::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input

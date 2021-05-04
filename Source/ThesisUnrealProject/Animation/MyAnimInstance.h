@@ -23,6 +23,9 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Generic")
 	float Angle;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Generic")
+	FRotator AngleArmRotation;
+
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 };
