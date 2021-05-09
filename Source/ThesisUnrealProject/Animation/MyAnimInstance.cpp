@@ -3,10 +3,15 @@
 
 #include "MyAnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
-
+#include "../Character/CharacterController.h"
 
 UMyAnimInstance::UMyAnimInstance() {
     Speed = 0.f;
+}
+
+void UMyAnimInstance::SetAttack() {
+    //Attack = !Attack;
+    //PlayAnimMontage(Montage,1, NAME_None);
 }
 
 void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
@@ -15,6 +20,8 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
     AActor* Own = GetOwningActor();
 
     if(Own != nullptr){
+
+        ACharacterController* CharController = Cast<ACharacterController>(Own); 
 
         Speed = Own->GetVelocity().Size();
  
@@ -32,7 +39,26 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds) {
             if(PawnController != nullptr){
                 PawnController->GetPlayerViewPoint(Position,Rotation);
                 AngleArmRotation = FRotator(0,0,-Rotation.Pitch);
+
             }
+
+            //Aim Rotation
+            FRotator ControlRotator = Pawn->GetControlRotation();
+            FRotator ActorRotator = Pawn->GetActorRotation();
+            PitchAngle = UKismetMathLibrary::NormalizedDeltaRotator(ControlRotator,ActorRotator).Pitch;
+
+            if(CharController != nullptr){
+                IsRestPose = CharController->GetRestPose();
+                //Acceleration
+                if(CharController->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0){
+                    IsAcceleration = true;
+                    UE_LOG(LogTemp,Warning,TEXT("%f"),CharController->GetCharacterMovement()->GetCurrentAcceleration().Size() );
+                }else{
+                    IsAcceleration = false;
+                }
+                
+            }
+
         }
         
     }else

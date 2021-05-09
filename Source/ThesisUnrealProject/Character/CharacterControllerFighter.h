@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -11,17 +9,17 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
-#include "CharacterController.generated.h"
+#include "CharacterControllerFighter.generated.h"
 
 class AGunController;
 
 UCLASS()
-class THESISUNREALPROJECT_API ACharacterController : public ACharacter{
+class THESISUNREALPROJECT_API ACharacterControllerFighter : public ACharacter{
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ACharacterController();
+	ACharacterControllerFighter();
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -38,7 +36,8 @@ public:
 	void MoveForward(float Axis);
 	void MoveRight(float Axis); 
 	void Shoot();
-	bool GetRestPose();
+
+	bool AttackPose;
 
 protected:
 	// Called when the game starts or when spawned
@@ -52,13 +51,21 @@ private:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 	
-	void ChangePose();
+	void ChangeAttack();
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AGunController> GunClass;
 
 	UPROPERTY()
 	AGunController* Gun;
+	
+	class UMyAnimInstance* Anim;
 
-	bool RestPose;
+	FTimerHandle AttackTimer;
+
+	//Animation
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Generic", meta =(AllowPrivateAccess = "true"))
+	UAnimMontage* Montage;
+
 };

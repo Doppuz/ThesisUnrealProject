@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CharacterController.h"
+#include "CharacterControllerFighter.h"
 #include "Components/CapsuleComponent.h"
 #include "../Elements/CoinController.h"
 #include "../Elements/CrateElements.h"
@@ -13,9 +13,10 @@
 #include "DestructibleComponent.h"
 #include "../GameManager/MazegenerationPopulate.h"
 #include "../Gun/GunController.h"
+#include "../Animation/MyAnimInstance.h"
 
 // Sets default values
-ACharacterController::ACharacterController(){
+ACharacterControllerFighter::ACharacterControllerFighter(){
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -34,29 +35,29 @@ ACharacterController::ACharacterController(){
 	CameraComponent->SetupAttachment(CameraArmComponent);
 
 	CameraComponent->bUsePawnControlRotation = false;
+
+	AttackPose = false;
 }
 
 
 // Called when the game starts or when spawned
-void ACharacterController::BeginPlay(){
+void ACharacterControllerFighter::BeginPlay(){
 	Super::BeginPlay();
 
-	Gun = GetWorld()->SpawnActor<AGunController>(GunClass);
-	GetMesh()->HideBoneByName(TEXT("weapon_r"), EPhysBodyOp::PBO_None);
-	Gun->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform,TEXT("WeaponSocket"));
-	Gun->SetOwner(this);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ACharacterControllerFighter::OnOverlap);
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACharacterControllerFighter::OnHit);
 
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ACharacterController::OnOverlap);
-	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ACharacterController::OnHit);
+	Anim = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
+	
 }
 
 // Called every frame
-void ACharacterController::Tick(float DeltaTime){
+void ACharacterControllerFighter::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 }
 
 // Called to bind functionality to input
-void ACharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent){
+void ACharacterControllerFighter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent){
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAxis("Turn",this,&APawn::AddControllerYawInput);
@@ -64,14 +65,14 @@ void ACharacterController::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	PlayerInputComponent->BindAction("Jump",IE_Pressed,this,&ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump",IE_Released,this, &ACharacter::StopJumping);
-	PlayerInputComponent->BindAction("Shoot",IE_Pressed,this, &ACharacterController::Shoot);
-	PlayerInputComponent->BindAction("Aim",IE_Pressed,this, &ACharacterController::ChangePose);
+	PlayerInputComponent->BindAction("Shoot",IE_Pressed,this, &ACharacterControllerFighter::ChangeAttack);
+	PlayerInputComponent->BindAction("Aim",IE_Pressed,this, &ACharacterControllerFighter::ChangeAttack);
 
-	PlayerInputComponent->BindAxis("MoveForward",this,&ACharacterController::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight",this,&ACharacterController::MoveRight);
+	PlayerInputComponent->BindAxis("MoveForward",this,&ACharacterControllerFighter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight",this,&ACharacterControllerFighter::MoveRight);
 }
 
-void ACharacterController::MoveForward(float Axis) {
+void ACharacterControllerFighter::MoveForward(float Axis) {
 	/*FRotator Rotation = Controller->GetControlRotation();
 	FRotator YawRotation(0.f,Rotation.Yaw,0.f);
 
@@ -80,7 +81,7 @@ void ACharacterController::MoveForward(float Axis) {
 	AddMovementInput(GetActorForwardVector() * Axis);
 }
 
-void ACharacterController::MoveRight(float Axis) {
+void ACharacterControllerFighter::MoveRight(float Axis) {
 	/*FRotator Rotation = Controller->GetControlRotation();
 	FRotator YawRotation(0.f,Rotation.Yaw,0.f);
 
@@ -89,19 +90,21 @@ void ACharacterController::MoveRight(float Axis) {
 	AddMovementInput(GetActorRightVector() * Axis);
 }
 
-void ACharacterController::Shoot() {
-	Gun->PullTrigger();
+void ACharacterControllerFighter::Shoot() {
+	//Gun->PullTrigger();
 }
 
-bool ACharacterController::GetRestPose() {
-	return RestPose;
+
+void ACharacterControllerFighter::ChangeAttack() {
+	//if(!GetWorld()->GetTimerManager().TimerExists(AttackTimer)){
+		//Anim->SetAttack();	
+	    PlayAnimMontage(Montage,1, NAME_None);
+		
+		//GetWorld()->GetTimerManager().SetTimer(AttackTimer,Anim,&UMyAnimInstance::SetAttack,0.85f,false);
+	//}
 }
 
-void ACharacterController::ChangePose() {
-	RestPose = !RestPose;
-}
-
-void ACharacterController::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
+void ACharacterControllerFighter::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	//Collision with the coins.
 	if(OtherActor->IsA(ACoinController::StaticClass())){
 	
@@ -132,7 +135,7 @@ void ACharacterController::OnOverlap(UPrimitiveComponent * HitComponent, AActor 
 
 }
 
-void ACharacterController::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
+void ACharacterControllerFighter::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 	if(OtherActor->IsA(ACrateElements::StaticClass()) && OtherComponent->IsA(UDestructibleComponent::StaticClass())){
 		//UGameplayStatics::ApplyDamage(OtherActor,10,this->GetController(),this,UDamageType::StaticClass());
 		UDestructibleComponent* DC = Cast<UDestructibleComponent>(OtherComponent);
@@ -142,4 +145,5 @@ void ACharacterController::OnHit(UPrimitiveComponent* HitComponent, AActor* Othe
 			DC->ApplyRadiusDamage(100.f,Hit.ImpactPoint, 10.f,30000.f,true);
 	}
 }
+
 

@@ -11,17 +11,17 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
-#include "CharacterController.generated.h"
+#include "CharacterPawnQuad.generated.h"
 
 class AGunController;
 
 UCLASS()
-class THESISUNREALPROJECT_API ACharacterController : public ACharacter{
+class THESISUNREALPROJECT_API ACharacterPawnQuad : public APawn{
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ACharacterController();
+	ACharacterPawnQuad();
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -29,16 +29,24 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = Camera)
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Camera)
 	USpringArmComponent* CameraArmComponent;
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = Camera)
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Camera)
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	class UBoxComponent* Collider;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	UStaticMeshComponent* Mesh;
+	
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speed)
+	float MovementSpeed;
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis); 
 	void Shoot();
-	bool GetRestPose();
 
 protected:
 	// Called when the game starts or when spawned
@@ -51,14 +59,8 @@ private:
 	
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+	//Movement
+	FVector VectorMovement;
 	
-	void ChangePose();
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AGunController> GunClass;
-
-	UPROPERTY()
-	AGunController* Gun;
-
-	bool RestPose;
 };
