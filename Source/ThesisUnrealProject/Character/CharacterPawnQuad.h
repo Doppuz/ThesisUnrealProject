@@ -14,6 +14,7 @@
 #include "CharacterPawnQuad.generated.h"
 
 class AGunController;
+class ASquaredProjectile;
 
 UCLASS()
 class THESISUNREALPROJECT_API ACharacterPawnQuad : public APawn{
@@ -40,13 +41,39 @@ public:
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	UStaticMeshComponent* Mesh;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	USceneComponent* ProjectileSpawnPosition;
+
+	//MovementParameters
 	
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speed)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Movement)
 	float MovementSpeed;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Movement)
+	float RotationSpeed;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Movement)
+	float JumpForce;
+
+	//Projectile class
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
+	TSubclassOf<ASquaredProjectile> ProjectileClass;
+	
+	//Time between 2 projectile
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
+	float ProjectileTimeout;
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis); 
+	void RotateYaw(float Axis);
+	void RotatePitch(float Axis);
+	
+	void Jump();
+	void SetJump();
+	
 	void Shoot();
+	void SetShooting();
 
 protected:
 	// Called when the game starts or when spawned
@@ -62,5 +89,18 @@ private:
 
 	//Movement
 	FVector VectorMovement;
+
+	//Rotation
+	FRotator Rotation;
+	FRotator CameraRotation;
+	FRotator InitialRotation;
+
+	//Jump
+	bool bAmIJump;
+	FTimerHandle JumpTimer;
+
+	//Shot
+	bool bAmIShooting;
+	FTimerHandle ShotTimer;
 	
 };
