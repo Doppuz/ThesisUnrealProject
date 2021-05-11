@@ -35,10 +35,17 @@ public:
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Mesh;
 
-	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category = Materials)
 	UMaterial* OrangeColor;
 
 	UFUNCTION()
 	void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 
+	int GetID();
+
+	bool bDisableOverlap;
+private:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ID, meta = (AllowPrivateAccess = "true"))
+	int ID;
 };

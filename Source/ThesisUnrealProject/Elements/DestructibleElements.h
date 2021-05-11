@@ -23,9 +23,17 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Destruction")
 	class UDestructibleComponent* DestructibleMesh;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "General")
+	int ID;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+private:
+
+	UFUNCTION()
+	void OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection);
 
 };

@@ -3,6 +3,7 @@
 
 #include "DestructibleElements.h"
 #include "DestructibleComponent.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 ADestructibleElements::ADestructibleElements(){
@@ -14,6 +15,8 @@ ADestructibleElements::ADestructibleElements(){
 
 	DestructibleMesh = CreateDefaultSubobject<UDestructibleComponent>(TEXT("DestructibleMesh"));
 	DestructibleMesh->SetupAttachment(RootComponent);
+
+	ID = 0;
 }
 
 // Called when the game starts or when spawned
@@ -21,6 +24,7 @@ void ADestructibleElements::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	DestructibleMesh->OnComponentFracture.AddDynamic(this,&ADestructibleElements::OnComponentFracture);
 }
 
 // Called every frame
@@ -30,3 +34,17 @@ void ADestructibleElements::Tick(float DeltaTime)
 
 }
 
+
+void ADestructibleElements::OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection) {
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		
+		switch(ID){
+			case 0:
+				//Case 0 is the choice of the first puzzle. I want to avoid to solve the puzzle after the gate is destroyed.
+				GameMode->bGateDestroyed = true;
+			break;
+			default:
+				UE_LOG(LogTemp,Warning,TEXT("Error in squaredProjectile, no ID for this Destr Component"));
+		}
+
+}

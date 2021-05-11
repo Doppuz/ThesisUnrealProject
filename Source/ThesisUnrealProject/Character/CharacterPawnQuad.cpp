@@ -5,7 +5,6 @@
 #include "Components/BoxComponent.h"
 #include "../Elements/CoinController.h"
 #include "../Elements/CrateElements.h"
-#include "../CustomGameMode.h"
 #include "Blueprint/UserWidget.h"
 #include "../UI/UIWidget.h"
 #include "../GameManager/MazeCell.h"

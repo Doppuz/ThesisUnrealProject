@@ -3,6 +3,7 @@
 
 #include "PuzzleButton.h"
 #include "Components/BoxComponent.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 APuzzleButton::APuzzleButton(){
@@ -20,6 +21,8 @@ APuzzleButton::APuzzleButton(){
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Collider);
+
+	bDisableOverlap = false;
 }
 
 // Called when the game starts or when spawned
@@ -35,6 +38,17 @@ void APuzzleButton::Tick(float DeltaTime){
 }
 
 void APuzzleButton::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
-	Mesh->SetMaterial(0,OrangeColor);
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	
+	if(!bDisableOverlap && !GameMode->bGateDestroyed){
+		bDisableOverlap = true;
+		Mesh->SetMaterial(0,OrangeColor);
+		GameMode->CheckPuzzle1(this);
+	}
+	
+}
+
+int APuzzleButton::GetID() {
+	return ID;
 }
 

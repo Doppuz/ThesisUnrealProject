@@ -6,6 +6,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "../Elements/DestructibleElements.h"
 #include "DestructibleComponent.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 ASquaredProjectile::ASquaredProjectile(){
@@ -36,13 +37,21 @@ void ASquaredProjectile::Tick(float DeltaTime){
 
 void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 	if(OtherActor->IsA(ADestructibleElements::StaticClass()) && OtherComponent->IsA(UDestructibleComponent::StaticClass())){
-		//UGameplayStatics::ApplyDamage(OtherActor,10,this->GetController(),this,UDamageType::StaticClass());
+
 		UDestructibleComponent* DC = Cast<UDestructibleComponent>(OtherComponent);
-		//ACrateElements* Actor = Cast<ACrateElements>(OtherActor);
+		ADestructibleElements* Actor = Cast<ADestructibleElements>(OtherActor);
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		
-		//if(!Actor->IAmDestructed)
-		//DC->ApplyDamage(1.f,Hit.ImpactPoint,Hit.ImpactPoint,50000.f);
-		DC->ApplyRadiusDamage(1.f,Hit.ImpactPoint, 1000.f,50000.f,true);
+
+		switch(Actor->ID){
+			case 0:
+				//Case 0 is the choice of the first puzzle. I want to avoid to destroy the gate if I solved the puzzle.
+				if(!GameMode->bSolvedPuzzle1 && !GameMode->bGateDestroyed)
+					DC->ApplyRadiusDamage(1.f,Hit.ImpactPoint, 1.f,50000.f,true);
+			break;
+			default:
+				UE_LOG(LogTemp,Warning,TEXT("Error in squaredProjectile, no ID for this Destr Component"));
+		}
 	}
 
 	Destroy();
