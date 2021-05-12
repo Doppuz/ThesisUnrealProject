@@ -6,7 +6,7 @@ public class ThesisUnrealProject : ModuleRules
 {
 	public ThesisUnrealProject(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "GameplayTasks" });
 
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
