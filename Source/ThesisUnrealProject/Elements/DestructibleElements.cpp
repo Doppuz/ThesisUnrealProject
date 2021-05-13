@@ -4,6 +4,7 @@
 #include "DestructibleElements.h"
 #include "DestructibleComponent.h"
 #include "../GameModeTutorial.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 ADestructibleElements::ADestructibleElements(){
@@ -13,8 +14,11 @@ ADestructibleElements::ADestructibleElements(){
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
 
+	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
+	Collider->SetupAttachment(RootComponent);
+
 	DestructibleMesh = CreateDefaultSubobject<UDestructibleComponent>(TEXT("DestructibleMesh"));
-	DestructibleMesh->SetupAttachment(RootComponent);
+	DestructibleMesh->SetupAttachment(Collider);
 
 	ID = 0;
 }
@@ -37,7 +41,9 @@ void ADestructibleElements::Tick(float DeltaTime)
 
 void ADestructibleElements::OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection) {
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		
+	Collider->SetCollisionProfileName(TEXT("IgnorePawnProjectile"),false);
+	bIAmDestroyed = true;
+
 		switch(ID){
 			case 0:
 				//Case 0 is the choice of the first puzzle. I want to avoid to solve the puzzle after the gate is destroyed.

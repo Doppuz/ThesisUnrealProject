@@ -27,6 +27,11 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "General")
 	class UProjectileMovementComponent* MovementProjectile;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "Damage")
+	float Damage;
+
+	AActor* MyOwner;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

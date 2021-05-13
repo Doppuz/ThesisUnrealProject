@@ -7,6 +7,8 @@
 #include "../Elements/DestructibleElements.h"
 #include "DestructibleComponent.h"
 #include "../GameModeTutorial.h"
+#include "../Character/CharacterPawnQuad.h"
+#include "../AI/QuadAIController.h"
 
 // Sets default values
 ASquaredProjectile::ASquaredProjectile(){
@@ -20,6 +22,8 @@ ASquaredProjectile::ASquaredProjectile(){
 	Mesh->SetupAttachment(RootComponent);
 
 	MovementProjectile = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
+
+	Damage = 10.f;
 }
 
 // Called when the game starts or when spawned
@@ -36,21 +40,29 @@ void ASquaredProjectile::Tick(float DeltaTime){
 }
 
 void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
-	if(OtherActor->IsA(ADestructibleElements::StaticClass()) && OtherComponent->IsA(UDestructibleComponent::StaticClass())){
+	if(OtherActor->IsA(ADestructibleElements::StaticClass())){
 
-		UDestructibleComponent* DC = Cast<UDestructibleComponent>(OtherComponent);
 		ADestructibleElements* Actor = Cast<ADestructibleElements>(OtherActor);
+		UDestructibleComponent* DC = Actor->DestructibleMesh;
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		
 
 		switch(Actor->ID){
 			case 0:
 				//Case 0 is the choice of the first puzzle. I want to avoid to destroy the gate if I solved the puzzle.
-				if(!GameMode->bSolvedPuzzle1 && !GameMode->bGateDestroyed)
-					DC->ApplyRadiusDamage(1.f,Hit.ImpactPoint, 1.f,50000.f,true);
+				if(!GameMode->bSolvedPuzzle1 && !Actor->bIAmDestroyed)
+					DC->ApplyRadiusDamage(1.f,Hit.ImpactPoint, 1.f,30000.f,true);
 			break;
 			default:
 				UE_LOG(LogTemp,Warning,TEXT("Error in squaredProjectile, no ID for this Destr Component"));
+		}
+	}else if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+		FPointDamageEvent DamageEvent(Damage,Hit,this->GetVelocity(),nullptr);
+		if(MyOwner != nullptr){
+			ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(MyOwner);
+
+			if(MyPawn != nullptr)
+				OtherActor->TakeDamage(Damage, DamageEvent,MyPawn->GetController(),this);
 		}
 	}
 

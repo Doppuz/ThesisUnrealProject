@@ -22,10 +22,15 @@ public:
 	USceneComponent* Root;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Destruction")
+	class UBoxComponent* Collider;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Destruction")
 	class UDestructibleComponent* DestructibleMesh;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "General")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	int ID;
+
+	bool bIAmDestroyed;
 
 protected:
 	// Called when the game starts or when spawned

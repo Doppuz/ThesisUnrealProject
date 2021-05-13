@@ -11,47 +11,36 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
-#include "CharacterPawnQuad.generated.h"
+#include "PawnAllyNPC.generated.h"
 
 class AGunController;
 class ASquaredProjectile;
 
 UCLASS()
-class THESISUNREALPROJECT_API ACharacterPawnQuad : public APawn{
+class THESISUNREALPROJECT_API APawnAllyNPC : public APawn{
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ACharacterPawnQuad();
+	APawnAllyNPC();
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Camera)
-	USpringArmComponent* CameraArmComponent;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Camera)
-	UCameraComponent* CameraComponent;
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	USceneComponent* Root;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	class UBoxComponent* Collider;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	UBoxComponent* TriggerDialog;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	USceneComponent* ProjectileSpawnPosition;
-
-	//MovementParameters
-	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Movement)
-	float MovementSpeed;
-	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Movement)
-	float RotationSpeed;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Movement)
 	float JumpForce;
@@ -70,11 +59,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	float Health;
-
-	void MoveForward(float Axis);
-	void MoveRight(float Axis); 
-	void RotateYaw(float Axis);
-	void RotatePitch(float Axis);
 	
 	void Jump();
 	void SetJump();
@@ -86,24 +70,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	
 	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+
+	/** The widget class we will use as our dialog menu. */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UMG Game")
+    TSubclassOf<UUserWidget> WidgetClass;
 
 private:
 
 	UFUNCTION()
-	void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
+	void OnBeginOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 	
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
-
-	//Movement
-	FVector VectorMovement;
-
-	//Rotation
-	FRotator Rotation;
-	FRotator CameraRotation;
-	FRotator InitialRotation;
+    void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	//Jump
 	bool bAmIJump;

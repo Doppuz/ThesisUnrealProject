@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Blueprint/UserWidget.h"
 #include "GameModeTutorial.generated.h"
 
 class APuzzleButton;
@@ -28,9 +29,18 @@ public:
 	bool bSolvedPuzzle1;
 	bool bGateDestroyed;
 
+	/** Remove the current menu widget and create a new one from the specified class, if provided. */
+    UFUNCTION(BlueprintCallable, Category = "UMG Game")
+    void ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass);
+
+	UUserWidget* GetCurrentWidgetUI();
+
 protected:
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+    UUserWidget* CurrentWidget;
 
 private:
 
@@ -49,7 +59,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"), Category = Door)
 	TSubclassOf<ADoor> DoorClass;
 
-	ADoor* DoorToOpen;
+	//DoorToOpen (Puzzle 1)
+    TArray<AActor*> DoorActors;
 
 	//Timers
 	FTimerHandle ResetPuzzle1Timer;

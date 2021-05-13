@@ -13,6 +13,7 @@
 #include "../GameManager/MazegenerationPopulate.h"
 #include "../Projectile/SquaredProjectile.h"
 #include "Components/PrimitiveComponent.h"
+#include "../AI/QuadAIController.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -50,6 +51,7 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	bAmIJump = false;
 	bAmIShooting = false;
 	ProjectileTimeout = 0.5f;
+	MaxHealth = 30;
 }
 
 
@@ -57,9 +59,25 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 void ACharacterPawnQuad::BeginPlay(){
 	Super::BeginPlay();
 
-	InitialRotation = CameraComponent->GetComponentRotation();
+	Health = MaxHealth;
+	//InitialRotation = CameraComponent->GetComponentRotation();
 	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ACharacterControllerQuad::OnOverlap);
 	//Collider->OnComponentHit.AddDynamic(this, &ACharacterPawnQuad::OnHit);
+}
+
+float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) {
+	
+	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	Health -= FMath::Min(Health,Damage);
+
+	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), Health);
+
+	if(Health == 0 && GetController()->IsA(AQuadAIController::StaticClass()))
+		Destroy();
+
+	return Damage;
+
 }
 
 // Called every frame
@@ -138,7 +156,10 @@ void ACharacterPawnQuad::SetJump(){
 
 void ACharacterPawnQuad::Shoot() {
 	if(!bAmIShooting){
-		GetWorld()->SpawnActor<ASquaredProjectile>(ProjectileClass,ProjectileSpawnPosition->GetComponentLocation(),ProjectileSpawnPosition->GetComponentRotation());
+		ASquaredProjectile* Projectile = GetWorld()->SpawnActor<ASquaredProjectile>(ProjectileClass,ProjectileSpawnPosition->GetComponentLocation(),ProjectileSpawnPosition->GetComponentRotation());
+
+		Projectile->MyOwner = this;
+
 		bAmIShooting = true;
 		GetWorld()->GetTimerManager().SetTimer(ShotTimer,this, &ACharacterPawnQuad::SetShooting, ProjectileTimeout, false);
 	}

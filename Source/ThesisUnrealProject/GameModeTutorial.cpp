@@ -12,12 +12,7 @@ AGameModeTutorial::AGameModeTutorial() {
 }
 
 void AGameModeTutorial::BeginPlay() {
-    TArray<AActor*> TempActors;
-    UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(),DoorClass,TEXT("Puzzle1"),TempActors);
-    if(TempActors.Num() > 0)
-        DoorToOpen = Cast<ADoor>(TempActors[0]);
-    else
-        UE_LOG(LogTemp,Warning,TEXT("No door found."));
+    UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(),DoorClass,TEXT("Puzzle1"),DoorActors);
 }
 
 void AGameModeTutorial::Tick(float DeltaTime) {
@@ -40,7 +35,12 @@ void AGameModeTutorial::CheckPuzzle1(APuzzleButton* Button) {
         if(bSolvedPuzzle1){
             for(APuzzleButton* Butt : ElemsPuzzle1)
                 Butt->Mesh->SetMaterial(0,GreenColor);
-            DoorToOpen->bOpenDoor = true;
+
+            for(AActor* Door : DoorActors){
+                ADoor* DoorToOpen = Cast<ADoor>(Door);
+                DoorToOpen->bOpenDoor = true;
+            }
+            
         }else{
             for(APuzzleButton* Butt : ElemsPuzzle1)
                 Butt->Mesh->SetMaterial(0,RedColor);
@@ -58,4 +58,23 @@ void AGameModeTutorial::ResetPuzzle1() {
     }
     bSolvedPuzzle1 = true;
     ElemsPuzzle1.Empty();
+}
+
+//Assign the UI widget passed as parameter to the screen.
+void AGameModeTutorial::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass) {
+    if (CurrentWidget != nullptr){
+        CurrentWidget->RemoveFromViewport();
+        CurrentWidget = nullptr;
+    }
+    if (NewWidgetClass != nullptr){
+        CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), NewWidgetClass);
+        if (CurrentWidget != nullptr){
+            CurrentWidget->AddToViewport();
+        }
+    }
+}
+
+//Get current UI
+UUserWidget* AGameModeTutorial::GetCurrentWidgetUI() {
+    return CurrentWidget;
 }
