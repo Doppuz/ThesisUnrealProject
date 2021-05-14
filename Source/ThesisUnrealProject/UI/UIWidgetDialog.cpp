@@ -3,14 +3,27 @@
 
 #include "UIWidgetDialog.h"
 #include "Components/TextBlock.h"
+#include "UIBox.h"
+#include "UserWidgetList.h"
 
 void UUIWidgetDialog::NativeConstruct() {
     
     Super::NativeConstruct();
-    DialogText->SetText(FText::FromString("Can you see your text?"));
 
 }
 
-void UUIWidgetDialog::SetDialogText(int CoinAmount) {    
-    DialogText->SetText(FText::FromString("Can you see your text?"));
+void UUIWidgetDialog::HideSizeBox() {
+    TextBox->HideSizeBox();
+}
+
+void UUIWidgetDialog::ViewSizeBox() {
+    TextBox->ViewSizeBox();
+}
+
+void UUIWidgetDialog::HideAnswerBox() {
+    AnswerBox->HideListBox();
+}
+
+void UUIWidgetDialog::ViewAnswerBox() {
+    AnswerBox->ViewListBox();
 }

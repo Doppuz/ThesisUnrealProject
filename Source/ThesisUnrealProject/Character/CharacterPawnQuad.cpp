@@ -33,21 +33,17 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 
 	ProjectileSpawnPosition->SetRelativeLocation(FVector(60.f,0,0));
 
-	/*CameraArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("ArmComponent"));
+	CameraArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("ArmComponent"));
 	CameraArmComponent->SetupAttachment(RootComponent);
 	
-	CameraArmComponent->bUsePawnControlRotation = true;
-	CameraArmComponent->TargetArmLength = 500.f;*/
+	CameraArmComponent->TargetArmLength = 500.f;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	CameraComponent->SetupAttachment(RootComponent);
-
-	CameraComponent->SetRelativeLocation(FVector(703.433655,0.000244,762.538635));
-	CameraComponent->SetRelativeRotation(FRotator(0,-48,0));
+	CameraComponent->SetupAttachment(CameraArmComponent);
 
 	MovementSpeed = 400.f;
 	RotationSpeed = 400.f;
-	JumpForce = 300.f;
+	JumpForce = 500.f;
 	bAmIJump = false;
 	bAmIShooting = false;
 	ProjectileTimeout = 0.5f;
@@ -60,7 +56,7 @@ void ACharacterPawnQuad::BeginPlay(){
 	Super::BeginPlay();
 
 	Health = MaxHealth;
-	//InitialRotation = CameraComponent->GetComponentRotation();
+	InitialRotation = CameraArmComponent->GetComponentRotation();
 	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ACharacterControllerQuad::OnOverlap);
 	//Collider->OnComponentHit.AddDynamic(this, &ACharacterPawnQuad::OnHit);
 }
@@ -94,9 +90,9 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 	}
 
 	if(!CameraRotation.IsZero()){
-		float CurrentPitch = CameraComponent->GetComponentRotation().Pitch;
-		//if((CurrentPitch + CameraRotation.Pitch) > InitialRotation.Pitch - 30 && (CurrentPitch + CameraRotation.Pitch) < InitialRotation.Pitch + 30)
-		//	CameraComponent->AddLocalRotation(CameraRotation);
+		float CurrentPitch = CameraArmComponent->GetComponentRotation().Pitch;
+		if((CurrentPitch + CameraRotation.Pitch) > InitialRotation.Pitch - 20 && (CurrentPitch + CameraRotation.Pitch) < InitialRotation.Pitch + 20)
+			CameraArmComponent->AddLocalRotation(CameraRotation);
 	}
 
 }
@@ -167,6 +163,17 @@ void ACharacterPawnQuad::Shoot() {
 
 void ACharacterPawnQuad::SetShooting() {
 	bAmIShooting = false;
+}
+
+void ACharacterPawnQuad::SetMousePointer(bool Enable) {
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+		PlayerController->bShowMouseCursor = Enable;
+		PlayerController->bEnableClickEvents = Enable;
+		PlayerController->bEnableMouseOverEvents = Enable;
+		/*if(Enable)
+			PlayerController->SetInputMode(FInputModeUIOnly());
+		else
+			PlayerController->SetInputMode(FInputModeGameOnly());*/
 }
 
 void ACharacterPawnQuad::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {

@@ -4,29 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "UIWidgetDialog.generated.h"
+#include "UIAnswer.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THESISUNREALPROJECT_API UUIWidgetDialog : public UUserWidget
+class THESISUNREALPROJECT_API UUIAnswer : public UUserWidget
 {
 	GENERATED_BODY()
 	
-
-public:
+public: 
 
 	void NativeConstruct() override;
 
 	UPROPERTY(meta = (BindWidget))
-	class UUIBox* TextBox;
-	
-	UPROPERTY(meta = (BindWidget))
-	class UUserWidgetList* AnswerBox;
+	class UTextBlock* Answer;
 
-	void HideSizeBox();
-	void ViewSizeBox();
-	void HideAnswerBox();
+	void SetAnswerText();
+
 	void ViewAnswerBox();
+	void HideAnswerBox();
+
 };

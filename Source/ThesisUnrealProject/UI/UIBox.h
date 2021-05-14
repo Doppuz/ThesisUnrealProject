@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "UIWidgetDialog.generated.h"
+#include "Components/SizeBox.h"
+#include "UIBox.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THESISUNREALPROJECT_API UUIWidgetDialog : public UUserWidget
+class THESISUNREALPROJECT_API UUIBox : public UUserWidget
 {
 	GENERATED_BODY()
 	
@@ -20,13 +21,17 @@ public:
 	void NativeConstruct() override;
 
 	UPROPERTY(meta = (BindWidget))
-	class UUIBox* TextBox;
-	
-	UPROPERTY(meta = (BindWidget))
-	class UUserWidgetList* AnswerBox;
+	class UTextBlock* NPCName;
 
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DialogText;
+
+	UPROPERTY(meta = (BindWidget))
+	USizeBox* BoxContainer;
+
+
+	void SetNPCName(FString Name);
+	void SetDialogText(FString Dialog);
 	void HideSizeBox();
 	void ViewSizeBox();
-	void HideAnswerBox();
-	void ViewAnswerBox();
 };

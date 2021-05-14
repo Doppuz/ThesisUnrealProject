@@ -5,6 +5,8 @@
 #include "Elements/PuzzleButton.h"
 #include "Elements/Door.h"
 #include "Kismet/GameplayStatics.h"
+#include "UI/UIWidgetDialog.h"
+#include "UI/UIBox.h"
 
 AGameModeTutorial::AGameModeTutorial() {
     bSolvedPuzzle1 = false;
@@ -13,6 +15,10 @@ AGameModeTutorial::AGameModeTutorial() {
 
 void AGameModeTutorial::BeginPlay() {
     UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(),DoorClass,TEXT("Puzzle1"),DoorActors);
+    ChangeMenuWidget(WidgetClass);
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
+    DialogWidget->HideSizeBox();
+    DialogWidget->TextBox->BoxContainer->Visibility = ESlateVisibility::Hidden;
 }
 
 void AGameModeTutorial::Tick(float DeltaTime) {

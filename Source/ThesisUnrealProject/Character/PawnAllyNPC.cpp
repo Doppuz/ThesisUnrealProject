@@ -7,6 +7,7 @@
 #include "../Elements/CrateElements.h"
 #include "Blueprint/UserWidget.h"
 #include "../UI/UIWidget.h"
+#include "../UI/UIWidgetDialog.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
@@ -112,15 +113,37 @@ void APawnAllyNPC::SetShooting() {
 
 void APawnAllyNPC::OnBeginOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+		
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->ChangeMenuWidget(WidgetClass);
+		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+		
+		APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+		PlayerController->SetInputMode(FInputModeGameAndUI());
+		PlayerPawn->SetMousePointer(true);
+
+		if(DialogWidget != nullptr){
+			DialogWidget->ViewSizeBox();
+			DialogWidget->ViewAnswerBox();
+		}
 	}
 
 }
 
 void APawnAllyNPC::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->ChangeMenuWidget(nullptr);
+		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+		PlayerPawn->SetMousePointer(false);
+		
+		APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+		PlayerController->SetInputMode(FInputModeGameOnly());
+
+		if(DialogWidget != nullptr){
+			DialogWidget->HideSizeBox();
+			DialogWidget->HideAnswerBox();
+		}
 	}
 }
