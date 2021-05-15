@@ -66,6 +66,15 @@ public:
 	void Shoot();
 	void SetShooting();
 
+	//SpeakDialog 
+	void Speak();
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
+	TArray<FString> Speech;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
+	int SpeechContator;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

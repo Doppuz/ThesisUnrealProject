@@ -16,4 +16,8 @@ class THESISUNREALPROJECT_API UBTTaskSpeak : public UBTTask_BlackboardBase
 
 public:
 	UBTTaskSpeak();
+
+protected: 
+
+	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
 };

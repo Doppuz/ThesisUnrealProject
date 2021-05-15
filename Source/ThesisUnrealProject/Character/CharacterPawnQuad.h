@@ -85,6 +85,9 @@ public:
 	//Player Mouse Pointer
 	void SetMousePointer(bool);
 
+	//Reference to the NPC who I am talking with
+	class APawnAllyNPC* AllyNPC;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

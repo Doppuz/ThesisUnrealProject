@@ -18,7 +18,7 @@ void UUIBox::SetNPCName(FString Name) {
 }
 
 void UUIBox::SetDialogText(FString Dialog) {
-    DialogText->SetText(FText::FromString("Can you see your text?"));
+    DialogText->SetText(FText::FromString(Dialog));
 }
 
 void UUIBox::HideSizeBox() {

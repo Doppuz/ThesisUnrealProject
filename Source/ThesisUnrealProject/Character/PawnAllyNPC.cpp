@@ -16,6 +16,7 @@
 #include "Components/PrimitiveComponent.h"
 #include "../AI/QuadAIController.h"
 #include "../GameModeTutorial.h"
+#include "../UI/UIBox.h"
 
 // Sets default values
 APawnAllyNPC::APawnAllyNPC(){
@@ -50,6 +51,7 @@ APawnAllyNPC::APawnAllyNPC(){
 	bAmIShooting = false;
 	ProjectileTimeout = 0.5f;
 	MaxHealth = 30;
+	SpeechContator = 0;
 }
 
 
@@ -111,12 +113,22 @@ void APawnAllyNPC::SetShooting() {
 	bAmIShooting = false;
 }
 
+void APawnAllyNPC::Speak() {
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+	
+	if(Speech.Num() > SpeechContator){
+		DialogWidget->TextBox->SetDialogText(Speech[SpeechContator]);
+	}
+}
+
 void APawnAllyNPC::OnBeginOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 		
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+		PlayerPawn->AllyNPC = this;
 		
 		APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 		PlayerController->SetInputMode(FInputModeGameAndUI());
@@ -137,7 +149,8 @@ void APawnAllyNPC::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 		PlayerPawn->SetMousePointer(false);
-		
+		PlayerPawn->AllyNPC = nullptr;
+
 		APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 		PlayerController->SetInputMode(FInputModeGameOnly());
 

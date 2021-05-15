@@ -14,6 +14,7 @@
 #include "../Projectile/SquaredProjectile.h"
 #include "Components/PrimitiveComponent.h"
 #include "../AI/QuadAIController.h"
+#include "PawnAllyNPC.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -48,6 +49,7 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	bAmIShooting = false;
 	ProjectileTimeout = 0.5f;
 	MaxHealth = 30;
+	AllyNPC = nullptr;
 }
 
 
@@ -151,13 +153,17 @@ void ACharacterPawnQuad::SetJump(){
 }
 
 void ACharacterPawnQuad::Shoot() {
-	if(!bAmIShooting){
-		ASquaredProjectile* Projectile = GetWorld()->SpawnActor<ASquaredProjectile>(ProjectileClass,ProjectileSpawnPosition->GetComponentLocation(),ProjectileSpawnPosition->GetComponentRotation());
+	if(AllyNPC == nullptr){
+		if(!bAmIShooting){
+			ASquaredProjectile* Projectile = GetWorld()->SpawnActor<ASquaredProjectile>(ProjectileClass,ProjectileSpawnPosition->GetComponentLocation(),ProjectileSpawnPosition->GetComponentRotation());
 
-		Projectile->MyOwner = this;
+			Projectile->MyOwner = this;
 
-		bAmIShooting = true;
-		GetWorld()->GetTimerManager().SetTimer(ShotTimer,this, &ACharacterPawnQuad::SetShooting, ProjectileTimeout, false);
+			bAmIShooting = true;
+			GetWorld()->GetTimerManager().SetTimer(ShotTimer,this, &ACharacterPawnQuad::SetShooting, ProjectileTimeout, false);
+		}
+	}else{
+		AllyNPC->SpeechContator = (AllyNPC->SpeechContator + 1) % AllyNPC->Speech.Num();
 	}
 }
 
