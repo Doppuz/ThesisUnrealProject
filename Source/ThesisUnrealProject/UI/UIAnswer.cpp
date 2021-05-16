@@ -3,13 +3,14 @@
 
 #include "UIAnswer.h"
 #include "Components/TextBlock.h"
+#include "Components/Button.h"
 
 void UUIAnswer::NativeConstruct() {
     Super::NativeConstruct();
 }
 
-void UUIAnswer::SetAnswerText() {
-    Answer->SetText(FText::FromString("Can you see your text?"));
+void UUIAnswer::SetAnswerText(FString Text) {
+    Answer->SetText(FText::FromString(Text));
 }
 
 void UUIAnswer::ViewAnswerBox() {

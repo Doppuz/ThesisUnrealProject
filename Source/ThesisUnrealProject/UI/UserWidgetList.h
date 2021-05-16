@@ -20,13 +20,34 @@ class THESISUNREALPROJECT_API UUserWidgetList : public UUserWidget
 public:
 	void NativeConstruct() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnswerWidget")
-    TSubclassOf<UUIAnswer> AnswerWidgetClass;
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AnswerWidget")
+    //TSubclassOf<UUIAnswer> AnswerWidgetClass;
+	
+	//UPROPERTY(meta = (BindWidget))
+	//class UListView* List;
+
+	UPROPERTY(meta = (BindWidget))
+	UUIAnswer* Answer1;
 	
 	UPROPERTY(meta = (BindWidget))
-	class UListView* List;
+	UUIAnswer* Answer2;
 
-	void AddElement();
+	//TArray<UUIAnswer*> AnswerList;
+
+	//void AddElement();
+
+	//Change the value of the text in the answers.
+	//void SetText(TArray<FString>);
+	//void ResetList();
+
+	void SetAnswer1(FString);
+	void SetAnswer2(FString);
+
+	UFUNCTION()
+	void OnButton1Clicked();
+	
+	UFUNCTION()
+	void OnButton2Clicked();
 
 	void ViewListBox();
 	void HideListBox();

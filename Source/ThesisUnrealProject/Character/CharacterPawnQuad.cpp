@@ -29,6 +29,11 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
 
+	EquipmentMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EquipmentMesh"));
+	EquipmentMesh->SetupAttachment(RootComponent);
+
+	EquipmentMesh->SetWorldLocation(FVector(0,0,32));
+
 	ProjectileSpawnPosition = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPosition"));
 	ProjectileSpawnPosition->SetupAttachment(RootComponent);
 
@@ -97,6 +102,7 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 			CameraArmComponent->AddLocalRotation(CameraRotation);
 	}
 
+	LaneTrac
 }
 
 // Called to bind functionality to input
@@ -162,8 +168,12 @@ void ACharacterPawnQuad::Shoot() {
 			bAmIShooting = true;
 			GetWorld()->GetTimerManager().SetTimer(ShotTimer,this, &ACharacterPawnQuad::SetShooting, ProjectileTimeout, false);
 		}
-	}else{
+	}else if(AllyNPC->SpeechContator != AllyNPC->QuestionAt){
 		AllyNPC->SpeechContator = (AllyNPC->SpeechContator + 1) % AllyNPC->Speech.Num();
+		if(AllyNPC->SpeechContator == AllyNPC->QuestionAt)
+			AllyNPC->Ask();
+		else
+			AllyNPC->Speak();
 	}
 }
 

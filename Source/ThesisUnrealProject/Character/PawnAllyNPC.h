@@ -16,6 +16,18 @@
 class AGunController;
 class ASquaredProjectile;
 
+USTRUCT(BlueprintType)
+struct FQuestion{
+	GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere,BlueprintReadWrite)
+    FString Question;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+    TArray<FString> Answers;
+
+};
+
 UCLASS()
 class THESISUNREALPROJECT_API APawnAllyNPC : public APawn{
 	GENERATED_BODY()
@@ -75,6 +87,31 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
 	int SpeechContator;
 
+	//QuestionsDialog
+	void Ask();
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
+	TArray<FQuestion> Questions;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
+	int AnswerContator;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
+	int QuestionAt;
+
+
+
+	//Methods for Questions Response.
+	
+//------ Equipment --------
+	void Equipment();
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Equipment)
+	UStaticMesh* MeshToEquip;
+
+//---- General ---
+	void Choice(int);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -87,11 +124,15 @@ protected:
 
 private:
 
+//---- Start / End Dialog
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 	
 	UFUNCTION()
     void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	void StartInteraction();
+	void EndInteraction();
 
 	//Jump
 	bool bAmIJump;

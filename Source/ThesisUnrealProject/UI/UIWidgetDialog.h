@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "UserWidgetList.h"
 #include "UIWidgetDialog.generated.h"
 
 /**
@@ -23,7 +24,7 @@ public:
 	class UUIBox* TextBox;
 	
 	UPROPERTY(meta = (BindWidget))
-	class UUserWidgetList* AnswerBox;
+	UUserWidgetList* AnswerBox;
 
 	void HideSizeBox();
 	void ViewSizeBox();

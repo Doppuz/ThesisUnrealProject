@@ -9,7 +9,7 @@
 void UUIWidgetDialog::NativeConstruct() {
     
     Super::NativeConstruct();
-
+    HideAnswerBox();
 }
 
 void UUIWidgetDialog::HideSizeBox() {

@@ -17,6 +17,7 @@
 #include "../AI/QuadAIController.h"
 #include "../GameModeTutorial.h"
 #include "../UI/UIBox.h"
+#include "../UI/UserWidgetList.h"
 
 // Sets default values
 APawnAllyNPC::APawnAllyNPC(){
@@ -122,10 +123,47 @@ void APawnAllyNPC::Speak() {
 	}
 }
 
+void APawnAllyNPC::Ask() {
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+	
+	if(Questions.Num() > AnswerContator){
+		
+		DialogWidget->TextBox->SetDialogText(Questions[AnswerContator].Question);
+		TArray<FString> TempAnswers = Questions[AnswerContator].Answers;
+
+		DialogWidget->AnswerBox->SetAnswer1(Questions[AnswerContator].Answers[0]);
+		DialogWidget->AnswerBox->SetAnswer2(Questions[AnswerContator].Answers[1]);
+
+		DialogWidget->ViewAnswerBox();
+	}
+}
+
+void APawnAllyNPC::Equipment() {
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PlayerPawn->EquipmentMesh->SetStaticMesh(MeshToEquip);
+}
+
+void APawnAllyNPC::Choice(int Answer) {
+	switch(Answer){
+		case 0:
+			Equipment();
+			SpeechContator += 1;
+			Speak();
+			break;
+		case 1:
+			SpeechContator += 1;
+			Speak();
+			break;
+		default:
+			break;
+	}
+}
+
 void APawnAllyNPC::OnBeginOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 		
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		/*AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 		PlayerPawn->AllyNPC = this;
@@ -136,8 +174,8 @@ void APawnAllyNPC::OnBeginOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
 		if(DialogWidget != nullptr){
 			DialogWidget->ViewSizeBox();
-			DialogWidget->ViewAnswerBox();
-		}
+			Speak();
+		}*/
 	}
 
 }
@@ -145,7 +183,7 @@ void APawnAllyNPC::OnBeginOverlap(UPrimitiveComponent * HitComponent, AActor * O
 void APawnAllyNPC::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		/*AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 		PlayerPawn->SetMousePointer(false);
@@ -157,6 +195,38 @@ void APawnAllyNPC::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 		if(DialogWidget != nullptr){
 			DialogWidget->HideSizeBox();
 			DialogWidget->HideAnswerBox();
-		}
+		}*/
+	}
+}
+
+void APawnAllyNPC::StartInteraction() {
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PlayerPawn->AllyNPC = this;
+		
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+	PlayerController->SetInputMode(FInputModeGameAndUI());
+	PlayerPawn->SetMousePointer(true);
+
+	if(DialogWidget != nullptr){
+		DialogWidget->ViewSizeBox();
+		Speak();
+	}
+}
+
+void APawnAllyNPC::EndInteraction() {
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PlayerPawn->SetMousePointer(false);
+	PlayerPawn->AllyNPC = nullptr;
+
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+	PlayerController->SetInputMode(FInputModeGameOnly());
+
+	if(DialogWidget != nullptr){
+		DialogWidget->HideSizeBox();
+		DialogWidget->HideAnswerBox();
 	}
 }
