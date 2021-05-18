@@ -5,11 +5,14 @@
 #include "Components/TextBlock.h"
 #include "UIBox.h"
 #include "UserWidgetList.h"
+#include "Components/SizeBox.h"
+#include "Components/TextBlock.h"
 
 void UUIWidgetDialog::NativeConstruct() {
     
     Super::NativeConstruct();
     HideAnswerBox();
+    HidePopUp();
 }
 
 void UUIWidgetDialog::HideSizeBox() {
@@ -26,4 +29,16 @@ void UUIWidgetDialog::HideAnswerBox() {
 
 void UUIWidgetDialog::ViewAnswerBox() {
     AnswerBox->ViewListBox();
+}
+
+void UUIWidgetDialog::ViewPopUp() {
+    PressPopUp->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UUIWidgetDialog::HidePopUp() {
+    PressPopUp->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UUIWidgetDialog::SetPopUpText(FString Text) {
+    PopUpText->SetText(FText::FromString(Text));
 }

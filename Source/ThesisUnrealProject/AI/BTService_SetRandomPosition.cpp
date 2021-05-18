@@ -13,7 +13,7 @@ UBTService_SetRandomPosition::UBTService_SetRandomPosition() {
 void UBTService_SetRandomPosition::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
 
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
-    AQuadAIController* AIController = Cast<AQuadAIController>(OwnerComp.GetAIOwner());
+    AAIController* AIController = OwnerComp.GetAIOwner();
 
     if(AIController == nullptr)
         return;

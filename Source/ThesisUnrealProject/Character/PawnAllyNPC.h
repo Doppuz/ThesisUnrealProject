@@ -10,11 +10,13 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "PawnInteractiveClass.h"
 
 #include "PawnAllyNPC.generated.h"
 
 class AGunController;
 class ASquaredProjectile;
+
 
 USTRUCT(BlueprintType)
 struct FQuestion{
@@ -29,7 +31,7 @@ struct FQuestion{
 };
 
 UCLASS()
-class THESISUNREALPROJECT_API APawnAllyNPC : public APawn{
+class THESISUNREALPROJECT_API APawnAllyNPC : public APawnInteractiveClass{
 	GENERATED_BODY()
 
 public:
@@ -39,23 +41,23 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	USceneComponent* Root;
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Camera)
+	USpringArmComponent* CameraArmComponent;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Camera)
+	UCameraComponent* CameraComponent;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	class UBoxComponent* Collider;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	UBoxComponent* TriggerDialog;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	USceneComponent* ProjectileSpawnPosition;
+	UStaticMeshComponent* EquipmentMesh;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Movement)
-	float JumpForce;
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	USceneComponent* ProjectileSpawnPosition;
 
 	//Projectile class
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
@@ -71,14 +73,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	float Health;
-	
-	void Jump();
-	void SetJump();
-	
-	void Shoot();
-	void SetShooting();
 
-	//SpeakDialog 
+	//LineTracing max range
+	float MaxRange;
+
+		//SpeakDialog 
 	void Speak();
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
@@ -93,13 +92,17 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
 	TArray<FQuestion> Questions;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
+	//Actually right now it doesn't do anything.
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
 	int AnswerContator;
 	
+	//it determines the position of the question. If it is -1, the question has already been done.
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
 	int QuestionAt;
 
-
+	//Ally ID
+	UPROPERTY(VisibleAnywhere)
+	int ID;
 
 	//Methods for Questions Response.
 	
@@ -116,30 +119,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
-
-	/** The widget class we will use as our dialog menu. */
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UMG Game")
-    TSubclassOf<UUserWidget> WidgetClass;
-
 private:
 
-//---- Start / End Dialog
-	UFUNCTION()
-	void OnBeginOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
-	
-	UFUNCTION()
-    void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	//InteractiveActor
+	APawnInteractiveClass* InteractiveActor;
 
-	void StartInteraction();
-	void EndInteraction();
-
-	//Jump
-	bool bAmIJump;
-	FTimerHandle JumpTimer;
-
-	//Shot
-	bool bAmIShooting;
-	FTimerHandle ShotTimer;
-	
+	void StartInteraction() override;
+	void EndInteraction() override;
 };

@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "PawnInteractiveClass.h"
 
 #include "CharacterPawnQuad.generated.h"
 
@@ -84,12 +85,18 @@ public:
 	
 	void Shoot();
 	void SetShooting();
+	
+	//Stop movement after clicking E.
+	bool bStopMovement;
 
 	//Player Mouse Pointer
 	void SetMousePointer(bool);
 
 	//Reference to the NPC who I am talking with
 	class APawnAllyNPC* AllyNPC;
+
+	//LineTracing max range
+	float MaxRange;
 
 protected:
 	// Called when the game starts or when spawned
@@ -121,5 +128,14 @@ private:
 	//Shot
 	bool bAmIShooting;
 	FTimerHandle ShotTimer;
+
+	//InteractiveActor
+	APawnInteractiveClass* InteractiveActor;
+
+	//methods to speak with an NPC when I am cole enought to its.
+	void Speak();
 	
+	//Enemy ID
+	UPROPERTY(VisibleAnywhere)
+	int ID;
 };

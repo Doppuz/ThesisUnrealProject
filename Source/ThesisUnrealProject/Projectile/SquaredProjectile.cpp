@@ -46,16 +46,24 @@ void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		UDestructibleComponent* DC = Actor->DestructibleMesh;
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		
-
 		switch(Actor->ID){
 			case 0:
 				//Case 0 is the choice of the first puzzle. I want to avoid to destroy the gate if I solved the puzzle.
-				if(!GameMode->bSolvedPuzzle1 && !Actor->bIAmDestroyed)
-					DC->ApplyRadiusDamage(1.f,Hit.ImpactPoint, 1.f,30000.f,true);
+				if(!GameMode->bSolvedPuzzle1 && !Actor->bIAmDestroyed){
+					Actor->HitMesh(Hit);
+					//DC->ApplyRadiusDamage(1.f,Hit.ImpactPoint, 1.f,3000.f,true);
+					//DC->ApplyDamage(1.1f,Hit.ImpactPoint, Hit.ImpactPoint, 30000);
+				}
 			break;
+			case 1:
+				if(GameMode->bEnemyDefeated && !Actor->bIAmDestroyed)
+					Actor->HitMesh(Hit);
+				break;
 			default:
 				UE_LOG(LogTemp,Warning,TEXT("Error in squaredProjectile, no ID for this Destr Component"));
+				break;
 		}
+
 	}else if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 		FPointDamageEvent DamageEvent(Damage,Hit,this->GetVelocity(),nullptr);
 		if(MyOwner != nullptr){

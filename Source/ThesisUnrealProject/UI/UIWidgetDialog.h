@@ -26,8 +26,18 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UUserWidgetList* AnswerBox;
 
+	UPROPERTY(meta = (BindWidget))
+	class USizeBox* PressPopUp;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* PopUpText;
+
 	void HideSizeBox();
 	void ViewSizeBox();
 	void HideAnswerBox();
 	void ViewAnswerBox();
+	void ViewPopUp();
+	void HidePopUp();
+
+	void SetPopUpText(FString);
 };

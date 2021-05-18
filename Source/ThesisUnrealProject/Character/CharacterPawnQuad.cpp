@@ -15,6 +15,10 @@
 #include "Components/PrimitiveComponent.h"
 #include "../AI/QuadAIController.h"
 #include "PawnAllyNPC.h"
+#include "DrawDebugHelpers.h"
+#include "PawnInteractiveClass.h"
+#include "../GameModeTutorial.h"
+#include "../UI/UIWidgetDialog.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -55,6 +59,9 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	ProjectileTimeout = 0.5f;
 	MaxHealth = 30;
 	AllyNPC = nullptr;
+	MaxRange = 300.f;
+	InteractiveActor = nullptr;
+	bStopMovement = false;
 }
 
 
@@ -68,6 +75,7 @@ void ACharacterPawnQuad::BeginPlay(){
 	//Collider->OnComponentHit.AddDynamic(this, &ACharacterPawnQuad::OnHit);
 }
 
+//Add damage. If healt == 0, destroy the actor. Switch case to apply changes to the manager.
 float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) {
 	
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -76,9 +84,18 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), Health);
 
-	if(Health == 0 && GetController()->IsA(AQuadAIController::StaticClass()))
+	if(Health == 0 && GetController()->IsA(AQuadAIController::StaticClass())){
 		Destroy();
-
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		switch(ID){
+			case 0:
+				GameMode->bEnemyDefeated = true;
+				break;
+			default:
+				break;
+		}
+	}
+		
 	return Damage;
 
 }
@@ -87,22 +104,50 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 void ACharacterPawnQuad::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 
-	if(!VectorMovement.IsZero()){
+	//Move the player if it's not interacting with an NPC.
+	if(!VectorMovement.IsZero() && !bStopMovement){
 		FVector NewLocation = GetActorLocation() + (VectorMovement * DeltaTime * MovementSpeed);
 		AddActorLocalOffset(VectorMovement);
 	}
 
-	if(!Rotation.IsZero()){
+	//Add rotation
+	if(!Rotation.IsZero() && !bStopMovement){
 		AddActorLocalRotation(Rotation);
 	}
 
-	if(!CameraRotation.IsZero()){
+	//Add rotation
+	if(!CameraRotation.IsZero() && !bStopMovement){
 		float CurrentPitch = CameraArmComponent->GetComponentRotation().Pitch;
 		if((CurrentPitch + CameraRotation.Pitch) > InitialRotation.Pitch - 20 && (CurrentPitch + CameraRotation.Pitch) < InitialRotation.Pitch + 20)
 			CameraArmComponent->AddLocalRotation(CameraRotation);
 	}
 
-	LaneTrac
+	if(GetController()->IsA(APlayerController::StaticClass())){
+		FHitResult Hit;
+
+		FVector EndPosition = GetActorLocation() + GetActorRotation().Vector() * MaxRange;
+
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(this);
+
+		GetWorld()->LineTraceSingleByChannel(Hit,GetActorLocation(),EndPosition,ECollisionChannel::ECC_GameTraceChannel5,CollisionParams);
+
+		//DrawDebugLine(GetWorld(),GetActorLocation(),EndPosition, FColor::Red,true);
+
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+
+		if(Hit.GetActor() != nullptr){
+			
+			InteractiveActor = Cast<APawnInteractiveClass>(Hit.GetActor());
+
+			DialogWidget->ViewPopUp();
+		
+		}else{
+			InteractiveActor = nullptr;
+			DialogWidget->HidePopUp();
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -113,7 +158,7 @@ void ACharacterPawnQuad::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAxis("LookUp",this,&ACharacterPawnQuad::RotatePitch);
 
 	PlayerInputComponent->BindAction("Jump",IE_Pressed,this,&ACharacterPawnQuad::Jump);
-	//PlayerInputComponent->BindAction("Jump",IE_Released,this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Speak",IE_Released,this, &ACharacterPawnQuad::Speak);
 	PlayerInputComponent->BindAction("Shoot",IE_Pressed,this, &ACharacterPawnQuad::Shoot);
 
 	PlayerInputComponent->BindAxis("MoveForward",this,&ACharacterPawnQuad::MoveForward);
@@ -161,6 +206,7 @@ void ACharacterPawnQuad::SetJump(){
 void ACharacterPawnQuad::Shoot() {
 	if(AllyNPC == nullptr){
 		if(!bAmIShooting){
+
 			ASquaredProjectile* Projectile = GetWorld()->SpawnActor<ASquaredProjectile>(ProjectileClass,ProjectileSpawnPosition->GetComponentLocation(),ProjectileSpawnPosition->GetComponentRotation());
 
 			Projectile->MyOwner = this;
@@ -168,12 +214,6 @@ void ACharacterPawnQuad::Shoot() {
 			bAmIShooting = true;
 			GetWorld()->GetTimerManager().SetTimer(ShotTimer,this, &ACharacterPawnQuad::SetShooting, ProjectileTimeout, false);
 		}
-	}else if(AllyNPC->SpeechContator != AllyNPC->QuestionAt){
-		AllyNPC->SpeechContator = (AllyNPC->SpeechContator + 1) % AllyNPC->Speech.Num();
-		if(AllyNPC->SpeechContator == AllyNPC->QuestionAt)
-			AllyNPC->Ask();
-		else
-			AllyNPC->Speak();
 	}
 }
 
@@ -199,5 +239,22 @@ void ACharacterPawnQuad::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 
 void ACharacterPawnQuad::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 	
+}
+
+void ACharacterPawnQuad::Speak() {
+	if(InteractiveActor != nullptr){
+		if(bStopMovement){
+
+			if(AllyNPC->SpeechContator != AllyNPC->QuestionAt){
+				AllyNPC->SpeechContator = AllyNPC->SpeechContator + 1;
+				if(AllyNPC->SpeechContator == AllyNPC->QuestionAt)
+					AllyNPC->Ask();
+				else
+					AllyNPC->Speak();
+			}
+
+		}else
+			InteractiveActor->StartInteraction();
+	}
 }
 

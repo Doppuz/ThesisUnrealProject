@@ -30,7 +30,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	int ID;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Destroy")
+	float Health;
+
+	float CurrentDamage;
+
 	bool bIAmDestroyed;
+
+	void HitMesh(const FHitResult& Hit);
 
 protected:
 	// Called when the game starts or when spawned

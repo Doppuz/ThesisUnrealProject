@@ -7,52 +7,58 @@
 #include "../Elements/CrateElements.h"
 #include "Blueprint/UserWidget.h"
 #include "../UI/UIWidget.h"
-#include "../UI/UIWidgetDialog.h"
-#include "../Character/CharacterPawnQuad.h"
+#include "../GameManager/MazeCell.h"
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
 #include "../GameManager/MazegenerationPopulate.h"
 #include "../Projectile/SquaredProjectile.h"
 #include "Components/PrimitiveComponent.h"
 #include "../AI/QuadAIController.h"
+#include "PawnAllyNPC.h"
+#include "DrawDebugHelpers.h"
+#include "PawnInteractiveClass.h"
 #include "../GameModeTutorial.h"
+#include "../UI/UIWidgetDialog.h"
 #include "../UI/UIBox.h"
 #include "../UI/UserWidgetList.h"
+#include "../Elements/Door.h"
+#include "../Character/CharacterPawnQuad.h"
 
 // Sets default values
 APawnAllyNPC::APawnAllyNPC(){
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = Root;
-
-	TriggerDialog = CreateDefaultSubobject<UBoxComponent>(TEXT("DialogCollider"));
-	TriggerDialog->SetupAttachment(RootComponent);
-	TriggerDialog->SetWorldScale3D(FVector(4.f,4.f,4.f));
-	TriggerDialog->SetCollisionProfileName(TEXT("Trigger"),true);
 
 	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
-	Collider->SetupAttachment(TriggerDialog);
-	Collider->SetWorldScale3D(FVector(0.3f,0.3f,0.3f));
+	RootComponent = Collider;
+
 	Collider->SetSimulatePhysics(true);
-	Collider->SetCollisionProfileName(TEXT("Pawn"),true);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(Collider);
-	Mesh->SetWorldScale3D(FVector(0.65f,0.65f,0.65f));
+	Mesh->SetupAttachment(RootComponent);
+
+	EquipmentMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EquipmentMesh"));
+	EquipmentMesh->SetupAttachment(RootComponent);
+
+	EquipmentMesh->SetWorldLocation(FVector(0,0,32));
 
 	ProjectileSpawnPosition = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPosition"));
 	ProjectileSpawnPosition->SetupAttachment(RootComponent);
 
 	ProjectileSpawnPosition->SetRelativeLocation(FVector(60.f,0,0));
 
-	JumpForce = 300.f;
-	bAmIJump = false;
-	bAmIShooting = false;
+	CameraArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("ArmComponent"));
+	CameraArmComponent->SetupAttachment(RootComponent);
+	
+	CameraArmComponent->TargetArmLength = 500.f;
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	CameraComponent->SetupAttachment(CameraArmComponent);
+
 	ProjectileTimeout = 0.5f;
 	MaxHealth = 30;
-	SpeechContator = 0;
+	InteractiveActor = nullptr;
+	MaxRange = 300.f;
 }
 
 
@@ -61,71 +67,60 @@ void APawnAllyNPC::BeginPlay(){
 	Super::BeginPlay();
 
 	Health = MaxHealth;
-	TriggerDialog->OnComponentBeginOverlap.AddDynamic(this,&APawnAllyNPC::OnBeginOverlap);
-	TriggerDialog->OnComponentEndOverlap.AddDynamic(this,&APawnAllyNPC::OnEndOverlap);
-
-}
-
-float APawnAllyNPC::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) {
-	
-	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	Health -= FMath::Min(Health,Damage);
-
-	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), Health);
-
-	if(Health == 0 && GetController()->IsA(AQuadAIController::StaticClass()))
-		Destroy();
-
-	return Damage;
-
 }
 
 // Called every frame
 void APawnAllyNPC::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 
+    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
+
+	FVector NewPos = (GetActorLocation() - PlayerPawn->GetActorLocation());
+    NewPos.Normalize();
+
+    SetActorRotation(FMath::RInterpTo(GetActorRotation(),NewPos.Rotation(),DeltaTime * 100,0.4));
+
 }
 
-void APawnAllyNPC::Jump() {
-	if(!bAmIJump){
-		Collider->AddImpulse(GetActorUpVector() * JumpForce,NAME_None,true);
-		bAmIJump = true;
-		GetWorld()->GetTimerManager().SetTimer(JumpTimer,this,&APawnAllyNPC::SetJump,(JumpForce / 5)/100,false);
-	}
-}
-
-void APawnAllyNPC::SetJump(){
-	bAmIJump = false;
-}
-
-void APawnAllyNPC::Shoot() {
-	if(!bAmIShooting){
-		ASquaredProjectile* Projectile = GetWorld()->SpawnActor<ASquaredProjectile>(ProjectileClass,ProjectileSpawnPosition->GetComponentLocation(),ProjectileSpawnPosition->GetComponentRotation());
-
-		Projectile->MyOwner = this;
-
-		bAmIShooting = true;
-		GetWorld()->GetTimerManager().SetTimer(ShotTimer,this, &APawnAllyNPC::SetShooting, ProjectileTimeout, false);
-	}
-}
-
-void APawnAllyNPC::SetShooting() {
-	bAmIShooting = false;
-}
-
+/*Change the text in the dialog box. If I have already answer the question, It shows only the last answer.*/
 void APawnAllyNPC::Speak() {
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 	
+	DialogWidget->SetPopUpText("Press E to continue...");
+	
 	if(Speech.Num() > SpeechContator){
-		DialogWidget->TextBox->SetDialogText(Speech[SpeechContator]);
+		if(QuestionAt != -1)
+			DialogWidget->TextBox->SetDialogText(Speech[SpeechContator]);
+		else{
+			DialogWidget->TextBox->SetDialogText(Speech[Speech.Num() - 1]);
+			SpeechContator = Speech.Num() - 1;
+		}
+	}else{
+		SpeechContator = 0;
+		AnswerContator = 0;
+		QuestionAt = -1;
+
+		switch(ID){
+			case 0:
+                Cast<ADoor>(GameMode->DoorActors[2])->bOpenDoor = true;
+				UE_LOG(LogTemp, Warning, TEXT("AA %i"),GameMode->DoorActors.Num());
+				break;
+			default:
+				break;
+		}
+
+		EndInteraction();
 	}
 }
 
+//It asks the question.
 void APawnAllyNPC::Ask() {
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+	
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PlayerPawn->SetMousePointer(true);
 	
 	if(Questions.Num() > AnswerContator){
 		
@@ -135,24 +130,36 @@ void APawnAllyNPC::Ask() {
 		DialogWidget->AnswerBox->SetAnswer1(Questions[AnswerContator].Answers[0]);
 		DialogWidget->AnswerBox->SetAnswer2(Questions[AnswerContator].Answers[1]);
 
+		DialogWidget->SetPopUpText("Choose the answer!");
+
 		DialogWidget->ViewAnswerBox();
+
 	}
 }
 
+//It equips the object.
 void APawnAllyNPC::Equipment() {
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 	PlayerPawn->EquipmentMesh->SetStaticMesh(MeshToEquip);
 }
 
+//Methods called after question onclick event.
 void APawnAllyNPC::Choice(int Answer) {
+	
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PlayerPawn->SetMousePointer(false);
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+	PlayerController->SetInputMode(FInputModeGameOnly());
+
 	switch(Answer){
 		case 0:
 			Equipment();
 			SpeechContator += 1;
 			Speak();
+			SpeechContator += 1;
 			break;
 		case 1:
-			SpeechContator += 1;
+			SpeechContator += 2;
 			Speak();
 			break;
 		default:
@@ -160,54 +167,19 @@ void APawnAllyNPC::Choice(int Answer) {
 	}
 }
 
-void APawnAllyNPC::OnBeginOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
-	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
-		
-		/*AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
-		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-		PlayerPawn->AllyNPC = this;
-		
-		APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
-		PlayerController->SetInputMode(FInputModeGameAndUI());
-		PlayerPawn->SetMousePointer(true);
-
-		if(DialogWidget != nullptr){
-			DialogWidget->ViewSizeBox();
-			Speak();
-		}*/
-	}
-
-}
-
-void APawnAllyNPC::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
-
-		/*AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
-		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-		PlayerPawn->SetMousePointer(false);
-		PlayerPawn->AllyNPC = nullptr;
-
-		APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
-		PlayerController->SetInputMode(FInputModeGameOnly());
-
-		if(DialogWidget != nullptr){
-			DialogWidget->HideSizeBox();
-			DialogWidget->HideAnswerBox();
-		}*/
-	}
-}
-
+//It shows the dialog and change the mode from game to input.
 void APawnAllyNPC::StartInteraction() {
+	
+	Super::StartInteraction();
+
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 	PlayerPawn->AllyNPC = this;
+	PlayerPawn->bStopMovement = true;
 		
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameAndUI());
-	PlayerPawn->SetMousePointer(true);
 
 	if(DialogWidget != nullptr){
 		DialogWidget->ViewSizeBox();
@@ -216,11 +188,15 @@ void APawnAllyNPC::StartInteraction() {
 }
 
 void APawnAllyNPC::EndInteraction() {
+
+	Super::EndInteraction();
+
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 	PlayerPawn->SetMousePointer(false);
 	PlayerPawn->AllyNPC = nullptr;
+	PlayerPawn->bStopMovement = false;
 
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameOnly());
@@ -228,5 +204,7 @@ void APawnAllyNPC::EndInteraction() {
 	if(DialogWidget != nullptr){
 		DialogWidget->HideSizeBox();
 		DialogWidget->HideAnswerBox();
+		DialogWidget->SetPopUpText("Press E to interact.");
 	}
 }
+

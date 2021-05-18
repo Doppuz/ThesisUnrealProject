@@ -21,6 +21,8 @@ ADestructibleElements::ADestructibleElements(){
 	DestructibleMesh->SetupAttachment(Collider);
 
 	ID = 0;
+	Health = 3;
+	CurrentDamage = 0;
 }
 
 // Called when the game starts or when spawned
@@ -38,6 +40,12 @@ void ADestructibleElements::Tick(float DeltaTime)
 
 }
 
+void ADestructibleElements::HitMesh(const FHitResult& Hit) {
+	CurrentDamage += 1;
+	if(Health == CurrentDamage)
+		DestructibleMesh->ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 3000);	
+}
+
 
 void ADestructibleElements::OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection) {
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
@@ -50,7 +58,8 @@ void ADestructibleElements::OnComponentFracture(const FVector& HitPoint, const F
 				GameMode->bGateDestroyed = true;
 			break;
 			default:
-				UE_LOG(LogTemp,Warning,TEXT("Error in squaredProjectile, no ID for this Destr Component"));
+				break;
+				//UE_LOG(LogTemp,Warning,TEXT("Error in squaredProjectile, no ID for this Destr Component"));
 		}
 
 }

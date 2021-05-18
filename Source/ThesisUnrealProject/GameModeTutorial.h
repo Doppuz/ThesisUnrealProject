@@ -29,6 +29,9 @@ public:
 	bool bSolvedPuzzle1;
 	bool bGateDestroyed;
 
+	//Gate 2
+	bool bEnemyDefeated;
+
 	/** Remove the current menu widget and create a new one from the specified class, if provided. */
     UFUNCTION(BlueprintCallable, Category = "UMG Game")
     void ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass);/** Remove the current menu widget and create a new one from the specified class, if provided. */
@@ -38,6 +41,9 @@ public:
     TSubclassOf<UUserWidget> WidgetClass;
 
 	UUserWidget* GetCurrentWidgetUI();
+
+	//Doors to be opened.
+    TArray<AActor*> DoorActors;
 
 protected:
 	
@@ -62,9 +68,6 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"), Category = Door)
 	TSubclassOf<ADoor> DoorClass;
-
-	//DoorToOpen (Puzzle 1)
-    TArray<AActor*> DoorActors;
 
 	//Timers
 	FTimerHandle ResetPuzzle1Timer;

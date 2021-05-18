@@ -11,10 +11,11 @@
 AGameModeTutorial::AGameModeTutorial() {
     bSolvedPuzzle1 = false;
     bGateDestroyed = false;
+    bEnemyDefeated = false;
 }
 
 void AGameModeTutorial::BeginPlay() {
-    UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(),DoorClass,TEXT("Puzzle1"),DoorActors);
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(),DoorClass,DoorActors);
     ChangeMenuWidget(WidgetClass);
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
     DialogWidget->HideSizeBox();
@@ -42,10 +43,11 @@ void AGameModeTutorial::CheckPuzzle1(APuzzleButton* Button) {
             for(APuzzleButton* Butt : ElemsPuzzle1)
                 Butt->Mesh->SetMaterial(0,GreenColor);
 
-            for(AActor* Door : DoorActors){
-                ADoor* DoorToOpen = Cast<ADoor>(Door);
-                DoorToOpen->bOpenDoor = true;
-            }
+                ADoor* DoorToOpen;
+                for(int i = 0; i < 2; i++){
+                    DoorToOpen = Cast<ADoor>(DoorActors[i]);
+                    DoorToOpen->bOpenDoor = true;
+                }
             
         }else{
             for(APuzzleButton* Butt : ElemsPuzzle1)
