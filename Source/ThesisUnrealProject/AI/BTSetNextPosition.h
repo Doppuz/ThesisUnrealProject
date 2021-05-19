@@ -4,20 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "BTTaskAsk.generated.h"
+#include "BTSetNextPosition.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THESISUNREALPROJECT_API UBTTaskAsk : public UBTTask_BlackboardBase
+class THESISUNREALPROJECT_API UBTSetNextPosition : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 
 public:
-	UBTTaskAsk();
+	UBTSetNextPosition();
 
 protected: 
 
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
+
+	UPROPERTY(EditAnywhere)
+	float Horizontal;
+
+	UPROPERTY(EditAnywhere)
+	float Vertical;
 };

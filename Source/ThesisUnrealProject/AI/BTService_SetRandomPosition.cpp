@@ -8,6 +8,7 @@
 
 UBTService_SetRandomPosition::UBTService_SetRandomPosition() {
     NodeName = "SetRandomPosition";
+    RandomDistance = 300.f;
 }
 
 void UBTService_SetRandomPosition::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
@@ -25,8 +26,8 @@ void UBTService_SetRandomPosition::TickNode(UBehaviorTreeComponent& OwnerComp, u
     if(!AIController->LineOfSightTo(PlayerPawn) || Distance > 1000.f){
         //AIController->ClearFocus(EAIFocusPriority::Gameplay);
         FVector StartLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("StartLocation"));
-        float AddingValueX = FMath::RandRange(-300,300);
-        float AddingValueY = FMath::RandRange(-300,300);
+        float AddingValueX = FMath::RandRange(-RandomDistance,RandomDistance);
+        float AddingValueY = FMath::RandRange(-RandomDistance,RandomDistance);
         OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("RandomLocation"),StartLocation + FVector(AddingValueX,AddingValueY,0));
     }else{    
         //AIController->SetFocus(PlayerPawn);

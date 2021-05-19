@@ -23,6 +23,9 @@
 #include "../UI/UserWidgetList.h"
 #include "../Elements/Door.h"
 #include "../Character/CharacterPawnQuad.h"
+#include "../AI/AllyQuadAIController.h"
+#include "BehaviorTree/BlackBoardComponent.h"
+#include "BehaviorTree/BehaviorTree.h"
 
 // Sets default values
 APawnAllyNPC::APawnAllyNPC(){
@@ -76,9 +79,10 @@ void APawnAllyNPC::Tick(float DeltaTime){
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
 
 	FVector NewPos = (GetActorLocation() - PlayerPawn->GetActorLocation());
+	NewPos.Z = 0;
     NewPos.Normalize();
 
-    SetActorRotation(FMath::RInterpTo(GetActorRotation(),NewPos.Rotation(),DeltaTime * 100,0.4));
+    //SetActorRotation(FMath::RInterpTo(GetActorRotation(),NewPos.Rotation(),DeltaTime * 100,0.4));
 
 }
 
@@ -177,6 +181,8 @@ void APawnAllyNPC::StartInteraction() {
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 	PlayerPawn->AllyNPC = this;
 	PlayerPawn->bStopMovement = true;
+
+	Cast<AAllyQuadAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),false);
 		
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameAndUI());
@@ -197,6 +203,8 @@ void APawnAllyNPC::EndInteraction() {
 	PlayerPawn->SetMousePointer(false);
 	PlayerPawn->AllyNPC = nullptr;
 	PlayerPawn->bStopMovement = false;
+	
+	Cast<AAllyQuadAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),true);
 
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameOnly());

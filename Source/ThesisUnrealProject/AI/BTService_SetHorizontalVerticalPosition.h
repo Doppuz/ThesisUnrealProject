@@ -4,23 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Services/BTService_BlackboardBase.h"
-#include "BTService_SetRandomPosition.generated.h"
+#include "BTService_SetHorizontalVerticalPosition.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THESISUNREALPROJECT_API UBTService_SetRandomPosition : public UBTService_BlackboardBase
+class THESISUNREALPROJECT_API UBTService_SetHorizontalVerticalPosition : public UBTService_BlackboardBase
 {
 	GENERATED_BODY()
 
 public:
-	UBTService_SetRandomPosition();
+	UBTService_SetHorizontalVerticalPosition();
 
 protected:
 
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 	UPROPERTY(EditAnywhere)
-	float RandomDistance;
+	float Horizontal;
+
+	UPROPERTY(EditAnywhere)
+	float Vertical;
 };
