@@ -62,6 +62,7 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	MaxRange = 300.f;
 	InteractiveActor = nullptr;
 	bStopMovement = false;
+	MaxRandomDistance = 300.f;
 }
 
 
@@ -147,6 +148,15 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 			InteractiveActor = nullptr;
 			DialogWidget->HidePopUp();
 		}
+	}else{
+		/*
+		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
+
+		FVector NewPos = (-GetActorLocation() + PlayerPawn->GetActorLocation());
+		NewPos.Z = 0;
+    	NewPos.Normalize();
+
+    	SetActorRotation(FMath::RInterpTo(GetActorRotation(),NewPos.Rotation(),DeltaTime * 100,0.4));*/
 	}
 }
 

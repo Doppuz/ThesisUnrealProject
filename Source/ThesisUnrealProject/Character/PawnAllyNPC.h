@@ -17,19 +17,6 @@
 class AGunController;
 class ASquaredProjectile;
 
-
-USTRUCT(BlueprintType)
-struct FQuestion{
-	GENERATED_BODY()
-
-    UPROPERTY(EditAnywhere,BlueprintReadWrite)
-    FString Question;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-    TArray<FString> Answers;
-
-};
-
 UCLASS()
 class THESISUNREALPROJECT_API APawnAllyNPC : public APawnInteractiveClass{
 	GENERATED_BODY()
@@ -77,33 +64,6 @@ public:
 	//LineTracing max range
 	float MaxRange;
 
-		//SpeakDialog 
-	void Speak();
-	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
-	TArray<FString> Speech;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
-	int SpeechContator;
-
-	//QuestionsDialog
-	void Ask();
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
-	TArray<FQuestion> Questions;
-
-	//Actually right now it doesn't do anything.
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
-	int AnswerContator;
-	
-	//it determines the position of the question. If it is -1, the question has already been done.
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
-	int QuestionAt;
-
-	//Ally ID
-	UPROPERTY(VisibleAnywhere)
-	int ID;
-
 	//Methods for Questions Response.
 	
 //------ Equipment --------
@@ -113,7 +73,11 @@ public:
 	UStaticMesh* MeshToEquip;
 
 //---- General ---
-	void Choice(int);
+	void Choice(int) override;
+
+//---- StartInteraction
+	void StartInteraction() override;
+	void EndInteraction() override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -124,6 +88,4 @@ private:
 	//InteractiveActor
 	APawnInteractiveClass* InteractiveActor;
 
-	void StartInteraction() override;
-	void EndInteraction() override;
 };

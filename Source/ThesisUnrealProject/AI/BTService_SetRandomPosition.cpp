@@ -5,10 +5,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackBoardComponent.h"
 #include "QuadAIController.h"
+#include "../Character/CharacterPawnQuad.h"
 
 UBTService_SetRandomPosition::UBTService_SetRandomPosition() {
     NodeName = "SetRandomPosition";
-    RandomDistance = 300.f;
 }
 
 void UBTService_SetRandomPosition::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
@@ -22,6 +22,8 @@ void UBTService_SetRandomPosition::TickNode(UBehaviorTreeComponent& OwnerComp, u
     APawn* AIPawn = AIController->GetPawn();
 
     float Distance = (PlayerPawn->GetActorLocation() - AIPawn->GetActorLocation()).Size();
+
+    float RandomDistance = Cast<ACharacterPawnQuad>(AIPawn)->MaxRandomDistance;
 
     if(!AIController->LineOfSightTo(PlayerPawn) || Distance > 1000.f){
         //AIController->ClearFocus(EAIFocusPriority::Gameplay);

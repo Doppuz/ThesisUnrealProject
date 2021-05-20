@@ -40,6 +40,7 @@ void ASquaredProjectile::Tick(float DeltaTime){
 }
 
 void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
+
 	if(OtherActor->IsA(ADestructibleElements::StaticClass())){
 
 		ADestructibleElements* Actor = Cast<ADestructibleElements>(OtherActor);
@@ -68,8 +69,12 @@ void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		FPointDamageEvent DamageEvent(Damage,Hit,this->GetVelocity(),nullptr);
 		if(MyOwner != nullptr){
 			ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(MyOwner);
+			APawn* OtherPawn = Cast<APawn>(OtherActor);
 
-			if(MyPawn != nullptr)
+
+			if(MyPawn != nullptr && OtherPawn != nullptr && MyPawn->GetController() && OtherPawn->GetController() &&
+				!((MyPawn->GetController()->IsA(AAIController::StaticClass())) && 
+					OtherPawn->GetController()->IsA(AAIController::StaticClass())))
 				OtherActor->TakeDamage(Damage, DamageEvent,MyPawn->GetController(),this);
 		}
 	}

@@ -93,10 +93,14 @@ public:
 	void SetMousePointer(bool);
 
 	//Reference to the NPC who I am talking with
-	class APawnAllyNPC* AllyNPC;
+	class APawnInteractiveClass* AllyNPC;
 
 	//LineTracing max range
 	float MaxRange;
+
+	//AI MaxRandomMovement	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	float MaxRandomDistance;
 
 protected:
 	// Called when the game starts or when spawned

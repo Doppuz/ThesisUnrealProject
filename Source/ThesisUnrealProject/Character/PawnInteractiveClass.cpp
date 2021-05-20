@@ -2,6 +2,15 @@
 
 
 #include "PawnInteractiveClass.h"
+#include "../GameModeTutorial.h"
+#include "../UI/UIWidgetDialog.h"
+#include "../Character/CharacterPawnQuad.h"
+#include "Kismet/GameplayStatics.h"
+#include "BehaviorTree/BlackBoardComponent.h"
+#include "AIController.h"
+#include "../UI/UIWidgetDialog.h"
+#include "../UI/UIBox.h"
+#include "../Elements/Door.h"
 
 // Sets default values
 APawnInteractiveClass::APawnInteractiveClass()
@@ -26,17 +35,109 @@ void APawnInteractiveClass::Tick(float DeltaTime)
 }
 
 // Called to bind functionality to input
-void APawnInteractiveClass::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
+void APawnInteractiveClass::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent){
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
-void APawnInteractiveClass::StartInteraction() {
+/*Change the text in the dialog box. If I have already answer the question, It shows only the last answer.*/
+void APawnInteractiveClass::Speak() {
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 	
+	DialogWidget->SetPopUpText("Press E to continue...");
+	
+	if(Speech.Num() > SpeechContator){
+		if(QuestionAt != -1)
+			DialogWidget->TextBox->SetDialogText(Speech[SpeechContator]);
+		else{
+			DialogWidget->TextBox->SetDialogText(Speech[Speech.Num() - 1]);
+			SpeechContator = Speech.Num() - 1;
+		}
+	}else{
+		SpeechContator = 0;
+		AnswerContator = 0;
+		QuestionAt = -1;
+
+		switch(ID){
+			case 0:
+                Cast<ADoor>(GameMode->DoorActors[2])->bOpenDoor = true;
+				UE_LOG(LogTemp, Warning, TEXT("AA %i"),GameMode->DoorActors.Num());
+				break;
+			default:
+				break;
+		}
+
+		EndInteraction();
+	}
+}
+
+//It asks the question.
+void APawnInteractiveClass::Ask() {
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+	
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PlayerPawn->SetMousePointer(true);
+	
+	if(Questions.Num() > AnswerContator){
+		
+		DialogWidget->TextBox->SetDialogText(Questions[AnswerContator].Question);
+		TArray<FString> TempAnswers = Questions[AnswerContator].Answers;
+
+		DialogWidget->AnswerBox->SetAnswer1(Questions[AnswerContator].Answers[0]);
+		DialogWidget->AnswerBox->SetAnswer2(Questions[AnswerContator].Answers[1]);
+
+		DialogWidget->SetPopUpText("Choose the answer!");
+
+		DialogWidget->ViewAnswerBox();
+
+	}
+}
+
+void APawnInteractiveClass::StartInteraction() {
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PlayerPawn->AllyNPC = this;
+	PlayerPawn->bStopMovement = true;
+
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),false);
+		
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+	PlayerController->SetInputMode(FInputModeGameAndUI());
+
+	if(DialogWidget != nullptr){
+		DialogWidget->ViewSizeBox();
+		Speak();
+	}
 }
 
 void APawnInteractiveClass::EndInteraction() {
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PlayerPawn->SetMousePointer(false);
+	PlayerPawn->AllyNPC = nullptr;
+	PlayerPawn->bStopMovement = false;
+	
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),true);
+
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+	PlayerController->SetInputMode(FInputModeGameOnly());
+
+	if(DialogWidget != nullptr){
+		DialogWidget->HideSizeBox();
+		DialogWidget->HideAnswerBox();
+		DialogWidget->SetPopUpText("Press E to interact.");
+	}
+}
+
+
+
+void APawnInteractiveClass::Choice(int Answer) {
 	
 }
+
+
 

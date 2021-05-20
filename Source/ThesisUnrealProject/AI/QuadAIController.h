@@ -21,7 +21,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	UBehaviorTree* BTree; 
-	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
