@@ -92,6 +92,12 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 			case 0:
 				GameMode->bEnemyDefeated = true;
 				break;
+			case 1:
+				GameMode->CheckPuzzle2(1);
+				break;
+			case 2:
+				GameMode->CheckPuzzle2(2);
+				break;
 			default:
 				break;
 		}

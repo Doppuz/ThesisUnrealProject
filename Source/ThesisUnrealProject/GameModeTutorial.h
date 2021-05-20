@@ -30,7 +30,11 @@ public:
 	bool bGateDestroyed;
 
 	//Gate 2
-	bool bEnemyDefeated;
+	bool bEnemyDefeated;	
+	bool bLeft;
+
+	//Puzzle 2
+	void CheckPuzzle2(int);
 
 	/** Remove the current menu widget and create a new one from the specified class, if provided. */
     UFUNCTION(BlueprintCallable, Category = "UMG Game")
@@ -65,7 +69,10 @@ private:
 
 	//Puzzle1
 	TArray<APuzzleButton*> ElemsPuzzle1;
-	
+
+	//Puzzle2
+	TArray<int> ElemsPuzzle2;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"), Category = Door)
 	TSubclassOf<ADoor> DoorClass;
 

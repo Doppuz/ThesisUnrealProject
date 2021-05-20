@@ -64,6 +64,15 @@ void APawnInteractiveClass::Speak() {
                 Cast<ADoor>(GameMode->DoorActors[2])->bOpenDoor = true;
 				UE_LOG(LogTemp, Warning, TEXT("AA %i"),GameMode->DoorActors.Num());
 				break;
+			case 2:
+				GameMode->CheckPuzzle2(2);
+				break;
+			case 3:
+				GameMode->CheckPuzzle2(3);
+				break;
+			case 4:
+				GameMode->CheckPuzzle2(4);
+				break;
 			default:
 				break;
 		}
@@ -102,7 +111,7 @@ void APawnInteractiveClass::StartInteraction() {
 	PlayerPawn->AllyNPC = this;
 	PlayerPawn->bStopMovement = true;
 
-	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),false);
+	//Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),false);
 		
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameAndUI());
@@ -121,7 +130,7 @@ void APawnInteractiveClass::EndInteraction() {
 	PlayerPawn->AllyNPC = nullptr;
 	PlayerPawn->bStopMovement = false;
 	
-	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),true);
+	//Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),true);
 
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameOnly());

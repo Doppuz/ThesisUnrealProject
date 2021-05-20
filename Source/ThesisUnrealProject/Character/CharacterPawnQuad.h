@@ -140,6 +140,6 @@ private:
 	void Speak();
 	
 	//Enemy ID
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	int ID;
 };

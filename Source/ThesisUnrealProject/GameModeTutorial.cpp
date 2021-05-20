@@ -68,6 +68,25 @@ void AGameModeTutorial::ResetPuzzle1() {
     ElemsPuzzle1.Empty();
 }
 
+//Check if I spoke or killed all the actor in one of the two rooms.
+void AGameModeTutorial::CheckPuzzle2(int ID) {
+    if(bLeft){
+        if(!ElemsPuzzle2.Contains(ID)){
+            ElemsPuzzle2.Add(ID);
+            if(ElemsPuzzle2.Num() == 2){
+                Cast<ADoor>(DoorActors[7])->bOpenDoor = true;
+            }
+        }
+    }else{
+        if(!ElemsPuzzle2.Contains(ID)){
+            ElemsPuzzle2.Add(ID);
+            if(ElemsPuzzle2.Num() == 3){
+                Cast<ADoor>(DoorActors[7])->bOpenDoor = true;
+            }
+        }
+    }
+}
+
 //Assign the UI widget passed as parameter to the screen.
 void AGameModeTutorial::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass) {
     if (CurrentWidget != nullptr){

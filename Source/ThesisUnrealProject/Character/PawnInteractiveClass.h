@@ -48,7 +48,7 @@ public:
 	int QuestionAt;
 
 	//Ally ID
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	int ID;
 
 

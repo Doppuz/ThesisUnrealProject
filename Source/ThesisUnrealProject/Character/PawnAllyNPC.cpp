@@ -116,17 +116,16 @@ void APawnAllyNPC::Choice(int Answer) {
 	}
 }
 
-//It shows the dialog and change the mode from game to input.
 void APawnAllyNPC::StartInteraction() {
 	
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),false);
 	Super::StartInteraction();
 
 }
 
 void APawnAllyNPC::EndInteraction() {
-
+	
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),true);
 	Super::EndInteraction();
-
 	
 }
-
