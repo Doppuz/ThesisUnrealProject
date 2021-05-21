@@ -14,11 +14,12 @@
 #include "../Projectile/SquaredProjectile.h"
 #include "Components/PrimitiveComponent.h"
 #include "../AI/QuadAIController.h"
-#include "PawnAllyNPC.h"
 #include "DrawDebugHelpers.h"
 #include "PawnInteractiveClass.h"
 #include "../GameModeTutorial.h"
 #include "../UI/UIWidgetDialog.h"
+#include "Components/TextBlock.h"
+#include "Engine/TriggerVolume.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -72,7 +73,7 @@ void ACharacterPawnQuad::BeginPlay(){
 
 	Health = MaxHealth;
 	InitialRotation = CameraArmComponent->GetComponentRotation();
-	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this,&ACharacterControllerQuad::OnOverlap);
+	Collider->OnComponentBeginOverlap.AddDynamic(this,&ACharacterPawnQuad::OnOverlap);
 	//Collider->OnComponentHit.AddDynamic(this, &ACharacterPawnQuad::OnHit);
 }
 
@@ -250,6 +251,23 @@ void ACharacterPawnQuad::SetMousePointer(bool Enable) {
 
 void ACharacterPawnQuad::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
+	//Collect coins
+	if(OtherActor->IsA(ACoinController::StaticClass())){
+	
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		GameMode->IncreaseCoins();
+		OtherActor->Destroy();
+		UUIWidgetDialog* UI = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+		if(UI->CoinText->GetVisibility() == ESlateVisibility::Hidden)
+			UI->CoinText->SetVisibility(ESlateVisibility::Visible);
+		UI->SetCoinText(GameMode->GetCoins());
+	
+	}else if(OtherActor->IsA(ATriggerVolume::StaticClass()) && OtherActor->Tags[0] == TEXT("TriggerExplorer")){
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		if(!GameMode->TriggerVolumes.Contains(OtherActor)){
+			GameMode->TriggerVolumes.Add(OtherActor);
+		}
+	}
 
 }
 

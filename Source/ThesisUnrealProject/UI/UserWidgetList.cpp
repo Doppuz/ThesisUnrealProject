@@ -8,7 +8,7 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/CharacterPawnQuad.h"
-#include "../Character/PawnAllyNPC.h"
+#include "../Character/PawnInteractiveClass.h"
 
 void UUserWidgetList::NativeConstruct() {
     HideListBox();

@@ -9,6 +9,7 @@
 
 class APuzzleButton;
 class ADoor;
+class ATriggerVolume;
 /**
  * 
  */
@@ -48,6 +49,14 @@ public:
 
 	//Doors to be opened.
     TArray<AActor*> DoorActors;
+
+	//Trigger volumes.
+	TArray<AActor*> TriggerVolumes;
+
+//--------- Coins ---------
+	
+	int GetCoins() const;
+	void IncreaseCoins();
 
 protected:
 	

@@ -11,6 +11,7 @@
 #include "../UI/UIWidgetDialog.h"
 #include "../UI/UIBox.h"
 #include "../Elements/Door.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 APawnInteractiveClass::APawnInteractiveClass()
@@ -18,6 +19,15 @@ APawnInteractiveClass::APawnInteractiveClass()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
+	RootComponent = Collider;
+	
+	Collider->SetSimulatePhysics(true);
+
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	Mesh->SetupAttachment(RootComponent);
+
+	bFocus = true;
 }
 
 // Called when the game starts or when spawned
@@ -28,9 +38,18 @@ void APawnInteractiveClass::BeginPlay()
 }
 
 // Called every frame
-void APawnInteractiveClass::Tick(float DeltaTime)
-{
+void APawnInteractiveClass::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
+	
+	if(bFocus){
+		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
+	
+		FVector NewPos = (GetActorLocation() - PlayerPawn->GetActorLocation());
+		NewPos.Z = 0;
+		NewPos.Normalize();
+	
+		SetActorRotation(FMath::RInterpTo(GetActorRotation(),NewPos.Rotation(),DeltaTime * 100,0.4));
+	}
 
 }
 
@@ -57,7 +76,9 @@ void APawnInteractiveClass::Speak() {
 	}else{
 		SpeechContator = 0;
 		AnswerContator = 0;
-		QuestionAt = -1;
+		
+		if(QuestionAt < Speech.Num())
+			QuestionAt = -1;
 
 		switch(ID){
 			case 0:
@@ -65,13 +86,9 @@ void APawnInteractiveClass::Speak() {
 				UE_LOG(LogTemp, Warning, TEXT("AA %i"),GameMode->DoorActors.Num());
 				break;
 			case 2:
-				GameMode->CheckPuzzle2(2);
-				break;
 			case 3:
-				GameMode->CheckPuzzle2(3);
-				break;
 			case 4:
-				GameMode->CheckPuzzle2(4);
+				GameMode->CheckPuzzle2(ID);
 				break;
 			default:
 				break;
@@ -142,7 +159,11 @@ void APawnInteractiveClass::EndInteraction() {
 	}
 }
 
-
+//It equips the object.
+void APawnInteractiveClass::Equipment() {
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PlayerPawn->EquipmentMesh->SetStaticMesh(MeshToEquip);
+}
 
 void APawnInteractiveClass::Choice(int Answer) {
 	

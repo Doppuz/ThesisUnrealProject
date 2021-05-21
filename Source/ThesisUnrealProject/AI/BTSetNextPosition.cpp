@@ -3,7 +3,7 @@
 
 #include "BTSetNextPosition.h"
 #include "AllyQuadAIController.h"
-#include "../Character/PawnAllyNPC.h"
+#include "../Character/PawnInteractiveMove.h"
 #include "BehaviorTree/BlackBoardComponent.h"
 
 

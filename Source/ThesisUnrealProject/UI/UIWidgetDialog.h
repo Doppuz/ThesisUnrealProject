@@ -31,6 +31,9 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* PopUpText;
+	
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* CoinText;
 
 	void HideSizeBox();
 	void ViewSizeBox();
@@ -38,6 +41,9 @@ public:
 	void ViewAnswerBox();
 	void ViewPopUp();
 	void HidePopUp();
+	void ViewCoinText();
+	void HideCoinText();
 
 	void SetPopUpText(FString);
+	void SetCoinText(int);
 };

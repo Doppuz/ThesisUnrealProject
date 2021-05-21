@@ -27,6 +27,14 @@ public:
 	// Sets default values for this pawn's properties
 	APawnInteractiveClass();
 
+//---- Components ------
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	class UBoxComponent* Collider;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	UStaticMeshComponent* Mesh;
+
 //-----Speech-----
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
@@ -51,6 +59,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	int ID;
 
+//----- Focus --------
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Focus)
+	bool bFocus;
 
 protected:
 	// Called when the game starts or when spawned
@@ -68,5 +79,11 @@ public:
 	virtual void Choice(int Answer);
 	virtual void StartInteraction();
 	virtual void EndInteraction();
+
+	//------ Equipment --------
+	void Equipment();
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Equipment)
+	UStaticMesh* MeshToEquip;
 
 };

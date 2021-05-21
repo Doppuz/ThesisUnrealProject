@@ -7,6 +7,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "UI/UIWidgetDialog.h"
 #include "UI/UIBox.h"
+#include "CustomGameState.h"
+#include "Engine/TriggerVolume.h"
 
 AGameModeTutorial::AGameModeTutorial() {
     bSolvedPuzzle1 = false;
@@ -15,7 +17,6 @@ AGameModeTutorial::AGameModeTutorial() {
 }
 
 void AGameModeTutorial::BeginPlay() {
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(),DoorClass,DoorActors);
     ChangeMenuWidget(WidgetClass);
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
     DialogWidget->HideSizeBox();
@@ -104,4 +105,14 @@ void AGameModeTutorial::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass
 //Get current UI
 UUserWidget* AGameModeTutorial::GetCurrentWidgetUI() {
     return CurrentWidget;
+}
+
+//--- Get and Set for the coins
+
+int AGameModeTutorial::GetCoins() const{
+    return GetGameState<ACustomGameState>()->CoinNumber;
+}
+
+void AGameModeTutorial::IncreaseCoins() {
+    GetGameState<ACustomGameState>()->CoinNumber += 1;
 }

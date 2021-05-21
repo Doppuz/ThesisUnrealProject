@@ -12,18 +12,19 @@
 #include "Camera/CameraComponent.h"
 #include "PawnInteractiveClass.h"
 
-#include "PawnAllyNPC.generated.h"
+#include "PawnInteractiveMove.generated.h"
 
 class AGunController;
 class ASquaredProjectile;
+class UFloatingPawnMovement;
 
 UCLASS()
-class THESISUNREALPROJECT_API APawnAllyNPC : public APawnInteractiveClass{
+class THESISUNREALPROJECT_API APawnInteractiveMove : public APawnInteractiveClass{
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	APawnAllyNPC();
+	APawnInteractiveMove();
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -35,42 +36,21 @@ public:
 	UCameraComponent* CameraComponent;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	class UBoxComponent* Collider;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	UStaticMeshComponent* Mesh;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	UStaticMeshComponent* EquipmentMesh;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	USceneComponent* ProjectileSpawnPosition;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = General)
+	UFloatingPawnMovement* PawnMovement;
+
 	//Projectile class
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
 	TSubclassOf<ASquaredProjectile> ProjectileClass;
-	
+
 	//Time between 2 projectile
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
 	float ProjectileTimeout;
-
-	//Healt
-	UPROPERTY(EditDefaultsOnly)
-	float MaxHealth;
-
-	UPROPERTY(VisibleAnywhere)
-	float Health;
-
-	//LineTracing max range
-	float MaxRange;
-
-	//Methods for Questions Response.
-	
-//------ Equipment --------
-	void Equipment();
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Equipment)
-	UStaticMesh* MeshToEquip;
 
 //---- General ---
 	void Choice(int) override;

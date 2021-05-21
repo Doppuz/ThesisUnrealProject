@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PawnInteractiveClass.h"
-#include "SignNPC.generated.h"
+#include "NPCEquipment.generated.h"
 
 class ADoor;
 
@@ -12,13 +12,13 @@ class ADoor;
  * 
  */
 UCLASS()
-class THESISUNREALPROJECT_API ASignNPC : public APawnInteractiveClass
+class THESISUNREALPROJECT_API ANPCEquipment : public APawnInteractiveClass
 {
 	GENERATED_BODY()
 
 public:
 
-	ASignNPC();
+	ANPCEquipment();
 
 	virtual void Choice(int Answer);
 

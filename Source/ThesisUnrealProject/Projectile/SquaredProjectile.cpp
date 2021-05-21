@@ -60,8 +60,9 @@ void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 				if(GameMode->bEnemyDefeated && !Actor->bIAmDestroyed)
 					Actor->HitMesh(Hit);
 				break;
+			case 2:
+				Actor->HitMesh(Hit);
 			default:
-				UE_LOG(LogTemp,Warning,TEXT("Error in squaredProjectile, no ID for this Destr Component"));
 				break;
 		}
 
