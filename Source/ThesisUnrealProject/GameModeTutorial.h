@@ -48,7 +48,11 @@ public:
 	UUserWidget* GetCurrentWidgetUI();
 
 	//Doors to be opened.
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Doors")
     TArray<AActor*> DoorActors;
+
+	//Open the door with the number passed as parameter.
+	void SetDoorOpen(int);
 
 	//Trigger volumes.
 	TArray<AActor*> TriggerVolumes;

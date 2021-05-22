@@ -27,7 +27,20 @@ public:
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	UStaticMeshComponent* DoorMesh;
 
+	//True when I want to open/close the door.
 	bool bOpenDoor;
+
+	UPROPERTY(EditAnywhere, Category = "Opening")
+	bool bClose;
+	
+	UPROPERTY(EditAnywhere, Category = "Opening")
+	float Speed;
+	
+	UPROPERTY(EditAnywhere, Category = "Opening")
+	float Distance;
+
+	UPROPERTY(EditAnywhere, Category = "Opening")
+	int ID;
 
 protected:
 	// Called when the game starts or when spawned

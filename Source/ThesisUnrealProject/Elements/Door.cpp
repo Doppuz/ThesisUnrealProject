@@ -22,6 +22,10 @@ ADoor::ADoor(){
 	Collider->SetWorldScale3D(FVector(4.25,0.25,5.5));
 
 	bOpenDoor = false;
+	bClose = false;
+	Speed = 0.4f;
+	Distance = 200.f;
+	ID = 0;
 }
 
 // Called when the game starts or when spawned
@@ -30,7 +34,12 @@ void ADoor::BeginPlay(){
 	Super::BeginPlay();
 
 	FVector ActorPosition = GetActorLocation();
-	FinalPosition = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + 200);
+
+	if(bClose)
+		FinalPosition = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - Distance);
+	else
+		FinalPosition = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + Distance);
+	
 
 }
 
@@ -40,7 +49,7 @@ void ADoor::Tick(float DeltaTime){
 
 	if(bOpenDoor){
 		FVector ActorPosition = GetActorLocation();
-		FVector NewLocation = FMath::Lerp(ActorPosition,FinalPosition, DeltaTime * 0.4f);
+		FVector NewLocation = FMath::Lerp(ActorPosition,FinalPosition, DeltaTime * Speed);
 		SetActorLocation(NewLocation);
 	}
 }

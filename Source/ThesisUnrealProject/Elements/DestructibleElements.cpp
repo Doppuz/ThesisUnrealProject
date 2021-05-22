@@ -57,7 +57,8 @@ void ADestructibleElements::OnComponentFracture(const FVector& HitPoint, const F
 				GameMode->bGateDestroyed = true;
 			break;
 			case 2:
-                Cast<ADoor>(GameMode->DoorActors[7])->bOpenDoor = true;
+				GameMode->SetDoorOpen(8);
+				GameMode->SetDoorOpen(10);
 			default:
 				break;
 				//UE_LOG(LogTemp,Warning,TEXT("Error in squaredProjectile, no ID for this Destr Component"));

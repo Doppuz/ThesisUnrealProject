@@ -82,7 +82,7 @@ void APawnInteractiveClass::Speak() {
 
 		switch(ID){
 			case 0:
-                Cast<ADoor>(GameMode->DoorActors[2])->bOpenDoor = true;
+                GameMode->SetDoorOpen(2);
 				UE_LOG(LogTemp, Warning, TEXT("AA %i"),GameMode->DoorActors.Num());
 				break;
 			case 2:

@@ -17,6 +17,7 @@ AGameModeTutorial::AGameModeTutorial() {
 }
 
 void AGameModeTutorial::BeginPlay() {
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(),DoorClass,DoorActors);
     ChangeMenuWidget(WidgetClass);
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
     DialogWidget->HideSizeBox();
@@ -41,13 +42,12 @@ void AGameModeTutorial::CheckPuzzle1(APuzzleButton* Button) {
         bSolvedPuzzle1 = TempResult; 
 
         if(bSolvedPuzzle1){
+	    AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
             for(APuzzleButton* Butt : ElemsPuzzle1)
                 Butt->Mesh->SetMaterial(0,GreenColor);
 
-                ADoor* DoorToOpen;
                 for(int i = 0; i < 2; i++){
-                    DoorToOpen = Cast<ADoor>(DoorActors[i]);
-                    DoorToOpen->bOpenDoor = true;
+                    GameMode->SetDoorOpen(i);
                 }
             
         }else{
@@ -71,18 +71,19 @@ void AGameModeTutorial::ResetPuzzle1() {
 
 //Check if I spoke or killed all the actor in one of the two rooms.
 void AGameModeTutorial::CheckPuzzle2(int ID) {
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
     if(bLeft){
         if(!ElemsPuzzle2.Contains(ID)){
             ElemsPuzzle2.Add(ID);
             if(ElemsPuzzle2.Num() == 2){
-                Cast<ADoor>(DoorActors[7])->bOpenDoor = true;
+                GameMode->SetDoorOpen(7);
             }
         }
     }else{
         if(!ElemsPuzzle2.Contains(ID)){
             ElemsPuzzle2.Add(ID);
             if(ElemsPuzzle2.Num() == 3){
-                Cast<ADoor>(DoorActors[7])->bOpenDoor = true;
+                GameMode->SetDoorOpen(7);
             }
         }
     }
@@ -105,6 +106,14 @@ void AGameModeTutorial::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass
 //Get current UI
 UUserWidget* AGameModeTutorial::GetCurrentWidgetUI() {
     return CurrentWidget;
+}
+
+void AGameModeTutorial::SetDoorOpen(int DoorNum) {
+    for(AActor* Door: DoorActors){
+        ADoor* CastDoor = Cast<ADoor>(Door);
+        if(CastDoor->ID == DoorNum)
+            CastDoor->bOpenDoor = true;
+    }
 }
 
 //--- Get and Set for the coins

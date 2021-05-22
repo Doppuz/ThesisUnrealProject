@@ -4,6 +4,7 @@
 #include "CoinController.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 ACoinController::ACoinController(){
@@ -38,6 +39,7 @@ void ACoinController::BeginPlay(){
 	
 	TopBox->OnComponentBeginOverlap.AddDynamic(this, &ACoinController::OnBoxOverlap);
 	BotBox->OnComponentBeginOverlap.AddDynamic(this, &ACoinController::OnBoxOverlap);
+	CoinCollider->OnComponentBeginOverlap.AddDynamic(this, &ACoinController::OnCoinOverlap);
 }
 
 // Called every frame
@@ -57,5 +59,16 @@ void ACoinController::OnBoxOverlap(UPrimitiveComponent * HitComponent, AActor * 
 
 	OffSetValue = -OffSetValue;
 
+}
+
+void ACoinController::OnCoinOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
+	
+	UE_LOG(LogTemp,Warning,TEXT("22"));
+	if(OtherActor->IsA(APawn::StaticClass())){
+		//APawn* Pawn = Cast<APawn>(AActor);
+		//NeedTocheck that is not an enemy
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		GameMode->SetDoorOpen(9);
+	}
 }
 

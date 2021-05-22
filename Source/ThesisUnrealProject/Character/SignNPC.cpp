@@ -26,16 +26,16 @@ void ASignNPC::Choice(int Answer) {
 		case 0:
 			SpeechContator += 1;
 			GameMode->bLeft = true;
-            Cast<ADoor>(GameMode->DoorActors[3])->bOpenDoor = true;
-            Cast<ADoor>(GameMode->DoorActors[4])->bOpenDoor = true;
+            GameMode->SetDoorOpen(3);
+			GameMode->SetDoorOpen(4);
 			Speak();
 			SpeechContator += 1;
 			break;
 		case 1:
 			SpeechContator += 2;
 			GameMode->bLeft = false;
-            Cast<ADoor>(GameMode->DoorActors[5])->bOpenDoor = true;
-            Cast<ADoor>(GameMode->DoorActors[6])->bOpenDoor = true;
+            GameMode->SetDoorOpen(5);
+			GameMode->SetDoorOpen(6);
 			Speak();
 			break;
 		default:
