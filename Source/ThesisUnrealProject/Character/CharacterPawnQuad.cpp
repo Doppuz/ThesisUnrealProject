@@ -20,6 +20,7 @@
 #include "../UI/UIWidgetDialog.h"
 #include "Components/TextBlock.h"
 #include "Engine/TriggerVolume.h"
+#include "Engine/LatentActionManager.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -86,22 +87,25 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), Health);
 
-	if(Health == 0 && GetController()->IsA(AQuadAIController::StaticClass())){
-		Destroy();
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		switch(ID){
-			case 0:
-				GameMode->bEnemyDefeated = true;
-				break;
-			case 1:
-				GameMode->CheckPuzzle2(1);
-				break;
-			case 2:
-				GameMode->CheckPuzzle2(2);
-				break;
-			default:
-				break;
-		}
+	if(Health == 0){
+		if(GetController()->IsA(AQuadAIController::StaticClass())){
+			Destroy();
+			AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+			switch(ID){
+				case 0:
+					GameMode->bEnemyDefeated = true;
+					break;
+				case 1:
+					GameMode->CheckPuzzle2(1);
+					break;
+				case 2:
+					GameMode->CheckPuzzle2(2);
+					break;
+				default:
+					break;
+			}
+		}else if(GetController()->IsA(APlayerController::StaticClass()))
+			UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}
 		
 	return Damage;
@@ -221,6 +225,7 @@ void ACharacterPawnQuad::SetJump(){
 }
 
 void ACharacterPawnQuad::Shoot() {
+	
 	if(AllyNPC == nullptr){
 		if(!bAmIShooting){
 
@@ -256,11 +261,20 @@ void ACharacterPawnQuad::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 	
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		GameMode->IncreaseCoins();
+		int CoinID = Cast<ACoinController>(OtherActor)->ID;
 		OtherActor->Destroy();
 		UUIWidgetDialog* UI = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 		if(UI->CoinText->GetVisibility() == ESlateVisibility::Hidden)
 			UI->CoinText->SetVisibility(ESlateVisibility::Visible);
 		UI->SetCoinText(GameMode->GetCoins());
+
+		switch(CoinID){
+			case 0:
+				GameMode->SetDoorOpen(9);
+				break;
+			default:
+				break;
+		}
 	
 	}else if(OtherActor->IsA(ATriggerVolume::StaticClass()) && OtherActor->Tags[0] == TEXT("TriggerExplorer")){
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());

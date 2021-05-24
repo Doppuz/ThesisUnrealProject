@@ -31,6 +31,7 @@ ACoinController::ACoinController(){
 	
 	RotationValue = 2.f;
 	OffSetValue = 1.f;
+	ID = -1;
 }
 
 // Called when the game starts or when spawned
@@ -63,7 +64,6 @@ void ACoinController::OnBoxOverlap(UPrimitiveComponent * HitComponent, AActor * 
 
 void ACoinController::OnCoinOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	
-	UE_LOG(LogTemp,Warning,TEXT("22"));
 	if(OtherActor->IsA(APawn::StaticClass())){
 		//APawn* Pawn = Cast<APawn>(AActor);
 		//NeedTocheck that is not an enemy

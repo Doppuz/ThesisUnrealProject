@@ -17,6 +17,9 @@ public:
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
+	UPROPERTY(EditAnywhere)
+	int ID;
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,6 +56,5 @@ private:
 
 	UFUNCTION()
 	void OnCoinOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
-
 
 };

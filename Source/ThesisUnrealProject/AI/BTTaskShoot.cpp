@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTTaskShoot::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
     Super::ExecuteTask(OwnerComp,NodeMemory);
 
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(OwnerComp.GetWorld(),0);
-    AQuadAIController* AIController = Cast<AQuadAIController>(OwnerComp.GetAIOwner());
+    AAIController* AIController = OwnerComp.GetAIOwner();
 
     if(AIController == nullptr)
         return EBTNodeResult::Failed;
