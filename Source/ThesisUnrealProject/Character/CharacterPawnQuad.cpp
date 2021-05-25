@@ -65,6 +65,9 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	InteractiveActor = nullptr;
 	bStopMovement = false;
 	MaxRandomDistance = 300.f;
+	bStationary = true;
+	NumberOfRepetitions = 0;
+	bIsVisible = true;
 }
 
 
@@ -83,9 +86,17 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	
 	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	Health -= FMath::Min(Health,Damage);
-
-	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), Health);
+	if(GetController()->IsA(APlayerController::StaticClass())){
+		if(!bCharacterInvincible){
+			Health -= FMath::Min(Health,Damage);
+			InvisibleAnimation();
+			bCharacterInvincible = true;	
+			UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), Health);
+		}
+	}else{
+		Health -= FMath::Min(Health,Damage);
+		UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), Health);
+	}
 
 	if(Health == 0){
 		if(GetController()->IsA(AQuadAIController::StaticClass())){
@@ -110,6 +121,21 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 		
 	return Damage;
 
+}
+
+//Invisible animation repeted tot times. (Animation = hide and show mesh)
+void ACharacterPawnQuad::InvisibleAnimation() {
+	if(NumberOfRepetitions < 8){
+		NumberOfRepetitions += 1;
+		bIsVisible = !bIsVisible;
+		Mesh->SetVisibility(bIsVisible);
+		GetWorld()->GetTimerManager().SetTimer(InvisibleTimer,this, &ACharacterPawnQuad::InvisibleAnimation, 0.125f, false);
+	}else{
+		NumberOfRepetitions = 0;
+		bIsVisible = true;
+		Mesh->SetVisibility(bIsVisible);
+		bCharacterInvincible = false;
+	}
 }
 
 // Called every frame
@@ -169,6 +195,8 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 
     	SetActorRotation(FMath::RInterpTo(GetActorRotation(),NewPos.Rotation(),DeltaTime * 100,0.4));*/
 	}
+
+
 }
 
 // Called to bind functionality to input
@@ -231,7 +259,8 @@ void ACharacterPawnQuad::Shoot() {
 
 			ASquaredProjectile* Projectile = GetWorld()->SpawnActor<ASquaredProjectile>(ProjectileClass,ProjectileSpawnPosition->GetComponentLocation(),ProjectileSpawnPosition->GetComponentRotation());
 
-			Projectile->MyOwner = this;
+			if(Projectile != nullptr)
+				Projectile->MyOwner = this;
 
 			bAmIShooting = true;
 			GetWorld()->GetTimerManager().SetTimer(ShotTimer,this, &ACharacterPawnQuad::SetShooting, ProjectileTimeout, false);
@@ -305,4 +334,3 @@ void ACharacterPawnQuad::Speak() {
 			InteractiveActor->StartInteraction();
 	}
 }
-

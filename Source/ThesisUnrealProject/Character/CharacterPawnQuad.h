@@ -102,6 +102,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	float MaxRandomDistance;
 
+	//Used to move the cannon in the obstacle of puzzle 3.
+	UPROPERTY(EditAnywhere, Category = "AI")
+	bool bStationary;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -142,4 +146,22 @@ private:
 	//Enemy ID
 	UPROPERTY(EditAnywhere)
 	int ID;
+
+//Invincible Section
+
+	//Parameter to make the character invincible.
+	bool bCharacterInvincible;
+
+	//Method to make the character invisible
+	void InvisibleAnimation();
+	
+	//Number of repetition of the above method
+	int NumberOfRepetitions;
+
+	//bool to check if the mesh is visible
+	bool bIsVisible;
+
+	//Timer for the above method
+	FTimerHandle InvisibleTimer;
+	
 };

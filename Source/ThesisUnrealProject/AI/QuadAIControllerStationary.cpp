@@ -4,6 +4,7 @@
 #include "QuadAIControllerStationary.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackBoardComponent.h"
+#include "../Character/CharacterPawnQuad.h"
 
 void AQuadAIControllerStationary::BeginPlay() {
     
@@ -16,25 +17,18 @@ void AQuadAIControllerStationary::BeginPlay() {
     }else
         UE_LOG(LogTemp,Warning,TEXT("No Behavior Tree"));
 
+    MovementValue = 1.f;
+
 }
 
 void AQuadAIControllerStationary::Tick(float DeltaTime) {
     
     Super::Tick(DeltaTime);
 
-    /*APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
+    ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(GetPawn());
 
-    if(BTree != nullptr){
-        GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"),PlayerPawn->GetActorLocation());
+    if(!MyPawn->bStationary){
+        MyPawn->AddActorLocalOffset(FVector(0,MovementValue,0) * DeltaTime * 30);
     }
-    
-    /*APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
 
-    if(LineOfSightTo(PlayerPawn)){
-        SetFocus(PlayerPawn);
-        MoveToActor(PlayerPawn,200);
-    }else{
-        ClearFocus(EAIFocusPriority::Gameplay);
-        StopMovement();
-    }*/
 }

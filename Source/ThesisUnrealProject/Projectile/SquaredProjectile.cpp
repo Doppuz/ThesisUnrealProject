@@ -73,10 +73,13 @@ void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 			APawn* OtherPawn = Cast<APawn>(OtherActor);
 
 
-			if(MyPawn != nullptr && OtherPawn != nullptr && MyPawn->GetController() && OtherPawn->GetController() &&
-				!((MyPawn->GetController()->IsA(AAIController::StaticClass())) && 
-					OtherPawn->GetController()->IsA(AAIController::StaticClass())))
+			if(MyPawn != nullptr && OtherPawn != nullptr &&
+					!((MyPawn->GetController()->IsA(AAIController::StaticClass())) && 
+					OtherPawn->GetController()->IsA(AAIController::StaticClass()))){
+
 				OtherActor->TakeDamage(Damage, DamageEvent,MyPawn->GetController(),this);
+
+			}
 		}
 	}
 

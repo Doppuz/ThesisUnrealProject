@@ -22,7 +22,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	UBehaviorTree* BTree; 
 
+	//Horizontal movement value changed on the trigger class.
+	float MovementValue;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+private:
+
+	//AI Timer movement
+	FTimerHandle MovementTimer;
+	void Movement();
 };

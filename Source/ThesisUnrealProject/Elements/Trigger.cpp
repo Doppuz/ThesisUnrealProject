@@ -4,6 +4,8 @@
 #include "Trigger.h"
 #include "Components/BoxComponent.h"
 #include "../Projectile/SquaredProjectile.h"
+#include "../Character/CharacterPawnQuad.h"
+#include "../AI/QuadAIControllerStationary.h"
 
 // Sets default values
 ATrigger::ATrigger(){
@@ -38,5 +40,12 @@ void ATrigger::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor
 
 	if(OtherActor->IsA(ASquaredProjectile::StaticClass()))
 		OtherActor->Destroy();
+	else if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+		ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(OtherActor);
+		if(MyPawn->GetController()->IsA(AQuadAIControllerStationary::StaticClass())){
+			AQuadAIControllerStationary* Controller = Cast<AQuadAIControllerStationary>(MyPawn->GetController());
+			Controller->MovementValue = -Controller->MovementValue;
+		}
+	}
 
 }
