@@ -31,5 +31,5 @@ void UBTService_SetFocus::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Nod
     FRotator ActorRotator = AIController->GetPawn()->GetActorRotation();
 
     AIController->GetPawn()->SetActorRotation(FMath::RInterpTo(ActorRotator,NewPos.Rotation(),DeltaSeconds * 100,0.4));
-    UE_LOG(LogTemp,Warning,TEXT("22"));
+
 }

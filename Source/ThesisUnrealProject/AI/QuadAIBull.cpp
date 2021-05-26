@@ -12,6 +12,9 @@ void AQuadAIBull::BeginPlay() {
     
     if(BTree != nullptr){
         RunBehaviorTree(BTree);
+        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),FVector(GetPawn()->GetActorLocation().X,
+                                                                                 GetPawn()->GetActorLocation().Y,
+                                                                                 42.f));
     }else
         UE_LOG(LogTemp,Warning,TEXT("No Behavior Tree"));
 

@@ -17,6 +17,9 @@ class THESISUNREALPROJECT_API UBTService_SetPlayerPos : public UBTService_Blackb
 public:
 	UBTService_SetPlayerPos();
 
+	UPROPERTY(EditAnywhere)
+	bool bRange;
+
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 

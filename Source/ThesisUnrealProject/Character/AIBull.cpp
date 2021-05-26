@@ -4,6 +4,7 @@
 #include "AIBull.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "Kismet/GameplayStatics.h"
 #include "../Character/CharacterPawnQuad.h"
 
 // Sets default values
@@ -25,6 +26,8 @@ AAIBull::AAIBull()
 	PawnMovement->Acceleration = 1000;
 
 	Collider->OnComponentHit.AddDynamic(this, &AAIBull::OnHit);
+
+	Damage = 10.f;
 }
 
 // Called when the game starts or when spawned
@@ -38,7 +41,7 @@ void AAIBull::BeginPlay()
 void AAIBull::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y,42.f));
 }
 
 // Called to bind functionality to input
@@ -50,9 +53,17 @@ void AAIBull::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AAIBull::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 
+    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
+
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
-		
+		ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(OtherActor);
+		if(MyPawn->GetController()->IsA(APlayerController::StaticClass())){
+			FPointDamageEvent DamageEvent(Damage,Hit,this->GetVelocity(),nullptr);
+			OtherActor->TakeDamage(Damage,DamageEvent,MyPawn->GetController(),this);
+		}
 	}
+
+
 
 }
 
