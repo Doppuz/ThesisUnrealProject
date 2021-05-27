@@ -15,6 +15,7 @@ void AQuadAIBull::BeginPlay() {
         GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),FVector(GetPawn()->GetActorLocation().X,
                                                                                  GetPawn()->GetActorLocation().Y,
                                                                                  42.f));
+                                                                                 
     }else
         UE_LOG(LogTemp,Warning,TEXT("No Behavior Tree"));
 
@@ -24,4 +25,6 @@ void AQuadAIBull::Tick(float DeltaTime) {
     
     Super::Tick(DeltaTime);
 
+    //float Distance = (GetPawn()->GetActorLocation() - GetBlackboardComponent()->GetValueAsVector(TEXT("StartLocation"))).Size();
+    //UE_LOG(LogTemp,Warning,TEXT("%f"),GetPawn()->GetVelocity().Size());
 }

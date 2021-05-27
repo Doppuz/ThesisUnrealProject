@@ -20,6 +20,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	UStaticMeshComponent* Mesh;
+	
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Camera)
+	class USpringArmComponent* CameraArmComponent;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Camera)
+	class UCameraComponent* CameraComponent;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = General)
 	class UFloatingPawnMovement* PawnMovement;

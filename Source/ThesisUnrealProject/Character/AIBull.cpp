@@ -6,6 +6,8 @@
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/CharacterPawnQuad.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 // Sets default values
 AAIBull::AAIBull()
@@ -26,6 +28,14 @@ AAIBull::AAIBull()
 	PawnMovement->Acceleration = 1000;
 
 	Collider->OnComponentHit.AddDynamic(this, &AAIBull::OnHit);
+	
+	CameraArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("ArmComponent"));
+	CameraArmComponent->SetupAttachment(RootComponent);
+	
+	CameraArmComponent->TargetArmLength = 500.f;
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	CameraComponent->SetupAttachment(CameraArmComponent);
 
 	Damage = 10.f;
 }
