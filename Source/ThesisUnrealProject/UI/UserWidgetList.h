@@ -32,6 +32,12 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UUIAnswer* Answer2;
 
+	UPROPERTY(meta = (BindWidget))
+	UUIAnswer* Answer3;
+	
+	UPROPERTY(meta = (BindWidget))
+	UUIAnswer* Answer4;
+
 	//TArray<UUIAnswer*> AnswerList;
 
 	//void AddElement();
@@ -42,13 +48,22 @@ public:
 
 	void SetAnswer1(FString);
 	void SetAnswer2(FString);
+	void SetAnswer3(FString);
+	void SetAnswer4(FString);
 
 	UFUNCTION()
 	void OnButton1Clicked();
 	
 	UFUNCTION()
 	void OnButton2Clicked();
+	
+	UFUNCTION()
+	void OnButton3Clicked();
+	
+	UFUNCTION()
+	void OnButton4Clicked();
 
 	void ViewListBox();
 	void HideListBox();
+	void ViewListBoxGuessing();
 };

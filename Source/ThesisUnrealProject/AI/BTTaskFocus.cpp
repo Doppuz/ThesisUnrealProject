@@ -15,7 +15,7 @@ EBTNodeResult::Type UBTTaskFocus::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
     
     Super::ExecuteTask(OwnerComp,NodeMemory);
 
-    OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("Focus"));// SetValueAsBool(TEXT("Focus"),bFocus);
+    OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("Focus"),bFocus);
 
     return EBTNodeResult::Succeeded;
 }

@@ -20,6 +20,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool bRange;
 
+	UPROPERTY(EditAnywhere)
+	float Range;
+
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 

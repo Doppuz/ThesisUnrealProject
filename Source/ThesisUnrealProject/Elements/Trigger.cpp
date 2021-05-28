@@ -18,6 +18,7 @@ ATrigger::ATrigger(){
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
 	Trigger->SetupAttachment(RootComponent);
 
+	bBlockVisibility = false;
 }
 
 
@@ -27,6 +28,11 @@ void ATrigger::BeginPlay(){
 	Super::BeginPlay();
 	
 	Trigger->OnComponentBeginOverlap.AddDynamic(this,&ATrigger::OnOverlap);
+
+	if(bBlockVisibility)
+		Trigger->SetCollisionProfileName(TEXT("TriggerWallNoVisibility"));
+	else
+		Trigger->SetCollisionProfileName(TEXT("TriggerWall"));
 
 }
 

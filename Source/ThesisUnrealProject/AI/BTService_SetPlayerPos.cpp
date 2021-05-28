@@ -6,19 +6,19 @@
 #include "BehaviorTree/BlackBoardComponent.h"
 #include "../Character/CharacterController.h"
 #include "AIController.h"
-
+#include "NavigationSystem.h"
 
 UBTService_SetPlayerPos::UBTService_SetPlayerPos() {
     NodeName = "SetPlayerPosition";
     bRange = false;
+    Range = 1000.f;
 }
 
 void UBTService_SetPlayerPos::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
 
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
     
-    //If I activate the bRange bool, I set the value of the PlayerLocation only if I the AI see me and within a specific range. 
-    //If not I just set the value of the PlayerLocation
+    //If I activate the bRange bool, I set the value of the LineOfSight only if I the AI see me and within a specific range. 
     if(bRange){
 
         AAIController* AIController = OwnerComp.GetAIOwner();
@@ -29,16 +29,16 @@ void UBTService_SetPlayerPos::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
         APawn* AIPawn = AIController->GetPawn();
 
         float Distance = (OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("StartLocation")) - PlayerPawn->GetActorLocation()).Size();
-                UE_LOG(LogTemp,Warning,TEXT("%f"),Distance);
 
-        if(Distance < 700.f)
-            OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"),PlayerPawn->GetActorLocation());
+        if(AIController->LineOfSightTo(PlayerPawn))
+            OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("LineOfSight"),true);
         else{   
-            OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
+            OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("LineOfSight"));
         }
 
-    }else
-        OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"),PlayerPawn->GetActorLocation());
+    }
+
+    OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"),PlayerPawn->GetActorLocation());
     
 
 }

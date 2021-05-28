@@ -22,6 +22,4 @@ public:
 
 	virtual void Choice(int Answer);
 
-	UPROPERTY()
-	ADoor* DoorLeft1;
 };

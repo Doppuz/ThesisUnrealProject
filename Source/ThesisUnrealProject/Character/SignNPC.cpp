@@ -8,7 +8,6 @@
 #include "../GameModeTutorial.h"
 #include "../Elements/Door.h"
 
-
 ASignNPC::ASignNPC() {
 
 }
@@ -22,23 +21,4 @@ void ASignNPC::Choice(int Answer) {
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameOnly());
 
-	switch(Answer){
-		case 0:
-			SpeechContator += 1;
-			GameMode->bLeft = true;
-            GameMode->SetDoorOpen(3);
-			GameMode->SetDoorOpen(4);
-			Speak();
-			SpeechContator += 1;
-			break;
-		case 1:
-			SpeechContator += 2;
-			GameMode->bLeft = false;
-            GameMode->SetDoorOpen(5);
-			GameMode->SetDoorOpen(6);
-			Speak();
-			break;
-		default:
-			break;
-	}
 }

@@ -38,6 +38,36 @@ AAIBull::AAIBull()
 	CameraComponent->SetupAttachment(CameraArmComponent);
 
 	Damage = 10.f;
+	MaxHealth = 30.f;
+	CurrentHealth = MaxHealth; 
+}
+
+float AAIBull::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) {
+	float DamageTaken = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	CurrentHealth -= DamageTaken;
+
+	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);
+
+	if(CurrentHealth == 0){
+		Destroy();
+			/*AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+			switch(ID){
+				case 0:
+					GameMode->bEnemyDefeated = true;
+					break;
+				case 1:
+					GameMode->CheckPuzzle2(1);
+					break;
+				case 2:
+					GameMode->CheckPuzzle2(2);
+					break;
+				default:
+					break;
+			}*/
+	}
+		
+	return DamageTaken;
 }
 
 // Called when the game starts or when spawned
@@ -63,13 +93,12 @@ void AAIBull::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AAIBull::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 
-    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
-
+	//If I hit the player, I make him damage.
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
-		ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(OtherActor);
-		if(MyPawn->GetController()->IsA(APlayerController::StaticClass())){
+		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(OtherActor);
+		if(PlayerPawn->GetController()->IsA(APlayerController::StaticClass())){
 			FPointDamageEvent DamageEvent(Damage,Hit,this->GetVelocity(),nullptr);
-			OtherActor->TakeDamage(Damage,DamageEvent,MyPawn->GetController(),this);
+			OtherActor->TakeDamage(Damage,DamageEvent,PlayerPawn->GetController(),this);
 		}
 	}
 

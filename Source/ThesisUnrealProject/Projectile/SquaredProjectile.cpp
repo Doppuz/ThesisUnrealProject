@@ -66,20 +66,28 @@ void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 				break;
 		}
 
-	}else if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+	}else if(OtherActor->IsA(APawn::StaticClass())){
 		FPointDamageEvent DamageEvent(Damage,Hit,this->GetVelocity(),nullptr);
 		if(MyOwner != nullptr){
-			ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(MyOwner);
+			
+			UE_LOG(LogTemp,Warning,TEXT("Squared Projectile after if"));
+			APawn* ShooterPawn = Cast<APawn>(MyOwner);
 			APawn* OtherPawn = Cast<APawn>(OtherActor);
 
+			if(OtherPawn != nullptr && OtherPawn->GetController() != nullptr &&OtherPawn->GetController()->IsA(APlayerController::StaticClass()))
+				OtherActor->TakeDamage(Damage, DamageEvent,ShooterPawn->GetController(),this);
 
-			if(MyPawn != nullptr && OtherPawn != nullptr &&
-					!((MyPawn->GetController()->IsA(AAIController::StaticClass())) && 
+			if(ShooterPawn != nullptr && ShooterPawn->GetController() != nullptr &&ShooterPawn->GetController()->IsA(APlayerController::StaticClass()))
+				OtherActor->TakeDamage(Damage, DamageEvent,ShooterPawn->GetController(),this);
+
+			/*if(ShooterPawn != nullptr && OtherPawn != nullptr && 
+				ShooterPawn->GetController() != nullptr && OtherPawn->GetController() != nullptr &&
+					!((ShooterPawn->GetController()->IsA(AAIController::StaticClass())) && 
 					OtherPawn->GetController()->IsA(AAIController::StaticClass()))){
 
-				OtherActor->TakeDamage(Damage, DamageEvent,MyPawn->GetController(),this);
+				OtherActor->TakeDamage(Damage, DamageEvent,ShooterPawn->GetController(),this);
 
-			}
+			}*/
 		}
 	}
 

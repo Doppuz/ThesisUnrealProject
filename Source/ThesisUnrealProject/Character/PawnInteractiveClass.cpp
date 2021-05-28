@@ -3,7 +3,6 @@
 
 #include "PawnInteractiveClass.h"
 #include "../GameModeTutorial.h"
-#include "../UI/UIWidgetDialog.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackBoardComponent.h"

@@ -15,6 +15,8 @@ void UUserWidgetList::NativeConstruct() {
     
     Answer1->AnswerButton->OnClicked.AddDynamic(this,&UUserWidgetList::OnButton1Clicked);
     Answer2->AnswerButton->OnClicked.AddDynamic(this,&UUserWidgetList::OnButton2Clicked);
+    Answer3->AnswerButton->OnClicked.AddDynamic(this,&UUserWidgetList::OnButton3Clicked);
+    Answer4->AnswerButton->OnClicked.AddDynamic(this,&UUserWidgetList::OnButton4Clicked);
 }
 
 /*void UUserWidgetList::AddElement() {
@@ -43,11 +45,35 @@ void UUserWidgetList::SetAnswer2(FString Response) {
     Answer2->SetAnswerText(Response);
 }
 
+void UUserWidgetList::SetAnswer3(FString Response) {
+    Answer3->SetAnswerText(Response);
+}
+
+void UUserWidgetList::SetAnswer4(FString Response) {
+    Answer4->SetAnswerText(Response);
+}
+
 void UUserWidgetList::OnButton1Clicked() {
 
     ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
     HideListBox();
     PlayerPawn->AllyNPC->Choice(0);
+
+}
+
+void UUserWidgetList::OnButton3Clicked() {
+    
+    ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+    HideListBox();
+    PlayerPawn->AllyNPC->Choice(3);
+    
+}
+
+void UUserWidgetList::OnButton4Clicked() {
+
+    ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+    HideListBox();
+    PlayerPawn->AllyNPC->Choice(4);
 
 }
 
@@ -67,4 +93,13 @@ void UUserWidgetList::ViewListBox() {
 void UUserWidgetList::HideListBox() {
     Answer1->SetVisibility(ESlateVisibility::Hidden);
     Answer2->SetVisibility(ESlateVisibility::Hidden);
+    Answer3->SetVisibility(ESlateVisibility::Hidden);
+    Answer4->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UUserWidgetList::ViewListBoxGuessing() {
+    Answer1->SetVisibility(ESlateVisibility::Visible);
+    Answer2->SetVisibility(ESlateVisibility::Visible);
+    Answer3->SetVisibility(ESlateVisibility::Visible);
+    Answer4->SetVisibility(ESlateVisibility::Visible);
 }
