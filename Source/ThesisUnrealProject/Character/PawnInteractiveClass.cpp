@@ -75,9 +75,6 @@ void APawnInteractiveClass::Speak() {
 	}else{
 		SpeechContator = 0;
 		AnswerContator = 0;
-		
-		if(QuestionAt < Speech.Num())
-			QuestionAt = -1;
 
 		switch(ID){
 			case 0:

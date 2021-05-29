@@ -65,7 +65,7 @@ void UUserWidgetList::OnButton3Clicked() {
     
     ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
     HideListBox();
-    PlayerPawn->AllyNPC->Choice(3);
+    PlayerPawn->AllyNPC->Choice(2);
     
 }
 
@@ -73,7 +73,7 @@ void UUserWidgetList::OnButton4Clicked() {
 
     ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
     HideListBox();
-    PlayerPawn->AllyNPC->Choice(4);
+    PlayerPawn->AllyNPC->Choice(3);
 
 }
 

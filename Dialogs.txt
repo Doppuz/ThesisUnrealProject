@@ -1,0 +1,13 @@
+("What a surprise! I haven\'t seen an adventurer in years. It is a pleasure to have you here.","------","I knew you had good taste! Here\'s your hat!","Ok no problem, I will try to help you in the future.","Take care of yourself as you move around the dungeon. Remember that there are multiple ways you can choose to continue your exploration","See you around!")
+Since it's been a long time, I'd like to reward you. Would you rather have a new hat or have a clue later in the game? 
+
+("You can choose:","----")
+Go on the left if you want to kill or go on the right if you want to speak.
+
+("Hello adventurer!","---","See you around!")
+Would you rather prefer a path full of obstacles or full of enemies?
+
+("Hi adventurer! To open the door you have to choose the right asnwer in the next question.","----","Right Answer!","Incorrect Answer!","Bye!")
+What is the result of the moltiplication of all the numbers in a phone keyboard? 0
+the more it is present, the less you see. What is it? Dark
+Once discovered, it no longer exists. What's this? Secret
