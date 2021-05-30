@@ -6,6 +6,7 @@
 #include "../Projectile/SquaredProjectile.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "../AI/QuadAIControllerStationary.h"
+#include "../Character/PatrolAIPawn.h"
 
 // Sets default values
 ATrigger::ATrigger(){
