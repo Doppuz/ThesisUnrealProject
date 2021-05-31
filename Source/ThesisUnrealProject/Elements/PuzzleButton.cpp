@@ -43,7 +43,7 @@ void APuzzleButton::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Other
 	if(!bDisableOverlap && !GameMode->bGateDestroyed){
 		bDisableOverlap = true;
 		Mesh->SetMaterial(0,OrangeColor);
-		GameMode->CheckPuzzle1(this);
+		//GameMode->CheckPuzzle1(this);
 	}
 	
 }

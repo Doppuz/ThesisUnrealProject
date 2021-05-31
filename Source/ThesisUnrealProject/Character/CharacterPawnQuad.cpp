@@ -21,6 +21,7 @@
 #include "Components/TextBlock.h"
 #include "Engine/TriggerVolume.h"
 #include "Engine/LatentActionManager.h"
+#include "Components/SpotLightComponent.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){

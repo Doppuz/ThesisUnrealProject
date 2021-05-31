@@ -42,6 +42,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Opening")
 	int ID;
 
+	//If all actors are cleared, the door opens.
+	UPROPERTY(EditAnywhere, Category = "Opening")
+	TArray<AActor*> Activator;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -49,5 +53,8 @@ protected:
 private:
 
 	FVector FinalPosition;
+
+	//check if the door can be opened. It works only for buttons.
+	bool CheckActorOverlap();
 
 };

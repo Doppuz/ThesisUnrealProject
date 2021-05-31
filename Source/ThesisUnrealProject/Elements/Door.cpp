@@ -3,6 +3,7 @@
 
 #include "Door.h"
 #include "Components/BoxComponent.h"
+#include "PuzzleButton.h"
 
 // Sets default values
 ADoor::ADoor(){
@@ -40,17 +41,31 @@ void ADoor::BeginPlay(){
 	else
 		FinalPosition = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + Distance);
 	
-
 }
 
 // Called every frame
 void ADoor::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 
-	if(bOpenDoor){
+	if(bOpenDoor || CheckActorOverlap()){
 		FVector ActorPosition = GetActorLocation();
 		FVector NewLocation = FMath::Lerp(ActorPosition,FinalPosition, DeltaTime * Speed);
 		SetActorLocation(NewLocation);
 	}
 }
 
+//It works only for buttons.
+bool ADoor::CheckActorOverlap() {
+	
+	//In this case the condition is not used.
+	if(Activator.Num() == 0)
+		return false;
+
+	for(int i = 0; i < Activator.Num(); i++){
+		APuzzleButton* Button = Cast<APuzzleButton>(Activator[i]);
+		if(!Button->bDisableOverlap)
+			return false;
+	}		
+
+	return true;
+}
