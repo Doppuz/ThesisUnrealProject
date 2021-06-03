@@ -57,6 +57,9 @@ public:
 	//Trigger volumes.
 	TArray<AActor*> TriggerVolumes;
 
+	//Puzzle elements
+	TArray<APuzzleButton*> ElemsPuzzle;
+
 //--------- Coins ---------
 	
 	int GetCoins() const;
@@ -80,15 +83,10 @@ private:
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category = Materials)
 	UMaterial* GreenColor;
 
-	//Puzzle1
-	TArray<APuzzleButton*> ElemsPuzzle1;
-
 	//Puzzle2
 	TArray<int> ElemsPuzzle2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"), Category = Door)
 	TSubclassOf<ADoor> DoorClass;
 
-	//Timers
-	FTimerHandle ResetPuzzle1Timer;
 };

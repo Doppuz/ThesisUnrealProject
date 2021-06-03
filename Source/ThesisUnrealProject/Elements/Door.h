@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "PuzzleTemplate.h"
 #include "Door.generated.h"
 
 UCLASS()
-class THESISUNREALPROJECT_API ADoor : public AActor
+class THESISUNREALPROJECT_API ADoor : public APuzzleTemplate
 {
 	GENERATED_BODY()
-	
+
 public:	
 	// Sets default values for this actor's properties
 	ADoor();
@@ -50,11 +51,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//check if the door can be opened. It works only for buttons.
+	virtual void CheckActorOverlap();
+
 private:
 
 	FVector FinalPosition;
 
-	//check if the door can be opened. It works only for buttons.
-	bool CheckActorOverlap();
 
 };

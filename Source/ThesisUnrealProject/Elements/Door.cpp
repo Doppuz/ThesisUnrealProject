@@ -46,8 +46,10 @@ void ADoor::BeginPlay(){
 // Called every frame
 void ADoor::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
-
-	if(bOpenDoor || CheckActorOverlap()){
+	
+	CheckActorOverlap();
+	
+	if(bOpenDoor){
 		FVector ActorPosition = GetActorLocation();
 		FVector NewLocation = FMath::Lerp(ActorPosition,FinalPosition, DeltaTime * Speed);
 		SetActorLocation(NewLocation);
@@ -55,17 +57,17 @@ void ADoor::Tick(float DeltaTime){
 }
 
 //It works only for buttons.
-bool ADoor::CheckActorOverlap() {
+void ADoor::CheckActorOverlap() {
 	
 	//In this case the condition is not used.
 	if(Activator.Num() == 0)
-		return false;
+		return;
 
 	for(int i = 0; i < Activator.Num(); i++){
 		APuzzleButton* Button = Cast<APuzzleButton>(Activator[i]);
 		if(!Button->bDisableOverlap)
-			return false;
+			return;
 	}		
 
-	return true;
+	bOpenDoor = true;
 }

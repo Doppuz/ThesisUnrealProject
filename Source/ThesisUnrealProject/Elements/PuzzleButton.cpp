@@ -39,11 +39,16 @@ void APuzzleButton::Tick(float DeltaTime){
 
 void APuzzleButton::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	
-	if(!bDisableOverlap && !GameMode->bGateDestroyed){
-		bDisableOverlap = true;
-		Mesh->SetMaterial(0,OrangeColor);
-		//GameMode->CheckPuzzle1(this);
+	if(OtherActor->IsA(APawn::StaticClass())){
+
+		if(Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass())){
+
+			if(!bDisableOverlap){
+				bDisableOverlap = true;
+				Mesh->SetMaterial(0,ButtonColor);
+			}
+			
+		}
 	}
 	
 }

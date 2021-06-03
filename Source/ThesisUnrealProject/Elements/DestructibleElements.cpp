@@ -40,9 +40,17 @@ void ADestructibleElements::Tick(float DeltaTime){
 }
 
 void ADestructibleElements::HitMesh(const FHitResult& Hit) {
+
+	if(ComplementaryActor != nullptr && ComplementaryActor->bSolved)
+		return;
+
 	CurrentDamage += 1;
-	if(Health == CurrentDamage)
+	
+	if(Health == CurrentDamage){
 		DestructibleMesh->ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 3000);	
+		bSolved = true;
+	}
+
 }
 
 

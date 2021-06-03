@@ -23,6 +23,9 @@ ASquaredProjectile::ASquaredProjectile(){
 
 	MovementProjectile = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
 
+	MovementProjectile->InitialSpeed = 1000.F;
+	MovementProjectile->MaxSpeed = 1000.F;
+
 	Damage = 10.f;
 }
 
@@ -30,16 +33,10 @@ ASquaredProjectile::ASquaredProjectile(){
 void ASquaredProjectile::BeginPlay(){
 	Super::BeginPlay();
 	
-	Collider->OnComponentHit.AddDynamic(this, &ASquaredProjectile::OnHit);
+	Collider->OnComponentBeginOverlap.AddDynamic(this, &ASquaredProjectile::OnOverlap);
 }
 
-// Called every frame
-void ASquaredProjectile::Tick(float DeltaTime){
-	Super::Tick(DeltaTime);
-
-}
-
-void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
+void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
 	if(OtherActor->IsA(ADestructibleElements::StaticClass())){
 
@@ -50,11 +47,11 @@ void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		switch(Actor->ID){
 			case 0:
 				//Case 0 is the choice of the first puzzle. I want to avoid to destroy the gate if I solved the puzzle.
-				if(!GameMode->bSolvedPuzzle1 && !Actor->bIAmDestroyed){
-					Actor->HitMesh(Hit);
+				//if(!GameMode->bSolvedPuzzle1 && !Actor->bIAmDestroyed){
+				Actor->HitMesh(Hit);
 					//DC->ApplyRadiusDamage(1.f,Hit.ImpactPoint, 1.f,3000.f,true);
 					//DC->ApplyDamage(1.1f,Hit.ImpactPoint, Hit.ImpactPoint, 30000);
-				}
+				//}
 			break;
 			case 1:
 				if(GameMode->bEnemyDefeated && !Actor->bIAmDestroyed)
@@ -70,7 +67,6 @@ void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		FPointDamageEvent DamageEvent(Damage,Hit,this->GetVelocity(),nullptr);
 		if(MyOwner != nullptr){
 			
-			UE_LOG(LogTemp,Warning,TEXT("Squared Projectile after if"));
 			APawn* ShooterPawn = Cast<APawn>(MyOwner);
 			APawn* OtherPawn = Cast<APawn>(OtherActor);
 
@@ -92,4 +88,10 @@ void ASquaredProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 	}
 
 	Destroy();
+}
+
+// Called every frame
+void ASquaredProjectile::Tick(float DeltaTime){
+	Super::Tick(DeltaTime);
+
 }

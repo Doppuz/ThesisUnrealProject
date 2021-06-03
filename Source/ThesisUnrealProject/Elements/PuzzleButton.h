@@ -36,10 +36,10 @@ public:
 	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category = Materials)
-	UMaterial* OrangeColor;
+	UMaterial* ButtonColor;
 
 	UFUNCTION()
-	void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
+	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 
 	int GetID();
 

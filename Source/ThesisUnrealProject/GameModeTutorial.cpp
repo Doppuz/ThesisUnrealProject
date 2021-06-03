@@ -31,7 +31,7 @@ void AGameModeTutorial::Tick(float DeltaTime) {
 //Check if all of the 3 buttuns has been clicked. If yes check if the combination is correct.
 void AGameModeTutorial::CheckPuzzle1(APuzzleButton* Button) {
     
-    ElemsPuzzle1.Add(Button);
+    /*ElemsPuzzle1.Add(Button);
 
     if(ElemsPuzzle1.Num() == 3){
         
@@ -56,10 +56,10 @@ void AGameModeTutorial::CheckPuzzle1(APuzzleButton* Button) {
             GetWorld()->GetTimerManager().SetTimer(ResetPuzzle1Timer,this,&AGameModeTutorial::ResetPuzzle1,0.5f,false);
         }
 
-    }
+    }*/
 }
 
-void AGameModeTutorial::ResetPuzzle1() {
+/*void AGameModeTutorial::ResetPuzzle1() {
 
     for(APuzzleButton* Butt : ElemsPuzzle1){
         Butt->Mesh->SetMaterial(0,GreyColor);
@@ -67,7 +67,7 @@ void AGameModeTutorial::ResetPuzzle1() {
     }
     bSolvedPuzzle1 = true;
     ElemsPuzzle1.Empty();
-}
+}*/
 
 //Check if I spoke or killed all the actor in one of the two rooms.
 void AGameModeTutorial::CheckPuzzle2(int ID) {
