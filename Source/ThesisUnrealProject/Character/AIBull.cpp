@@ -8,6 +8,8 @@
 #include "../Character/CharacterPawnQuad.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "AIController.h"
+#include "BehaviorTree/BlackBoardComponent.h"
 
 // Sets default values
 AAIBull::AAIBull()
@@ -15,19 +17,24 @@ AAIBull::AAIBull()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
-	RootComponent = Collider;
+	/*Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	RootComponent = Root;*/
 
-	Collider->SetSimulatePhysics(true);
+	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
+	RootComponent = Collider;//->SetupAttachment(RootComponent);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->SetupAttachment(RootComponent);
+	Mesh->SetupAttachment(Collider);
+
+	/*HornCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("HornCollider"));
+	HornCollider->SetupAttachment(RootComponent);
+
+	HornMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HornMesh"));
+	HornMesh->SetupAttachment(RootComponent);*/
 
 	PawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("PawnMovement"));
 	PawnMovement->MaxSpeed = 300;
 	PawnMovement->Acceleration = 1000;
-
-	Collider->OnComponentHit.AddDynamic(this, &AAIBull::OnHit);
 	
 	CameraArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("ArmComponent"));
 	CameraArmComponent->SetupAttachment(RootComponent);
@@ -74,14 +81,22 @@ float AAIBull::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 void AAIBull::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//Need to to this here because when I spawn an actor the GetPawn() is nullptr
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),FVector(GetActorLocation().X,
+                                                                                 GetActorLocation().Y,
+                                                                                 42.f));
 	
+	Collider->OnComponentHit.AddDynamic(this, &AAIBull::OnHit);
+	Mesh->OnComponentHit.AddDynamic(this, &AAIBull::OnHit);
+
 }
 
 // Called every frame
 void AAIBull::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y,42.f));
+	//SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y,42.f));
 }
 
 // Called to bind functionality to input
@@ -92,6 +107,8 @@ void AAIBull::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 }
 
 void AAIBull::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
+
+	UE_LOG(LogTemp,Warning,TEXT("%s"), *OtherActor->GetName());
 
 	//If I hit the player, I make him damage.
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){

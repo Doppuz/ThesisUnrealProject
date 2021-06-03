@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackBoardComponent.h"
 #include "../Character/CharacterPawnQuad.h"
+#include "BehaviorTree/BehaviorTree.h"
 
 void AQuadAIBull::BeginPlay() {
     
@@ -12,9 +13,7 @@ void AQuadAIBull::BeginPlay() {
     
     if(BTree != nullptr){
         RunBehaviorTree(BTree);
-        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),FVector(GetPawn()->GetActorLocation().X,
-                                                                                 GetPawn()->GetActorLocation().Y,
-                                                                                 42.f));
+        
         GetBlackboardComponent()->SetValueAsBool(TEXT("Focus"),false);
                                                                                  
     }else
