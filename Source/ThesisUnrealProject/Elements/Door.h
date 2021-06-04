@@ -4,11 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PuzzleTemplate.h"
+#include "RiddleTemplate.h"
 #include "Door.generated.h"
 
+class APuzzleButton;
+class APawnInteractiveClass;
+
 UCLASS()
-class THESISUNREALPROJECT_API ADoor : public APuzzleTemplate
+class THESISUNREALPROJECT_API ADoor : public ARiddleTemplate
 {
 	GENERATED_BODY()
 
@@ -43,16 +46,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Opening")
 	int ID;
 
-	//If all actors are cleared, the door opens.
-	UPROPERTY(EditAnywhere, Category = "Opening")
-	TArray<AActor*> Activator;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	//check if the door can be opened. It works only for buttons.
-	virtual void CheckActorOverlap();
+	//check Puzzle actors overlap.
+	virtual void CheckPuzzleActor();
+
+	//check Ally actors condition.
+	virtual void CheckAllyActor();
+
+	//check Ally actors condition.
+	virtual void CheckEnemyActor();
 
 private:
 

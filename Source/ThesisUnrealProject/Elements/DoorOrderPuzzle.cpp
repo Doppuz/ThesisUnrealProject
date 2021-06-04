@@ -14,7 +14,7 @@ ADoorOrderPuzzle::ADoorOrderPuzzle(){
 }
 
 //It works only for buttons.
-void ADoorOrderPuzzle::CheckActorOverlap() {
+void ADoorOrderPuzzle::CheckPuzzleActor() {
 
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 
@@ -22,16 +22,16 @@ void ADoorOrderPuzzle::CheckActorOverlap() {
 		return;
 
 	//In this case the condition is not used.
-	if(Activator.Num() == 0)
+	if(PuzzleActivator.Num() == 0)
 		return;
 
 	//Add to the right actor vector if boverlap is false.
-	if(Activator.Num() != GameMode->ElemsPuzzle.Num()){
+	if(PuzzleActivator.Num() != GameMode->ElemsPuzzle.Num()){
 		return;
 	}
 
-	for(int i = 0; i < Activator.Num(); i++){
-		if(Activator[i] != GameMode->ElemsPuzzle[i]){
+	for(int i = 0; i < PuzzleActivator.Num(); i++){
+		if(PuzzleActivator[i] != GameMode->ElemsPuzzle[i]){
 
 			for(APuzzleButton* Butt : GameMode->ElemsPuzzle)
                 Butt->Mesh->SetMaterial(0,RedColor);
@@ -44,8 +44,8 @@ void ADoorOrderPuzzle::CheckActorOverlap() {
 		}
 	}	
 
-	for(AActor* Butt : Activator){
-        Cast<APuzzleButton>(Butt)->Mesh->SetMaterial(0,GreenColor);	
+	for(APuzzleButton* Butt : PuzzleActivator){
+        Butt->Mesh->SetMaterial(0,GreenColor);	
     	GameMode->ElemsPuzzle.Empty();
 	}
 
@@ -58,9 +58,9 @@ void ADoorOrderPuzzle::ResetPuzzle() {
 
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 
-	for(AActor* Butt : Activator){
-        Cast<APuzzleButton>(Butt)->Mesh->SetMaterial(0,GreyColor);	
-    	Cast<APuzzleButton>(Butt)->bDisableOverlap = false;
+	for(APuzzleButton* Butt : PuzzleActivator){
+        Butt->Mesh->SetMaterial(0,GreyColor);	
+    	Butt->bDisableOverlap = false;
 	}
 	
     bSolved = true;

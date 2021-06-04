@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PuzzleTemplate.h"
+#include "RiddleTemplate.h"
 #include "DestructibleElements.generated.h"
 
 UCLASS()
-class THESISUNREALPROJECT_API ADestructibleElements : public APuzzleTemplate
+class THESISUNREALPROJECT_API ADestructibleElements : public ARiddleTemplate
 {
 	GENERATED_BODY()
 	

@@ -4,6 +4,7 @@
 #include "Door.h"
 #include "Components/BoxComponent.h"
 #include "PuzzleButton.h"
+#include "../Character/PawnInteractiveClass.h"
 
 // Sets default values
 ADoor::ADoor(){
@@ -47,7 +48,8 @@ void ADoor::BeginPlay(){
 void ADoor::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 	
-	CheckActorOverlap();
+	CheckPuzzleActor();
+	CheckAllyActor();
 	
 	if(bOpenDoor){
 		FVector ActorPosition = GetActorLocation();
@@ -57,17 +59,34 @@ void ADoor::Tick(float DeltaTime){
 }
 
 //It works only for buttons.
-void ADoor::CheckActorOverlap() {
+void ADoor::CheckPuzzleActor() {
 	
 	//In this case the condition is not used.
-	if(Activator.Num() == 0)
+	if(PuzzleActivator.Num() == 0)
 		return;
 
-	for(int i = 0; i < Activator.Num(); i++){
-		APuzzleButton* Button = Cast<APuzzleButton>(Activator[i]);
-		if(!Button->bDisableOverlap)
+	for(int i = 0; i < PuzzleActivator.Num(); i++){
+		if(!PuzzleActivator[i]->bDisableOverlap)
 			return;
 	}		
 
 	bOpenDoor = true;
+}
+
+void ADoor::CheckAllyActor() {
+
+	if(AllyActivator.Num() == 0)
+		return;
+
+	for(int i = 0; i < AllyActivator.Num(); i++){
+		if(!AllyActivator[i]->bAlreadySpoken)
+			return;
+	}		
+
+	bOpenDoor = true;
+
+}
+
+void ADoor::CheckEnemyActor() {
+	
 }

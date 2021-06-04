@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PuzzleTemplate.h"
+#include "RiddleTemplate.h"
 
 // Sets default values
-APuzzleTemplate::APuzzleTemplate()
+ARiddleTemplate::ARiddleTemplate()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,14 +12,26 @@ APuzzleTemplate::APuzzleTemplate()
 }
 
 // Called when the game starts or when spawned
-void APuzzleTemplate::BeginPlay()
+void ARiddleTemplate::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
+void ARiddleTemplate::CheckPuzzleActor() {
+	
+}
+
+void ARiddleTemplate::CheckAllyActor() {
+	
+}
+
+void ARiddleTemplate::CheckEnemyActor() {
+	
+}
+
 // Called every frame
-void APuzzleTemplate::Tick(float DeltaTime)
+void ARiddleTemplate::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 

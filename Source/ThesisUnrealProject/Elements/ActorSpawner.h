@@ -15,8 +15,14 @@ public:
 	// Sets default values for this actor's properties
 	AActorSpawner();
 
-	UPROPERTY(EditAnywhere, Category = "Actor")
+	UPROPERTY(EditAnywhere, Category = "ActorSpawn")
 	TSubclassOf<AActor> ActorToSpawn;
+
+	UPROPERTY(EditAnywhere, Category = "ActorSpawn")
+	bool bDestroyAfterSpawn;
+
+	//SpawnActorMethos
+	virtual void SpawnActor();
 
 protected:
 	// Called when the game starts or when spawned

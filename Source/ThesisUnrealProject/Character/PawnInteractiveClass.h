@@ -27,41 +27,6 @@ public:
 	// Sets default values for this pawn's properties
 	APawnInteractiveClass();
 
-//---- Components ------
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	class UBoxComponent* Collider;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	UStaticMeshComponent* Mesh;
-
-//-----Speech-----
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
-	TArray<FString> Speech;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
-	int SpeechContator;
-
-//-----Questions-----
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
-	TArray<FQuestion> Questions;
-
-	//Actually right now it doesn't do anything.
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
-	int AnswerContator;
-	
-	//it determines the position of the question. If it is -1, the question has already been done.
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
-	int QuestionAt;
-
-	//Ally ID
-	UPROPERTY(EditAnywhere)
-	int ID;
-
-//----- Focus --------
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Focus)
-	bool bFocus;
 
 protected:
 	// Called when the game starts or when spawned
@@ -80,10 +45,61 @@ public:
 	virtual void StartInteraction();
 	virtual void EndInteraction();
 
-	//------ Equipment --------
+#pragma region Components
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	class UBoxComponent* Collider;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	UStaticMeshComponent* Mesh;
+
+#pragma endregion
+
+#pragma region Equipment
+
 	void Equipment();
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Equipment)
 	UStaticMesh* MeshToEquip;
 
+#pragma endregion
+
+#pragma region Speech
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
+	TArray<FString> Speech;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
+	int SpeechContator;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
+	bool bAlreadySpoken;
+
+#pragma endregion
+
+#pragma region Question
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
+	TArray<FQuestion> Questions;
+
+	//Actually right now it doesn't do anything.
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
+	int AnswerContator;
+	
+	//it determines the position of the question. If it is -1, the question has already been done.
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
+	int QuestionAt;
+
+	//Ally ID
+	UPROPERTY(EditAnywhere)
+	int ID;
+
+#pragma endregion
+
+#pragma region Focus
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Focus)
+	bool bFocus;
+
+#pragma endregion
 };

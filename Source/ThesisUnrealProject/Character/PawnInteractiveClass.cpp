@@ -27,6 +27,8 @@ APawnInteractiveClass::APawnInteractiveClass()
 	Mesh->SetupAttachment(RootComponent);
 
 	bFocus = true;
+	bAlreadySpoken = false;
+	QuestionAt = 200;
 }
 
 // Called when the game starts or when spawned
@@ -40,6 +42,7 @@ void APawnInteractiveClass::BeginPlay()
 void APawnInteractiveClass::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 	
+	//Set the focus from the AI to the player.
 	if(bFocus){
 		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
 	
@@ -75,6 +78,7 @@ void APawnInteractiveClass::Speak() {
 	}else{
 		SpeechContator = 0;
 		AnswerContator = 0;
+		bAlreadySpoken = true;
 
 		switch(ID){
 			case 0:

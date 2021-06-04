@@ -21,7 +21,7 @@ public:
 protected:
 
 	//check if the door can be opened. It works only for buttons.
-	virtual void CheckActorOverlap() override;
+	virtual void CheckPuzzleActor() override;
 
 	UPROPERTY(EditAnywhere, Category = "Opening")
 	TArray<APuzzleButton*> RightOrder;
