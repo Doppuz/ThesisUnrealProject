@@ -57,6 +57,7 @@ float AAIBull::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);
 
 	if(CurrentHealth == 0){
+		bIAmDestroyed = true;
 		Destroy();
 			/*AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 			switch(ID){

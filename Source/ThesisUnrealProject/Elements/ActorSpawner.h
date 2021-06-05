@@ -22,7 +22,7 @@ public:
 	bool bDestroyAfterSpawn;
 
 	//SpawnActorMethos
-	virtual void SpawnActor();
+	virtual AActor* SpawnActor();
 
 protected:
 	// Called when the game starts or when spawned

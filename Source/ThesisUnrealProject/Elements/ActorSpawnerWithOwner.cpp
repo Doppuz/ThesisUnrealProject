@@ -2,6 +2,7 @@
 
 
 #include "ActorSpawnerWithOwner.h"
+#include "../Character/EnemyAIAbstract.h"
 
 // Sets default values
 AActorSpawnerWithOwner::AActorSpawnerWithOwner(){
@@ -11,13 +12,16 @@ AActorSpawnerWithOwner::AActorSpawnerWithOwner(){
 	bDestroyAfterSpawn = false;
 }
 
-void AActorSpawnerWithOwner::SpawnActor() {
-	AActor* NewActor = GetWorld()->SpawnActor<AActor>(ActorToSpawn,GetActorLocation(),GetActorRotation());
+AActor* AActorSpawnerWithOwner::SpawnActor() {
+	AEnemyAIAbstract* NewActor = Cast<AEnemyAIAbstract>(GetWorld()->SpawnActor<AActor>(ActorToSpawn,GetActorLocation(),GetActorRotation()));
 
-	RiddleActor->EnemyActivator.Add(NewActor);
+	if(RiddleActor != nullptr)
+		RiddleActor->EnemyActivator.Add(NewActor);
+	else
+		UE_LOG(LogTemp,Warning,TEXT("No RiddleActor set"));
 
-	if(bDestroyAfterSpawn)
-		Destroy();
+	return NewActor;
+
 }
 
 // Called when the game starts or when spawned

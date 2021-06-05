@@ -22,6 +22,7 @@
 #include "Engine/TriggerVolume.h"
 #include "Engine/LatentActionManager.h"
 #include "Components/SpotLightComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -76,7 +77,12 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 void ACharacterPawnQuad::BeginPlay(){
 	Super::BeginPlay();
 
-	Health = MaxHealth;
+// --- Just for the AI (Can't put it on the controller if the enemy is spawned) ---
+	if(!IsPlayerControlled())
+		Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),GetActorLocation());
+// ----------------------------
+
+	CurrentHealth = MaxHealth;
 	InitialRotation = CameraArmComponent->GetComponentRotation();
 	Collider->OnComponentBeginOverlap.AddDynamic(this,&ACharacterPawnQuad::OnOverlap);
 	//Collider->OnComponentHit.AddDynamic(this, &ACharacterPawnQuad::OnHit);
@@ -89,18 +95,19 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 	if(GetController()->IsA(APlayerController::StaticClass())){
 		if(!bCharacterInvincible){
-			Health -= FMath::Min(Health,Damage);
+			CurrentHealth -= FMath::Min(CurrentHealth,Damage);
 			InvisibleAnimation();
 			bCharacterInvincible = true;	
-			UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), Health);
+			UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);
 		}
 	}else{
-		Health -= FMath::Min(Health,Damage);
-		UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), Health);
+		CurrentHealth -= FMath::Min(CurrentHealth,Damage);
+		UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);
 	}
 
-	if(Health == 0){
+	if(CurrentHealth == 0){
 		if(GetController()->IsA(AQuadAIController::StaticClass())){
+			bIAmDestroyed = true;
 			Destroy();
 			AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 			switch(ID){

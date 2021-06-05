@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "EnemyAIAbstract.h"
 #include "AIBull.generated.h"
 
 UCLASS()
-class THESISUNREALPROJECT_API AAIBull : public APawn
+class THESISUNREALPROJECT_API AAIBull : public AEnemyAIAbstract
 {
 	GENERATED_BODY()
 
@@ -57,13 +58,5 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float Damage;
-
-	UPROPERTY(EditAnywhere)
-	float MaxHealth;
-
-	UPROPERTY(VisibleAnywhere)
-	float CurrentHealth;
-
-
 
 };

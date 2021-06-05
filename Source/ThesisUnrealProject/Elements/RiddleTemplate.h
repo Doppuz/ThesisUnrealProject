@@ -8,8 +8,9 @@
 
 class APuzzleButton;
 class APawnInteractiveClass;
+class AEnemyAIAbstract;
 
-UCLASS()
+UCLASS(Abstract)
 class THESISUNREALPROJECT_API ARiddleTemplate : public AActor
 {
 	GENERATED_BODY()
@@ -52,6 +53,10 @@ public:
 
 	//If I have killed all the enemy actors, the door opens.
 	UPROPERTY(EditAnywhere, Category = "OpenConditions")
-	TArray<AActor*> EnemyActivator;
+	TArray<AEnemyAIAbstract*> EnemyActivator;
+
+	//If I am in the arena I need to delete all the enemies before opening the door.
+	UPROPERTY(EditAnywhere, Category = "OpenConditions")
+	bool bUseTurnMethodology;
 
 };

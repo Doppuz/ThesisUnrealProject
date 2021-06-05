@@ -13,11 +13,8 @@ AActorSpawner::AActorSpawner()
 	//ActorTutotialSpawnPosition = z: 115;
 }
 
-void AActorSpawner::SpawnActor() {
-	GetWorld()->SpawnActor<AActor>(ActorToSpawn,GetActorLocation(),GetActorRotation());
-
-	if(bDestroyAfterSpawn)
-		Destroy();
+AActor* AActorSpawner::SpawnActor() {
+	return GetWorld()->SpawnActor<AActor>(ActorToSpawn,GetActorLocation(),GetActorRotation());
 }
 
 // Called when the game starts or when spawned
@@ -25,5 +22,8 @@ void AActorSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	SpawnActor();
+	if(bDestroyAfterSpawn){
+		SpawnActor();
+		Destroy();
+	}
 }

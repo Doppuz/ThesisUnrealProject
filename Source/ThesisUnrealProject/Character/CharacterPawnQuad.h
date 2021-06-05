@@ -11,6 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "PawnInteractiveClass.h"
+#include "EnemyAIAbstract.h"
 
 #include "CharacterPawnQuad.generated.h"
 
@@ -18,7 +19,7 @@ class AGunController;
 class ASquaredProjectile;
 
 UCLASS()
-class THESISUNREALPROJECT_API ACharacterPawnQuad : public APawn{
+class THESISUNREALPROJECT_API ACharacterPawnQuad : public AEnemyAIAbstract{
 	GENERATED_BODY()
 
 public:
@@ -67,13 +68,6 @@ public:
 	//Time between 2 projectile
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
 	float ProjectileTimeout;
-
-	//Healt
-	UPROPERTY(EditDefaultsOnly)
-	float MaxHealth;
-
-	UPROPERTY(VisibleAnywhere)
-	float Health;
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis); 
