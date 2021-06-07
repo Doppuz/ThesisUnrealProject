@@ -22,7 +22,7 @@ public:
 	class UBoxComponent* Trigger;
 
 	UFUNCTION()
-	void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
+	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 
 	//tick it if you want the trigger to hide your visibility.
 	UPROPERTY(EditAnywhere, Category = "Visibility")

@@ -266,9 +266,11 @@ void ACharacterPawnQuad::Shoot() {
 		if(!bAmIShooting){
 
 			ASquaredProjectile* Projectile = GetWorld()->SpawnActor<ASquaredProjectile>(ProjectileClass,ProjectileSpawnPosition->GetComponentLocation(),ProjectileSpawnPosition->GetComponentRotation());
-
-			if(Projectile != nullptr)
+			
+			if(Projectile != nullptr){
+				Collider->IgnoreActorWhenMoving(Projectile,true);
 				Projectile->MyOwner = this;
+			}
 
 			bAmIShooting = true;
 			GetWorld()->GetTimerManager().SetTimer(ShotTimer,this, &ACharacterPawnQuad::SetShooting, ProjectileTimeout, false);

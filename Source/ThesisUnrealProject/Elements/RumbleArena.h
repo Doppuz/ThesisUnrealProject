@@ -9,6 +9,8 @@
 #include "RiddleTemplate.h"
 #include "RumbleArena.generated.h"
 
+class ACoinController;
+
 UCLASS()
 class THESISUNREALPROJECT_API ARumbleArena : public AActor
 {
@@ -28,8 +30,8 @@ public:
 
 #pragma region Components
 	
-	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
-	USceneComponent* Root;
+	//UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	//USceneComponent* Root;
 
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	class UBoxComponent* Collider;
@@ -52,6 +54,9 @@ public:
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	USceneComponent* FourthSpawnPosition;
 
+	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	USceneComponent* RewardSpawnPosition;
+
 #pragma endregion
 
 	UPROPERTY(EditAnywhere)
@@ -66,6 +71,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "RiddleComponent")
 	ARiddleTemplate* RiddleActor;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Reward)
+	TSubclassOf<ACoinController> RewardClass;
 
 private:
 

@@ -40,6 +40,38 @@ public:
 
 	void HitMesh(const FHitResult& Hit);
 
+#pragma region Shake
+
+	//Shake speed.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shake")
+	float ShakeSpeed;
+
+	//Shake Distance
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shake")
+	float ShakeDistance;
+
+	//True if can shake, false otherwise.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shake")
+	bool bCanShake;
+
+	//True if it is shaking, false otherwise.
+	bool bIsShaking;
+
+	//Time beetween start and end shake.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shake")
+	float IntervalTime;
+
+	FTimerHandle ShakeTimer;
+
+	//Store the initial position to move the mesh in the initial position after shaking.
+	FVector StartPosition;
+	
+	void Shake();
+
+	void WaitShake();
+
+#pragma endregion
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
