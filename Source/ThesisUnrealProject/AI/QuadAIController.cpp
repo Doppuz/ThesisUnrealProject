@@ -19,20 +19,5 @@ void AQuadAIController::BeginPlay() {
 void AQuadAIController::Tick(float DeltaTime) {
     
     Super::Tick(DeltaTime);
-
-    /*APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
-
-    if(BTree != nullptr){
-        GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"),PlayerPawn->GetActorLocation());
-    }
     
-    /*APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
-
-    if(LineOfSightTo(PlayerPawn)){
-        SetFocus(PlayerPawn);
-        MoveToActor(PlayerPawn,200);
-    }else{
-        ClearFocus(EAIFocusPriority::Gameplay);
-        StopMovement();
-    }*/
 }

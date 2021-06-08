@@ -9,6 +9,7 @@
 #include "../GameModeTutorial.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "../AI/QuadAIController.h"
+#include "../Character/AICharacterPawnQuad.h"
 
 // Sets default values
 ASquaredProjectile::ASquaredProjectile(){
@@ -70,11 +71,27 @@ void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 			APawn* ShooterPawn = Cast<APawn>(MyOwner);
 			APawn* OtherPawn = Cast<APawn>(OtherActor);
 
-			if(OtherPawn != nullptr && OtherPawn->GetController() != nullptr &&OtherPawn->GetController()->IsA(APlayerController::StaticClass()))
+			//I can't hit myself
+			if(ShooterPawn == OtherPawn)
+				return;
+
+			if(ShooterPawn != nullptr && ShooterPawn->IsA(AAICharacterPawnQuad::StaticClass())){ 
+
+				if(OtherPawn != nullptr && OtherPawn->GetController() != nullptr && !OtherPawn->GetController()->IsA(APlayerController::StaticClass())){
+					OtherActor->TakeDamage(Damage, DamageEvent,ShooterPawn->GetController(),this);
+				}
+
+			}else if(OtherPawn != nullptr && OtherPawn->GetController() != nullptr && OtherPawn->GetController()->IsA(APlayerController::StaticClass())){
+
 				OtherActor->TakeDamage(Damage, DamageEvent,ShooterPawn->GetController(),this);
 
-			if(ShooterPawn != nullptr && ShooterPawn->GetController() != nullptr &&ShooterPawn->GetController()->IsA(APlayerController::StaticClass()))
+
+			}else if(ShooterPawn != nullptr && ShooterPawn->GetController() != nullptr && ShooterPawn->GetController()->IsA(APlayerController::StaticClass())){
+
 				OtherActor->TakeDamage(Damage, DamageEvent,ShooterPawn->GetController(),this);
+
+
+			}	
 
 			/*if(ShooterPawn != nullptr && OtherPawn != nullptr && 
 				ShooterPawn->GetController() != nullptr && OtherPawn->GetController() != nullptr &&
@@ -86,7 +103,6 @@ void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 			}*/
 		}
 	}
-
 	Destroy();
 }
 

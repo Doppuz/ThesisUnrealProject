@@ -83,18 +83,10 @@ void ADestructibleElements::OnComponentFracture(const FVector& HitPoint, const F
 	Collider->SetCollisionProfileName(TEXT("IgnorePawnProjectile"),false);
 	bIAmDestroyed = true;
 
-		switch(ID){
-			case 0:
-				//Case 0 is the choice of the first puzzle. I want to avoid to solve the puzzle after the gate is destroyed.
-				GameMode->bGateDestroyed = true;
-			break;
-			case 2:
-				GameMode->SetDoorOpen(8);
-				GameMode->SetDoorOpen(10);
-			default:
-				break;
-				//UE_LOG(LogTemp,Warning,TEXT("Error in squaredProjectile, no ID for this Destr Component"));
-		}
+	if(DoorsToOpen.Num() > 0){
+		for(ADoor* Door: DoorsToOpen)
+			Door->bOpenDoor = true;
+	}
 
 }
 

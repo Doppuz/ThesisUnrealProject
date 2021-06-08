@@ -54,6 +54,9 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(CameraArmComponent);
+	
+	FollowAllyPosition = CreateDefaultSubobject<USceneComponent>(TEXT("FollowAlly"));
+	FollowAllyPosition->SetupAttachment(RootComponent);
 
 	MovementSpeed = 400.f;
 	RotationSpeed = 400.f;
@@ -264,13 +267,12 @@ void ACharacterPawnQuad::Shoot() {
 	
 	if(AllyNPC == nullptr){
 		if(!bAmIShooting){
-
+			
 			ASquaredProjectile* Projectile = GetWorld()->SpawnActor<ASquaredProjectile>(ProjectileClass,ProjectileSpawnPosition->GetComponentLocation(),ProjectileSpawnPosition->GetComponentRotation());
 			
-			if(Projectile != nullptr){
-				Collider->IgnoreActorWhenMoving(Projectile,true);
+			if(Projectile != nullptr)
 				Projectile->MyOwner = this;
-			}
+			
 
 			bAmIShooting = true;
 			GetWorld()->GetTimerManager().SetTimer(ShotTimer,this, &ACharacterPawnQuad::SetShooting, ProjectileTimeout, false);

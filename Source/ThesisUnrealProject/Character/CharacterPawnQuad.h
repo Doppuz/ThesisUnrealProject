@@ -99,6 +99,10 @@ public:
 	//Used to move the cannon in the obstacle of puzzle 3.
 	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bStationary;
+	
+	//Position of Ally that follows the player
+	UPROPERTY(EditAnywhere, Category = "AI")
+	USceneComponent* FollowAllyPosition;
 
 protected:
 	// Called when the game starts or when spawned

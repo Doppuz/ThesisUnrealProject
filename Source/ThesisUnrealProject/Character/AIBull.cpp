@@ -109,8 +109,6 @@ void AAIBull::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AAIBull::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 
-	UE_LOG(LogTemp,Warning,TEXT("%s"), *OtherActor->GetName());
-
 	//If I hit the player, I make him damage.
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(OtherActor);

@@ -7,6 +7,8 @@
 #include "RiddleTemplate.h"
 #include "DestructibleElements.generated.h"
 
+class ADoor;
+
 UCLASS()
 class THESISUNREALPROJECT_API ADestructibleElements : public ARiddleTemplate
 {
@@ -39,6 +41,9 @@ public:
 	bool bIAmDestroyed;
 
 	void HitMesh(const FHitResult& Hit);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Opening")
+	TArray<ADoor*> DoorsToOpen;
 
 #pragma region Shake
 
