@@ -15,9 +15,10 @@ void UBTService_SetEnemiesInRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
 
     AAICharacterPawnQuad* AIPawn = Cast<AAICharacterPawnQuad>(OwnerComp.GetAIOwner()->GetPawn());
 
-    if(AIPawn->Enemies.Num() > 0)
+    if(AIPawn->Enemies.Num() > 0){
         OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("CurrentEnemy"),AIPawn->Enemies[0]);
-    
+    }else
+        OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("CurrentEnemy"));
 
     //OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"),PlayerPawn->GetActorLocation());
     

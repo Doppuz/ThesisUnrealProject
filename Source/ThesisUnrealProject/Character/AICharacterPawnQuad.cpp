@@ -5,6 +5,7 @@
 #include "EnemyAIAbstract.h"
 #include "Components/BoxComponent.h"
 #include "AIController.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AAICharacterPawnQuad::AAICharacterPawnQuad() {
     
@@ -30,7 +31,7 @@ void AAICharacterPawnQuad::Tick(float DeltaTime) {
          return (FirstElem.GetActorLocation() - this->GetActorLocation()).Size() > 
             (SecondElem.GetActorLocation() - this->GetActorLocation()).Size();  
     });
-
+    
     //UE_LOG(LogTemp,Warning,TEXT("--------"));
 
     //for(AEnemyAIAbstract* Enemy: Enemies)
