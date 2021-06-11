@@ -65,6 +65,9 @@ public:
 	int GetCoins() const;
 	void IncreaseCoins();
 
+//-------------- Day / Night ------
+	bool bDay;
+
 protected:
 	
 	// Called when the game starts or when spawned

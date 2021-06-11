@@ -14,9 +14,14 @@ AGameModeTutorial::AGameModeTutorial() {
     bSolvedPuzzle1 = false;
     bGateDestroyed = false;
     bEnemyDefeated = false;
+    bDay = true;
 }
 
 void AGameModeTutorial::BeginPlay() {
+
+    FLatentActionInfo LatentInfo;
+	UGameplayStatics::LoadStreamLevel(this, TEXT("Day"), true, true, LatentInfo);
+
     UGameplayStatics::GetAllActorsOfClass(GetWorld(),DoorClass,DoorActors);
     ChangeMenuWidget(WidgetClass);
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
