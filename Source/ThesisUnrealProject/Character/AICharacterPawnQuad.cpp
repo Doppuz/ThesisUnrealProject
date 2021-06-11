@@ -18,21 +18,21 @@ void AAICharacterPawnQuad::BeginPlay() {
 
     Super::BeginPlay();
 
-    EnemyInRangeTrigger->OnComponentBeginOverlap.AddDynamic(this,&AAICharacterPawnQuad::OnBeginTriggerOverlap);
-    EnemyInRangeTrigger->OnComponentEndOverlap.AddDynamic(this,&AAICharacterPawnQuad::OnEndTriggerOverlap);
 }
 
 void AAICharacterPawnQuad::Tick(float DeltaTime) {
     
     Super::Tick(DeltaTime);
 
-    Enemies.Sort( 
-        [this](const AEnemyAIAbstract& FirstElem, const AEnemyAIAbstract& SecondElem)  {
+    EnemyInRangeTrigger->GetOverlappingActors(UnSortedEnemies,AEnemyAIAbstract::StaticClass());
+    
+    UnSortedEnemies.Sort( 
+        [this](const AActor& FirstElem, const AActor& SecondElem)  {
          return (FirstElem.GetActorLocation() - this->GetActorLocation()).Size() > 
             (SecondElem.GetActorLocation() - this->GetActorLocation()).Size();  
     });
-    
-    //UE_LOG(LogTemp,Warning,TEXT("--------"));
+
+    Enemies = UnSortedEnemies;
 
     //for(AEnemyAIAbstract* Enemy: Enemies)
     //    UE_LOG(LogTemp,Warning,TEXT(" %s : %f "), *Enemy->GetName(), (Enemy->GetActorLocation() - this->GetActorLocation()).Size());

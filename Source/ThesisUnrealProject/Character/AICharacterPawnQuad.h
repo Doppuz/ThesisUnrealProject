@@ -26,7 +26,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	UBoxComponent* EnemyInRangeTrigger;
 
-	TArray<AEnemyAIAbstract*> Enemies;
+	TArray<AActor*> Enemies;
+	TArray<AActor*> UnSortedEnemies;
 
 protected:
 

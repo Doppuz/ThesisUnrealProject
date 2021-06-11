@@ -37,11 +37,13 @@ void UBTService_CheckLineOfSight::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 
     UKismetSystemLibrary::BoxTraceSingle(GetWorld(),AIController->GetPawn()->GetActorLocation(), End,FVector(16.f,16.f,16.f),
         AIController->GetPawn()->GetActorRotation(), UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel7),
-        true, IgnoredActors, EDrawDebugTrace::Persistent,Hit,true);
+        true, IgnoredActors, EDrawDebugTrace::None,Hit,true);
 
     AEnemyAIAbstract* Enemy = Cast<AEnemyAIAbstract>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("CurrentEnemy"));
 
-    if(Hit.GetActor() != nullptr && Enemy != nullptr && Hit.GetActor() == Enemy){// || Distance > 1000.f){ //1000
+    TArray<AActor*> Enemies = Cast<AAICharacterPawnQuad>(AIController->GetPawn())->Enemies;
+
+    if(Hit.GetActor() != nullptr && Enemy != nullptr && Enemies.Contains(Hit.GetActor())){// || Distance > 1000.f){ //1000
         OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("CanISeeTheEnemy"),true);
     }else
         OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("CanISeeTheEnemy"));

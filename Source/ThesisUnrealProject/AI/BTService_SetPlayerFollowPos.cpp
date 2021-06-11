@@ -7,7 +7,7 @@
 #include "../Character/CharacterPawnQuad.h"
 
 UBTService_SetPlayerFollowPos::UBTService_SetPlayerFollowPos() {
-    NodeName = "SetPlayerPosition";
+    NodeName = "SetPlayerFollowPosition";
 }
 
 void UBTService_SetPlayerFollowPos::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
