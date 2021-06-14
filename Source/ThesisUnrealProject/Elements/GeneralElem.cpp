@@ -34,6 +34,7 @@ AGeneralElem::AGeneralElem()
 	MeshComponent3->SetRelativeLocation(FVector(-60,0,0));
 
 	ItHasCoin = false;
+	bNeedOtherElem = true;
 }
 
 // Called when the game starts or when spawned
@@ -41,16 +42,21 @@ void AGeneralElem::BeginPlay()
 {
 	Super::BeginPlay();
 
-	int RandomNumber = FMath::RandRange(0,Meshes.Num() + 1);
-	if(RandomNumber < Meshes.Num())
-		MeshComponent1->SetStaticMesh(Meshes[RandomNumber]);
+	if(bNeedOtherElem){
 
-	RandomNumber = FMath::RandRange(0,Meshes.Num() + 1);
-	if(RandomNumber < Meshes.Num())
-		MeshComponent2->SetStaticMesh(Meshes[RandomNumber]);
-	
-	RandomNumber = FMath::RandRange(0,Meshes.Num() + 1);
-	if(RandomNumber < Meshes.Num())
-		MeshComponent3->SetStaticMesh(Meshes[RandomNumber]);
+		int RandomNumber = FMath::RandRange(0,Meshes.Num() + 1);
+		if(RandomNumber < Meshes.Num())
+			MeshComponent1->SetStaticMesh(Meshes[RandomNumber]);
+
+		RandomNumber = FMath::RandRange(0,Meshes.Num() + 1);
+		if(RandomNumber < Meshes.Num())
+			MeshComponent2->SetStaticMesh(Meshes[RandomNumber]);
+		
+		RandomNumber = FMath::RandRange(0,Meshes.Num() + 1);
+		if(RandomNumber < Meshes.Num())
+			MeshComponent3->SetStaticMesh(Meshes[RandomNumber]);
+
+	}
+
 }
 

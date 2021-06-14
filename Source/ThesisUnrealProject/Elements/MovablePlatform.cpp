@@ -48,9 +48,8 @@ void AMovablePlatform::Tick(float DeltaTime){
 	
 	Super::Tick(DeltaTime);
 
-	if(bHorizontalMovement){
+	if(bHorizontalMovement)
 		PlatformCollider->AddLocalOffset(PlatformCollider->GetForwardVector() * Speed * DeltaTime);
-	}
 }
 
 void AMovablePlatform::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {

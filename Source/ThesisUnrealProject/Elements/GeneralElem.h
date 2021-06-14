@@ -44,4 +44,7 @@ protected:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
 	TSubclassOf<ACoinController> CoinClass;
 
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAcces = true), Category = "DecorationElements")
+	bool bNeedOtherElem;
+
 };

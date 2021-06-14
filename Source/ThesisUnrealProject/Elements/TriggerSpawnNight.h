@@ -18,14 +18,19 @@ public:
 	// Sets default values for this actor's properties
 	ATriggerSpawnNight();
 
-	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
-
 	UPROPERTY(EditAnywhere,  Category = "SpawnAlly")
 	TSubclassOf<AAICharacterPawnQuad> AllyClass;
+
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
+
+	//check if the trigger switch on or of fthe light.
+	UPROPERTY(EditAnywhere, Category = "Light")
+	bool LightOn;
 
 public:	
 	// Called every frame

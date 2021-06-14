@@ -2,6 +2,7 @@
 
 
 #include "RiddleTemplate.h"
+#include "ShakingAbstract.h"
 
 // Sets default values
 ARiddleTemplate::ARiddleTemplate()

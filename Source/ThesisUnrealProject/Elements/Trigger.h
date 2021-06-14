@@ -28,9 +28,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Visibility")
 	bool bBlockVisibility;
 
+
 protected:
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//Define the overlap type (begin/end). It is called in the BeginPlay.
+	virtual void TypeOfOverlap();
 
 public:	
 	// Called every frame

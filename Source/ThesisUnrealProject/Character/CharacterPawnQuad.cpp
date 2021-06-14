@@ -58,6 +58,13 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	FollowAllyPosition = CreateDefaultSubobject<USceneComponent>(TEXT("FollowAlly"));
 	FollowAllyPosition->SetupAttachment(RootComponent);
 
+	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightComponent"));
+	SpotLight->SetupAttachment(RootComponent);
+
+	SpotLight->SetWorldLocation(FVector(30.f,0.f,0.f));
+	SpotLight->SetWorldRotation(FRotator(-20.f,0.f,0.f));
+	SpotLight->Intensity = 100000.f;
+
 	MovementSpeed = 400.f;
 	RotationSpeed = 400.f;
 	JumpForce = 500.f;
@@ -79,6 +86,9 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 // Called when the game starts or when spawned
 void ACharacterPawnQuad::BeginPlay(){
 	Super::BeginPlay();
+
+//--- Disable light at the begin of the game ---
+	SpotLight->Intensity = 0.f;	
 
 // --- Just for the AI (Can't put it on the controller if the enemy is spawned) ---
 	if(!IsPlayerControlled())

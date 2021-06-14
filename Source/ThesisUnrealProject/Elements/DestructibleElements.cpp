@@ -23,43 +23,19 @@ ADestructibleElements::ADestructibleElements(){
 
 	DestructibleMesh->SetSimulatePhysics(false);
 
-	ID = 0;
-	Health = 3;
-	CurrentDamage = 0;
-	ShakeSpeed = 50.f;
-	ShakeDistance = 100.f;
-	IntervalTime = 2.f;
-	bCanShake = false;
 }
 
 // Called when the game starts or when spawned
 void ADestructibleElements::BeginPlay(){
 	Super::BeginPlay();
-	
-	StartPosition = GetActorLocation();
 
 	DestructibleMesh->OnComponentFracture.AddDynamic(this,&ADestructibleElements::OnComponentFracture);
-
-	if(bCanShake){
-		WaitShake();
-	}
 
 }
 
 // Called every frame
 void ADestructibleElements::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
-
-	if(bIsShaking){
-		if(GetActorLocation().Y >= StartPosition.Y + ShakeDistance || GetActorLocation().Y <= StartPosition.Y - ShakeDistance){
-			ShakeSpeed = -ShakeSpeed;
-			AddActorLocalOffset(GetActorRightVector() * ShakeSpeed * DeltaTime);
-		}else{
-			AddActorLocalOffset(GetActorRightVector() * ShakeSpeed * DeltaTime);
-		}
-	}else{
-		SetActorLocation(StartPosition);
-	}
 
 }
 
@@ -88,14 +64,4 @@ void ADestructibleElements::OnComponentFracture(const FVector& HitPoint, const F
 			Door->bOpenDoor = true;
 	}
 
-}
-
-void ADestructibleElements::Shake() {
-	bIsShaking = true;	
-	GetWorld()->GetTimerManager().SetTimer(ShakeTimer,this,&ADestructibleElements::WaitShake,IntervalTime,false);
-}
-
-void ADestructibleElements::WaitShake() {
-	bIsShaking = false;	
-	GetWorld()->GetTimerManager().SetTimer(ShakeTimer,this,&ADestructibleElements::Shake,IntervalTime,false);
 }

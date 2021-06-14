@@ -19,14 +19,14 @@ public:
 	
 	bool IAmDestructed;
 
+	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
+	class UDestructibleComponent* DestructibleComponent;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
-
-	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
-	class UDestructibleComponent* DestructibleComponent;
 
 
 	UFUNCTION()

@@ -28,7 +28,7 @@ void ATrigger::BeginPlay(){
 	
 	Super::BeginPlay();
 	
-	Trigger->OnComponentBeginOverlap.AddDynamic(this,&ATrigger::OnOverlap);
+	TypeOfOverlap();
 
 	if(bBlockVisibility)
 		Trigger->SetCollisionProfileName(TEXT("TriggerWallNoVisibility"));
@@ -39,6 +39,7 @@ void ATrigger::BeginPlay(){
 
 // Called every frame
 void ATrigger::Tick(float DeltaTime){
+	
 	Super::Tick(DeltaTime);
 
 }
@@ -54,5 +55,11 @@ void ATrigger::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor
 			Controller->MovementValue = -Controller->MovementValue;
 		}
 	}
+
+}
+
+void ATrigger::TypeOfOverlap() {
+	
+	Trigger->OnComponentBeginOverlap.AddDynamic(this,&ATrigger::OnOverlap);
 
 }

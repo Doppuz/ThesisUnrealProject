@@ -50,6 +50,11 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	USceneComponent* ProjectileSpawnPosition;
 
+	//SpotLight
+	
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Light)
+	class USpotLightComponent* SpotLight;
+
 	//MovementParameters
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Movement)

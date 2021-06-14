@@ -2,8 +2,8 @@
 
 #pragma once
 
+#include "ShakingAbstract.h"
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
 #include "RiddleTemplate.generated.h"
 
 class APuzzleButton;
@@ -11,7 +11,7 @@ class APawnInteractiveClass;
 class AEnemyAIAbstract;
 
 UCLASS(Abstract)
-class THESISUNREALPROJECT_API ARiddleTemplate : public AActor
+class THESISUNREALPROJECT_API ARiddleTemplate : public AShakingAbstract
 {
 	GENERATED_BODY()
 	

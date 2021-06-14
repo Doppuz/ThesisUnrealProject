@@ -10,6 +10,7 @@
 #include "../Character/CharacterPawnQuad.h"
 #include "../AI/QuadAIController.h"
 #include "../Character/AICharacterPawnQuad.h"
+#include "../Elements/CrateElements.h"
 
 // Sets default values
 ASquaredProjectile::ASquaredProjectile(){
@@ -102,6 +103,10 @@ void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 
 			}*/
 		}
+	}else if(OtherActor->IsA(ACrateElements::StaticClass())){
+		
+		Cast<ACrateElements>(OtherActor)->DestructibleComponent->ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 30000);	
+	
 	}
 	Destroy();
 }

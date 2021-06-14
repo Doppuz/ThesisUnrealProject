@@ -14,7 +14,6 @@ AGameModeTutorial::AGameModeTutorial() {
     bSolvedPuzzle1 = false;
     bGateDestroyed = false;
     bEnemyDefeated = false;
-    bDay = true;
 }
 
 void AGameModeTutorial::BeginPlay() {
