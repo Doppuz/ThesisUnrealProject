@@ -40,6 +40,7 @@ public:
 
 	bool bIAmDestroyed;
 
+	//Used this because i don't hit the destructible mesh but a box collider.
 	void HitMesh(const FHitResult& Hit);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Opening")

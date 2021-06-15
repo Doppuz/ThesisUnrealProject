@@ -9,6 +9,7 @@
 class APuzzleButton;
 class APawnInteractiveClass;
 class AEnemyAIAbstract;
+class ACoinController;
 
 UCLASS(Abstract)
 class THESISUNREALPROJECT_API ARiddleTemplate : public AShakingAbstract
@@ -29,8 +30,11 @@ protected:
 	//check Ally actors condition.
 	virtual void CheckAllyActor();
 
-	//check Ally actors condition.
+	//check Enemy actors condition.
 	virtual void CheckEnemyActor();
+	
+	//check Coin actors condition.
+	virtual void CheckCoinActor();
 
 public:	
 	// Called every frame
@@ -40,7 +44,7 @@ public:
 	bool bSolved;
 
 	//Actor to check if it is solved.
-	UPROPERTY(EditAnywhere, Category = "Opening")
+	UPROPERTY(EditAnywhere, Category = "OpenConditions")
 	ARiddleTemplate* ComplementaryActor;
 
 	//If all Puzzle actors are overlapped, the door opens.
@@ -54,6 +58,14 @@ public:
 	//If I have killed all the enemy actors, the door opens.
 	UPROPERTY(EditAnywhere, Category = "OpenConditions")
 	TArray<AEnemyAIAbstract*> EnemyActivator;
+
+	//If I have collected all the coins actors, the door opens.
+	UPROPERTY(EditAnywhere, Category = "OpenConditions")
+	TArray<ACoinController*> CoinActivator;
+
+	//Numbers of coins needed to open the door.
+	UPROPERTY(EditAnywhere, Category = "OpenConditions")
+	int CoinsNumber;
 
 	//If I am in the arena I need to delete all the enemies before opening the door.
 	UPROPERTY(EditAnywhere, Category = "OpenConditions")

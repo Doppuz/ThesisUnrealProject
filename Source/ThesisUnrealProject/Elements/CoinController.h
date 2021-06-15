@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "CoinController.generated.h"
 
+class ARiddleTemplate;
+
 UCLASS()
 class THESISUNREALPROJECT_API ACoinController : public AActor
 {
@@ -20,6 +22,9 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	int ID;
+
+	// check if it is collected.
+	bool bIsCollected;
 
 protected:
 	// Called when the game starts or when spawned

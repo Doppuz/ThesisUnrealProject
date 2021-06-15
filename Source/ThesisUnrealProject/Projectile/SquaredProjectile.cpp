@@ -46,25 +46,9 @@ void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 		UDestructibleComponent* DC = Actor->DestructibleMesh;
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		
-		switch(Actor->ID){
-			case 0:
-				//Case 0 is the choice of the first puzzle. I want to avoid to destroy the gate if I solved the puzzle.
-				//if(!GameMode->bSolvedPuzzle1 && !Actor->bIAmDestroyed){
-				Actor->HitMesh(Hit);
-					//DC->ApplyRadiusDamage(1.f,Hit.ImpactPoint, 1.f,3000.f,true);
-					//DC->ApplyDamage(1.1f,Hit.ImpactPoint, Hit.ImpactPoint, 30000);
-				//}
-			break;
-			case 1:
-				if(GameMode->bEnemyDefeated && !Actor->bIAmDestroyed)
-					Actor->HitMesh(Hit);
-				break;
-			case 2:
-				Actor->HitMesh(Hit);
-			default:
-				break;
-		}
-
+		if(Cast<APawn>(MyOwner)->GetController()->IsA(APlayerController::StaticClass()))
+			Actor->HitMesh(Hit);
+		
 	}else if(OtherActor->IsA(APawn::StaticClass())){
 		FPointDamageEvent DamageEvent(Damage,Hit,this->GetVelocity(),nullptr);
 		if(MyOwner != nullptr){

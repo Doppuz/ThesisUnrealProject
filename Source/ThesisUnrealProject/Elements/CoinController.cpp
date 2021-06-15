@@ -32,6 +32,7 @@ ACoinController::ACoinController(){
 	RotationValue = 2.f;
 	OffSetValue = 1.f;
 	ID = -1;
+	bIsCollected = false;
 }
 
 // Called when the game starts or when spawned

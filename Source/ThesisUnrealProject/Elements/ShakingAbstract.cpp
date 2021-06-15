@@ -15,13 +15,15 @@ AShakingAbstract::AShakingAbstract(){
 	ShakeDistance = 100.f;
 	IntervalTime = 2.f;
 	bCanShake = false;
+	bIsShaking = false;
 }
 
 void AShakingAbstract::Tick(float DeltaTime) {
 	
 	Super::Tick(DeltaTime);
 
-	ShakingActor(DeltaTime);
+	if(bCanShake)
+		ShakingActor(DeltaTime);
 
 }
 

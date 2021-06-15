@@ -60,6 +60,9 @@ protected:
 	//check Ally actors condition.
 	virtual void CheckEnemyActor();
 
+	//check Coin actors condition.
+	virtual void CheckCoinActor();
+
 private:
 
 	FVector FinalPosition;

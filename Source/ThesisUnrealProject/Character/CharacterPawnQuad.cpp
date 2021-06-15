@@ -313,6 +313,7 @@ void ACharacterPawnQuad::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		GameMode->IncreaseCoins();
 		int CoinID = Cast<ACoinController>(OtherActor)->ID;
+		Cast<ACoinController>(OtherActor)->bIsCollected = true;
 		OtherActor->Destroy();
 		UUIWidgetDialog* UI = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 		if(UI->CoinText->GetVisibility() == ESlateVisibility::Hidden)

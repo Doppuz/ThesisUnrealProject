@@ -23,6 +23,10 @@ ADestructibleElements::ADestructibleElements(){
 
 	DestructibleMesh->SetSimulatePhysics(false);
 
+	Health = 1.f;
+	bIAmDestroyed = false;
+	ID = -1;
+
 }
 
 // Called when the game starts or when spawned
@@ -45,8 +49,8 @@ void ADestructibleElements::HitMesh(const FHitResult& Hit) {
 		return;
 
 	CurrentDamage += 1;
-	
-	if(Health == CurrentDamage){
+
+	if(Health == 0 || Health == CurrentDamage){
 		DestructibleMesh->ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 3000);	
 		bSolved = true;
 	}

@@ -11,6 +11,7 @@ ARiddleTemplate::ARiddleTemplate()
 	PrimaryActorTick.bCanEverTick = true;
 	bSolved = false;
 	bUseTurnMethodology = false;
+	CoinsNumber = -1;
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +30,10 @@ void ARiddleTemplate::CheckAllyActor() {
 }
 
 void ARiddleTemplate::CheckEnemyActor() {
+	
+}
+
+void ARiddleTemplate::CheckCoinActor() {
 	
 }
 

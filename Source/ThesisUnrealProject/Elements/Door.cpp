@@ -6,6 +6,7 @@
 #include "PuzzleButton.h"
 #include "../Character/PawnInteractiveClass.h"
 #include "../Character/EnemyAIAbstract.h"
+#include "CoinController.h"
 
 // Sets default values
 ADoor::ADoor(){
@@ -52,6 +53,7 @@ void ADoor::Tick(float DeltaTime){
 	CheckPuzzleActor();
 	CheckAllyActor();
 	CheckEnemyActor();
+	CheckCoinActor();
 	
 	if(bOpenDoor){
 		FVector ActorPosition = GetActorLocation();
@@ -100,4 +102,18 @@ void ADoor::CheckEnemyActor() {
 	}	
 
 	bOpenDoor = true;
+}
+
+void ADoor::CheckCoinActor() {
+	
+	if(CoinActivator.Num() == 0 || CoinActivator.Num() < CoinsNumber)
+		return;
+
+	for(int i = 0; i < EnemyActivator.Num(); i++){
+		if(!(CoinActivator[i] == nullptr) && !CoinActivator[i]->bIsCollected)
+			return;
+	}	
+
+	bOpenDoor = true;
+
 }
