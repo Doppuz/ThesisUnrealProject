@@ -8,6 +8,8 @@
 
 class ARiddleTemplate;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FCoinCollectedDelegate);
+
 UCLASS()
 class THESISUNREALPROJECT_API ACoinController : public AActor
 {
@@ -55,6 +57,9 @@ public:
 
 	UPROPERTY(EditANywhere, Category = "UpDownMovement", meta = (AllowPrivateAcces = true))
 	float OffSetValue;
+
+// --- Coin collection delegate ---
+	FCoinCollectedDelegate CollectedDelegate;
 
 private:
 

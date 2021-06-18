@@ -295,23 +295,15 @@ void ACharacterPawnQuad::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 	//Collect coins
 	if(OtherActor->IsA(ACoinController::StaticClass())){
 	
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		/*AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		GameMode->IncreaseCoins();
-		int CoinID = Cast<ACoinController>(OtherActor)->ID;
 		Cast<ACoinController>(OtherActor)->bIsCollected = true;
 		OtherActor->Destroy();
+		CollectedDelegate.Broadcast();
 		UUIWidgetDialog* UI = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 		if(UI->CoinText->GetVisibility() == ESlateVisibility::Hidden)
 			UI->CoinText->SetVisibility(ESlateVisibility::Visible);
-		UI->SetCoinText(GameMode->GetCoins());
-
-		switch(CoinID){
-			case 0:
-				GameMode->SetDoorOpen(9);
-				break;
-			default:
-				break;
-		}
+		UI->SetCoinText(GameMode->GetCoins());*/
 	
 	}else if(OtherActor->IsA(ATriggerVolume::StaticClass()) && OtherActor->Tags[0] == TEXT("TriggerExplorer")){
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());

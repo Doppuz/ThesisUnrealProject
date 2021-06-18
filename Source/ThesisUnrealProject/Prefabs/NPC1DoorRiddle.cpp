@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "NPC1Door.h"
+#include "NPC1DoorRiddle.h"
 #include "../Elements/Door.h"
 #include "../Character/PawnInteractiveClass.h"
 #include "Components/BoxComponent.h"
@@ -9,7 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-ANPC1Door::ANPC1Door()
+ANPC1DoorRiddle::ANPC1DoorRiddle()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -35,56 +35,48 @@ ANPC1Door::ANPC1Door()
 }
 
 // Called when the game starts or when spawned
-void ANPC1Door::BeginPlay()
+void ANPC1DoorRiddle::BeginPlay()
 {
 	Super::BeginPlay();
 
-//---- Need to pass the parameter to the mesh because they are not exposed -----
-
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
 
-	/*if(NPC->Speech.Num() > 0)
-		NPC->Speech = Speech;
-	
-	if(NPC->Speech.Num() > 0)
-		NPC->Questions = Questions;
-	NPC->QuestionAt = QuestionAt;
-	NPC->MeshToEquip = MeshToEquip;*/
-
-	NPC->LeftChoice.AddDynamic(this,&ANPC1Door::LeftChoiceEvent);
-	NPC->RightChoice.AddDynamic(this,&ANPC1Door::RightChoiceEvent);
-	NPC->EndDialog.AddDynamic(this,&ANPC1Door::EndChoiceEvent);
+	NPC->LeftChoice.AddDynamic(this,&ANPC1DoorRiddle::LeftChoiceEvent);
+	NPC->RightChoice.AddDynamic(this,&ANPC1DoorRiddle::RightChoiceEvent);
+	NPC->EndDialog.AddDynamic(this,&ANPC1DoorRiddle::EndChoiceEvent);
 
 }
 
 // Called every frame
-void ANPC1Door::Tick(float DeltaTime)
+void ANPC1DoorRiddle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-void ANPC1Door::LeftChoiceEvent() {
-	
-	if(MeshToEquip != nullptr){
-		ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-		PlayerPawn->EquipmentMesh->SetStaticMesh(MeshToEquip);
-	}
+void ANPC1DoorRiddle::LeftChoiceEvent() {
 
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
 
 	NPC->SpeechContator += 1;
 	NPC->Speak();
 	NPC->SpeechContator = NPC->Speech.Num() - 2;
+
+	ADoor* Door = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
+	Door->bOpenDoor = true;
+
 }
 
-void ANPC1Door::RightChoiceEvent() {
+void ANPC1DoorRiddle::RightChoiceEvent() {
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
 	NPC->SpeechContator += 2;
 	NPC->Speak();
 }
 
-void ANPC1Door::EndChoiceEvent() {
+void ANPC1DoorRiddle::EndChoiceEvent() {
 	ADoor* Door = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
-	Door->bOpenDoor = true;
+	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
+	if(!Door->bOpenDoor)
+		NPC->QuestionAt = 1;
 }
+

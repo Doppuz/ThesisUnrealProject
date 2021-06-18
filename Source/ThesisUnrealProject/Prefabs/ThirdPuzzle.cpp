@@ -53,8 +53,8 @@ AThirdPuzzle::AThirdPuzzle()
 	DestrGate5 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate5"));
 	DestrGate5->SetupAttachment(DestructibleGate);
 		
-	//DestrGate6 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate6"));
-	//DestrGate6->SetupAttachment(DestructibleGate);
+	DestrGate6 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate6"));
+	DestrGate6->SetupAttachment(DestructibleGate);
 
 	Coins = CreateDefaultSubobject<USceneComponent>(TEXT("Coins"));
 	Coins->SetupAttachment(RootComponent);
@@ -89,18 +89,19 @@ void AThirdPuzzle::BeginPlay()
 	TArray<USceneComponent*> Gates;
 	DestructibleGate->GetChildrenComponents(false,Gates);
 
-	for(USceneComponent* Scene: Gates){
-		ADestructibleElements* Gate = Cast<ADestructibleElements>(Cast<UChildActorComponent>(Scene));
+	for(int i = 0; i < Gates.Num(); i++){
+		UE_LOG(LogTemp,Warning,TEXT("%i"),i);
+		ADestructibleElements* Gate = Cast<ADestructibleElements>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
 		Gate->DestructionDelegate.AddDynamic(this,&AThirdPuzzle::Destruction);
 	}
 
-	/*TArray<USceneComponent*> CoinsArray;
+	TArray<USceneComponent*> CoinsArray;
 	Coins->GetChildrenComponents(false,CoinsArray);
 
 	for(USceneComponent* Scene: CoinsArray){
-		ACoinController* Coin = Cast<ACoinController>(Cast<UChildActorComponent>(Scene));
-		Coin->CoinCollider->OnComponentBeginOverlap.AddDynamic(this, &AThirdPuzzle::OnCoinOverlap);
-	}*/
+		ACoinController* Coin = Cast<ACoinController>(Cast<UChildActorComponent>(Scene)->GetChildActor());
+		Coin->CollectedDelegate.AddDynamic(this, &AThirdPuzzle::CoinCollected);
+	}
 
 }
 
@@ -121,16 +122,15 @@ void AThirdPuzzle::Destruction() {
 	GatesDestructed += 1;
 }
 
-void AThirdPuzzle::OnCoinOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {	
+void AThirdPuzzle::CoinCollected() {
 	ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 	ADoor* Door02 = Cast<ADoor>(Door2->GetChildActor());
 
 	Door01->bClose = false;
-	
+			
 	Door01->bOpenDoor = true;
 	Door02->bOpenDoor = true;
 
 	CoinsCollected += 1;
 }
-
 

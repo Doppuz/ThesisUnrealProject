@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../Character/PawnInteractiveClass.h"
-#include "NPC1Door.generated.h"
+#include "NPC1DoorRiddle.generated.h"
 
 UCLASS()
-class THESISUNREALPROJECT_API ANPC1Door : public AActor
+class THESISUNREALPROJECT_API ANPC1DoorRiddle : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ANPC1Door();
+	ANPC1DoorRiddle();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	USceneComponent* Root;
@@ -39,29 +39,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-/*#pragma region NPC
-		
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
-	TArray<FString> Speech;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
-	TArray<FQuestion> Questions;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Speak)
-	int QuestionAt;*/
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Equipment)
-	UStaticMesh* MeshToEquip;
-
-//#pragma endregion
-
 	UFUNCTION()
 	void LeftChoiceEvent();
 	
 	UFUNCTION()
 	void RightChoiceEvent();
-	
+
 	UFUNCTION()
 	void EndChoiceEvent();
-
 };

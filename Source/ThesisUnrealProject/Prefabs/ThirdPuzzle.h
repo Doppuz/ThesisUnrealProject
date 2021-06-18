@@ -50,8 +50,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UChildActorComponent* DestrGate5;
 
-	//UPROPERTY(EditAnywhere, Category = "Components")
-	//UChildActorComponent* DestrGate6;
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UChildActorComponent* DestrGate6;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	USceneComponent* Coins;
@@ -93,7 +93,7 @@ private:
 // --- Coins ---
 
 	UFUNCTION()
-	void OnCoinOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
+	void CoinCollected();
 
 	int CoinsCollected;
 };

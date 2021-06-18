@@ -17,54 +17,14 @@ ASignNPCDoors::ASignNPCDoors() {
 
 //Choose which doors to open
 void ASignNPCDoors::Choice(int Answer) {
-
-	Super::Choice(Answer);
     
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-
 	if(RightAnswerPos == Answer){
 		
-		SpeechContator += 1;
-
-		//Open the left doors
-		for(int Num : LeftDoors)
-            GameMode->SetDoorOpen(Num);
-			
-		Speak();
-		SpeechContator += 1;
-
-		//Action taken by particular actors.
-		switch (ID){
-		case 0:
-			GameMode->bLeft = true;
-			break;
-			
-		default:
-			break;
-		}
-
-		QuestionAt = -1;
+		LeftChoice.Broadcast();
 
 	}else{
 		
-		SpeechContator += 2;
-
-		//Open the right doors
-        for(int Num : RightDoors)
-            GameMode->SetDoorOpen(Num);
-			
-		Speak();
-
-		//Action taken by particular actors.
-		switch (ID){
-		case 0:
-			GameMode->bLeft = false;
-			QuestionAt = -1;
-			break;
-			
-		default:
-			break;
-		}
+		RightChoice.Broadcast();
 
 	}
 }
