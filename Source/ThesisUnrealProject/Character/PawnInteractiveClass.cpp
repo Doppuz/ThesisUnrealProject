@@ -80,19 +80,10 @@ void APawnInteractiveClass::Speak() {
 		AnswerContator = 0;
 		bAlreadySpoken = true;
 
-		switch(ID){
-			case 0:
-                GameMode->SetDoorOpen(2);
-				UE_LOG(LogTemp, Warning, TEXT("AA %i"),GameMode->DoorActors.Num());
-				break;
-			case 2:
-			case 3:
-			case 4:
-				GameMode->CheckPuzzle2(ID);
-				break;
-			default:
-				break;
-		}
+		if(QuestionAt != -1 && QuestionAt < Speech.Num())
+			QuestionAt = -1;
+
+		EndDialog.Broadcast();
 
 		EndInteraction();
 	}
@@ -166,8 +157,19 @@ void APawnInteractiveClass::Equipment() {
 }
 
 void APawnInteractiveClass::Choice(int Answer) {
-	
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PlayerPawn->SetMousePointer(false);
+	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
+	PlayerController->SetInputMode(FInputModeGameOnly());
+
+	switch(Answer){
+		case 0:	
+			LeftChoice.Broadcast();
+			break;
+		case 1:
+			RightChoice.Broadcast();
+			break;
+		default:
+			break;
+	}
 }
-
-
-

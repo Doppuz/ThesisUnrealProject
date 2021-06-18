@@ -65,11 +65,6 @@ void ACoinController::OnBoxOverlap(UPrimitiveComponent * HitComponent, AActor * 
 
 void ACoinController::OnCoinOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	
-	if(OtherActor->IsA(APawn::StaticClass())){
-		//APawn* Pawn = Cast<APawn>(AActor);
-		//NeedTocheck that is not an enemy
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->SetDoorOpen(9);
-	}
+
 }
 

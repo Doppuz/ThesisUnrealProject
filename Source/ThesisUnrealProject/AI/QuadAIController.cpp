@@ -20,4 +20,10 @@ void AQuadAIController::Tick(float DeltaTime) {
     
     Super::Tick(DeltaTime);
     
+    //Need To do this here because in BeginPlay when the Pawn in nullptr when spawned.
+    if(GetPawn() != nullptr && !FirstTime){
+        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),GetPawn()->GetActorLocation());
+        FirstTime = true;
+    }
+
 }

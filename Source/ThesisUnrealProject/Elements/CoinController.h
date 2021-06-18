@@ -30,7 +30,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:
+public:
 
 	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true))
 	USceneComponent* Root;
@@ -55,6 +55,8 @@ private:
 
 	UPROPERTY(EditANywhere, Category = "UpDownMovement", meta = (AllowPrivateAcces = true))
 	float OffSetValue;
+
+private:
 
 	UFUNCTION()
 	void OnBoxOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);

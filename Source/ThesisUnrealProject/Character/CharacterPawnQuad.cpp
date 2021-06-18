@@ -62,8 +62,8 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	SpotLight->SetupAttachment(RootComponent);
 
 	SpotLight->SetWorldLocation(FVector(30.f,0.f,0.f));
-	SpotLight->SetWorldRotation(FRotator(-20.f,0.f,0.f));
-	SpotLight->Intensity = 100000.f;
+	SpotLight->SetWorldRotation(FRotator(-20.f,0.f,0.f));	
+	SpotLight->Intensity = 0.f;	
 
 	MovementSpeed = 400.f;
 	RotationSpeed = 400.f;
@@ -71,6 +71,7 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	bAmIJump = false;
 	bAmIShooting = false;
 	ProjectileTimeout = 0.5f;
+	CurrentHealth = 0;
 	MaxHealth = 30;
 	AllyNPC = nullptr;
 	MaxRange = 300.f;
@@ -87,15 +88,10 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 void ACharacterPawnQuad::BeginPlay(){
 	Super::BeginPlay();
 
-//--- Disable light at the begin of the game ---
 	SpotLight->Intensity = 0.f;	
 
-// --- Just for the AI (Can't put it on the controller if the enemy is spawned) ---
-	if(!IsPlayerControlled())
-		Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),GetActorLocation());
-// ----------------------------
-
 	CurrentHealth = MaxHealth;
+
 	InitialRotation = CameraArmComponent->GetComponentRotation();
 	Collider->OnComponentBeginOverlap.AddDynamic(this,&ACharacterPawnQuad::OnOverlap);
 	//Collider->OnComponentHit.AddDynamic(this, &ACharacterPawnQuad::OnHit);
@@ -120,22 +116,11 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 
 	if(CurrentHealth == 0){
 		if(GetController()->IsA(AQuadAIController::StaticClass())){
+			
 			bIAmDestroyed = true;
+			End.Broadcast();
 			Destroy();
-			AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-			switch(ID){
-				case 0:
-					GameMode->bEnemyDefeated = true;
-					break;
-				case 1:
-					GameMode->CheckPuzzle2(1);
-					break;
-				case 2:
-					GameMode->CheckPuzzle2(2);
-					break;
-				default:
-					break;
-			}
+			
 		}else if(GetController()->IsA(APlayerController::StaticClass()))
 			UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}

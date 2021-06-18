@@ -32,47 +32,6 @@ void AGameModeTutorial::Tick(float DeltaTime) {
     
 }
 
-//Check if all of the 3 buttuns has been clicked. If yes check if the combination is correct.
-void AGameModeTutorial::CheckPuzzle1(APuzzleButton* Button) {
-    
-    /*ElemsPuzzle1.Add(Button);
-
-    if(ElemsPuzzle1.Num() == 3){
-        
-        bool TempResult = true;
-        for(int i = 0; i < ElemsPuzzle1.Num(); i++)
-            TempResult &= ElemsPuzzle1[i]->GetID() == i;
-
-        bSolvedPuzzle1 = TempResult; 
-
-        if(bSolvedPuzzle1){
-	    AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-            for(APuzzleButton* Butt : ElemsPuzzle1)
-                Butt->Mesh->SetMaterial(0,GreenColor);
-
-                for(int i = 0; i < 2; i++){
-                    GameMode->SetDoorOpen(i);
-                }
-            
-        }else{
-            for(APuzzleButton* Butt : ElemsPuzzle1)
-                Butt->Mesh->SetMaterial(0,RedColor);
-            GetWorld()->GetTimerManager().SetTimer(ResetPuzzle1Timer,this,&AGameModeTutorial::ResetPuzzle1,0.5f,false);
-        }
-
-    }*/
-}
-
-/*void AGameModeTutorial::ResetPuzzle1() {
-
-    for(APuzzleButton* Butt : ElemsPuzzle1){
-        Butt->Mesh->SetMaterial(0,GreyColor);
-        Butt->bDisableOverlap = false;
-    }
-    bSolvedPuzzle1 = true;
-    ElemsPuzzle1.Empty();
-}*/
-
 //Check if I spoke or killed all the actor in one of the two rooms.
 void AGameModeTutorial::CheckPuzzle2(int ID) {
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());

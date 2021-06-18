@@ -18,6 +18,8 @@
 class AGunController;
 class ASquaredProjectile;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndDelegate);
+
 UCLASS()
 class THESISUNREALPROJECT_API ACharacterPawnQuad : public AEnemyAIAbstract{
 	GENERATED_BODY()
@@ -109,6 +111,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	USceneComponent* FollowAllyPosition;
 
+// End delegate
+
+	FEndDelegate End;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -165,5 +171,6 @@ private:
 
 	//Timer for the above method
 	FTimerHandle InvisibleTimer;
+
 	
 };

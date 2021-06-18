@@ -9,6 +9,8 @@
 
 class ADoor;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDestructionDelegate);
+
 UCLASS()
 class THESISUNREALPROJECT_API ADestructibleElements : public ARiddleTemplate
 {
@@ -42,9 +44,8 @@ public:
 
 	//Used this because i don't hit the destructible mesh but a box collider.
 	void HitMesh(const FHitResult& Hit);
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Opening")
-	TArray<ADoor*> DoorsToOpen;
+
+	FDestructionDelegate DestructionDelegate;
 
 protected:
 	// Called when the game starts or when spawned

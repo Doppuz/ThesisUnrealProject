@@ -15,6 +15,8 @@ ANPCEquipment::ANPCEquipment() {
 
 //Choose which doors to open
 void ANPCEquipment::Choice(int Answer) {
+
+	Super::Choice(Answer);
     
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 	PlayerPawn->SetMousePointer(false);

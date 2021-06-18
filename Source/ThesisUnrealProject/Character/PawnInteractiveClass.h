@@ -6,6 +6,10 @@
 #include "GameFramework/Pawn.h"
 #include "PawnInteractiveClass.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLeftDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRightDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndDialogDelegate);
+
 USTRUCT(BlueprintType)
 struct FQuestion{
 	GENERATED_BODY()
@@ -93,6 +97,10 @@ public:
 	//Ally ID
 	UPROPERTY(EditAnywhere)
 	int ID;
+
+	FLeftDelegate LeftChoice;
+	FRightDelegate RightChoice;
+	FEndDialogDelegate EndDialog;
 
 #pragma endregion
 

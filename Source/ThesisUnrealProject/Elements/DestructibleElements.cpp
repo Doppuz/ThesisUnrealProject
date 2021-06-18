@@ -52,6 +52,7 @@ void ADestructibleElements::HitMesh(const FHitResult& Hit) {
 
 	if(Health == 0 || Health == CurrentDamage){
 		DestructibleMesh->ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 3000);	
+		DestructionDelegate.Broadcast();
 		bSolved = true;
 	}
 
@@ -62,10 +63,5 @@ void ADestructibleElements::OnComponentFracture(const FVector& HitPoint, const F
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	Collider->SetCollisionProfileName(TEXT("IgnorePawnProjectile"),false);
 	bIAmDestroyed = true;
-
-	if(DoorsToOpen.Num() > 0){
-		for(ADoor* Door: DoorsToOpen)
-			Door->bOpenDoor = true;
-	}
 
 }
