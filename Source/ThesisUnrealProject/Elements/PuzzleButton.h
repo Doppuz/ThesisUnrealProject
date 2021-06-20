@@ -44,6 +44,10 @@ public:
 	int GetID();
 
 	bool bDisableOverlap;
+
+	//Used mainly in the prefabs to open the door. (ForthPuzzle.cpp)
+	bool bIsPressed;
+
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ID, meta = (AllowPrivateAccess = "true"))

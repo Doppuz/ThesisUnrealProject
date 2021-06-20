@@ -1,15 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "NPC1Door.h"
+#include "NPC1DoorSpawnAlly.h"
 #include "../Elements/Door.h"
 #include "../Character/PawnInteractiveClass.h"
 #include "Components/BoxComponent.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Character/AICharacterPawnQuad.h"
 
 // Sets default values
-ANPC1Door::ANPC1Door()
+ANPC1DoorSpawnAlly::ANPC1DoorSpawnAlly()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -32,14 +33,21 @@ ANPC1Door::ANPC1Door()
 	NPC1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	NPC1->SetupAttachment(NPCs);
 
+	Triggers = CreateDefaultSubobject<USceneComponent>(TEXT("Triggers"));
+	Triggers->SetupAttachment(RootComponent);
+
+	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
+	Trigger->SetupAttachment(Triggers);
+
+	Trigger->OnComponentBeginOverlap.AddDynamic(this,&ANPC1DoorSpawnAlly::OnOverlap);
+
 	bLeftChoice = false;
 	bRightChoice = false;
-	bIncreaseAttackSpeed = false;
 
 }
 
 // Called when the game starts or when spawned
-void ANPC1Door::BeginPlay()
+void ANPC1DoorSpawnAlly::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -55,27 +63,24 @@ void ANPC1Door::BeginPlay()
 	NPC->QuestionAt = QuestionAt;
 	NPC->MeshToEquip = MeshToEquip;*/
 
-	NPC->LeftChoice.AddDynamic(this,&ANPC1Door::LeftChoiceEvent);
-	NPC->RightChoice.AddDynamic(this,&ANPC1Door::RightChoiceEvent);
-	NPC->EndDialog.AddDynamic(this,&ANPC1Door::EndChoiceEvent);
+	NPC->LeftChoice.AddDynamic(this,&ANPC1DoorSpawnAlly::LeftChoiceEvent);
+	NPC->RightChoice.AddDynamic(this,&ANPC1DoorSpawnAlly::RightChoiceEvent);
+	NPC->EndDialog.AddDynamic(this,&ANPC1DoorSpawnAlly::EndChoiceEvent);
 
 }
 
 // Called every frame
-void ANPC1Door::Tick(float DeltaTime)
+void ANPC1DoorSpawnAlly::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
-void ANPC1Door::LeftChoiceEvent() {
+void ANPC1DoorSpawnAlly::LeftChoiceEvent() {
 
 	bLeftChoice = true;
 	
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-
-	if(MeshToEquip != nullptr)
-		PlayerPawn->EquipmentMesh->SetStaticMesh(MeshToEquip);
 
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
 
@@ -85,21 +90,34 @@ void ANPC1Door::LeftChoiceEvent() {
 	NPC->Speak();
 }
 
-void ANPC1Door::RightChoiceEvent() {
+void ANPC1DoorSpawnAlly::RightChoiceEvent() {
 	
 	bRightChoice = true;
+	
+	Trigger->SetCollisionProfileName("NoCollision");
 
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-
-	if(bIncreaseAttackSpeed)
-		PlayerPawn->ProjectileTimeout = 0.3f;
 
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
 	NPC->SpeechContator += 1;
 	NPC->Speak();
 }
 
-void ANPC1Door::EndChoiceEvent(APawnInteractiveClass* SpokenActor) {
+void ANPC1DoorSpawnAlly::EndChoiceEvent(APawnInteractiveClass* SpokenActor) {
 	ADoor* Door = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
 	Door->bOpenDoor = true;
+}
+
+void ANPC1DoorSpawnAlly::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
+	
+	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+		APawn* MyPawn = Cast<APawn>(OtherActor);
+		if(MyPawn->GetController()->IsA(APlayerController::StaticClass())){
+			GetWorld()->SpawnActor<AAICharacterPawnQuad>(AllyClass,
+				FVector(Trigger->GetComponentLocation().X,Trigger->GetComponentLocation().Y,MyPawn->GetActorLocation().Z)
+				,GetActorRotation());
+			Destroy();
+		}
+	}
+
 }

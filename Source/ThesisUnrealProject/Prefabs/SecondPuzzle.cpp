@@ -147,10 +147,12 @@ void ASecondPuzzle::EndEnemiesEvent() {
 
 }
 
-void ASecondPuzzle::SpokenAlliesEvent() {
+void ASecondPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 	
-	SpokenAllies += 1;
-	Cast<ADoor>(Door5->GetChildActor())->bOpenDoor = true;
-
+	if(!SpokenActor->bAlreadySpoken){
+		SpokenAllies += 1;
+		Cast<ADoor>(Door5->GetChildActor())->bOpenDoor = true;
+	}
+	
 }
 

@@ -46,5 +46,5 @@ public:
 	void RightChoiceEvent();
 
 	UFUNCTION()
-	void EndChoiceEvent();
+	void EndChoiceEvent(APawnInteractiveClass* SpokenActor);
 };

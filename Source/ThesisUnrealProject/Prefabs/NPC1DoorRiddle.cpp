@@ -73,7 +73,7 @@ void ANPC1DoorRiddle::RightChoiceEvent() {
 	NPC->Speak();
 }
 
-void ANPC1DoorRiddle::EndChoiceEvent() {
+void ANPC1DoorRiddle::EndChoiceEvent(APawnInteractiveClass* SpokenActor) {
 	ADoor* Door = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
 	if(!Door->bOpenDoor)

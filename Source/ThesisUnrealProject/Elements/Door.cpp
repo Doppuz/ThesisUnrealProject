@@ -50,11 +50,6 @@ void ADoor::BeginPlay(){
 void ADoor::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 	
-	CheckPuzzleActor();
-	CheckAllyActor();
-	CheckEnemyActor();
-	CheckCoinActor();
-	
 	if(bOpenDoor){
 		FVector ActorPosition = GetActorLocation();
 		FVector NewLocation = FMath::Lerp(ActorPosition,FinalPosition, DeltaTime * Speed);

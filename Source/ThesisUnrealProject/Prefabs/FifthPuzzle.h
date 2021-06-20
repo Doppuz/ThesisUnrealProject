@@ -4,19 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SecondPuzzle.generated.h"
+#include "FifthPuzzle.generated.h"
 
 class APuzzleButton;
-class APawnInteractiveClass;
 
 UCLASS()
-class THESISUNREALPROJECT_API ASecondPuzzle : public AActor
+class THESISUNREALPROJECT_API AFifthPuzzle : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASecondPuzzle();
+	AFifthPuzzle();
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	USceneComponent* Root;
@@ -34,37 +33,34 @@ public:
 	UChildActorComponent* Door3;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Door4;
+	USceneComponent* DestructibleGate;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Door5;
+	UChildActorComponent* DestrGate1;
+	
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UChildActorComponent* DestrGate2;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	USceneComponent* Enemies;
+	UChildActorComponent* DestrGate3;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Enemy1;
+	USceneComponent* Coins;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Enemy2;
+	UChildActorComponent* Coin1;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Enemy3;
+	UChildActorComponent* Coin2;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	USceneComponent* NPCs;
+	UChildActorComponent* Coin3;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* NPC1;
+	UChildActorComponent* Coin4;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* NPC2;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* NPC3;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* NPC4;
+	UChildActorComponent* Coin5;
 
 protected:
 	// Called when the game starts or when spawned
@@ -76,27 +72,16 @@ public:
 
 private:
 
-	//Check if the order is right.
-	void CheckPuzzleActor();
+// --- Gates ---
+	UFUNCTION()
+	void Destruction();
+
+	int GatesDestructed;
+
+// --- Coins ---
 
 	UFUNCTION()
-	void LeftChoiceEvent();
-	
-	UFUNCTION()
-	void RightChoiceEvent();
+	void CoinCollected();
 
-// ---- Enemies ----
-
-	UFUNCTION()
-	void EndEnemiesEvent();
-
-	int DeathEnemies;
-
-// --- Allies ---
-
-	UFUNCTION()
-	void SpokenAlliesEvent(APawnInteractiveClass* SpokenActor);
-
-	int SpokenAllies;
-
+	int CoinsCollected;
 };

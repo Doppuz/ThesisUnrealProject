@@ -5,25 +5,19 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../Character/PawnInteractiveClass.h"
-#include "NPC1Door.generated.h"
+#include "RumbleArenaDoor.generated.h"
 
 UCLASS()
-class THESISUNREALPROJECT_API ANPC1Door : public AActor
+class THESISUNREALPROJECT_API ARumbleArenaDoor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ANPC1Door();
+	ARumbleArenaDoor();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	USceneComponent* Root;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	USceneComponent* NPCs;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	UChildActorComponent* NPC1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	USceneComponent* Doors;
@@ -31,30 +25,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UChildActorComponent* Door1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	USceneComponent* RumbleArenas;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UChildActorComponent* RumbleArena1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	USceneComponent* PreChoices;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UChildActorComponent* PreChoice1;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Equipment)
-	UStaticMesh* MeshToEquip;
-
-	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = AttackSpeed)
-	bool bIncreaseAttackSpeed;
-
-	UFUNCTION()
-	void LeftChoiceEvent();
 	
 	UFUNCTION()
-	void RightChoiceEvent();
-	
-	UFUNCTION()
-	void EndChoiceEvent(APawnInteractiveClass* SpokenActor);
-
-	bool bLeftChoice;
-	bool bRightChoice;
+	void EndEvent();
 
 };

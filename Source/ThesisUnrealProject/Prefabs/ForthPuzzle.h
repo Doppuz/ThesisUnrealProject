@@ -4,19 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SecondPuzzle.generated.h"
+#include "ForthPuzzle.generated.h"
 
 class APuzzleButton;
-class APawnInteractiveClass;
 
 UCLASS()
-class THESISUNREALPROJECT_API ASecondPuzzle : public AActor
+class THESISUNREALPROJECT_API AForthPuzzle : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASecondPuzzle();
+	AForthPuzzle();
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	USceneComponent* Root;
@@ -26,30 +25,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UChildActorComponent* Door1;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Door2;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Door3;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Door4;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Door5;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	USceneComponent* Enemies;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Enemy1;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Enemy2;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Enemy3;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	USceneComponent* NPCs;
@@ -66,6 +41,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UChildActorComponent* NPC4;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	USceneComponent* PuzzleButtons;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UChildActorComponent* Puzzle1;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UChildActorComponent* Puzzle2;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UChildActorComponent* Puzzle3;
+	
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UChildActorComponent* Puzzle4;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -76,22 +66,6 @@ public:
 
 private:
 
-	//Check if the order is right.
-	void CheckPuzzleActor();
-
-	UFUNCTION()
-	void LeftChoiceEvent();
-	
-	UFUNCTION()
-	void RightChoiceEvent();
-
-// ---- Enemies ----
-
-	UFUNCTION()
-	void EndEnemiesEvent();
-
-	int DeathEnemies;
-
 // --- Allies ---
 
 	UFUNCTION()
@@ -99,4 +73,10 @@ private:
 
 	int SpokenAllies;
 
+// --- Allies ---
+
+	UFUNCTION()
+	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
+
+	int PuzzleCount;
 };

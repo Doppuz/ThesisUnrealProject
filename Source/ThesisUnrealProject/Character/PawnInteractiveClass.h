@@ -8,7 +8,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLeftDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRightDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndDialogDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEndDialogDelegate,APawnInteractiveClass*, SpokenActor);
 
 USTRUCT(BlueprintType)
 struct FQuestion{

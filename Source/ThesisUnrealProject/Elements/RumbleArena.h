@@ -9,6 +9,8 @@
 #include "RiddleTemplate.h"
 #include "RumbleArena.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndArena);
+
 class ACoinController;
 
 UCLASS()
@@ -74,6 +76,9 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Reward)
 	TSubclassOf<ACoinController> RewardClass;
+
+	//Delegate for the end of the arena.
+	FEndArena EndArena;
 
 private:
 

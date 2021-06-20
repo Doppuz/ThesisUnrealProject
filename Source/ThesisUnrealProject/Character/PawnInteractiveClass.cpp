@@ -78,12 +78,13 @@ void APawnInteractiveClass::Speak() {
 	}else{
 		SpeechContator = 0;
 		AnswerContator = 0;
-		bAlreadySpoken = true;
 
 		if(QuestionAt != -1 && QuestionAt < Speech.Num())
 			QuestionAt = -1;
 
-		EndDialog.Broadcast();
+		EndDialog.Broadcast(this);
+
+		bAlreadySpoken = true;
 
 		EndInteraction();
 	}

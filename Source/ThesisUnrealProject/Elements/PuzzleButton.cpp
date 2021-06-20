@@ -23,6 +23,7 @@ APuzzleButton::APuzzleButton(){
 	Mesh->SetupAttachment(Collider);
 
 	bDisableOverlap = false;
+	bIsPressed = false;
 }
 
 // Called when the game starts or when spawned

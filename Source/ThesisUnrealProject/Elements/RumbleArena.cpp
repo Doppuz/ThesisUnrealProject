@@ -98,17 +98,10 @@ void ARumbleArena::Tick(float DeltaTime){
 	}
 	
 	if(TurnNumbers == 0){
-		if(CheckAllEnemyDeath()){
-
-		//For example, it opend the door.
-		if(RiddleActor != nullptr)
-			RiddleActor->bUseTurnMethodology = false;
-
-		//It spawns the coin.
-		if(RewardClass != nullptr)
-			GetWorld()->SpawnActor<ACoinController>(RewardClass,RewardSpawnPosition->GetComponentLocation(),
-				RewardSpawnPosition->GetComponentRotation());
-		}
+		
+		if(CheckAllEnemyDeath())
+			
+			EndArena.Broadcast();
 
 	}
 
