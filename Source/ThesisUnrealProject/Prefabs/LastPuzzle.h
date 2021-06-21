@@ -4,18 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "FifthPuzzle.generated.h"
+#include "LastPuzzle.generated.h"
 
 class APuzzleButton;
+class ACoinController;
 
 UCLASS()
-class THESISUNREALPROJECT_API AFifthPuzzle : public AActor
+class THESISUNREALPROJECT_API ALastPuzzle : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AFifthPuzzle();
+	ALastPuzzle();
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	USceneComponent* Root;
@@ -27,10 +28,13 @@ public:
 	UChildActorComponent* Door1;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Door2;
+	USceneComponent* NPCs;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Door3;
+	UChildActorComponent* NPC1;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UChildActorComponent* NPC2;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	USceneComponent* DestructibleGate;
@@ -41,26 +45,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UChildActorComponent* DestrGate2;
 
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* DestrGate3;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	USceneComponent* Coins;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Coin1;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Coin2;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Coin3;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Coin4;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Coin5;
 
 protected:
 	// Called when the game starts or when spawned
@@ -72,13 +56,22 @@ public:
 
 private:
 
-// --- Gates ---
+// --- Allies ---
+
+	UFUNCTION()
+	void SpokenAlliesEvent(APawnInteractiveClass* SpokenActor);
+
+	int SpokenAllies;
+
+// --- Destruction ---
+	
 	UFUNCTION()
 	void Destruction(ADestructibleElements* Elem);
 
-	int GatesDestructed;
-
 // --- Coins ---
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
+	TSubclassOf<ACoinController> CoinClass;
 
 	UFUNCTION()
 	void CoinCollected();

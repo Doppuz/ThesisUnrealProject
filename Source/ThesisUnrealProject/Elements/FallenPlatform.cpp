@@ -76,7 +76,6 @@ void AFallenPlatform::ShakingActor(float DeltaTime) {
 
 void AFallenPlatform::StartFalling() {
 	Speed = 2000.f;
-	UE_LOG(LogTemp,Warning,TEXT("22"));
 }
 
 void AFallenPlatform::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
@@ -86,7 +85,7 @@ void AFallenPlatform::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		if(Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass())){
 			bFall = true;
 			bIsFallen = true;	
-			UE_LOG(LogTemp,Warning,TEXT("prima"));
+			FallenDelegate.Broadcast();
 			GetWorld()->GetTimerManager().SetTimer(FallenTimer,this,&AFallenPlatform::StartFalling,1.f,false);
 		}
 	}

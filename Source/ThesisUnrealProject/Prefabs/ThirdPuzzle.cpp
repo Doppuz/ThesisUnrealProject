@@ -111,7 +111,7 @@ void AThirdPuzzle::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AThirdPuzzle::Destruction() {
+void AThirdPuzzle::Destruction(ADestructibleElements* Elem) {
 	
 	ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 	ADoor* Door03 = Cast<ADoor>(Door3->GetChildActor());

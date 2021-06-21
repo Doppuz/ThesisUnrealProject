@@ -9,7 +9,7 @@
 
 class ADoor;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDestructionDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDestructionDelegate,ADestructibleElements*, Elem);
 
 UCLASS()
 class THESISUNREALPROJECT_API ADestructibleElements : public ARiddleTemplate

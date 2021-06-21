@@ -86,7 +86,7 @@ private:
 
 // --- Gates ---
 	UFUNCTION()
-	void Destruction();
+	void Destruction(ADestructibleElements* Elem);
 
 	int GatesDestructed;
 

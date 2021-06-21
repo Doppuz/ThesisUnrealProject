@@ -7,6 +7,8 @@
 #include "ShakingAbstract.h"
 #include "FallenPlatform.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FFallenDelegate);
+
 UCLASS()
 class THESISUNREALPROJECT_API AFallenPlatform : public AShakingAbstract
 {
@@ -51,6 +53,9 @@ public:
 	FTimerHandle FallenTimer;
 
 	void StartFalling();
+
+	//Event when the platform is touched by the player
+	FFallenDelegate FallenDelegate;
 
 private:
 	

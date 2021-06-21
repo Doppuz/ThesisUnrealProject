@@ -9,6 +9,7 @@
 #include "UI/UIBox.h"
 #include "CustomGameState.h"
 #include "Engine/TriggerVolume.h"
+#include "CheckPoints/SaveGameData.h"
 
 AGameModeTutorial::AGameModeTutorial() {
     bSolvedPuzzle1 = false;
@@ -20,6 +21,12 @@ void AGameModeTutorial::BeginPlay() {
 
     FLatentActionInfo LatentInfo;
 	UGameplayStatics::LoadStreamLevel(this, TEXT("Day"), true, true, LatentInfo);
+
+    // Retrieve and cast the USaveGame object to UMySaveGame.
+    if (USaveGameData* LoadedGame = Cast<USaveGameData>(UGameplayStatics::LoadGameFromSlot("Checkpoint", 0))){
+        // The operation was successful, so LoadedGame now contains the data we saved earlier.
+        UGameplayStatics::GetPlayerPawn(GetWorld(),0)->SetActorLocation(LoadedGame->PlayerLocation);
+    }
 
     UGameplayStatics::GetAllActorsOfClass(GetWorld(),DoorClass,DoorActors);
     ChangeMenuWidget(WidgetClass);

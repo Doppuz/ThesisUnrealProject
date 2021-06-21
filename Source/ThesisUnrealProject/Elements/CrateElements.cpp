@@ -35,9 +35,6 @@ void ACrateElements::OnComponentFracture(const FVector& HitPoint, const FVector&
 		FRotator Rotation = FRotator(0,0,0);
 		
 		ACoinController* Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass,Position,Rotation);
-
-		if(CollectorActor != nullptr)
-			CollectorActor->CoinActivator.Add(Coin);
 		
 		if(Coin != nullptr){
     		Coin->SetFolderPath(TEXT("Coins"));
