@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "SaveGameData.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 ACheckpoint::ACheckpoint()
@@ -45,8 +46,15 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 
 				UE_LOG(LogTemp,Warning,TEXT("Data Saved"));
 
+				AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+
 				// Set data on the savegame object.
 				SaveGameInstance->PlayerLocation = MyPawn->GetActorLocation();
+				
+				SaveGameInstance->Achiever = GameMode->GetBartleTypes()[Achiever];
+				SaveGameInstance->Killer = GameMode->GetBartleTypes()[Killer];
+				SaveGameInstance->Explorer = GameMode->GetBartleTypes()[Explorer];
+				SaveGameInstance->Socializer = GameMode->GetBartleTypes()[Socializer];
 
 				// Start async save process.
 				UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Checkpoint", 0);

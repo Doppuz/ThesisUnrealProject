@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "NPC4Doors.h"
+#include "NPC1Door2.h"
 #include "../Elements/Door.h"
-#include "../Character/CharacterPawnQuad.h"
 #include "../Character/PawnInteractiveClass.h"
-#include "../Character/PawnInteractiveMove.h"
 #include "Components/BoxComponent.h"
+#include "../Character/CharacterPawnQuad.h"
+#include "Kismet/GameplayStatics.h"
 #include "../GameModeTutorial.h"
 
 // Sets default values
-ANPC4Doors::ANPC4Doors()
+ANPC1Door2::ANPC1Door2()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,71 +26,83 @@ ANPC4Doors::ANPC4Doors()
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
-	Door2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door2"));
-	Door2->SetChildActorClass(ADoor::StaticClass());
-	Door2->SetupAttachment(Doors);
-	Door2->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
-
-	Door3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door3"));
-	Door3->SetChildActorClass(ADoor::StaticClass());
-	Door3->SetupAttachment(Doors);
-	Door3->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
-
-	Door4 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door4"));
-	Door4->SetChildActorClass(ADoor::StaticClass());
-	Door4->SetupAttachment(Doors);
-	Door4->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
-
 	NPCs = CreateDefaultSubobject<USceneComponent>(TEXT("NPCs"));
 	NPCs->SetupAttachment(RootComponent);
 
 	NPC1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC1"));
 	NPC1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	NPC1->SetupAttachment(NPCs);
-	
+
+	bLeftChoice = false;
+	bRightChoice = false;
+	bIncreaseAttackSpeed = false;
+
 }
 
 // Called when the game starts or when spawned
-void ANPC4Doors::BeginPlay()
+void ANPC1Door2::BeginPlay()
 {
 	Super::BeginPlay();
 
-	APawnInteractiveClass* NPCDoors = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
+//---- Need to pass the parameter to the mesh because they are not exposed -----
 
-	NPCDoors->LeftChoice.AddDynamic(this,&ANPC4Doors::LeftChoiceEvent);
-	NPCDoors->RightChoice.AddDynamic(this,&ANPC4Doors::RightChoiceEvent);
+	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
+
+	/*if(NPC->Speech.Num() > 0)
+		NPC->Speech = Speech;
+	
+	if(NPC->Speech.Num() > 0)
+		NPC->Questions = Questions;
+	NPC->QuestionAt = QuestionAt;
+	NPC->MeshToEquip = MeshToEquip;*/
+
+	NPC->LeftChoice.AddDynamic(this,&ANPC1Door2::LeftChoiceEvent);
+	NPC->RightChoice.AddDynamic(this,&ANPC1Door2::RightChoiceEvent);
+	NPC->EndDialog.AddDynamic(this,&ANPC1Door2::EndChoiceEvent);
 
 }
 
 // Called every frame
-void ANPC4Doors::Tick(float DeltaTime)
+void ANPC1Door2::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 }
 
-void ANPC4Doors::LeftChoiceEvent() {
-	Cast<ADoor>(Door1->GetChildActor())->bOpenDoor = true;
-	Cast<ADoor>(Door2->GetChildActor())->bOpenDoor = true;	
+void ANPC1Door2::LeftChoiceEvent() {
+
+	bLeftChoice = true;
 	
 	//Update Bartle's values
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	GameMode->EquallyDistributedUpdate(Type::Achiever,Type::Killer);
-	
-	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
+
+	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
+
 	NPC->SpeechContator += 1;
 	NPC->Speak();
-	NPC->SpeechContator += 1;
+	NPC->SpeechContator = NPC->Speech.Num() - 1;
+	NPC->Speak();
 }
 
-void ANPC4Doors::RightChoiceEvent() {
-	Cast<ADoor>(Door3->GetChildActor())->bOpenDoor = true;
-	Cast<ADoor>(Door4->GetChildActor())->bOpenDoor = true;
+void ANPC1Door2::RightChoiceEvent() {
+	
+	bRightChoice = true;
 
 	//Update Bartle's values
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	GameMode->EquallyDistributedUpdate(Type::Killer,Type::Achiever);
-	
-	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
-	NPC->SpeechContator += 2;
+
+	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+
+	PlayerPawn->ProjectileTimeout = 0.3f;
+
+	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
+	NPC->SpeechContator += 1;
 	NPC->Speak();
+}
+
+void ANPC1Door2::EndChoiceEvent(APawnInteractiveClass* SpokenActor) {
+	ADoor* Door = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
+	Door->bOpenDoor = true;
 }

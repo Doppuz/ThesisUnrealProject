@@ -7,6 +7,7 @@
 #include "../Character/PawnInteractiveClass.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 AForthPuzzle::AForthPuzzle()
@@ -94,9 +95,16 @@ void AForthPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 	if(!SpokenActor->bAlreadySpoken)
 		SpokenAllies += 1;
 	
-	if(SpokenAllies == 4){
+	if(SpokenAllies == 4 && PuzzleCount != 4){
 		ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 		Door01->bOpenDoor = true;
+
+		//Update Bartle's values
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		GameMode->EquallyDistributedUpdate(Type::Socializer,Type::Explorer);
+
+		SpokenAllies = -1;
+		PuzzleCount = -1;
 	}
 
 
@@ -111,9 +119,18 @@ void AForthPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 			if(!Cast<APuzzleButton>(Hit.GetActor())->bIsPressed){
 				PuzzleCount += 1;
 
-				if(PuzzleCount == 4){
+				if(PuzzleCount == 4 && SpokenAllies != 4){
+					
 					ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 					Door01->bOpenDoor = true;
+
+					//Update Bartle's values
+					AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+					GameMode->EquallyDistributedUpdate(Type::Explorer,Type::Socializer);
+
+					SpokenAllies = -1;
+					PuzzleCount = -1;
+
 				}
 
 				Cast<APuzzleButton>(Hit.GetActor())->bIsPressed = true;

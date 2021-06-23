@@ -10,7 +10,6 @@
 #include "GameManager/MazeCell.h"
 #include "GameManager/RoomMaze.h"
 #include "GameManager/MazeGenerationCreation.h"
-#include "GameManager/AdaptingExperienceManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameManager/MazeGenerationPopulate.h"
 #include "Elements/ChestController.h"
@@ -30,7 +29,6 @@ ACustomGameMode::~ACustomGameMode() {
     delete MazeGraph;
     delete Generator;
     delete Populate;
-    delete Adapting;
 }
 
 void ACustomGameMode::BeginPlay() {
@@ -53,13 +51,6 @@ void ACustomGameMode::BeginPlay() {
 
     float p = 0;
 
-    Adapting = new AdaptingExperienceManager(
-        &GetGameState<ACustomGameState>()->Achiever,
-        &GetGameState<ACustomGameState>()->Killer,
-        &GetGameState<ACustomGameState>()->Socializer,
-        &GetGameState<ACustomGameState>()->Explorer);
-
-    Adapting->EquallyDistributedUpdate(Type::Achiever, 4, TArray<Type>{Type::Killer, Type::Explorer});
     //Check for cells with 3 walls.
     //Populate->DepthVisit((*Maze)[0][0]);
     
@@ -108,7 +99,7 @@ void ACustomGameMode::IncreasePercentage() {
     GetGameState<ACustomGameState>()->MapPercentage += MapIncrement;
 }
 
-float ACustomGameMode::GetAchieverValue() const{
+/*float ACustomGameMode::GetAchieverValue() const{
     return GetGameState<ACustomGameState>()->Achiever;
 }
 
@@ -122,6 +113,6 @@ float ACustomGameMode::GetExplorerValue() const{
 
 float ACustomGameMode::GetSocializerValue() const{
     return GetGameState<ACustomGameState>()->Socializer;    
-}
+}*/
 
 //-------------

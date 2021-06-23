@@ -7,6 +7,7 @@
 #include "../Character/PawnInteractiveClass.h"
 #include "../Character/PawnInteractiveMove.h"
 #include "Components/BoxComponent.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 ASecondPuzzle::ASecondPuzzle()
@@ -125,6 +126,10 @@ void ASecondPuzzle::CheckPuzzleActor() {
 void ASecondPuzzle::LeftChoiceEvent() {
 	Cast<ADoor>(Door1->GetChildActor())->bOpenDoor = true;
 	Cast<ADoor>(Door2->GetChildActor())->bOpenDoor = true;	
+
+	//Update Bartle's values
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->EquallyDistributedUpdate(Type::Killer,Type::Socializer);
 	
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 2;
@@ -134,6 +139,10 @@ void ASecondPuzzle::LeftChoiceEvent() {
 void ASecondPuzzle::RightChoiceEvent() {
 	Cast<ADoor>(Door3->GetChildActor())->bOpenDoor = true;
 	Cast<ADoor>(Door4->GetChildActor())->bOpenDoor = true;
+
+	//Update Bartle's values
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->EquallyDistributedUpdate(Type::Socializer,Type::Killer);
 	
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 2;

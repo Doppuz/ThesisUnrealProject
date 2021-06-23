@@ -292,26 +292,6 @@ void ACharacterPawnQuad::SetMousePointer(bool Enable) {
 
 void ACharacterPawnQuad::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
-	//Collect coins
-	if(OtherActor->IsA(ACoinController::StaticClass())){
-	
-		/*AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->IncreaseCoins();
-		Cast<ACoinController>(OtherActor)->bIsCollected = true;
-		OtherActor->Destroy();
-		CollectedDelegate.Broadcast();
-		UUIWidgetDialog* UI = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
-		if(UI->CoinText->GetVisibility() == ESlateVisibility::Hidden)
-			UI->CoinText->SetVisibility(ESlateVisibility::Visible);
-		UI->SetCoinText(GameMode->GetCoins());*/
-	
-	}else if(OtherActor->IsA(ATriggerVolume::StaticClass()) && OtherActor->Tags[0] == TEXT("TriggerExplorer")){
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		if(!GameMode->TriggerVolumes.Contains(OtherActor)){
-			GameMode->TriggerVolumes.Add(OtherActor);
-		}
-	}
-
 }
 
 void ACharacterPawnQuad::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {

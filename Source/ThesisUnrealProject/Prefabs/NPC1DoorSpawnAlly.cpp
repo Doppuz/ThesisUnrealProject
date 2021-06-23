@@ -8,6 +8,7 @@
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/AICharacterPawnQuad.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 ANPC1DoorSpawnAlly::ANPC1DoorSpawnAlly()
@@ -79,6 +80,10 @@ void ANPC1DoorSpawnAlly::Tick(float DeltaTime)
 void ANPC1DoorSpawnAlly::LeftChoiceEvent() {
 
 	bLeftChoice = true;
+
+	//Update Bartle's values
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->EquallyDistributedUpdate(Type::Socializer,Type::Killer);
 	
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 
@@ -93,6 +98,10 @@ void ANPC1DoorSpawnAlly::LeftChoiceEvent() {
 void ANPC1DoorSpawnAlly::RightChoiceEvent() {
 	
 	bRightChoice = true;
+
+	//Update Bartle's values
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->EquallyDistributedUpdate(Type::Killer,Type::Socializer);
 	
 	Trigger->SetCollisionProfileName("NoCollision");
 

@@ -6,6 +6,8 @@
 #include "GameFramework/GameStateBase.h"
 #include "CustomGameState.generated.h"
 
+enum Type {Achiever, Killer, Socializer, Explorer};
+
 /**
  * 
  */
@@ -19,8 +21,5 @@ public:
 	int CoinNumber;
 	float MapPercentage;
 
-	float Achiever;
-	float Explorer;
-	float Killer;
-	float Socializer;
+	TMap<Type,float> Types;
 };

@@ -9,6 +9,7 @@
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/SpotLightComponent.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 ASixthPuzzle::ASixthPuzzle()
@@ -91,8 +92,17 @@ void ASixthPuzzle::OnOverlapStart(UPrimitiveComponent * HitComponent, AActor * O
 			//Close the doors.
 			ADoor* Door01 = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
 			ADoor* Door02 = Cast<ADoor>(Door2->GetChildActor());
-			Door01->bOpenDoor = true;
-			Door02->bOpenDoor = true;
+
+			if(!Door01->bOpenDoor){
+		
+				Door01->bOpenDoor = true;
+				Door02->bOpenDoor = true;
+		
+				//Update Bartle's values
+				AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+				GameMode->EquallyDistributedUpdate(Type::Explorer,Type::Killer);
+		
+			}
 		}
 	}
 	
@@ -133,5 +143,9 @@ void ASixthPuzzle::FallenEvent() {
 	
 	ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 	Door01->bOpenDoor = true;
+	
+	//Update Bartle's values
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->EquallyDistributedUpdate(Type::Killer,Type::Explorer);
 
 }

@@ -45,8 +45,11 @@ void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 		ADestructibleElements* Actor = Cast<ADestructibleElements>(OtherActor);
 		UDestructibleComponent* DC = Actor->DestructibleMesh;
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		
-		AController* MyController = Cast<APawn>(MyOwner)->GetController();
+		AController* MyController = nullptr;
+
+
+		if(MyOwner != nullptr)
+			MyController = Cast<APawn>(MyOwner)->GetController();
 
 		if(MyController != nullptr && MyController->IsA(APlayerController::StaticClass()))
 			Actor->HitMesh(Hit);

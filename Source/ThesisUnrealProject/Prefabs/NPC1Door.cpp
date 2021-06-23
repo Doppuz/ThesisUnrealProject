@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 ANPC1Door::ANPC1Door()
@@ -72,6 +73,10 @@ void ANPC1Door::LeftChoiceEvent() {
 
 	bLeftChoice = true;
 	
+	//Update Bartle's values
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->EquallyDistributedUpdate(Type::Achiever,Type::Socializer);
+	
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 
 	if(MeshToEquip != nullptr)
@@ -88,6 +93,10 @@ void ANPC1Door::LeftChoiceEvent() {
 void ANPC1Door::RightChoiceEvent() {
 	
 	bRightChoice = true;
+
+	//Update Bartle's values
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->EquallyDistributedUpdate(Type::Socializer,Type::Achiever);
 
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 

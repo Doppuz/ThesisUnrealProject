@@ -6,6 +6,7 @@
 #include "../Elements/PuzzleButton.h"
 #include "../Elements/DestructibleElements.h"
 #include "Components/BoxComponent.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 APuzzleWith2Doors::APuzzleWith2Doors()
@@ -73,6 +74,8 @@ void APuzzleWith2Doors::BeginPlay()
 	RightOrder.Add(Button1);
 	RightOrder.Add(Button3);
 
+	ADestructibleElements* Gate = Cast<ADestructibleElements>(DestrGate1->GetChildActor());
+	Gate->DestructionDelegate.AddDynamic(this,&APuzzleWith2Doors::DestructionEvent);
 }
 
 // Called every frame
@@ -113,6 +116,10 @@ void APuzzleWith2Doors::CheckPuzzleActor() {
 	//Change the healt of the gate so that it will never break.
 	Cast<ADestructibleElements>(DestrGate1->GetChildActor())->Health = -1;
 
+	//Update Bartle's values
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->EquallyDistributedUpdate(Type::Explorer,Type::Killer);
+
 	//Open the doors.
 	ADoor* ActorDoor1 = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
 	ActorDoor1->bOpenDoor = true;	
@@ -143,3 +150,12 @@ void APuzzleWith2Doors::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
 	}
 }
+
+void APuzzleWith2Doors::DestructionEvent(ADestructibleElements* Elem) {
+	
+	//Update Bartle's values
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->EquallyDistributedUpdate(Type::Killer,Type::Explorer);
+
+}
+

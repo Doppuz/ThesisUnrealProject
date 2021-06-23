@@ -9,6 +9,7 @@
 #include "Components/SphereComponent.h"
 #include "../Elements/DestructibleElements.h"
 #include "../Elements/CoinController.h"
+#include "../GameModeTutorial.h"
 
 // Sets default values
 ALastPuzzle::ALastPuzzle()
@@ -82,9 +83,15 @@ void ALastPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 	if(!SpokenActor->bAlreadySpoken)
 		SpokenAllies += 1;
 	
-	if(SpokenAllies == 2){
+	if(SpokenAllies == 2 && CoinsCollected != 2){
+
 		ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 		Door01->bOpenDoor = true;
+
+		//Update Bartle's values
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		GameMode->EquallyDistributedUpdate(Type::Socializer,Type::Achiever);
+
 	}
 
 
@@ -102,9 +109,15 @@ void ALastPuzzle::Destruction(ADestructibleElements* Elem) {
 void ALastPuzzle::CoinCollected() {
 	CoinsCollected += 1;
 
-	if(CoinsCollected == 2){
+	if(CoinsCollected == 2 && SpokenAllies != 2){
+
 		ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 		Door01->bOpenDoor = true;
+
+		//Update Bartle's values
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		GameMode->EquallyDistributedUpdate(Type::Achiever,Type::Socializer);
+
 	}
 }
 

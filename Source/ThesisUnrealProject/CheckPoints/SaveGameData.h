@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "../CustomGameState.h"
 #include "SaveGameData.generated.h"
 
 /**
@@ -20,5 +21,18 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	FVector PlayerLocation;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float Achiever;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float Killer;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float Explorer;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float Socializer;
+	
 
 };

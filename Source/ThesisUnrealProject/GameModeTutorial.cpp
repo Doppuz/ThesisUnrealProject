@@ -10,11 +10,13 @@
 #include "CustomGameState.h"
 #include "Engine/TriggerVolume.h"
 #include "CheckPoints/SaveGameData.h"
+#include "CustomGameState.h"
 
 AGameModeTutorial::AGameModeTutorial() {
-    bSolvedPuzzle1 = false;
-    bGateDestroyed = false;
-    bEnemyDefeated = false;
+    // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+    IncreaseValue = 50.f / 6.f;
 }
 
 void AGameModeTutorial::BeginPlay() {
@@ -24,39 +26,22 @@ void AGameModeTutorial::BeginPlay() {
 
     // Retrieve and cast the USaveGame object to UMySaveGame.
     if (USaveGameData* LoadedGame = Cast<USaveGameData>(UGameplayStatics::LoadGameFromSlot("Checkpoint", 0))){
+        
         // The operation was successful, so LoadedGame now contains the data we saved earlier.
         UGameplayStatics::GetPlayerPawn(GetWorld(),0)->SetActorLocation(LoadedGame->PlayerLocation);
+
+        //Load the bartle's type data.
+        GetGameState<ACustomGameState>()->Types[Type::Achiever] = LoadedGame->Achiever;
+        GetGameState<ACustomGameState>()->Types[Type::Explorer] = LoadedGame->Explorer;
+        GetGameState<ACustomGameState>()->Types[Type::Killer] = LoadedGame->Killer;
+        GetGameState<ACustomGameState>()->Types[Type::Socializer] = LoadedGame->Socializer;
+
     }
 
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(),DoorClass,DoorActors);
     ChangeMenuWidget(WidgetClass);
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
     DialogWidget->HideSizeBox();
     DialogWidget->TextBox->BoxContainer->Visibility = ESlateVisibility::Hidden;
-}
-
-void AGameModeTutorial::Tick(float DeltaTime) {
-    
-}
-
-//Check if I spoke or killed all the actor in one of the two rooms.
-void AGameModeTutorial::CheckPuzzle2(int ID) {
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-    if(bLeft){
-        if(!ElemsPuzzle2.Contains(ID)){
-            ElemsPuzzle2.Add(ID);
-            if(ElemsPuzzle2.Num() == 2){
-                GameMode->SetDoorOpen(7);
-            }
-        }
-    }else{
-        if(!ElemsPuzzle2.Contains(ID)){
-            ElemsPuzzle2.Add(ID);
-            if(ElemsPuzzle2.Num() == 3){
-                GameMode->SetDoorOpen(7);
-            }
-        }
-    }
 }
 
 //Assign the UI widget passed as parameter to the screen.
@@ -78,14 +63,6 @@ UUserWidget* AGameModeTutorial::GetCurrentWidgetUI() {
     return CurrentWidget;
 }
 
-void AGameModeTutorial::SetDoorOpen(int DoorNum) {
-    for(AActor* Door: DoorActors){
-        ADoor* CastDoor = Cast<ADoor>(Door);
-        if(CastDoor->ID == DoorNum)
-            CastDoor->bOpenDoor = true;
-    }
-}
-
 //--- Get and Set for the coins
 
 int AGameModeTutorial::GetCoins() const{
@@ -94,4 +71,50 @@ int AGameModeTutorial::GetCoins() const{
 
 void AGameModeTutorial::IncreaseCoins() {
     GetGameState<ACustomGameState>()->CoinNumber += 1;
+}
+
+//Change these value in an equally distributed way. (-1 means that I don't want to touch that value).
+void AGameModeTutorial::EquallyDistributedUpdate(Type IncreasedType,float IncreasedValue,Type DecreasedType,float DecreasedValue) {
+    
+    TMap<Type,float>* Map = &GetGameState<ACustomGameState>()->Types;
+
+    if(IncreasedType != -1)
+        (*Map)[IncreasedType] += IncreasedValue;
+
+    if(DecreasedType != -1)
+        (*Map)[DecreasedType] -= DecreasedValue;
+
+
+    UE_LOG(LogTemp,Warning,TEXT(""));
+    UE_LOG(LogTemp,Warning,TEXT("-------------"));
+
+    UE_LOG(LogTemp,Warning,TEXT(" Achiever: %f"), (*Map)[Type::Achiever]);
+    UE_LOG(LogTemp,Warning,TEXT(" Killer: %f"), (*Map)[Type::Killer]);
+    UE_LOG(LogTemp,Warning,TEXT(" Explorer: %f"), (*Map)[Type::Explorer]);
+    UE_LOG(LogTemp,Warning,TEXT(" Socializer: %f"), (*Map)[Type::Socializer]);
+}
+
+void AGameModeTutorial::EquallyDistributedUpdate(Type IncreasedType, Type DecreasedType) {
+    TMap<Type,float>* Map = &GetGameState<ACustomGameState>()->Types;
+
+    if(IncreasedType != -1)
+        (*Map)[IncreasedType] += IncreaseValue;
+
+    if(DecreasedType != -1)
+        (*Map)[DecreasedType] -= IncreaseValue;
+
+
+    UE_LOG(LogTemp,Warning,TEXT(""));
+    UE_LOG(LogTemp,Warning,TEXT("-------------"));
+
+    UE_LOG(LogTemp,Warning,TEXT(" Achiever: %f"), (*Map)[Type::Achiever]);
+    UE_LOG(LogTemp,Warning,TEXT(" Killer: %f"), (*Map)[Type::Killer]);
+    UE_LOG(LogTemp,Warning,TEXT(" Explorer: %f"), (*Map)[Type::Explorer]);
+    UE_LOG(LogTemp,Warning,TEXT(" Socializer: %f"), (*Map)[Type::Socializer]);
+}
+
+TMap<Type,float> AGameModeTutorial::GetBartleTypes() {
+    
+    return GetGameState<ACustomGameState>()->Types;
+
 }

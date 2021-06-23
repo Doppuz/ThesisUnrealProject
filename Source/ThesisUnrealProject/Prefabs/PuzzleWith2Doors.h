@@ -7,6 +7,7 @@
 #include "PuzzleWith2Doors.generated.h"
 
 class APuzzleButton;
+class ADestructibleElements;
 
 UCLASS()
 class THESISUNREALPROJECT_API APuzzleWith2Doors : public AActor
@@ -87,4 +88,7 @@ private:
 	UFUNCTION()
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 
+// --- Destruction ---
+	UFUNCTION()
+	void DestructionEvent(ADestructibleElements* Elem);
 };

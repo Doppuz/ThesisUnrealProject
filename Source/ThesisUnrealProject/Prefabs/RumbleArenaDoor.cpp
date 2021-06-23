@@ -5,7 +5,7 @@
 #include "../Elements/Door.h"
 #include "../Elements/CoinController.h"
 #include "../Elements/RumbleArena.h"
-#include "NPC1Door.h"
+#include "NPC1Door2.h"
 
 // Sets default values
 ARumbleArenaDoor::ARumbleArenaDoor()
@@ -56,7 +56,7 @@ void ARumbleArenaDoor::EndEvent() {
 
 	ARumbleArena* RumbleArena01 =Cast<ARumbleArena>(RumbleArena1->GetChildActor());
 	
-	ANPC1Door* PreChoice01 = Cast<ANPC1Door>(PreChoice1->GetChildActor());;
+	ANPC1Door2* PreChoice01 = Cast<ANPC1Door2>(PreChoice1->GetChildActor());;
 
 	if(RumbleArena01->RewardClass != nullptr && PreChoice01->bLeftChoice){
 			ACoinController* Coin = GetWorld()->SpawnActor<ACoinController>(RumbleArena01->RewardClass,RumbleArena01->RewardSpawnPosition->GetComponentLocation(),
