@@ -90,7 +90,7 @@ void ALastPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 
 		//Update Bartle's values
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->EquallyDistributedUpdate(Type::Socializer,Type::Achiever);
+		GameMode->DistributedUpdate(Type::Socializer,Type::Achiever);
 
 	}
 
@@ -116,7 +116,7 @@ void ALastPuzzle::CoinCollected() {
 
 		//Update Bartle's values
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->EquallyDistributedUpdate(Type::Achiever,Type::Socializer);
+		GameMode->DistributedUpdate(Type::Achiever,Type::Socializer);
 
 	}
 }

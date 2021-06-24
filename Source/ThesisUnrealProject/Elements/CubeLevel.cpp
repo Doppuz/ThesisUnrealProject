@@ -19,10 +19,10 @@ ACubeLevel::ACubeLevel()
 }
 
 // Called when the game starts or when spawned
-void ACubeLevel::BeginPlay()
-{
+void ACubeLevel::BeginPlay(){
+
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame

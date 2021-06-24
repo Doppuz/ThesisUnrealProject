@@ -83,7 +83,7 @@ void ANPC1DoorSpawnAlly::LeftChoiceEvent() {
 
 	//Update Bartle's values
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->EquallyDistributedUpdate(Type::Socializer,Type::Killer);
+	GameMode->DistributedUpdate(Type::Socializer,Type::Killer);
 	
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 
@@ -101,7 +101,7 @@ void ANPC1DoorSpawnAlly::RightChoiceEvent() {
 
 	//Update Bartle's values
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->EquallyDistributedUpdate(Type::Killer,Type::Socializer);
+	GameMode->DistributedUpdate(Type::Killer,Type::Socializer);
 	
 	Trigger->SetCollisionProfileName("NoCollision");
 

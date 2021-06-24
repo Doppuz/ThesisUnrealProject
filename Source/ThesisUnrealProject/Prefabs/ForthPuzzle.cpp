@@ -101,7 +101,7 @@ void AForthPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 
 		//Update Bartle's values
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->EquallyDistributedUpdate(Type::Socializer,Type::Explorer);
+		GameMode->DistributedUpdate(Type::Socializer,Type::Explorer);
 
 		SpokenAllies = -1;
 		PuzzleCount = -1;
@@ -126,7 +126,7 @@ void AForthPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 
 					//Update Bartle's values
 					AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-					GameMode->EquallyDistributedUpdate(Type::Explorer,Type::Socializer);
+					GameMode->DistributedUpdate(Type::Explorer,Type::Socializer);
 
 					SpokenAllies = -1;
 					PuzzleCount = -1;

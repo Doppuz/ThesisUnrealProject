@@ -100,7 +100,7 @@ void ASixthPuzzle::OnOverlapStart(UPrimitiveComponent * HitComponent, AActor * O
 		
 				//Update Bartle's values
 				AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-				GameMode->EquallyDistributedUpdate(Type::Explorer,Type::Killer);
+				GameMode->DistributedUpdate(Type::Explorer,Type::Killer);
 		
 			}
 		}
@@ -146,6 +146,6 @@ void ASixthPuzzle::FallenEvent() {
 	
 	//Update Bartle's values
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->EquallyDistributedUpdate(Type::Killer,Type::Explorer);
+	GameMode->DistributedUpdate(Type::Killer,Type::Explorer);
 
 }

@@ -43,6 +43,8 @@ public:
 
 	void EquallyDistributedUpdate(Type IncreasedType, Type DecreasedType);
 
+	void DistributedUpdate(Type IncreasedType, Type DecreasedType);
+
 	TMap<Type,float> GetBartleTypes();
 
 	float IncreaseValue;

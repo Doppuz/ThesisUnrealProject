@@ -111,7 +111,7 @@ void AFifthPuzzle::Destruction(ADestructibleElements* Elem) {
 
 		//Update Bartle's values
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);
+		GameMode->DistributedUpdate(Type::Explorer,Type::Achiever);
 
 	}
 
@@ -129,7 +129,7 @@ void AFifthPuzzle::CoinCollected() {
 	
 		//Update Bartle's values
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->EquallyDistributedUpdate(Type::Achiever,Type::Explorer);
+		GameMode->DistributedUpdate(Type::Achiever,Type::Explorer);
 
 	}
 

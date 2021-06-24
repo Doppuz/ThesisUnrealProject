@@ -75,7 +75,7 @@ void ANPC1Door2::LeftChoiceEvent() {
 	
 	//Update Bartle's values
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->EquallyDistributedUpdate(Type::Achiever,Type::Killer);
+	GameMode->DistributedUpdate(Type::Achiever,Type::Killer);
 
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
 
@@ -91,7 +91,7 @@ void ANPC1Door2::RightChoiceEvent() {
 
 	//Update Bartle's values
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->EquallyDistributedUpdate(Type::Killer,Type::Achiever);
+	GameMode->DistributedUpdate(Type::Killer,Type::Achiever);
 
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 

@@ -113,6 +113,40 @@ void AGameModeTutorial::EquallyDistributedUpdate(Type IncreasedType, Type Decrea
     UE_LOG(LogTemp,Warning,TEXT(" Socializer: %f"), (*Map)[Type::Socializer]);
 }
 
+void AGameModeTutorial::DistributedUpdate(Type IncreasedType, Type DecreasedType) {
+    
+    TMap<Type,float>* Map = &GetGameState<ACustomGameState>()->Types;
+
+    if((*Map)[IncreasedType] < (*Map)[DecreasedType]){
+    
+        if(IncreasedType != -1)
+            (*Map)[IncreasedType] += (IncreaseValue + IncreaseValue / 2);
+
+        if(DecreasedType != -1)
+            (*Map)[DecreasedType] -= IncreaseValue / 2 ;
+
+    }else if ((*Map)[IncreasedType] > (*Map)[DecreasedType]){
+        
+        if(IncreasedType != -1)
+            (*Map)[IncreasedType] += IncreaseValue / 2;
+
+        if(DecreasedType != -1)
+            (*Map)[DecreasedType] -= (IncreaseValue + IncreaseValue / 2);
+
+    }else{
+        EquallyDistributedUpdate(IncreasedType, DecreasedType);
+        return;
+    }
+
+    UE_LOG(LogTemp,Warning,TEXT(""));
+    UE_LOG(LogTemp,Warning,TEXT("-------------"));
+
+    UE_LOG(LogTemp,Warning,TEXT(" Achiever: %f"), (*Map)[Type::Achiever]);
+    UE_LOG(LogTemp,Warning,TEXT(" Killer: %f"), (*Map)[Type::Killer]);
+    UE_LOG(LogTemp,Warning,TEXT(" Explorer: %f"), (*Map)[Type::Explorer]);
+    UE_LOG(LogTemp,Warning,TEXT(" Socializer: %f"), (*Map)[Type::Socializer]);
+}
+
 TMap<Type,float> AGameModeTutorial::GetBartleTypes() {
     
     return GetGameState<ACustomGameState>()->Types;

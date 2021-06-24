@@ -28,5 +28,5 @@ public:
 
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Mesh;
-
+	
 };
