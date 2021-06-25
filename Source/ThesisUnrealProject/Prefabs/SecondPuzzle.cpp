@@ -8,6 +8,7 @@
 #include "../Character/PawnInteractiveMove.h"
 #include "Components/BoxComponent.h"
 #include "../GameModeTutorial.h"
+#include "../Elements/ActorSpawner.h"
 
 // Sets default values
 ASecondPuzzle::ASecondPuzzle()
@@ -49,17 +50,17 @@ ASecondPuzzle::ASecondPuzzle()
 	Enemies = CreateDefaultSubobject<USceneComponent>(TEXT("Enemies"));
 	Enemies->SetupAttachment(RootComponent);
 
-	Enemy1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Enemy1"));
-	Enemy1->SetChildActorClass(ACharacterPawnQuad::StaticClass());
-	Enemy1->SetupAttachment(Enemies);
+	SpawnEnemy1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Enemy1"));
+	SpawnEnemy1->SetChildActorClass(ACharacterPawnQuad::StaticClass());
+	SpawnEnemy1->SetupAttachment(Enemies);
 
-	Enemy2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Enemy2"));
-	Enemy2->SetChildActorClass(ACharacterPawnQuad::StaticClass());
-	Enemy2->SetupAttachment(Enemies);
+	SpawnEnemy2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Enemy2"));
+	SpawnEnemy2->SetChildActorClass(ACharacterPawnQuad::StaticClass());
+	SpawnEnemy2->SetupAttachment(Enemies);
 
-	Enemy3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Enemy3"));
-	Enemy3->SetChildActorClass(ACharacterPawnQuad::StaticClass());
-	Enemy3->SetupAttachment(Enemies);
+	SpawnEnemy3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Enemy3"));
+	SpawnEnemy3->SetChildActorClass(ACharacterPawnQuad::StaticClass());
+	SpawnEnemy3->SetupAttachment(Enemies);
 
 	NPCs = CreateDefaultSubobject<USceneComponent>(TEXT("NPCs"));
 	NPCs->SetupAttachment(RootComponent);
@@ -68,17 +69,17 @@ ASecondPuzzle::ASecondPuzzle()
 	NPC1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	NPC1->SetupAttachment(NPCs);
 	
-	NPC2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC2"));
-	NPC2->SetChildActorClass(APawnInteractiveMove::StaticClass());
-	NPC2->SetupAttachment(NPCs);
+	SpawnNPC2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC2"));
+	SpawnNPC2->SetChildActorClass(APawnInteractiveMove::StaticClass());
+	SpawnNPC2->SetupAttachment(NPCs);
 
-	NPC3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC3"));
-	NPC3->SetChildActorClass(APawnInteractiveMove::StaticClass());
-	NPC3->SetupAttachment(NPCs);
+	SpawnNPC3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC3"));
+	SpawnNPC3->SetChildActorClass(APawnInteractiveMove::StaticClass());
+	SpawnNPC3->SetupAttachment(NPCs);
 
-	NPC4 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC4"));
-	NPC4->SetChildActorClass(APawnInteractiveMove::StaticClass());
-	NPC4->SetupAttachment(NPCs);
+	SpawnNPC4 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC4"));
+	SpawnNPC4->SetChildActorClass(APawnInteractiveMove::StaticClass());
+	SpawnNPC4->SetupAttachment(NPCs);
 
 	DeathEnemies = 0;
 	SpokenAllies = 0;
@@ -91,21 +92,22 @@ void ASecondPuzzle::BeginPlay()
 
 	APawnInteractiveClass* NPCDoors = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 
-	APawnInteractiveMove* NPC02 = Cast<APawnInteractiveMove>(NPC2->GetChildActor());
-	APawnInteractiveMove* NPC03 = Cast<APawnInteractiveMove>(NPC3->GetChildActor());
-	APawnInteractiveMove* NPC04 = Cast<APawnInteractiveMove>(NPC4->GetChildActor());
+	AActorSpawner* NPC02 = Cast<AActorSpawner>(SpawnNPC2->GetChildActor());
+	AActorSpawner* NPC03 = Cast<AActorSpawner>(SpawnNPC3->GetChildActor());
+	AActorSpawner* NPC04 = Cast<AActorSpawner>(SpawnNPC4->GetChildActor());
 	
-	ACharacterPawnQuad* Enemy01 = Cast<ACharacterPawnQuad>(Enemy1->GetChildActor());
-	ACharacterPawnQuad* Enemy02 = Cast<ACharacterPawnQuad>(Enemy2->GetChildActor());
-	ACharacterPawnQuad* Enemy03 = Cast<ACharacterPawnQuad>(Enemy3->GetChildActor());
+	AActorSpawner* Enemy01 = Cast<AActorSpawner>(SpawnEnemy1->GetChildActor());
+	AActorSpawner* Enemy02 = Cast<AActorSpawner>(SpawnEnemy2->GetChildActor());
+	AActorSpawner* Enemy03 = Cast<AActorSpawner>(SpawnEnemy3->GetChildActor());
 
-	NPC02->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
-	NPC03->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
-	NPC04->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
+	Cast<ACharacterPawnQuad>(Enemy01->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
+	Cast<ACharacterPawnQuad>(Enemy02->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
+	Cast<ACharacterPawnQuad>(Enemy03->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
 
-	Enemy01->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
-	Enemy02->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
-	Enemy03->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
+	Cast<APawnInteractiveMove>(NPC02->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
+	Cast<APawnInteractiveMove>(NPC03->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
+	Cast<APawnInteractiveMove>(NPC04->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
+	
 
 	NPCDoors->LeftChoice.AddDynamic(this,&ASecondPuzzle::LeftChoiceEvent);
 	NPCDoors->RightChoice.AddDynamic(this,&ASecondPuzzle::RightChoiceEvent);
@@ -116,11 +118,6 @@ void ASecondPuzzle::BeginPlay()
 void ASecondPuzzle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void ASecondPuzzle::CheckPuzzleActor() {
-	
-	
 }
 
 void ASecondPuzzle::LeftChoiceEvent() {

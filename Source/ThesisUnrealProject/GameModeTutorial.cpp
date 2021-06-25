@@ -117,7 +117,7 @@ void AGameModeTutorial::DistributedUpdate(Type IncreasedType, Type DecreasedType
     
     TMap<Type,float>* Map = &GetGameState<ACustomGameState>()->Types;
 
-    if((*Map)[IncreasedType] < (*Map)[DecreasedType]){
+    /*if((*Map)[IncreasedType] < (*Map)[DecreasedType]){
     
         if(IncreasedType != -1)
             (*Map)[IncreasedType] += (IncreaseValue + IncreaseValue / 2);
@@ -136,7 +136,13 @@ void AGameModeTutorial::DistributedUpdate(Type IncreasedType, Type DecreasedType
     }else{
         EquallyDistributedUpdate(IncreasedType, DecreasedType);
         return;
-    }
+    }*/
+
+    if(IncreasedType != -1)
+        (*Map)[IncreasedType] += IncreaseValue;
+
+    if(DecreasedType != -1)
+        (*Map)[DecreasedType] -= IncreaseValue;
 
     UE_LOG(LogTemp,Warning,TEXT(""));
     UE_LOG(LogTemp,Warning,TEXT("-------------"));

@@ -14,7 +14,8 @@ AActorSpawner::AActorSpawner()
 }
 
 AActor* AActorSpawner::SpawnActor() {
-	return GetWorld()->SpawnActor<AActor>(ActorToSpawn,GetActorLocation(),GetActorRotation());
+	AActor* Actor = GetWorld()->SpawnActor<AActor>(ActorToSpawn,GetActorLocation(),GetActorRotation());;
+	return Actor;
 }
 
 // Called when the game starts or when spawned

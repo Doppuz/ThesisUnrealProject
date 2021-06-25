@@ -56,7 +56,7 @@ void Update(float& a, float& b, string S1, string S2){
     }
 }
 
-void Update2(float& a, float& b, string S1, string S2){
+void Update2(float& a, float& b,float& c, float& d, string S1, string S2){
     
     cout << " 1 " << S1 << " 2  " << S2 << endl;
 
@@ -69,9 +69,13 @@ void Update2(float& a, float& b, string S1, string S2){
         if(a < b){
             a += 12;
             b -= 4;
+            c -= 4;
+            d -= 4;
         }else if (a > b){
             a += 4;
             b -= 12;
+            c -= 4;
+            d -= 4;
         }else{
             a += 8;
             b -= 8;
@@ -81,9 +85,13 @@ void Update2(float& a, float& b, string S1, string S2){
         if(a < b){
             a -= 12;
             b += 4;
+            c -= 4;
+            d -= 4;
         }else if (a > b){
             a -= 4;
             b += 12;
+            c -= 4;
+            d -= 4;
         }else{
             a += 8;
             b -= 8;

@@ -43,13 +43,13 @@ public:
 	USceneComponent* Enemies;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Enemy1;
+	UChildActorComponent* SpawnEnemy1;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Enemy2;
+	UChildActorComponent* SpawnEnemy2;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* Enemy3;
+	UChildActorComponent* SpawnEnemy3;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	USceneComponent* NPCs;
@@ -58,13 +58,13 @@ public:
 	UChildActorComponent* NPC1;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* NPC2;
+	UChildActorComponent* SpawnNPC2;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* NPC3;
+	UChildActorComponent* SpawnNPC3;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* NPC4;
+	UChildActorComponent* SpawnNPC4;
 
 protected:
 	// Called when the game starts or when spawned
@@ -75,9 +75,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-
-	//Check if the order is right.
-	void CheckPuzzleActor();
 
 	UFUNCTION()
 	void LeftChoiceEvent();

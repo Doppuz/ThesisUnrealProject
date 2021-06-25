@@ -82,7 +82,7 @@ void AFallenPlatform::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 
 
 	if(OtherActor->IsA(APawn::StaticClass())){
-		if(Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass())){
+		if(Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass()) && !bIsFallen){
 			bFall = true;
 			bIsFallen = true;	
 			FallenDelegate.Broadcast();

@@ -45,8 +45,12 @@ void ARumbleArenaDoor::BeginPlay()
 	Super::BeginPlay();
 
 	ARumbleArena* RumbleArena01 = Cast<ARumbleArena>(Cast<UChildActorComponent>(RumbleArena1)->GetChildActor());
-
 	RumbleArena01->EndArena.AddDynamic(this,&ARumbleArenaDoor::EndEvent);
+
+	//Needed to set the turn number to 1.
+	ANPC1Door2* NPCDoor2 = Cast<ANPC1Door2>(PreChoice1->GetChildActor());
+	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPCDoor2->NPC1->GetChildActor());
+	NPC->LeftChoice.AddDynamic(this,&ARumbleArenaDoor::LeftChoice);
 
 }
 
@@ -63,4 +67,12 @@ void ARumbleArenaDoor::EndEvent() {
 				RumbleArena01->RewardSpawnPosition->GetComponentRotation());
 			Coin->SetActorScale3D(FVector(0.4f,0.4f,0.4f));
 	}
+}
+
+void ARumbleArenaDoor::LeftChoice() {
+	
+
+	ARumbleArena* RumbleArena01 = Cast<ARumbleArena>(RumbleArena1->GetChildActor());
+	RumbleArena01->TurnNumbers = 0;
+
 }

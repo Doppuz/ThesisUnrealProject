@@ -11,9 +11,19 @@ void AAllyQuadAIController::BeginPlay() {
     
     if(BTree != nullptr){
         RunBehaviorTree(BTree);
-        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),GetPawn()->GetActorLocation());
-        GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),true);
     }else
         UE_LOG(LogTemp,Warning,TEXT("No Behavior Tree"));
     
+}
+
+void AAllyQuadAIController::Tick(float DeltaTime) {
+
+    if(GetPawn() != nullptr && !FirstTime){
+
+        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),GetPawn()->GetActorLocation());
+        GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),true);
+        FirstTime = true;
+
+    }
+
 }

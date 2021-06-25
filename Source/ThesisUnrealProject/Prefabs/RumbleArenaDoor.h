@@ -46,4 +46,8 @@ public:
 	UFUNCTION()
 	void EndEvent();
 
+	//Needed to set the turn number at 1 if I choose the reward choice.
+	UFUNCTION()
+	void LeftChoice();
+
 };
