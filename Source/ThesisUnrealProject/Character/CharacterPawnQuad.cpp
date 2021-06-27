@@ -23,6 +23,9 @@
 #include "Engine/LatentActionManager.h"
 #include "Components/SpotLightComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/WidgetComponent.h"
+#include "../UI/HealthBar.h"
+#include "Components/ProgressBar.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -65,6 +68,9 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	SpotLight->SetWorldRotation(FRotator(-20.f,0.f,0.f));	
 	SpotLight->Intensity = 0.f;	
 
+	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Widget"));
+	HealthWidgetComponent->SetupAttachment(RootComponent);
+
 	MovementSpeed = 400.f;
 	RotationSpeed = 400.f;
 	JumpForce = 500.f;
@@ -92,6 +98,14 @@ void ACharacterPawnQuad::BeginPlay(){
 
 	CurrentHealth = MaxHealth;
 
+	//SetBarHealt
+
+	UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
+
+	if(HealthWidget != nullptr)
+		HealthWidget->HealthBar->SetPercent(1.f);
+	
+
 	InitialRotation = CameraArmComponent->GetComponentRotation();
 	Collider->OnComponentBeginOverlap.AddDynamic(this,&ACharacterPawnQuad::OnOverlap);
 	//Collider->OnComponentHit.AddDynamic(this, &ACharacterPawnQuad::OnHit);
@@ -111,6 +125,13 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 		}
 	}else{
 		CurrentHealth -= FMath::Min(CurrentHealth,Damage);
+
+		UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
+
+		if(HealthWidget != nullptr)
+			HealthWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
+
+
 		UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);
 	}
 

@@ -111,6 +111,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	USceneComponent* FollowAllyPosition;
 
+	//Health Bar
+	UPROPERTY( VisibleAnywhere )
+	class UWidgetComponent* HealthWidgetComponent;
+
 // End delegate
 
 	FEndDelegate End;
