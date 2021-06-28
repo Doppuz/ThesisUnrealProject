@@ -119,6 +119,12 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	if(GetController()->IsA(APlayerController::StaticClass())){
 		if(!bCharacterInvincible){
 			CurrentHealth -= FMath::Min(CurrentHealth,Damage);
+
+			//Update player's UI healthBar		
+			AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+			UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+			DialogWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
+
 			InvisibleAnimation();
 			bCharacterInvincible = true;	
 			UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);

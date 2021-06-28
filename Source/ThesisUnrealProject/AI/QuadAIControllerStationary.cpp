@@ -12,8 +12,8 @@ void AQuadAIControllerStationary::BeginPlay() {
     
     if(BTree != nullptr){
         RunBehaviorTree(BTree);
-        APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
-        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),GetPawn()->GetActorLocation());
+//        APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
+//        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),GetPawn()->GetActorLocation());
     }else
         UE_LOG(LogTemp,Warning,TEXT("No Behavior Tree"));
 

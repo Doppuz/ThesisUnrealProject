@@ -57,9 +57,11 @@ ASixthPuzzle::ASixthPuzzle()
 
 	Trigger1 = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger1"));
 	Trigger1->SetupAttachment(Triggers);
+	Trigger1->OnComponentBeginOverlap.AddDynamic(this, &ASixthPuzzle::OnOverlapStart);
 
 	Trigger2 = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger2"));
 	Trigger2->SetupAttachment(Triggers);
+	Trigger2->OnComponentBeginOverlap.AddDynamic(this, &ASixthPuzzle::OnOverlapEnd);
 
 }
 
@@ -68,14 +70,21 @@ void ASixthPuzzle::BeginPlay()
 {
 	Super::BeginPlay();
 
-	APuzzleButton* Button = Cast<APuzzleButton>(Puzzle1->GetChildActor());
 	AFallenPlatform* FallenPlat = Cast<AFallenPlatform>(FallenPlatform1->GetChildActor());
 
-	Trigger1->OnComponentBeginOverlap.AddDynamic(this, &ASixthPuzzle::OnOverlapStart);
-	Trigger2->OnComponentBeginOverlap.AddDynamic(this, &ASixthPuzzle::OnOverlapEnd);
+	
+	APuzzleButton* Button = Cast<APuzzleButton>(Puzzle1->GetChildActor());
 	Button->Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASixthPuzzle::PuzzleOverlap);
+
 	FallenPlat->FallenDelegate.AddDynamic(this, &ASixthPuzzle::FallenEvent);
 
+}
+
+void ASixthPuzzle::EndPlay(EEndPlayReason::Type Reason) {
+	Trigger1->OnComponentBeginOverlap.RemoveDynamic(this, &ASixthPuzzle::OnOverlapStart);
+
+	AFallenPlatform* FallenPlat = Cast<AFallenPlatform>(FallenPlatform1->GetChildActor());
+	FallenPlat->FallenDelegate.RemoveDynamic(this, &ASixthPuzzle::FallenEvent);
 }
 
 void ASixthPuzzle::OnOverlapStart(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {

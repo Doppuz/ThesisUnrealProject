@@ -8,6 +8,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "../GameModeTutorial.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AForthPuzzle::AForthPuzzle()
@@ -98,9 +99,14 @@ void AForthPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 	if(SpokenAllies == 4 && PuzzleCount != 4){
 		ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 		Door01->bOpenDoor = true;
+		
+		FLatentActionInfo LatentInfo;
+		UGameplayStatics::LoadStreamLevel(this, TEXT("FifthChoice"), true, false, LatentInfo);
+
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		GameMode->Levels.Add("FifthChoice");
 
 		//Update Bartle's values
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		GameMode->DistributedUpdate(Type::Socializer,Type::Explorer);
 
 		SpokenAllies = -1;
@@ -123,9 +129,14 @@ void AForthPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 					
 					ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 					Door01->bOpenDoor = true;
+					
+					FLatentActionInfo LatentInfo;
+					UGameplayStatics::LoadStreamLevel(this, TEXT("FifthChoice"), true, false, LatentInfo);
+
+					AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+					GameMode->Levels.Add("FifthChoice");
 
 					//Update Bartle's values
-					AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 					GameMode->DistributedUpdate(Type::Explorer,Type::Socializer);
 
 					SpokenAllies = -1;

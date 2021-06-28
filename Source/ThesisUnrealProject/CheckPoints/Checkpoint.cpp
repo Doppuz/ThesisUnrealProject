@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "SaveGameData.h"
 #include "../GameModeTutorial.h"
+#include "../Character/CharacterPawnQuad.h"
 
 // Sets default values
 ACheckpoint::ACheckpoint()
@@ -18,6 +19,9 @@ ACheckpoint::ACheckpoint()
 
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
 	Trigger->SetupAttachment(RootComponent);
+
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	Mesh->SetupAttachment(RootComponent);
 
 }
 
@@ -44,7 +48,18 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 			
 			if (USaveGameData* SaveGameInstance = Cast<USaveGameData>(UGameplayStatics::CreateSaveGameObject(USaveGameData::StaticClass()))){
 
+				Mesh->SetMaterial(0,EmissiveMaterial);
+
 				UE_LOG(LogTemp,Warning,TEXT("Data Saved"));
+
+				if(LevelToUnload != ""){
+					FLatentActionInfo LatentInfo;	
+					UGameplayStatics::UnloadStreamLevel(this, LevelToUnload, LatentInfo, true);
+					
+					AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+					GameMode->Levels.Remove(LevelToUnload);
+
+				}
 
 				AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 
@@ -55,9 +70,15 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 				SaveGameInstance->Killer = GameMode->GetBartleTypes()[Killer];
 				SaveGameInstance->Explorer = GameMode->GetBartleTypes()[Explorer];
 				SaveGameInstance->Socializer = GameMode->GetBartleTypes()[Socializer];
+				SaveGameInstance->Levels = GameMode->Levels;
 
 				// Start async save process.
 				UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Checkpoint", 0);
+
+				Cast<ACharacterPawnQuad>(MyPawn)->CurrentHealth = Cast<ACharacterPawnQuad>(MyPawn)->MaxHealth;
+
+				Trigger->SetCollisionProfileName("NoCollision");
+
 			}
 
 		}

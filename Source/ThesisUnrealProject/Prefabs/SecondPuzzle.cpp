@@ -9,6 +9,7 @@
 #include "Components/BoxComponent.h"
 #include "../GameModeTutorial.h"
 #include "../Elements/ActorSpawner.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASecondPuzzle::ASecondPuzzle()
@@ -156,8 +157,10 @@ void ASecondPuzzle::EndEnemiesEvent() {
 void ASecondPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 	
 	if(!SpokenActor->bAlreadySpoken){
+		
 		SpokenAllies += 1;
 		Cast<ADoor>(Door5->GetChildActor())->bOpenDoor = true;
+		
 	}
 	
 }

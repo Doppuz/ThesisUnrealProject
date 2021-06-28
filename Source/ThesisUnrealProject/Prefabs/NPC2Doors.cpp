@@ -8,6 +8,7 @@
 #include "../Character/PawnInteractiveMove.h"
 #include "Components/BoxComponent.h"
 #include "../GameModeTutorial.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ANPC2Doors::ANPC2Doors()
@@ -60,6 +61,9 @@ void ANPC2Doors::Tick(float DeltaTime)
 
 void ANPC2Doors::LeftChoiceEvent() {
 	Cast<ADoor>(Door1->GetChildActor())->bOpenDoor = true;
+
+	FLatentActionInfo LatentInfo;
+	UGameplayStatics::LoadStreamLevel(this, TEXT("ForthChoice"), true, false, LatentInfo);
 	
 	//Update Bartle's values
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
@@ -73,9 +77,15 @@ void ANPC2Doors::LeftChoiceEvent() {
 
 void ANPC2Doors::RightChoiceEvent() {
 	Cast<ADoor>(Door2->GetChildActor())->bOpenDoor = true;
+	
+	FLatentActionInfo LatentInfo;
+	UGameplayStatics::LoadStreamLevel(this, TEXT("ForthChoice"), true, false, LatentInfo);
+	
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->Levels.Add("ForthChoice");
+	
 
 	//Update Bartle's values
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	GameMode->EquallyDistributedUpdate(Type::Socializer,Type::Explorer);	
 	
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());

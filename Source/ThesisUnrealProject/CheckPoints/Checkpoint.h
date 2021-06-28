@@ -29,6 +29,15 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent* Trigger;
 
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* Mesh;
+
+	UPROPERTY(EditAnywhere)
+	UMaterialInstance* EmissiveMaterial;
+
+	UPROPERTY(EditAnywhere)
+	FName LevelToUnload;
+
 	UFUNCTION()
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 

@@ -49,6 +49,16 @@ public:
 
 	float IncreaseValue;
 
+// ---------- Level loaded ------------
+
+	TArray<FName> Levels;
+
+	UFUNCTION()
+	void OnLevelLoad();
+
+	//Used when I load the level after using a Checkpoint.
+	int LevelContator = 1;
+
 protected:
 	
 	// Called when the game starts or when spawned

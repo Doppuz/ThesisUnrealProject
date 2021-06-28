@@ -34,5 +34,7 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	float Socializer;
 	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FName> Levels;
 
 };

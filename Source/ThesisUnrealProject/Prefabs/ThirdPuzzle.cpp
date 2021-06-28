@@ -8,6 +8,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "../GameModeTutorial.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AThirdPuzzle::AThirdPuzzle()
@@ -120,6 +121,9 @@ void AThirdPuzzle::Destruction(ADestructibleElements* Elem) {
 
 		Door01->bOpenDoor = true;
 		Door03->bOpenDoor = true;
+		
+		FLatentActionInfo LatentInfo;
+	    UGameplayStatics::LoadStreamLevel(this, TEXT("ThirdChoice"), true, false, LatentInfo);
 
 		//Update Bartle's values
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
@@ -141,8 +145,13 @@ void AThirdPuzzle::CoinCollected() {
 		Door01->bOpenDoor = true;
 		Door02->bOpenDoor = true;
 
-		//Update Bartle's values
+		FLatentActionInfo LatentInfo;
+	    UGameplayStatics::LoadStreamLevel(this, TEXT("ThirdChoice"), true, false, LatentInfo);
+
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		GameMode->Levels.Add("ThirdChoice");
+
+		//Update Bartle's values
 		GameMode->EquallyDistributedUpdate(Type::Achiever,Type::Explorer);
 	
 	}

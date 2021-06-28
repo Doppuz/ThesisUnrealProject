@@ -35,6 +35,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CoinText;
 
+	UPROPERTY(meta = (BindWidget))
+	class UProgressBar* HealthBar;
+
 	void HideSizeBox();
 	void ViewSizeBox();
 	void HideAnswerBox();

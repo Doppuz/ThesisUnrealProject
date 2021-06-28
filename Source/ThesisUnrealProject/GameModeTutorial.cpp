@@ -11,6 +11,7 @@
 #include "Engine/TriggerVolume.h"
 #include "CheckPoints/SaveGameData.h"
 #include "CustomGameState.h"
+#include "Engine/LevelStreaming.h"
 
 AGameModeTutorial::AGameModeTutorial() {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -20,9 +21,6 @@ AGameModeTutorial::AGameModeTutorial() {
 }
 
 void AGameModeTutorial::BeginPlay() {
-
-    FLatentActionInfo LatentInfo;
-	UGameplayStatics::LoadStreamLevel(this, TEXT("Day"), true, true, LatentInfo);
 
     // Retrieve and cast the USaveGame object to UMySaveGame.
     if (USaveGameData* LoadedGame = Cast<USaveGameData>(UGameplayStatics::LoadGameFromSlot("Checkpoint", 0))){
@@ -35,6 +33,19 @@ void AGameModeTutorial::BeginPlay() {
         GetGameState<ACustomGameState>()->Types[Type::Explorer] = LoadedGame->Explorer;
         GetGameState<ACustomGameState>()->Types[Type::Killer] = LoadedGame->Killer;
         GetGameState<ACustomGameState>()->Types[Type::Socializer] = LoadedGame->Socializer;
+
+        //Load levels
+        Levels = LoadedGame->Levels;
+  
+        if(Levels.Num() != 0){
+            FLatentActionInfo LatentInfo;	
+            UGameplayStatics::LoadStreamLevel(this, Levels[0], true, false, LatentInfo);
+            
+            if(Levels.Num() > LevelContator){
+            ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), Levels[0]);
+            Level->OnLevelLoaded.AddDynamic(this,&AGameModeTutorial::OnLevelLoad);
+            }
+        }
 
     }
 
@@ -157,4 +168,16 @@ TMap<Type,float> AGameModeTutorial::GetBartleTypes() {
     
     return GetGameState<ACustomGameState>()->Types;
 
+}
+
+void AGameModeTutorial::OnLevelLoad() {
+    FLatentActionInfo LatentInfo;	
+    UGameplayStatics::LoadStreamLevel(this, Levels[LevelContator], true, false, LatentInfo);
+
+    LevelContator += 1;
+
+    if(Levels.Num() > LevelContator){
+        ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), Levels[LevelContator - 1]);
+        Level->OnLevelLoaded.AddDynamic(this,&AGameModeTutorial::OnLevelLoad);
+    }
 }

@@ -58,6 +58,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void EndPlay(EEndPlayReason::Type Reason) override;
+
 public:	
 
 	UFUNCTION()
@@ -68,7 +70,7 @@ public:
 
 	UFUNCTION()
 	void PuzzleOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
-
+	
 	UFUNCTION()
 	void FallenEvent();
 };
