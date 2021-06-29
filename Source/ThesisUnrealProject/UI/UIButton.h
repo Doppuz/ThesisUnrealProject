@@ -4,26 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "UIWidget.generated.h"
+#include "UIButton.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THESISUNREALPROJECT_API UUIWidget : public UUserWidget{
-	
+class THESISUNREALPROJECT_API UUIButton : public UUserWidget
+{
 	GENERATED_BODY()
 	
+
 public:
 
 	void NativeConstruct() override;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* CoinsText;
+	class UButton* ButtonPlay;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* MapText;
+	class UTextBlock* Text;
 
-	void SetCoinsText(int CoinAmount);
-	void SetMapText(float MapPercentage);
 };

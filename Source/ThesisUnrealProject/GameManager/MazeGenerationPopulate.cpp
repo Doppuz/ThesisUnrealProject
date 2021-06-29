@@ -122,7 +122,7 @@ void MazeGenerationPopulate::PopulateChest() {
             Cells[(int) Cells.Num() / (I+1) - 1]->GetActorLocation().Z + 500);
         Rotation = FRotator(0,-90 + 90 * (Cells[(int) Cells.Num() / (I+1) - 1]->LastHiddenWall - 1),0);
         AActor* Chest = World->SpawnActor<AChestController>(ChestClass,Position,Rotation);
-        Chest->SetFolderPath(TEXT("Chests"));
+        //Chest->SetFolderPath(TEXT("Chests"));
         Cells[(int) Cells.Num() / (I+1) - 1]->AddElem(Chest);
         Cells.RemoveAt((int) Cells.Num() / (I+1) - 1);
     }
@@ -135,7 +135,7 @@ void MazeGenerationPopulate::PopulateChest() {
         Rotation = FRotator(0,0,0);
         AActor* Coin = World->SpawnActor<ACoinController>(CoinClass,Position,Rotation);
         Cells[(int) Cells.Num() / (I+1) - 1]->AddElem(Coin);
-        Coin->SetFolderPath(TEXT("Coins"));
+        //Coin->SetFolderPath(TEXT("Coins"));
     }
 
     MaxPath[MaxPath.Num() - 1]->RemoveAllElem();

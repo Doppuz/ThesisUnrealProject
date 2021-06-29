@@ -29,6 +29,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	USizeBox* BoxContainer;
 
+	UPROPERTY(meta = (BindWidget))
+	class UBorder* BorderBox;
+
 
 	void SetNPCName(FString Name);
 	void SetDialogText(FString Dialog);

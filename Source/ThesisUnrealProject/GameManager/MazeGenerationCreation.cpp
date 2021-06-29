@@ -71,7 +71,7 @@ void MazeGenerationCreation::InitializeMaze() {
                 World->SpawnActor<AMazeCell>(CellClass, Origin, Rotation);
             CellActor->I = i;
             CellActor->J = j;
-            CellActor->SetFolderPath(TEXT("MazePieces"));
+            //CellActor->SetFolderPath(TEXT("MazePieces"));
             MazeGraph->AddNode(CellActor);
             Row.Add(CellActor);
         }

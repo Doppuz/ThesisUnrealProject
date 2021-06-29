@@ -36,10 +36,10 @@ void ACrateElements::OnComponentFracture(const FVector& HitPoint, const FVector&
 		
 		ACoinController* Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass,Position,Rotation);
 		
-		if(Coin != nullptr){
+		/*if(Coin != nullptr){
     		Coin->SetFolderPath(TEXT("Coins"));
 		}else
-			UE_LOG(LogTemp,Warning,TEXT("nullptr"));
+			UE_LOG(LogTemp,Warning,TEXT("nullptr"));*/
 	}
 	IAmDestructed = true;
 }

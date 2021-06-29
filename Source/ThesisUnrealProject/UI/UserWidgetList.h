@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "UserWidgetList.h"
 #include "UserWidgetList.generated.h"
 
 class UUIAnswer;

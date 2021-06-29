@@ -52,7 +52,7 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 
 				UE_LOG(LogTemp,Warning,TEXT("Data Saved"));
 
-				if(LevelToUnload != ""){
+				if(LevelToUnload != "None"){
 					FLatentActionInfo LatentInfo;	
 					UGameplayStatics::UnloadStreamLevel(this, LevelToUnload, LatentInfo, true);
 					
@@ -71,6 +71,13 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 				SaveGameInstance->Explorer = GameMode->GetBartleTypes()[Explorer];
 				SaveGameInstance->Socializer = GameMode->GetBartleTypes()[Socializer];
 				SaveGameInstance->Levels = GameMode->Levels;
+
+				UE_LOG(LogTemp,Warning,TEXT("--------"));
+				for(int i = 0; i < SaveGameInstance->Levels.Num(); i++){
+					
+					UE_LOG(LogTemp,Warning,TEXT("%s"),*SaveGameInstance->Levels[i].ToString());
+				
+				}
 
 				// Start async save process.
 				UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Checkpoint", 0);

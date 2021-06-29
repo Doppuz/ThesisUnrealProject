@@ -47,6 +47,13 @@ void AGameModeTutorial::BeginPlay() {
             }
         }
 
+    }else{
+        
+        FLatentActionInfo LatentInfo;	
+        UGameplayStatics::LoadStreamLevel(this, "FirstPuzzle", true, false, LatentInfo);
+
+        Levels.Add("FirstPuzzle");
+
     }
 
     ChangeMenuWidget(WidgetClass);

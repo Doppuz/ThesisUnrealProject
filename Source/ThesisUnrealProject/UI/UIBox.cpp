@@ -14,7 +14,7 @@ void UUIBox::NativeConstruct() {
 }
 
 void UUIBox::SetNPCName(FString Name) {    
-    NPCName->SetText(FText::FromString("Can you see your text?"));
+    NPCName->SetText(FText::FromString(Name));
 }
 
 void UUIBox::SetDialogText(FString Dialog) {

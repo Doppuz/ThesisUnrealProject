@@ -64,9 +64,11 @@ void ANPC2Doors::LeftChoiceEvent() {
 
 	FLatentActionInfo LatentInfo;
 	UGameplayStatics::LoadStreamLevel(this, TEXT("ForthChoice"), true, false, LatentInfo);
+
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->Levels.Add("ForthChoice");
 	
 	//Update Bartle's values
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	GameMode->EquallyDistributedUpdate(Type::Explorer,Type::Socializer);
 
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
