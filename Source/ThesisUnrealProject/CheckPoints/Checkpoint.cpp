@@ -7,6 +7,7 @@
 #include "SaveGameData.h"
 #include "../GameModeTutorial.h"
 #include "../Character/CharacterPawnQuad.h"
+#include "../GameInstance/BartleManagerGameInstance.h"
 
 // Sets default values
 ACheckpoint::ACheckpoint()
@@ -65,19 +66,20 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 
 				// Set data on the savegame object.
 				SaveGameInstance->PlayerLocation = MyPawn->GetActorLocation();
-				
-				SaveGameInstance->Achiever = GameMode->GetBartleTypes()[Achiever];
-				SaveGameInstance->Killer = GameMode->GetBartleTypes()[Killer];
-				SaveGameInstance->Explorer = GameMode->GetBartleTypes()[Explorer];
-				SaveGameInstance->Socializer = GameMode->GetBartleTypes()[Socializer];
-				SaveGameInstance->Levels = GameMode->Levels;
 
-				UE_LOG(LogTemp,Warning,TEXT("--------"));
-				for(int i = 0; i < SaveGameInstance->Levels.Num(); i++){
-					
-					UE_LOG(LogTemp,Warning,TEXT("%s"),*SaveGameInstance->Levels[i].ToString());
+				UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+
+				SaveGameInstance->Achiever = Bartle->GetBartleTypes()[Achiever];
+				SaveGameInstance->Killer = Bartle->GetBartleTypes()[Killer];
+				SaveGameInstance->Explorer = Bartle->GetBartleTypes()[Explorer];
+				SaveGameInstance->Socializer = Bartle->GetBartleTypes()[Socializer];
+
+				SaveGameInstance->AchieverQ = Bartle->TypesQuestionary[Achiever];
+				SaveGameInstance->KillerQ = Bartle->TypesQuestionary[Killer];
+				SaveGameInstance->ExplorerQ = Bartle->TypesQuestionary[Explorer];
+				SaveGameInstance->SocializerQ = Bartle->TypesQuestionary[Socializer];
 				
-				}
+				SaveGameInstance->Levels = GameMode->Levels;
 
 				// Start async save process.
 				UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Checkpoint", 0);

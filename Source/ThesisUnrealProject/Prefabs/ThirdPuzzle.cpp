@@ -9,6 +9,7 @@
 #include "Components/SphereComponent.h"
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
+#include "../GameInstance/BartleManagerGameInstance.h"
 
 // Sets default values
 AThirdPuzzle::AThirdPuzzle()
@@ -124,10 +125,13 @@ void AThirdPuzzle::Destruction(ADestructibleElements* Elem) {
 		
 		FLatentActionInfo LatentInfo;
 	    UGameplayStatics::LoadStreamLevel(this, TEXT("ThirdChoice"), true, false, LatentInfo);
+		
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		GameMode->Levels.Add("ThirdChoice");
 
 		//Update Bartle's values
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);
+		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);
 	
 	}
 
@@ -152,7 +156,8 @@ void AThirdPuzzle::CoinCollected() {
 		GameMode->Levels.Add("ThirdChoice");
 
 		//Update Bartle's values
-		GameMode->EquallyDistributedUpdate(Type::Achiever,Type::Explorer);
+		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->EquallyDistributedUpdate(Type::Achiever,Type::Explorer);
 	
 	}
 

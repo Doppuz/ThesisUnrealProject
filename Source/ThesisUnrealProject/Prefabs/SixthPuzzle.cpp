@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SpotLightComponent.h"
 #include "../GameModeTutorial.h"
+#include "../GameInstance/BartleManagerGameInstance.h"
 
 // Sets default values
 ASixthPuzzle::ASixthPuzzle()
@@ -108,8 +109,8 @@ void ASixthPuzzle::OnOverlapStart(UPrimitiveComponent * HitComponent, AActor * O
 				Door02->bOpenDoor = true;
 		
 				//Update Bartle's values
-				AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-				GameMode->DistributedUpdate(Type::Explorer,Type::Killer);
+				UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+				Bartle->DistributedUpdate(Type::Explorer,Type::Killer);
 		
 			}
 		}
@@ -154,7 +155,7 @@ void ASixthPuzzle::FallenEvent() {
 	Door01->bOpenDoor = true;
 	
 	//Update Bartle's values
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->DistributedUpdate(Type::Killer,Type::Explorer);
+	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->DistributedUpdate(Type::Killer,Type::Explorer);
 
 }

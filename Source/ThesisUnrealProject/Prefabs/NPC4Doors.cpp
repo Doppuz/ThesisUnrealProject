@@ -8,6 +8,8 @@
 #include "../Character/PawnInteractiveMove.h"
 #include "Components/BoxComponent.h"
 #include "../GameModeTutorial.h"
+#include "Kismet/GameplayStatics.h"
+#include "../GameInstance/BartleManagerGameInstance.h"
 
 // Sets default values
 ANPC4Doors::ANPC4Doors()
@@ -73,8 +75,8 @@ void ANPC4Doors::LeftChoiceEvent() {
 	Cast<ADoor>(Door2->GetChildActor())->bOpenDoor = true;	
 	
 	//Update Bartle's values
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->EquallyDistributedUpdate(Type::Achiever,Type::Killer);
+	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->EquallyDistributedUpdate(Type::Achiever,Type::Killer);
 	
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 1;
@@ -87,8 +89,8 @@ void ANPC4Doors::RightChoiceEvent() {
 	Cast<ADoor>(Door4->GetChildActor())->bOpenDoor = true;
 
 	//Update Bartle's values
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->EquallyDistributedUpdate(Type::Killer,Type::Achiever);
+	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->EquallyDistributedUpdate(Type::Killer,Type::Achiever);
 	
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 2;

@@ -37,17 +37,6 @@ public:
 	int GetCoins() const;
 	void IncreaseCoins();
 
-// --- Bartle types ----
-
-	void EquallyDistributedUpdate(Type IncreasedType,float IncreasedValue,Type DecreasedType,float DecreasedValue);
-
-	void EquallyDistributedUpdate(Type IncreasedType, Type DecreasedType);
-
-	void DistributedUpdate(Type IncreasedType, Type DecreasedType);
-
-	TMap<Type,float> GetBartleTypes();
-
-	float IncreaseValue;
 
 // ---------- Level loaded ------------
 

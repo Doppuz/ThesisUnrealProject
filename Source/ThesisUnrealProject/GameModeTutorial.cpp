@@ -12,12 +12,12 @@
 #include "CheckPoints/SaveGameData.h"
 #include "CustomGameState.h"
 #include "Engine/LevelStreaming.h"
+#include "GameInstance/BartleManagerGameInstance.h"
 
 AGameModeTutorial::AGameModeTutorial() {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-    IncreaseValue = 50.f / 6.f;
 }
 
 void AGameModeTutorial::BeginPlay() {
@@ -26,13 +26,22 @@ void AGameModeTutorial::BeginPlay() {
     if (USaveGameData* LoadedGame = Cast<USaveGameData>(UGameplayStatics::LoadGameFromSlot("Checkpoint", 0))){
         
         // The operation was successful, so LoadedGame now contains the data we saved earlier.
-        UGameplayStatics::GetPlayerPawn(GetWorld(),0)->SetActorLocation(LoadedGame->PlayerLocation);
+        // Load the position only if I don't come from the main menu.
+        if(LoadedGame->PlayerLocation != FVector(0.f,0.f,900000.22f))
+            UGameplayStatics::GetPlayerPawn(GetWorld(),0)->SetActorLocation(LoadedGame->PlayerLocation);
+
+        UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
         //Load the bartle's type data.
-        GetGameState<ACustomGameState>()->Types[Type::Achiever] = LoadedGame->Achiever;
-        GetGameState<ACustomGameState>()->Types[Type::Explorer] = LoadedGame->Explorer;
-        GetGameState<ACustomGameState>()->Types[Type::Killer] = LoadedGame->Killer;
-        GetGameState<ACustomGameState>()->Types[Type::Socializer] = LoadedGame->Socializer;
+        Bartle->Types[Type::Achiever] = LoadedGame->Achiever;
+        Bartle->Types[Type::Explorer] = LoadedGame->Explorer;
+        Bartle->Types[Type::Killer] = LoadedGame->Killer;
+        Bartle->Types[Type::Socializer] = LoadedGame->Socializer;
+
+        Bartle->TypesQuestionary[Type::Achiever] = LoadedGame->AchieverQ;
+        Bartle->TypesQuestionary[Type::Explorer] = LoadedGame->ExplorerQ;
+        Bartle->TypesQuestionary[Type::Killer] = LoadedGame->KillerQ;
+        Bartle->TypesQuestionary[Type::Socializer] = LoadedGame->SocializerQ;
 
         //Load levels
         Levels = LoadedGame->Levels;
@@ -42,8 +51,8 @@ void AGameModeTutorial::BeginPlay() {
             UGameplayStatics::LoadStreamLevel(this, Levels[0], true, false, LatentInfo);
             
             if(Levels.Num() > LevelContator){
-            ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), Levels[0]);
-            Level->OnLevelLoaded.AddDynamic(this,&AGameModeTutorial::OnLevelLoad);
+                ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), Levels[0]);
+                Level->OnLevelLoaded.AddDynamic(this,&AGameModeTutorial::OnLevelLoad);
             }
         }
 
@@ -89,92 +98,6 @@ int AGameModeTutorial::GetCoins() const{
 
 void AGameModeTutorial::IncreaseCoins() {
     GetGameState<ACustomGameState>()->CoinNumber += 1;
-}
-
-//Change these value in an equally distributed way. (-1 means that I don't want to touch that value).
-void AGameModeTutorial::EquallyDistributedUpdate(Type IncreasedType,float IncreasedValue,Type DecreasedType,float DecreasedValue) {
-    
-    TMap<Type,float>* Map = &GetGameState<ACustomGameState>()->Types;
-
-    if(IncreasedType != -1)
-        (*Map)[IncreasedType] += IncreasedValue;
-
-    if(DecreasedType != -1)
-        (*Map)[DecreasedType] -= DecreasedValue;
-
-
-    UE_LOG(LogTemp,Warning,TEXT(""));
-    UE_LOG(LogTemp,Warning,TEXT("-------------"));
-
-    UE_LOG(LogTemp,Warning,TEXT(" Achiever: %f"), (*Map)[Type::Achiever]);
-    UE_LOG(LogTemp,Warning,TEXT(" Killer: %f"), (*Map)[Type::Killer]);
-    UE_LOG(LogTemp,Warning,TEXT(" Explorer: %f"), (*Map)[Type::Explorer]);
-    UE_LOG(LogTemp,Warning,TEXT(" Socializer: %f"), (*Map)[Type::Socializer]);
-}
-
-void AGameModeTutorial::EquallyDistributedUpdate(Type IncreasedType, Type DecreasedType) {
-    TMap<Type,float>* Map = &GetGameState<ACustomGameState>()->Types;
-
-    if(IncreasedType != -1)
-        (*Map)[IncreasedType] += IncreaseValue;
-
-    if(DecreasedType != -1)
-        (*Map)[DecreasedType] -= IncreaseValue;
-
-
-    UE_LOG(LogTemp,Warning,TEXT(""));
-    UE_LOG(LogTemp,Warning,TEXT("-------------"));
-
-    UE_LOG(LogTemp,Warning,TEXT(" Achiever: %f"), (*Map)[Type::Achiever]);
-    UE_LOG(LogTemp,Warning,TEXT(" Killer: %f"), (*Map)[Type::Killer]);
-    UE_LOG(LogTemp,Warning,TEXT(" Explorer: %f"), (*Map)[Type::Explorer]);
-    UE_LOG(LogTemp,Warning,TEXT(" Socializer: %f"), (*Map)[Type::Socializer]);
-}
-
-void AGameModeTutorial::DistributedUpdate(Type IncreasedType, Type DecreasedType) {
-    
-    TMap<Type,float>* Map = &GetGameState<ACustomGameState>()->Types;
-
-    /*if((*Map)[IncreasedType] < (*Map)[DecreasedType]){
-    
-        if(IncreasedType != -1)
-            (*Map)[IncreasedType] += (IncreaseValue + IncreaseValue / 2);
-
-        if(DecreasedType != -1)
-            (*Map)[DecreasedType] -= IncreaseValue / 2 ;
-
-    }else if ((*Map)[IncreasedType] > (*Map)[DecreasedType]){
-        
-        if(IncreasedType != -1)
-            (*Map)[IncreasedType] += IncreaseValue / 2;
-
-        if(DecreasedType != -1)
-            (*Map)[DecreasedType] -= (IncreaseValue + IncreaseValue / 2);
-
-    }else{
-        EquallyDistributedUpdate(IncreasedType, DecreasedType);
-        return;
-    }*/
-
-    if(IncreasedType != -1)
-        (*Map)[IncreasedType] += IncreaseValue;
-
-    if(DecreasedType != -1)
-        (*Map)[DecreasedType] -= IncreaseValue;
-
-    UE_LOG(LogTemp,Warning,TEXT(""));
-    UE_LOG(LogTemp,Warning,TEXT("-------------"));
-
-    UE_LOG(LogTemp,Warning,TEXT(" Achiever: %f"), (*Map)[Type::Achiever]);
-    UE_LOG(LogTemp,Warning,TEXT(" Killer: %f"), (*Map)[Type::Killer]);
-    UE_LOG(LogTemp,Warning,TEXT(" Explorer: %f"), (*Map)[Type::Explorer]);
-    UE_LOG(LogTemp,Warning,TEXT(" Socializer: %f"), (*Map)[Type::Socializer]);
-}
-
-TMap<Type,float> AGameModeTutorial::GetBartleTypes() {
-    
-    return GetGameState<ACustomGameState>()->Types;
-
 }
 
 void AGameModeTutorial::OnLevelLoad() {

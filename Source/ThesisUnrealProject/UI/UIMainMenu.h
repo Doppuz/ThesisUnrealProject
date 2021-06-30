@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "../GameInstance/BartleManagerGameInstance.h"
 #include "UIMainMenu.generated.h"
 
 class UUIButton;
@@ -42,12 +43,26 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class USizeBox* PopUp;
 
+	//Set the text in the dialog box
 	TMap<int,TArray<FString>> MapDialogText;
+
+	//Store the choice used for updating the Bartle Types.
+	TMap<int,TArray<Type>> AnswerChoice;
+	
+	int DialogTextContator = -1;
+
+	void DialogInteraction(int , int );
 
 	UFUNCTION()
 	void OnButtonPlayClicked();
 	
 	UFUNCTION()
 	void OnButtonQuitClicked();
+
+	UFUNCTION()
+	void Answer1Clicked();
 	
+	UFUNCTION()
+	void Answer2Clicked();
+
 };

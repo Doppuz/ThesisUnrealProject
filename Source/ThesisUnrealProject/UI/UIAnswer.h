@@ -24,6 +24,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* AnswerButton;
 
+	UPROPERTY(meta = (BindWidget))
+	class USizeBox* Box;
+
 	void SetAnswerText(FString);
 
 	void ViewAnswerBox();

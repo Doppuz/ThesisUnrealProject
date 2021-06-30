@@ -33,6 +33,18 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	float Socializer;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float AchieverQ;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float KillerQ;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float ExplorerQ;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float SocializerQ;
 	
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FName> Levels;

@@ -10,6 +10,7 @@
 #include "../GameModeTutorial.h"
 #include "../Elements/ActorSpawner.h"
 #include "Kismet/GameplayStatics.h"
+#include "../GameInstance/BartleManagerGameInstance.h"
 
 // Sets default values
 ASecondPuzzle::ASecondPuzzle()
@@ -126,8 +127,8 @@ void ASecondPuzzle::LeftChoiceEvent() {
 	Cast<ADoor>(Door2->GetChildActor())->bOpenDoor = true;	
 
 	//Update Bartle's values
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->EquallyDistributedUpdate(Type::Killer,Type::Socializer);
+	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->EquallyDistributedUpdate(Type::Killer,Type::Socializer);
 	
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 2;
@@ -139,8 +140,8 @@ void ASecondPuzzle::RightChoiceEvent() {
 	Cast<ADoor>(Door4->GetChildActor())->bOpenDoor = true;
 
 	//Update Bartle's values
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->EquallyDistributedUpdate(Type::Socializer,Type::Killer);
+	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->EquallyDistributedUpdate(Type::Socializer,Type::Killer);
 	
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 2;

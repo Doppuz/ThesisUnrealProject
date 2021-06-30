@@ -8,6 +8,8 @@
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "../GameModeTutorial.h"
+#include "../GameInstance/BartleManagerGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AFifthPuzzle::AFifthPuzzle()
@@ -110,8 +112,8 @@ void AFifthPuzzle::Destruction(ADestructibleElements* Elem) {
 		Door03->bOpenDoor = true;
 
 		//Update Bartle's values
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->DistributedUpdate(Type::Explorer,Type::Achiever);
+		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->DistributedUpdate(Type::Explorer,Type::Achiever);
 
 	}
 
@@ -128,8 +130,8 @@ void AFifthPuzzle::CoinCollected() {
 		Door02->bOpenDoor = true;
 	
 		//Update Bartle's values
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->DistributedUpdate(Type::Achiever,Type::Explorer);
+		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->DistributedUpdate(Type::Achiever,Type::Explorer);
 
 	}
 
