@@ -8,13 +8,15 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/LevelStreaming.h"
 #include "Components/SpotLightComponent.h"
+#include "../GameModeTutorial.h"
+#include "../UI/UIEndScreen.h"
+#include "../GameInstance/BartleManagerGameInstance.h"
 
 // Sets default values
 ATriggerEndGame::ATriggerEndGame(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	LightOn = true;
 }
 
 
@@ -32,8 +34,21 @@ void ATriggerEndGame::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Oth
 		
 		if(MyPawn->GetController()->IsA(APlayerController::StaticClass())){
 
+			AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+
     		UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(FInputModeUIOnly());
-			//Cast<APlayerController>(MyPawn->GetController())->SetPause(true);
+			UGameplayStatics::GetPlayerController(GetWorld(),0)->SetShowMouseCursor(true);
+			Cast<APlayerController>(MyPawn->GetController())->SetPause(true);
+
+			GameMode->ChangeMenuWidget(UIEndGame);
+
+			UUIEndScreen* EndScreen = Cast<UUIEndScreen>(GameMode->GetCurrentWidgetUI());
+			
+			UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+			Bartle->DistributedUpdate(Type::Explorer,Type::Killer);
+
+			EndScreen->SetTestValue(Bartle->Types[Type::Achiever],Bartle->Types[Type::Explorer],Bartle->Types[Type::Killer],Bartle->Types[Type::Socializer]);
+			EndScreen->SetQuestionaryValue(Bartle->TypesQuestionary[Type::Achiever],Bartle->TypesQuestionary[Type::Explorer],Bartle->TypesQuestionary[Type::Killer],Bartle->TypesQuestionary[Type::Socializer]);
 
 		}
 	}

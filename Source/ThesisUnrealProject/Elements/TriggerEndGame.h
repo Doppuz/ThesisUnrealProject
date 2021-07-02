@@ -18,10 +18,6 @@ public:
 	// Sets default values for this actor's properties
 	ATriggerEndGame();
 
-	UPROPERTY(EditAnywhere,  Category = "SpawnAlly")
-	TSubclassOf<AAICharacterPawnQuad> AllyClass;
-
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -29,8 +25,8 @@ protected:
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 
 	//check if the trigger switch on or of fthe light.
-	UPROPERTY(EditAnywhere, Category = "Light")
-	bool LightOn;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> UIEndGame;
 
 public:	
 	// Called every frame

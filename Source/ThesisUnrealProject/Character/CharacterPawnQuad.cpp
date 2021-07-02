@@ -216,7 +216,8 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 		
 		}else{
 			InteractiveActor = nullptr;
-			DialogWidget->HidePopUp();
+			if(DialogWidget != nullptr)
+				DialogWidget->HidePopUp();
 		}
 	}else{
 		/*
