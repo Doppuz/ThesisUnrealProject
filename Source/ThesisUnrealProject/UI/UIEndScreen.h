@@ -64,4 +64,5 @@ public:
 	
 	UFUNCTION()
 	void OnQuitClicked();
+
 };

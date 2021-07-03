@@ -108,3 +108,32 @@ void UBartleManagerGameInstance::ResetValue() {
     Types[Type::Socializer] = 50;
     Types[Type::Killer] = 50;
 }
+
+void UBartleManagerGameInstance::SaveFile(FString) {
+    FString file = FPaths::ProjectDir();
+    file.Append(TEXT("Result.txt"));
+
+    // We will use this FileManager to deal with the file.
+    IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
+
+    FString StringToWrite = "Achiever: "+FString::SanitizeFloat(Types[Type::Achiever]) + 
+                        " Explorer: "+FString::SanitizeFloat(Types[Type::Explorer])+
+                        " Killer: "+FString::SanitizeFloat(Types[Type::Killer])+
+                        " Socializer: "+FString::SanitizeFloat(Types[Type::Socializer])+
+                        " ----------- AchieverQ: "+FString::SanitizeFloat(TypesQuestionary[Type::Achiever])+
+                        " ExplorerQ: "+FString::SanitizeFloat(TypesQuestionary[Type::Explorer])+
+                        " KillerQ: "+FString::SanitizeFloat(TypesQuestionary[Type::Killer])+
+                        " SocializerQ: "+FString::SanitizeFloat(TypesQuestionary[Type::Socializer])+" \n";
+
+        // We use the LoadFileToString to load the file into
+        if(FFileHelper::SaveStringToFile(StringToWrite,*file, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), EFileWrite::FILEWRITE_Append)){
+            UE_LOG(LogTemp, Warning, TEXT("AA \"%s\""),*file);
+        }else{
+            UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Failed to write FString to file."));
+        }
+
+}
+
+void UBartleManagerGameInstance::LoadFile(FString) {
+    
+}

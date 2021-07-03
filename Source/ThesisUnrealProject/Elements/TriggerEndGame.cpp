@@ -46,9 +46,24 @@ void ATriggerEndGame::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Oth
 			
 			UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 			Bartle->DistributedUpdate(Type::Explorer,Type::Killer);
+			Bartle->SaveFile("");
 
 			EndScreen->SetTestValue(Bartle->Types[Type::Achiever],Bartle->Types[Type::Explorer],Bartle->Types[Type::Killer],Bartle->Types[Type::Socializer]);
 			EndScreen->SetQuestionaryValue(Bartle->TypesQuestionary[Type::Achiever],Bartle->TypesQuestionary[Type::Explorer],Bartle->TypesQuestionary[Type::Killer],Bartle->TypesQuestionary[Type::Socializer]);
+
+			FString file = FPaths::ProjectSavedDir();
+    		file.Append(TEXT("SaveGames/Checkpoint.sav"));
+
+    		// We will use this FileManager to deal with the file.
+    		IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
+
+			bool Result = FileManager.DeleteFile(*file);
+
+			if(Result){
+				UE_LOG(LogTemp,Warning,TEXT("true %s"),*file);
+			}else {
+				UE_LOG(LogTemp,Warning,TEXT("%s"),*file);
+			}
 
 		}
 	}

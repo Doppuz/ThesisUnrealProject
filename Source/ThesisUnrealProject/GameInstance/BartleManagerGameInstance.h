@@ -19,7 +19,7 @@ public:
 
 	UBartleManagerGameInstance();
 
-	// --- Bartle types ----
+// --- Bartle types ----
 	
 	TMap<Type,float> Types;
 	
@@ -36,5 +36,10 @@ public:
 	void ResetValue();
 
 	float IncreaseValue;
+
+// --- Save ---
+
+	void SaveFile(FString);
+	void LoadFile(FString);
 
 };
