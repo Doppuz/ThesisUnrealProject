@@ -1,7 +1,5 @@
-Achiever: 50.0 Explorer: 41.666668 Killer: 41.666668 Socializer: 66.666664 ----------- AchieverQ: 40.000004 ExplorerQ: 59.999996 KillerQ: 26.666672 SocializerQ: 73.333336 
-Achiever: 50.0 Explorer: 41.666668 Killer: 41.666668 Socializer: 66.666664 ----------- AchieverQ: 40.000004 ExplorerQ: 59.999996 KillerQ: 26.666672 SocializerQ: 73.333336 
-Achiever: 50.0 Explorer: 41.666668 Killer: 41.666668 Socializer: 66.666664 ----------- AchieverQ: 40.000004 ExplorerQ: 59.999996 KillerQ: 26.666672 SocializerQ: 73.333336 
-Achiever: 50.0 Explorer: 41.666668 Killer: 41.666668 Socializer: 66.666664 ----------- AchieverQ: 40.000004 ExplorerQ: 59.999996 KillerQ: 26.666672 SocializerQ: 73.333336 
-Achiever: 50.0 Explorer: 41.666668 Killer: 41.666668 Socializer: 66.666664 ----------- AchieverQ: 40.000004 ExplorerQ: 59.999996 KillerQ: 26.666672 SocializerQ: 73.333336 
-Achiever: 50.0 Explorer: 41.666668 Killer: 41.666668 Socializer: 66.666664 ----------- AchieverQ: 40.000004 ExplorerQ: 59.999996 KillerQ: 26.666672 SocializerQ: 73.333336 
-Achiever: 50.0 Explorer: 41.666668 Killer: 41.666668 Socializer: 66.666664 ----------- AchieverQ: 40.000004 ExplorerQ: 59.999996 KillerQ: 26.666672 SocializerQ: 73.333336 
+Achiever: 50.0 Explorer: 58.333332 Killer: 41.666668 Socializer: 50.0 ----------- AchieverQ: 50.0 ExplorerQ: 50.0 KillerQ: 50.0 SocializerQ: 50.0 
+Achiever: 50.0 Explorer: 58.333332 Killer: 41.666668 Socializer: 50.0 ----------- AchieverQ: 50.0 ExplorerQ: 50.0 KillerQ: 50.0 SocializerQ: 50.0 
+Achiever: 50.0 Explorer: 58.333332 Killer: 41.666668 Socializer: 50.0 ----------- AchieverQ: 50.0 ExplorerQ: 50.0 KillerQ: 50.0 SocializerQ: 50.0 
+Achiever: 50.0 Explorer: 58.333332 Killer: 41.666668 Socializer: 50.0 ----------- AchieverQ: 50.0 ExplorerQ: 50.0 KillerQ: 50.0 SocializerQ: 50.0 
+Achiever: 50.0 Explorer: 50.0 Killer: 50.0 Socializer: 50.0 ----------- AchieverQ: 50.0 ExplorerQ: 50.0 KillerQ: 50.0 SocializerQ: 50.0 

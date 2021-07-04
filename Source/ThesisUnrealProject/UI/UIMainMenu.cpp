@@ -15,6 +15,7 @@
 #include "../GameInstance/BartleManagerGameInstance.h"
 #include "../CheckPoints/SaveGameData.h"
 #include "GameFramework/PlayerStart.h"
+#include "../GameModeTutorial.h"
 
 void UUIMainMenu::NativeConstruct() {
     
@@ -217,6 +218,10 @@ void UUIMainMenu::DialogInteraction(int Increase, int Decrease) {
 
         }
 
+        //AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		//GameMode->ChangeMenuWidget(UIExplanation);
+
+        
         UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(FInputModeGameOnly());
         UGameplayStatics::OpenLevel(GetWorld(),"Tutorial");
 

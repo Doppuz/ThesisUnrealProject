@@ -21,6 +21,8 @@ void UUIEndScreen::NativeConstruct() {
     Quit->Text->SetText(FText::FromString("Quit"));
     Quit->ButtonPlay->OnClicked.AddDynamic(this,&UUIEndScreen::OnQuitClicked);
 
+    TextBox->SetDialogText("Thanks for playing this test. Now I ask you to take a screenshot, click on the \"Send \" button and upload the file to the page that will open. If you have any problems contact me :).");
+
 }
 
 void UUIEndScreen::SetTestValue(float AchieverValue, float ExplorerValue, float KillerValue, float SocializerValue) {

@@ -105,7 +105,6 @@ void ACharacterPawnQuad::BeginPlay(){
 	if(HealthWidget != nullptr)
 		HealthWidget->HealthBar->SetPercent(1.f);
 	
-
 	InitialRotation = CameraArmComponent->GetComponentRotation();
 	Collider->OnComponentBeginOverlap.AddDynamic(this,&ACharacterPawnQuad::OnOverlap);
 	//Collider->OnComponentHit.AddDynamic(this, &ACharacterPawnQuad::OnHit);

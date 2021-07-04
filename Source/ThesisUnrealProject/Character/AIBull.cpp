@@ -10,6 +10,11 @@
 #include "Camera/CameraComponent.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackBoardComponent.h"
+#include "Components/WidgetComponent.h"
+#include "../UI/HealthBar.h"
+#include "Components/ProgressBar.h"
+#include "../GameModeTutorial.h"
+#include "../UI/UIWidgetDialog.h"
 
 // Sets default values
 AAIBull::AAIBull()
@@ -44,6 +49,9 @@ AAIBull::AAIBull()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(CameraArmComponent);
 
+	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Widget"));
+	HealthWidgetComponent->SetupAttachment(RootComponent);
+
 	Damage = 10.f;
 	MaxHealth = 30.f;
 	CurrentHealth = MaxHealth; 
@@ -54,25 +62,17 @@ float AAIBull::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 
 	CurrentHealth -= DamageTaken;
 
+	//Update player's UI healthBar		
+	UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
+
+	if(HealthWidget != nullptr)
+		HealthWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
+
 	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);
 
 	if(CurrentHealth == 0){
 		bIAmDestroyed = true;
 		Destroy();
-			/*AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-			switch(ID){
-				case 0:
-					GameMode->bEnemyDefeated = true;
-					break;
-				case 1:
-					GameMode->CheckPuzzle2(1);
-					break;
-				case 2:
-					GameMode->CheckPuzzle2(2);
-					break;
-				default:
-					break;
-			}*/
 	}
 		
 	return DamageTaken;
@@ -87,6 +87,12 @@ void AAIBull::BeginPlay()
 	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),FVector(GetActorLocation().X,
                                                                                  GetActorLocation().Y,
                                                                                  42.f));
+
+	//SetBarHealt
+	UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
+
+	if(HealthWidget != nullptr)
+		HealthWidget->HealthBar->SetPercent(1.f);
 	
 	Collider->OnComponentHit.AddDynamic(this, &AAIBull::OnHit);
 	Mesh->OnComponentHit.AddDynamic(this, &AAIBull::OnHit);

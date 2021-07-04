@@ -42,6 +42,10 @@ public:
 
 	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	//Health Bar
+	UPROPERTY( VisibleAnywhere )
+	class UWidgetComponent* HealthWidgetComponent;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

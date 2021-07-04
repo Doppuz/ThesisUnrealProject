@@ -45,7 +45,6 @@ void ATriggerEndGame::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Oth
 			UUIEndScreen* EndScreen = Cast<UUIEndScreen>(GameMode->GetCurrentWidgetUI());
 			
 			UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-			Bartle->DistributedUpdate(Type::Explorer,Type::Killer);
 			Bartle->SaveFile("");
 
 			EndScreen->SetTestValue(Bartle->Types[Type::Achiever],Bartle->Types[Type::Explorer],Bartle->Types[Type::Killer],Bartle->Types[Type::Socializer]);

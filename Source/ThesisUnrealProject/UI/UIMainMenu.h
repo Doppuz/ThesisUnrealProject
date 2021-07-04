@@ -48,6 +48,10 @@ public:
 
 	//Store the choice used for updating the Bartle Types.
 	TMap<int,TArray<Type>> AnswerChoice;
+
+	//Change UI
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> UIExplanation;
 	
 	int DialogTextContator = -1;
 

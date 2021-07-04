@@ -109,6 +109,9 @@ void ANPC1DoorSpawnAlly::RightChoiceEvent() {
 	FLatentActionInfo LatentInfo;
 	UGameplayStatics::LoadStreamLevel(this, TEXT("SixthChoice"), true, false, LatentInfo);
 
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	GameMode->Levels.Add("SixthChoice");
+
 	//Update Bartle's values
 	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	Bartle->DistributedUpdate(Type::Killer,Type::Socializer);
