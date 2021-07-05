@@ -49,4 +49,10 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FName> Levels;
 
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float AttackSpeed;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	UStaticMesh* Hat;
+
 };

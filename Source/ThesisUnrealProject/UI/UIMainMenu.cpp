@@ -16,6 +16,7 @@
 #include "../CheckPoints/SaveGameData.h"
 #include "GameFramework/PlayerStart.h"
 #include "../GameModeTutorial.h"
+#include "../Levels/MainMenu.h"
 
 void UUIMainMenu::NativeConstruct() {
     
@@ -218,12 +219,12 @@ void UUIMainMenu::DialogInteraction(int Increase, int Decrease) {
 
         }
 
-        //AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		//GameMode->ChangeMenuWidget(UIExplanation);
+        ULevel* LevelTemp = GetWorld()->GetCurrentLevel();
+        Cast<AMainMenu>(LevelTemp->GetLevelScriptActor())->ChangeMenuWidget(UIExplanation);
 
         
-        UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(FInputModeGameOnly());
-        UGameplayStatics::OpenLevel(GetWorld(),"Tutorial");
+        //UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(FInputModeGameOnly());
+        //UGameplayStatics::OpenLevel(GetWorld(),"Tutorial");
 
     }
 

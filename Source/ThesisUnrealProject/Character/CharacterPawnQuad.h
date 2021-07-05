@@ -119,6 +119,9 @@ public:
 
 	FEndDelegate End;
 
+// Stop Character (Used to disable physics)
+	void StopCharacter(bool);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

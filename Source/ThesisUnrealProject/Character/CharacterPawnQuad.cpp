@@ -317,6 +317,10 @@ void ACharacterPawnQuad::SetMousePointer(bool Enable) {
 			PlayerController->SetInputMode(FInputModeGameOnly());*/
 }
 
+void ACharacterPawnQuad::StopCharacter(bool Value) {
+	Collider->SetSimulatePhysics(Value);
+}
+
 void ACharacterPawnQuad::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
 }

@@ -13,6 +13,7 @@
 #include "CustomGameState.h"
 #include "Engine/LevelStreaming.h"
 #include "GameInstance/BartleManagerGameInstance.h"
+#include "Character/CharacterPawnQuad.h"
 
 AGameModeTutorial::AGameModeTutorial() {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -21,6 +22,12 @@ AGameModeTutorial::AGameModeTutorial() {
 }
 
 void AGameModeTutorial::BeginPlay() {
+    
+    ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+    MyPawn->StopCharacter(false);
+
+    //if(MyPawn != nullptr)
+    //    Cast<APlayerController>(MyPawn->GetController())->SetPause(true);
 
     // Retrieve and cast the USaveGame object to UMySaveGame.
     if (USaveGameData* LoadedGame = Cast<USaveGameData>(UGameplayStatics::LoadGameFromSlot("Checkpoint", 0))){
@@ -28,7 +35,7 @@ void AGameModeTutorial::BeginPlay() {
         // The operation was successful, so LoadedGame now contains the data we saved earlier.
         // Load the position only if I don't come from the main menu.
         if(LoadedGame->PlayerLocation != FVector(0.f,0.f,900000.22f))
-            UGameplayStatics::GetPlayerPawn(GetWorld(),0)->SetActorLocation(LoadedGame->PlayerLocation);
+            MyPawn->SetActorLocation(LoadedGame->PlayerLocation);
 
         UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
@@ -45,21 +52,32 @@ void AGameModeTutorial::BeginPlay() {
 
         //Load levels
         Levels = LoadedGame->Levels;
+
+        //Character characteristics
+        if(LoadedGame->AttackSpeed != 0.f)
+            MyPawn->ProjectileTimeout = LoadedGame->AttackSpeed ;
+		MyPawn->EquipmentMesh->SetStaticMesh(LoadedGame->Hat);
   
         if(Levels.Num() != 0){
             FLatentActionInfo LatentInfo;	
             UGameplayStatics::LoadStreamLevel(this, Levels[0], true, false, LatentInfo);
             
-            if(Levels.Num() > LevelContator){
-                ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), Levels[0]);
-                Level->OnLevelLoaded.AddDynamic(this,&AGameModeTutorial::OnLevelLoad);
-            }
+            ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), Levels[0]);
+            Level->OnLevelLoaded.AddDynamic(this,&AGameModeTutorial::OnLevelLoad);
+
+            LevelContator += 1;
+
         }
 
     }else{
         
         FLatentActionInfo LatentInfo;	
         UGameplayStatics::LoadStreamLevel(this, "FirstPuzzle", true, false, LatentInfo);
+            
+        LevelContator += 1;
+
+        ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), "FirstPuzzle");
+        Level->OnLevelLoaded.AddDynamic(this,&AGameModeTutorial::OnLevelLoad);
 
         Levels.Add("FirstPuzzle");
 
@@ -101,13 +119,18 @@ void AGameModeTutorial::IncreaseCoins() {
 }
 
 void AGameModeTutorial::OnLevelLoad() {
-    FLatentActionInfo LatentInfo;	
-    UGameplayStatics::LoadStreamLevel(this, Levels[LevelContator], true, false, LatentInfo);
-
-    LevelContator += 1;
-
     if(Levels.Num() > LevelContator){
-        ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), Levels[LevelContator - 1]);
+    
+        FLatentActionInfo LatentInfo;	
+        UGameplayStatics::LoadStreamLevel(this, Levels[LevelContator], true, false, LatentInfo);
+
+        ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), Levels[LevelContator]);
         Level->OnLevelLoaded.AddDynamic(this,&AGameModeTutorial::OnLevelLoad);
+ 
+        LevelContator += 1;
+        
+    }else{
+        ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+        MyPawn->StopCharacter(true);
     }
 }

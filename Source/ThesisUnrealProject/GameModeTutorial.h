@@ -46,7 +46,7 @@ public:
 	void OnLevelLoad();
 
 	//Used when I load the level after using a Checkpoint.
-	int LevelContator = 1;
+	int LevelContator = 0;
 
 protected:
 	

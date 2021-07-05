@@ -81,6 +81,9 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 				
 				SaveGameInstance->Levels = GameMode->Levels;
 
+				SaveGameInstance->AttackSpeed = Cast<ACharacterPawnQuad>(MyPawn)->ProjectileTimeout;
+				SaveGameInstance->Hat = Cast<ACharacterPawnQuad>(MyPawn)->EquipmentMesh->GetStaticMesh();
+
 				// Start async save process.
 				UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Checkpoint", 0);
 

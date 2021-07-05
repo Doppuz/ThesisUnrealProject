@@ -51,8 +51,10 @@ APuzzleWith2Doors::APuzzleWith2Doors()
 	DestructibleGate->SetupAttachment(RootComponent);
 
 	DestrGate1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate1"));
-	DestrGate1->SetChildActorClass(APuzzleButton::StaticClass());
 	DestrGate1->SetupAttachment(DestructibleGate);
+
+	DestrGate2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate2"));
+	DestrGate2->SetupAttachment(DestructibleGate);
 }
 
 // Called when the game starts or when spawned
@@ -117,6 +119,7 @@ void APuzzleWith2Doors::CheckPuzzleActor() {
 
 	//Change the healt of the gate so that it will never break.
 	Cast<ADestructibleElements>(DestrGate1->GetChildActor())->Health = -1;
+	Cast<ADestructibleElements>(DestrGate2->GetChildActor())->Health = -1;
 
 	//Update Bartle's values
 	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));

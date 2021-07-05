@@ -48,6 +48,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UChildActorComponent* DestrGate1;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	UChildActorComponent* DestrGate2;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
