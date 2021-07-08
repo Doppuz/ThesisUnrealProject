@@ -10,6 +10,7 @@
 #include "UIButton.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/Border.h"
 
 void UUIExplanation::NativeConstruct() {
     
@@ -18,8 +19,9 @@ void UUIExplanation::NativeConstruct() {
     Start->Text->SetText(FText::FromString("Start"));
     Start->ButtonPlay->OnClicked.AddDynamic(this,&UUIExplanation::OnSendClicked);
 
-    TextBox->SetDialogText("Thanks for playing this test. Now I ask you to take a screenshot, click on the \"Send \" button and upload the file to the page that will open. If you have any problems contact me :).");
-
+    TextBox->SetDialogText("Let's now jump into the test. First thing you need to know is that you can choose how to play the levels. There will be alway two different choices and you can choose what you prefer. Are you ready?");
+    TextBox->BorderBox->SetBrushColor(FLinearColor(0.072917f,0.072917f,0.072917f,0.8f));
+    TextBox->SetNPCName("");
 }
 
 void UUIExplanation::OnSendClicked() {

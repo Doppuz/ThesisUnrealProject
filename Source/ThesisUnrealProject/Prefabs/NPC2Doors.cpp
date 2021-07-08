@@ -24,12 +24,10 @@ ANPC2Doors::ANPC2Doors()
 	Doors->SetupAttachment(RootComponent);
 
 	Door1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door1"));
-	Door1->SetChildActorClass(ADoor::StaticClass());
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door2"));
-	Door2->SetChildActorClass(ADoor::StaticClass());
 	Door2->SetupAttachment(Doors);
 	Door2->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
@@ -37,7 +35,6 @@ ANPC2Doors::ANPC2Doors()
 	NPCs->SetupAttachment(RootComponent);
 
 	NPC1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC1"));
-	NPC1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	NPC1->SetupAttachment(NPCs);
 	
 }
@@ -67,7 +64,9 @@ void ANPC2Doors::LeftChoiceEvent() {
 	UGameplayStatics::LoadStreamLevel(this, TEXT("ForthChoice"), true, false, LatentInfo);
 
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->Levels.Add("ForthChoice");
+
+	if(!GameMode->Levels.Contains("ForthChoice"))
+		GameMode->Levels.Add("ForthChoice");
 	
 	//Update Bartle's values
 	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));

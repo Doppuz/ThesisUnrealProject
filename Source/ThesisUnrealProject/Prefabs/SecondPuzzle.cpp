@@ -25,27 +25,22 @@ ASecondPuzzle::ASecondPuzzle()
 	Doors->SetupAttachment(RootComponent);
 
 	Door1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door1"));
-	Door1->SetChildActorClass(ADoor::StaticClass());
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door2"));
-	Door2->SetChildActorClass(ADoor::StaticClass());
 	Door2->SetupAttachment(Doors);
 	Door2->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door3"));
-	Door3->SetChildActorClass(ADoor::StaticClass());
 	Door3->SetupAttachment(Doors);
 	Door3->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door4 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door4"));
-	Door4->SetChildActorClass(ADoor::StaticClass());
 	Door4->SetupAttachment(Doors);
 	Door4->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door5 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door5"));
-	Door5->SetChildActorClass(ADoor::StaticClass());
 	Door5->SetupAttachment(Doors);
 	Door5->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
@@ -53,34 +48,27 @@ ASecondPuzzle::ASecondPuzzle()
 	Enemies->SetupAttachment(RootComponent);
 
 	SpawnEnemy1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Enemy1"));
-	SpawnEnemy1->SetChildActorClass(ACharacterPawnQuad::StaticClass());
 	SpawnEnemy1->SetupAttachment(Enemies);
 
 	SpawnEnemy2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Enemy2"));
-	SpawnEnemy2->SetChildActorClass(ACharacterPawnQuad::StaticClass());
 	SpawnEnemy2->SetupAttachment(Enemies);
 
 	SpawnEnemy3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Enemy3"));
-	SpawnEnemy3->SetChildActorClass(ACharacterPawnQuad::StaticClass());
 	SpawnEnemy3->SetupAttachment(Enemies);
 
 	NPCs = CreateDefaultSubobject<USceneComponent>(TEXT("NPCs"));
 	NPCs->SetupAttachment(RootComponent);
 
 	NPC1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC1"));
-	NPC1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	NPC1->SetupAttachment(NPCs);
 	
 	SpawnNPC2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC2"));
-	SpawnNPC2->SetChildActorClass(APawnInteractiveMove::StaticClass());
 	SpawnNPC2->SetupAttachment(NPCs);
 
 	SpawnNPC3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC3"));
-	SpawnNPC3->SetChildActorClass(APawnInteractiveMove::StaticClass());
 	SpawnNPC3->SetupAttachment(NPCs);
 
 	SpawnNPC4 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC4"));
-	SpawnNPC4->SetChildActorClass(APawnInteractiveMove::StaticClass());
 	SpawnNPC4->SetupAttachment(NPCs);
 
 	DeathEnemies = 0;

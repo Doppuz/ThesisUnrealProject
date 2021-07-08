@@ -23,7 +23,6 @@ ANPC1Door2::ANPC1Door2()
 	Doors->SetupAttachment(RootComponent);
 
 	Door1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door1"));
-	Door1->SetChildActorClass(ADoor::StaticClass());
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
@@ -31,7 +30,6 @@ ANPC1Door2::ANPC1Door2()
 	NPCs->SetupAttachment(RootComponent);
 
 	NPC1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC1"));
-	NPC1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	NPC1->SetupAttachment(NPCs);
 
 	bLeftChoice = false;

@@ -25,17 +25,14 @@ ASixthPuzzle::ASixthPuzzle()
 	Doors->SetupAttachment(RootComponent);
 
 	Door1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door1"));
-	Door1->SetChildActorClass(ADoor::StaticClass());
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door2"));
-	Door2->SetChildActorClass(ADoor::StaticClass());
 	Door2->SetupAttachment(Doors);
 	Door2->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door3"));
-	Door3->SetChildActorClass(ADoor::StaticClass());
 	Door3->SetupAttachment(Doors);
 	Door3->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 	
@@ -43,14 +40,12 @@ ASixthPuzzle::ASixthPuzzle()
 	PuzzleButtons->SetupAttachment(RootComponent);
 
 	Puzzle1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Puzzle1"));
-	Puzzle1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	Puzzle1->SetupAttachment(PuzzleButtons);
 
 	FallenPlatforms = CreateDefaultSubobject<USceneComponent>(TEXT("FallenPlatforms"));
 	FallenPlatforms->SetupAttachment(RootComponent);
 
 	FallenPlatform1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("FallenPlatform1"));
-	FallenPlatform1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	FallenPlatform1->SetupAttachment(FallenPlatforms);
 
 	Triggers = CreateDefaultSubobject<USceneComponent>(TEXT("Triggers"));

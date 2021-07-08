@@ -8,6 +8,10 @@
 #include "../GameModeTutorial.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "../GameInstance/BartleManagerGameInstance.h"
+#include "../UI/HealthBar.h"
+#include "../UI/UIWidgetDialog.h"
+#include "Components/WidgetComponent.h"
+ #include "Components/ProgressBar.h"
 
 // Sets default values
 ACheckpoint::ACheckpoint()
@@ -65,7 +69,7 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 				AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 
 				// Set data on the savegame object.
-				SaveGameInstance->PlayerLocation = MyPawn->GetActorLocation();
+				SaveGameInstance->PlayerLocation = MyPawn->GetActorLocation() - MyPawn->GetActorForwardVector() * 10.f;
 
 				UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
@@ -88,6 +92,9 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 				UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Checkpoint", 0);
 
 				Cast<ACharacterPawnQuad>(MyPawn)->CurrentHealth = Cast<ACharacterPawnQuad>(MyPawn)->MaxHealth;
+				
+				UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+				DialogWidget->HealthBar->SetPercent(1.f);
 
 				Trigger->SetCollisionProfileName("NoCollision");
 

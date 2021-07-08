@@ -20,7 +20,6 @@ ARumbleArenaDoor::ARumbleArenaDoor()
 	Doors->SetupAttachment(RootComponent);
 
 	Door1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door1"));
-	Door1->SetChildActorClass(ADoor::StaticClass());
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
@@ -28,7 +27,6 @@ ARumbleArenaDoor::ARumbleArenaDoor()
 	RumbleArenas->SetupAttachment(RootComponent);
 
 	RumbleArena1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("RumbleArena1"));
-	RumbleArena1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	RumbleArena1->SetupAttachment(RumbleArenas);
 	
 	PreChoices = CreateDefaultSubobject<USceneComponent>(TEXT("PreChoices"));

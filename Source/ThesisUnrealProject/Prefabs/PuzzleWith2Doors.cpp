@@ -23,12 +23,10 @@ APuzzleWith2Doors::APuzzleWith2Doors()
 	Doors->SetupAttachment(RootComponent);
 
 	Door1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door1"));
-	Door1->SetChildActorClass(ADoor::StaticClass());
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door2"));
-	Door2->SetChildActorClass(ADoor::StaticClass());
 	Door2->SetupAttachment(Doors);
 	Door2->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
@@ -36,15 +34,12 @@ APuzzleWith2Doors::APuzzleWith2Doors()
 	PuzzleButtons->SetupAttachment(RootComponent);
 
 	Puzzle1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Puzzle1"));
-	Puzzle1->SetChildActorClass(APuzzleButton::StaticClass());
 	Puzzle1->SetupAttachment(PuzzleButtons);
 
 	Puzzle2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Puzzle2"));
-	Puzzle2->SetChildActorClass(APuzzleButton::StaticClass());
 	Puzzle2->SetupAttachment(PuzzleButtons);
 
 	Puzzle3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Puzzle3"));
-	Puzzle3->SetChildActorClass(APuzzleButton::StaticClass());
 	Puzzle3->SetupAttachment(PuzzleButtons);
 
 	DestructibleGate = CreateDefaultSubobject<USceneComponent>(TEXT("DestrGates"));
@@ -118,8 +113,8 @@ void APuzzleWith2Doors::CheckPuzzleActor() {
 	}
 
 	//Change the healt of the gate so that it will never break.
-	Cast<ADestructibleElements>(DestrGate1->GetChildActor())->Health = -1;
-	Cast<ADestructibleElements>(DestrGate2->GetChildActor())->Health = -1;
+	Cast<ADestructibleElements>(DestrGate1->GetChildActor())->DamageValue = 0;
+	Cast<ADestructibleElements>(DestrGate2->GetChildActor())->DamageValue = 0;
 
 	//Update Bartle's values
 	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));

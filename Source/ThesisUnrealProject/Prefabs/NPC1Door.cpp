@@ -23,7 +23,6 @@ ANPC1Door::ANPC1Door()
 	Doors->SetupAttachment(RootComponent);
 
 	Door1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door1"));
-	Door1->SetChildActorClass(ADoor::StaticClass());
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
@@ -31,7 +30,6 @@ ANPC1Door::ANPC1Door()
 	NPCs->SetupAttachment(RootComponent);
 
 	NPC1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC1"));
-	NPC1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	NPC1->SetupAttachment(NPCs);
 
 	bLeftChoice = false;
@@ -115,7 +113,9 @@ void ANPC1Door::EndChoiceEvent(APawnInteractiveClass* SpokenActor) {
     UGameplayStatics::LoadStreamLevel(this, TEXT("SecondChoice"), true, false, LatentInfo);
 
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->Levels.Add("SecondChoice");
+	
+	if(!GameMode->Levels.Contains("SecondChoice"))
+		GameMode->Levels.Add("SecondChoice");
 
 	ADoor* Door = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
 	Door->bOpenDoor = true;

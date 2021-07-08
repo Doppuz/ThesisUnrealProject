@@ -24,7 +24,6 @@ AForthPuzzle::AForthPuzzle()
 	Doors->SetupAttachment(RootComponent);
 
 	Door1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door1"));
-	Door1->SetChildActorClass(ADoor::StaticClass());
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
@@ -136,7 +135,8 @@ void AForthPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 					UGameplayStatics::LoadStreamLevel(this, TEXT("FifthChoice"), true, false, LatentInfo);
 
 					AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-					GameMode->Levels.Add("FifthChoice");
+					if(!GameMode->Levels.Contains("FifthChoice"))
+						GameMode->Levels.Add("FifthChoice");
 
 					//Update Bartle's values
 					UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));

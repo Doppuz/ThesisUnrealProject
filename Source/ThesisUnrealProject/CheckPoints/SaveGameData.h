@@ -54,5 +54,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	UStaticMesh* Hat;
-
 };

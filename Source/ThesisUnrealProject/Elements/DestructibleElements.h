@@ -42,6 +42,8 @@ public:
 
 	bool bIAmDestroyed;
 
+	float DamageValue;
+
 	//Used this because i don't hit the destructible mesh but a box collider.
 	void HitMesh(const FHitResult& Hit);
 

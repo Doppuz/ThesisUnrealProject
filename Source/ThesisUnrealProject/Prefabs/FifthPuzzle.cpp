@@ -24,17 +24,14 @@ AFifthPuzzle::AFifthPuzzle()
 	Doors->SetupAttachment(RootComponent);
 
 	Door1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door1"));
-	Door1->SetChildActorClass(ADoor::StaticClass());
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door2"));
-	Door2->SetChildActorClass(ADoor::StaticClass());
 	Door2->SetupAttachment(Doors);
 	Door2->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door3"));
-	Door3->SetChildActorClass(ADoor::StaticClass());
 	Door3->SetupAttachment(Doors);
 	Door3->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 

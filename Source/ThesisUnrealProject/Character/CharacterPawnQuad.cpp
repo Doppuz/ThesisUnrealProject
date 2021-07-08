@@ -100,10 +100,7 @@ void ACharacterPawnQuad::BeginPlay(){
 
 	//SetBarHealt
 
-	UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
-
-	if(HealthWidget != nullptr)
-		HealthWidget->HealthBar->SetPercent(1.f);
+	SetHealthPercentage(1.f);
 	
 	InitialRotation = CameraArmComponent->GetComponentRotation();
 	Collider->OnComponentBeginOverlap.AddDynamic(this,&ACharacterPawnQuad::OnOverlap);
@@ -131,11 +128,7 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	}else{
 		CurrentHealth -= FMath::Min(CurrentHealth,Damage);
 
-		UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
-
-		if(HealthWidget != nullptr)
-			HealthWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
-
+		SetHealthPercentage(CurrentHealth / MaxHealth);
 
 		UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);
 	}
@@ -161,11 +154,13 @@ void ACharacterPawnQuad::InvisibleAnimation() {
 		NumberOfRepetitions += 1;
 		bIsVisible = !bIsVisible;
 		Mesh->SetVisibility(bIsVisible);
+		EquipmentMesh->SetVisibility(bIsVisible);
 		GetWorld()->GetTimerManager().SetTimer(InvisibleTimer,this, &ACharacterPawnQuad::InvisibleAnimation, 0.125f, false);
 	}else{
 		NumberOfRepetitions = 0;
 		bIsVisible = true;
 		Mesh->SetVisibility(bIsVisible);
+		EquipmentMesh->SetVisibility(bIsVisible);
 		bCharacterInvincible = false;
 	}
 }
@@ -315,6 +310,13 @@ void ACharacterPawnQuad::SetMousePointer(bool Enable) {
 			PlayerController->SetInputMode(FInputModeUIOnly());
 		else
 			PlayerController->SetInputMode(FInputModeGameOnly());*/
+}
+
+void ACharacterPawnQuad::SetHealthPercentage(float Percentage){
+	UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
+
+	if(HealthWidget != nullptr)
+		HealthWidget->HealthBar->SetPercent(Percentage);
 }
 
 void ACharacterPawnQuad::StopCharacter(bool Value) {

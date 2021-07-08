@@ -24,22 +24,18 @@ ANPC4Doors::ANPC4Doors()
 	Doors->SetupAttachment(RootComponent);
 
 	Door1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door1"));
-	Door1->SetChildActorClass(ADoor::StaticClass());
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door2"));
-	Door2->SetChildActorClass(ADoor::StaticClass());
 	Door2->SetupAttachment(Doors);
 	Door2->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door3"));
-	Door3->SetChildActorClass(ADoor::StaticClass());
 	Door3->SetupAttachment(Doors);
 	Door3->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
 	Door4 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door4"));
-	Door4->SetChildActorClass(ADoor::StaticClass());
 	Door4->SetupAttachment(Doors);
 	Door4->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
@@ -47,7 +43,6 @@ ANPC4Doors::ANPC4Doors()
 	NPCs->SetupAttachment(RootComponent);
 
 	NPC1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("NPC1"));
-	NPC1->SetChildActorClass(APawnInteractiveClass::StaticClass());
 	NPC1->SetupAttachment(NPCs);
 	
 }

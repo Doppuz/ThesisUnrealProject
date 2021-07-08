@@ -24,6 +24,7 @@ ADestructibleElements::ADestructibleElements(){
 	DestructibleMesh->SetSimulatePhysics(false);
 
 	Health = 1.f;
+	DamageValue = 1.f;
 	bIAmDestroyed = false;
 	ID = -1;
 
@@ -45,13 +46,10 @@ void ADestructibleElements::Tick(float DeltaTime){
 
 void ADestructibleElements::HitMesh(const FHitResult& Hit) {
 
-	if(ComplementaryActor != nullptr && ComplementaryActor->bSolved)
-		return;
+	CurrentDamage += DamageValue;
 
-	CurrentDamage += 1;
-
-	if(Health == 0 || Health == CurrentDamage){
-		DestructibleMesh->ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 3000);	
+	if(Health == 0 || Health <= CurrentDamage){
+		DestructibleMesh->ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 2000);	
 		DestructionDelegate.Broadcast(this);
 		bSolved = true;
 	}

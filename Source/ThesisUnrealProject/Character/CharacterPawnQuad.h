@@ -115,6 +115,8 @@ public:
 	UPROPERTY( VisibleAnywhere )
 	class UWidgetComponent* HealthWidgetComponent;
 
+	void SetHealthPercentage(float);
+
 // End delegate
 
 	FEndDelegate End;
