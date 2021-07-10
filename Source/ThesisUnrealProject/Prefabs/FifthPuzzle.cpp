@@ -10,6 +10,7 @@
 #include "../GameModeTutorial.h"
 #include "../GameInstance/BartleManagerGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "ShakeActor.h"
 
 // Sets default values
 AFifthPuzzle::AFifthPuzzle()
@@ -78,8 +79,8 @@ void AFifthPuzzle::BeginPlay()
 	DestructibleGate->GetChildrenComponents(false,Gates);
 
 	for(int i = 0; i < Gates.Num(); i++){
-		ADestructibleElements* Gate = Cast<ADestructibleElements>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
-		Gate->DestructionDelegate.AddDynamic(this,&AFifthPuzzle::Destruction);
+		AShakeActor* ShakeActor = Cast<AShakeActor>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
+		Cast<ADestructibleElements>(ShakeActor->ShakingActor->GetChildActor())->DestructionDelegate.AddDynamic(this,&AFifthPuzzle::Destruction);
 	}
 
 	TArray<USceneComponent*> CoinsArray;

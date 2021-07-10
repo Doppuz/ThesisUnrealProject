@@ -10,6 +10,7 @@
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
 #include "../GameInstance/BartleManagerGameInstance.h"
+#include "ShakeActor.h"
 
 // Sets default values
 AThirdPuzzle::AThirdPuzzle()
@@ -90,8 +91,8 @@ void AThirdPuzzle::BeginPlay()
 	DestructibleGate->GetChildrenComponents(false,Gates);
 
 	for(int i = 0; i < Gates.Num(); i++){
-		ADestructibleElements* Gate = Cast<ADestructibleElements>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
-		Gate->DestructionDelegate.AddDynamic(this,&AThirdPuzzle::Destruction);
+		AShakeActor* ShakeActor = Cast<AShakeActor>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
+		Cast<ADestructibleElements>(ShakeActor->ShakingActor->GetChildActor())->DestructionDelegate.AddDynamic(this,&AThirdPuzzle::Destruction);
 	}
 
 	TArray<USceneComponent*> CoinsArray;
@@ -138,8 +139,9 @@ void AThirdPuzzle::Destruction(ADestructibleElements* Elem) {
 }
 
 void AThirdPuzzle::CoinCollected() {
-
-	if(Cast<ADestructibleElements>(DestrGate1->GetChildActor())->bSolved)
+	
+	AShakeActor* ShakeActor = Cast<AShakeActor>(DestrGate1->GetChildActor());
+	if(Cast<ADestructibleElements>(ShakeActor->ShakingActor->GetChildActor())->bSolved)
 		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 
 	ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
