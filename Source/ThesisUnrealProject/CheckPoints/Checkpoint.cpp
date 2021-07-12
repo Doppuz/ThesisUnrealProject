@@ -69,7 +69,7 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 				AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 
 				// Set data on the savegame object.
-				SaveGameInstance->PlayerLocation = MyPawn->GetActorLocation() - MyPawn->GetActorForwardVector() * 10.f;
+				SaveGameInstance->PlayerLocation = MyPawn->GetActorLocation();
 
 				UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 

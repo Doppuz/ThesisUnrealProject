@@ -5,7 +5,6 @@
 #include "Components/BoxComponent.h"
 #include "../Character/EnemyAIAbstract.h"
 #include "ActorSpawner.h"
-#include "ActorSpawnerWithOwner.h"
 #include "CoinController.h"
 
 // Sets default values
@@ -58,13 +57,6 @@ void ARumbleArena::BeginPlay(){
 		
 	Spawners.Add(GetWorld()->SpawnActor<AActorSpawner>(SpawnerClass,FourthSpawnPosition->GetComponentLocation(),
 		FourthSpawnPosition->GetComponentRotation()));
-
-	//Assign the actor to the riddle actor to solve the puzzle.
-	if(RiddleActor != nullptr){
-		for(AActorSpawner* Spawner: Spawners){
-			Cast<AActorSpawnerWithOwner>(Spawner)->RiddleActor = RiddleActor;
-		}
-	}
 
 }
 

@@ -46,34 +46,6 @@ void AFallenPlatform::Tick(float DeltaTime){
 		PlatformCollider->AddLocalOffset(-PlatformCollider->GetUpVector() * Speed * DeltaTime);
 }
 
-void AFallenPlatform::ShakingActor(float DeltaTime) {
-	
-	
-	if(!bIsFallen){
-		if(bIsShaking){
-			
-			if(bLeft){
-				if(GetActorLocation().Y >= StartPosition.Y + ShakeDistance || GetActorLocation().Y <= StartPosition.Y - ShakeDistance){
-					ShakeSpeed = -ShakeSpeed;
-					AddActorLocalOffset(GetActorRightVector() * ShakeSpeed * DeltaTime);
-				}else{
-					AddActorLocalOffset(GetActorRightVector() * ShakeSpeed * DeltaTime);
-				}
-			}else{
-				if(GetActorLocation().X >= StartPosition.X + ShakeDistance || GetActorLocation().X <= StartPosition.X - ShakeDistance){
-					ShakeSpeed = -ShakeSpeed;
-					AddActorLocalOffset(GetActorForwardVector() * ShakeSpeed * DeltaTime);
-				}else{
-					AddActorLocalOffset(GetActorForwardVector() * ShakeSpeed * DeltaTime);
-				}
-			}
-
-		}else{
-			SetActorLocation(StartPosition);
-		}
-	}
-}
-
 void AFallenPlatform::StartFalling() {
 	Speed = 2000.f;
 }

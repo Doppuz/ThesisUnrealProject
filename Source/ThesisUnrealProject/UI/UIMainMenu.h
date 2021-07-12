@@ -40,9 +40,6 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UUIAnswer* Answer2;
 
-	UPROPERTY(meta = (BindWidget))
-	class USizeBox* PopUp;
-
 	//Set the text in the dialog box
 	TMap<int,TArray<FString>> MapDialogText;
 

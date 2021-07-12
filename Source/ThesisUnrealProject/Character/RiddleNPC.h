@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "PawnInteractiveClass.h"
 #include "SignNPC.h"
-#include "SignNPCDoors.generated.h"
+#include "RiddleNPC.generated.h"
 
 class ADoor;
 
@@ -13,13 +13,13 @@ class ADoor;
  * 
  */
 UCLASS()
-class THESISUNREALPROJECT_API ASignNPCDoors : public ASignNPC
+class THESISUNREALPROJECT_API ARiddleNPC : public ASignNPC
 {
 	GENERATED_BODY()
 
 public:
 
-	ASignNPCDoors();
+	ARiddleNPC();
 
 	virtual void Choice(int Answer) override;
 	

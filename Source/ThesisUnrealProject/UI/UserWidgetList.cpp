@@ -57,7 +57,7 @@ void UUserWidgetList::OnButton1Clicked() {
 
     ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
     HideListBox();
-    PlayerPawn->AllyNPC->Choice(0);
+    PlayerPawn->AllyNPC->Choice(2);
 
 }
 
@@ -65,7 +65,7 @@ void UUserWidgetList::OnButton3Clicked() {
     
     ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
     HideListBox();
-    PlayerPawn->AllyNPC->Choice(2);
+    PlayerPawn->AllyNPC->Choice(1);
     
 }
 
@@ -81,13 +81,13 @@ void UUserWidgetList::OnButton2Clicked() {
     
     ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
     HideListBox();
-    PlayerPawn->AllyNPC->Choice(1);
+    PlayerPawn->AllyNPC->Choice(0);
     
 }
 
 void UUserWidgetList::ViewListBox() {
-    Answer1->SetVisibility(ESlateVisibility::Visible);
     Answer2->SetVisibility(ESlateVisibility::Visible);
+    Answer3->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UUserWidgetList::HideListBox() {

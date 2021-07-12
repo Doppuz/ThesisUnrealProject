@@ -5,7 +5,6 @@
 #include "Components/BoxComponent.h"
 #include "DestructibleComponent.h"
 #include "CoinController.h"
-#include "RiddleTemplate.h"
 
 // Sets default values
 ACrateElements::ACrateElements()
@@ -35,11 +34,7 @@ void ACrateElements::OnComponentFracture(const FVector& HitPoint, const FVector&
 		FRotator Rotation = FRotator(0,0,0);
 		
 		ACoinController* Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass,Position,Rotation);
-		
-		/*if(Coin != nullptr){
-    		Coin->SetFolderPath(TEXT("Coins"));
-		}else
-			UE_LOG(LogTemp,Warning,TEXT("nullptr"));*/
+
 	}
 	IAmDestructed = true;
 }

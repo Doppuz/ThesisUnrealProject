@@ -7,8 +7,6 @@
 #include "GameFramework/Actor.h"
 #include "CrateElements.generated.h"
 
-class ARiddleTemplate;
-
 UCLASS()
 class THESISUNREALPROJECT_API ACrateElements : public AGeneralElem
 {
@@ -22,10 +20,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
 	class UDestructibleComponent* DestructibleComponent;
-
-	//Used to save the actor that needs the coins to open (or solved).
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAcces = true), Category = "Destruction")
-	ARiddleTemplate* CollectorActor;
 
 protected:
 	// Called when the game starts or when spawned

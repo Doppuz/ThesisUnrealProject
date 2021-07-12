@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "RiddleTemplate.h"
 #include "DestructibleElements.generated.h"
 
 class ADoor;
@@ -12,7 +11,7 @@ class ADoor;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDestructionDelegate,ADestructibleElements*, Elem);
 
 UCLASS()
-class THESISUNREALPROJECT_API ADestructibleElements : public ARiddleTemplate
+class THESISUNREALPROJECT_API ADestructibleElements : public AActor
 {
 	GENERATED_BODY()
 	
@@ -41,6 +40,8 @@ public:
 	float CurrentDamage;
 
 	bool bIAmDestroyed;
+
+	bool bSolved;
 
 	float DamageValue;
 

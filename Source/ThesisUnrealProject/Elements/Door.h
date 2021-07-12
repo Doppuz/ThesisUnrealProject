@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "RiddleTemplate.h"
 #include "Door.generated.h"
 
 class APuzzleButton;
 class APawnInteractiveClass;
 
 UCLASS()
-class THESISUNREALPROJECT_API ADoor : public ARiddleTemplate
+class THESISUNREALPROJECT_API ADoor : public AActor
 {
 	GENERATED_BODY()
 
@@ -50,18 +49,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	//check Puzzle actors overlap.
-	virtual void CheckPuzzleActor();
-
-	//check Ally actors condition.
-	virtual void CheckAllyActor();
-
-	//check Ally actors condition.
-	virtual void CheckEnemyActor();
-
-	//check Coin actors condition.
-	virtual void CheckCoinActor();
 
 private:
 

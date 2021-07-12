@@ -48,5 +48,8 @@ void UUIEndScreen::OnSendClicked() {
 }
 
 void UUIEndScreen::OnQuitClicked() {
-    UGameplayStatics::GetPlayerController(GetWorld(),0)->ConsoleCommand("quit");
+    if(UGameplayStatics::GetPlayerController(GetWorld(),0) != nullptr)
+        UGameplayStatics::GetPlayerController(GetWorld(),0)->ConsoleCommand("exit");
+    else
+        UE_LOG(LogTemp,Warning,TEXT("Player is nullptr"));
 }

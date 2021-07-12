@@ -103,8 +103,8 @@ void APawnInteractiveClass::Ask() {
 		DialogWidget->TextBox->SetDialogText(Questions[AnswerContator].Question);
 		TArray<FString> TempAnswers = Questions[AnswerContator].Answers;
 
-		DialogWidget->AnswerBox->SetAnswer1(Questions[AnswerContator].Answers[0]);
-		DialogWidget->AnswerBox->SetAnswer2(Questions[AnswerContator].Answers[1]);
+		DialogWidget->AnswerBox->SetAnswer2(Questions[AnswerContator].Answers[0]);
+		DialogWidget->AnswerBox->SetAnswer3(Questions[AnswerContator].Answers[1]);
 
 		DialogWidget->SetPopUpText("Choose the answer!");
 

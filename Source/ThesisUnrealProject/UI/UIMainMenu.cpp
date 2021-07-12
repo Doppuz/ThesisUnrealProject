@@ -148,8 +148,12 @@ void UUIMainMenu::OnButtonPlayClicked() {
 
 void UUIMainMenu::OnButtonQuitClicked() {
 
-    UGameplayStatics::GetPlayerController(GetWorld(),0)->ConsoleCommand("quit");
-    
+    if(UGameplayStatics::GetPlayerController(GetWorld(),0) != nullptr)
+        UGameplayStatics::GetPlayerController(GetWorld(),0)->ConsoleCommand("exit");
+    else
+        UE_LOG(LogTemp,Warning,TEXT("Player is nullptr"));
+    //FGenericPlatformMisc::RequestExit(false);
+
 }
 
 void UUIMainMenu::Answer1Clicked() {

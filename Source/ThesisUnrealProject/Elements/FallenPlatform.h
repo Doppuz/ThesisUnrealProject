@@ -4,13 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ShakingAbstract.h"
 #include "FallenPlatform.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FFallenDelegate);
 
 UCLASS()
-class THESISUNREALPROJECT_API AFallenPlatform : public AShakingAbstract
+class THESISUNREALPROJECT_API AFallenPlatform : public AActor
 {
 	GENERATED_BODY()
 	
@@ -44,8 +43,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	virtual void ShakingActor(float DeltaTime) override;
 
 	//To avoid to move the platform in the start position.
 	bool bIsFallen;

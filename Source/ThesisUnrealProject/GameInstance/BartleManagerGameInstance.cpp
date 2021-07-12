@@ -19,6 +19,18 @@ UBartleManagerGameInstance::UBartleManagerGameInstance() {
 
 }
 
+void UBartleManagerGameInstance::Init() {
+    Super::Init();
+}
+
+void UBartleManagerGameInstance::Shutdown() {
+    Super::Shutdown();
+}
+
+void UBartleManagerGameInstance::StartGameInstance() {
+    Super::StartGameInstance();
+}
+
 //Change these value in an equally distributed way. (-1 means that I don't want to touch that value).
 void UBartleManagerGameInstance::EquallyDistributedUpdate(Type IncreasedType,float IncreasedValue,Type DecreasedType,float DecreasedValue) {
     

@@ -79,8 +79,8 @@ void AShakeActor::Shake(float DeltaTime) {
 }
 
 void AShakeActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
-	
-	if(OtherActor == ShakingActor->GetChildActor() && OtherComponent->IsA(UBoxComponent::StaticClass()))
+
+	if(OtherActor == ShakingActor->GetChildActor())
 		ShakeSpeed = -ShakeSpeed;
 
 }

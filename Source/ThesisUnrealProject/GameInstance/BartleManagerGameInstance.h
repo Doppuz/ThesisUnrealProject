@@ -19,6 +19,10 @@ public:
 
 	UBartleManagerGameInstance();
 
+	virtual void Init() override;
+	virtual void Shutdown() override;
+	virtual void StartGameInstance() override;
+
 // --- Bartle types ----
 	
 	TMap<Type,float> Types;

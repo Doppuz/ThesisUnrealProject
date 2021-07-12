@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "ActorSpawner.h"
 #include "../Character/EnemyAIAbstract.h"
-#include "RiddleTemplate.h"
 #include "RumbleArena.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndArena);
@@ -70,9 +69,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "SpawnActor")
 	TArray<TSubclassOf<AEnemyAIAbstract>> ActorsToSpawn;
-
-	UPROPERTY(EditAnywhere, Category = "RiddleComponent")
-	ARiddleTemplate* RiddleActor;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Reward)
 	TSubclassOf<ACoinController> RewardClass;
