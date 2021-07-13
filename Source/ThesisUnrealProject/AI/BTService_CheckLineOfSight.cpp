@@ -15,6 +15,8 @@ UBTService_CheckLineOfSight::UBTService_CheckLineOfSight() {
 
 void UBTService_CheckLineOfSight::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
 
+    Super::TickNode(OwnerComp,NodeMemory,DeltaSeconds);
+    
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
     AAIController* AIController = OwnerComp.GetAIOwner();
 

@@ -11,7 +11,9 @@ UBTService_SetPlayerFollowPos::UBTService_SetPlayerFollowPos() {
 }
 
 void UBTService_SetPlayerFollowPos::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
-
+ 
+    Super::TickNode(OwnerComp,NodeMemory,DeltaSeconds);
+    
     ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
     OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerFollowLocation"),PlayerPawn->FollowAllyPosition->GetComponentLocation());
     

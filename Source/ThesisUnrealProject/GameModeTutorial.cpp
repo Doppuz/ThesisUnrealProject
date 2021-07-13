@@ -23,8 +23,12 @@ AGameModeTutorial::AGameModeTutorial() {
 
 void AGameModeTutorial::BeginPlay() {
     
+    Super::BeginPlay();
+
     ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
     MyPawn->StopCharacter(false);
+    
+    UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(FInputModeGameOnly());
 
     //if(MyPawn != nullptr)
     //    Cast<APlayerController>(MyPawn->GetController())->SetPause(true);

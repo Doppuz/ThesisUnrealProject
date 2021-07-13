@@ -13,7 +13,9 @@ UBTService_SetEnemiesInRange::UBTService_SetEnemiesInRange() {
 
 //It works only for AICharacterPawnQuad
 void UBTService_SetEnemiesInRange::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
-
+    
+    Super::TickNode(OwnerComp,NodeMemory,DeltaSeconds);
+    
     AAICharacterPawnQuad* AIPawn = Cast<AAICharacterPawnQuad>(OwnerComp.GetAIOwner()->GetPawn());
 
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);

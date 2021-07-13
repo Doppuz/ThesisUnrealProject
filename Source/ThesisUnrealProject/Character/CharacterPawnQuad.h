@@ -157,12 +157,15 @@ private:
 	//InteractiveActor
 	APawnInteractiveClass* InteractiveActor;
 
-	//methods to speak with an NPC when I am cole enought to its.
+	//method to speak with an NPC when I am cole enought to its.
 	void Speak();
 	
 	//Enemy ID
 	UPROPERTY(EditAnywhere)
 	int ID;
+
+	//methos to respawn the player to the last checkpoint.
+	void Rewind();
 
 //Invincible Section
 

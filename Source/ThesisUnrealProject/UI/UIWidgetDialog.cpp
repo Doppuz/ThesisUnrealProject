@@ -6,7 +6,6 @@
 #include "UIBox.h"
 #include "UserWidgetList.h"
 #include "Components/SizeBox.h"
-#include "Components/TextBlock.h"
 
 void UUIWidgetDialog::NativeConstruct() {
     

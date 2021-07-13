@@ -15,7 +15,9 @@ UBTService_SetPlayerPos::UBTService_SetPlayerPos() {
 }
 
 void UBTService_SetPlayerPos::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
-
+ 
+    Super::TickNode(OwnerComp,NodeMemory,DeltaSeconds);
+    
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
     
     //If I activate the bRange bool, I set the value of the LineOfSight only if I the AI see me and within a specific range. 

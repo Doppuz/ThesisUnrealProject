@@ -41,6 +41,7 @@ void AAICharacterPawnQuad::Tick(float DeltaTime) {
 
 //This pawn is invulnerable.
 float AAICharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) {
+    Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
     return 0;
 }
 

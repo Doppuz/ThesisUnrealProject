@@ -11,6 +11,7 @@
 #include "Components/SpotLightComponent.h"
 #include "../GameModeTutorial.h"
 #include "../GameInstance/BartleManagerGameInstance.h"
+#include "ShakeActorFallen.h"
 
 // Sets default values
 ASixthPuzzle::ASixthPuzzle()
@@ -66,7 +67,7 @@ void ASixthPuzzle::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AFallenPlatform* FallenPlat = Cast<AFallenPlatform>(FallenPlatform1->GetChildActor());
+	AFallenPlatform* FallenPlat = Cast<AFallenPlatform>(Cast<AShakeActorFallen>(FallenPlatform1->GetChildActor())->ShakingActor->GetChildActor());
 
 	
 	APuzzleButton* Button = Cast<APuzzleButton>(Puzzle1->GetChildActor());
@@ -76,12 +77,12 @@ void ASixthPuzzle::BeginPlay()
 
 }
 
-void ASixthPuzzle::EndPlay(EEndPlayReason::Type Reason) {
+/*void ASixthPuzzle::EndPlay(EEndPlayReason::Type Reason) {
 	Trigger1->OnComponentBeginOverlap.RemoveDynamic(this, &ASixthPuzzle::OnOverlapStart);
 
 	AFallenPlatform* FallenPlat = Cast<AFallenPlatform>(FallenPlatform1->GetChildActor());
 	FallenPlat->FallenDelegate.RemoveDynamic(this, &ASixthPuzzle::FallenEvent);
-}
+}*/
 
 void ASixthPuzzle::OnOverlapStart(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	

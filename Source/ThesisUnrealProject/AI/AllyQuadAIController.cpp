@@ -18,6 +18,8 @@ void AAllyQuadAIController::BeginPlay() {
 
 void AAllyQuadAIController::Tick(float DeltaTime) {
 
+    Super::Tick(DeltaTime);
+
     if(GetPawn() != nullptr && !FirstTime){
 
         GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),GetPawn()->GetActorLocation());

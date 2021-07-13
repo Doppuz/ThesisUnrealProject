@@ -26,6 +26,8 @@
 #include "Components/WidgetComponent.h"
 #include "../UI/HealthBar.h"
 #include "Components/ProgressBar.h"
+#include "Components/SizeBox.h"
+#include "../UI/UIBox.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -213,17 +215,7 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 			if(DialogWidget != nullptr)
 				DialogWidget->HidePopUp();
 		}
-	}else{
-		/*
-		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
-
-		FVector NewPos = (-GetActorLocation() + PlayerPawn->GetActorLocation());
-		NewPos.Z = 0;
-    	NewPos.Normalize();
-
-    	SetActorRotation(FMath::RInterpTo(GetActorRotation(),NewPos.Rotation(),DeltaTime * 100,0.4));*/
 	}
-
 
 }
 
@@ -235,8 +227,9 @@ void ACharacterPawnQuad::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAxis("LookUp",this,&ACharacterPawnQuad::RotatePitch);
 
 	PlayerInputComponent->BindAction("Jump",IE_Pressed,this,&ACharacterPawnQuad::Jump);
-	PlayerInputComponent->BindAction("Speak",IE_Released,this, &ACharacterPawnQuad::Speak);
+	PlayerInputComponent->BindAction("Speak",IE_Pressed,this, &ACharacterPawnQuad::Speak);
 	PlayerInputComponent->BindAction("Shoot",IE_Pressed,this, &ACharacterPawnQuad::Shoot);
+	PlayerInputComponent->BindAction("Rewind",IE_Pressed,this, &ACharacterPawnQuad::Rewind);
 
 	PlayerInputComponent->BindAxis("MoveForward",this,&ACharacterPawnQuad::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight",this,&ACharacterPawnQuad::MoveRight);
@@ -319,7 +312,9 @@ void ACharacterPawnQuad::SetHealthPercentage(float Percentage){
 		HealthWidget->HealthBar->SetPercent(Percentage);
 }
 
+//Stop/Start the physics and the movement
 void ACharacterPawnQuad::StopCharacter(bool Value) {
+	bStopMovement = !Value;
 	Collider->SetSimulatePhysics(Value);
 }
 
@@ -332,7 +327,11 @@ void ACharacterPawnQuad::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 }
 
 void ACharacterPawnQuad::Speak() {
-	if(InteractiveActor != nullptr){
+
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+
+	if(InteractiveActor != nullptr || DialogWidget->TextBox->BoxContainer->IsVisible()){
 		if(bStopMovement){
 
 			if(AllyNPC->SpeechContator != AllyNPC->QuestionAt){
@@ -346,4 +345,10 @@ void ACharacterPawnQuad::Speak() {
 		}else
 			InteractiveActor->StartInteraction();
 	}
+}
+
+void ACharacterPawnQuad::Rewind() {
+
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+
 }

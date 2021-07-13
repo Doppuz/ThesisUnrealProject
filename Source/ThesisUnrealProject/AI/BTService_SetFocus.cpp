@@ -12,6 +12,8 @@ UBTService_SetFocus::UBTService_SetFocus() {
 }
 
 void UBTService_SetFocus::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
+     
+    Super::TickNode(OwnerComp,NodeMemory,DeltaSeconds);
     
     APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
     FVector PlayerPos = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());//PlayerPawn->GetActorLocation();//OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("PlayerLocation"));

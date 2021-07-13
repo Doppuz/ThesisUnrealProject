@@ -28,5 +28,5 @@ void AEnemyAIAbstract::Tick(float DeltaTime)
 
 void AEnemyAIAbstract::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) 
 {
-	
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }

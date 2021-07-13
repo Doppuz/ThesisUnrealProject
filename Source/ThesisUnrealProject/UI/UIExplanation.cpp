@@ -11,6 +11,7 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/Border.h"
+#include "../Levels/MainMenu.h"
 
 void UUIExplanation::NativeConstruct() {
     
@@ -25,9 +26,11 @@ void UUIExplanation::NativeConstruct() {
 }
 
 void UUIExplanation::OnSendClicked() {
+
+    ULevel* LevelTemp = GetWorld()->GetCurrentLevel();
+    Cast<AMainMenu>(LevelTemp->GetLevelScriptActor())->ChangeMenuWidget(nullptr);
     
-    UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(FInputModeGameOnly());
-    UGameplayStatics::OpenLevel(GetWorld(),"Tutorial");
+    UGameplayStatics::OpenLevel(GetWorld(),"Tutorial",false);
 
 }
 
