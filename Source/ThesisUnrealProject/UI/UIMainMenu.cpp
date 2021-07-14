@@ -67,14 +67,14 @@ void UUIMainMenu::NativeConstruct() {
     MapDialogText.Add(7 , {"What's more important to you?", "The quality of roleplaying in an online game","The uniqueness of the features, and game mechanic"});
     AnswerChoice.Add(7,{Type::Socializer,Type::Explorer});
 
-    MapDialogText.Add(8 , {"You are being chased by a monster in an online game. Do you:","Ask a friend for help in killing it", "Hide somewhere you know the monster won't follow?"});
+    MapDialogText.Add(8 , {"You are being chased by a monster in an online game. Do you:","Ask a friend for help in killing it", "Hide somewhere you know the monster won't follow"});
     AnswerChoice.Add(8,{Type::Socializer,Type::Explorer});
 
     MapDialogText.Add(9 , {"You're a player in an online game, and about to go into an unknown dungeon. You have your choice of one more person for your party. Do you bring:",
-        "A bard, who's a good friend of yours and who's great for entertaining you and your friends","  A wizard, to identify the items that you find there?"});
+        "A bard, who's a good friend of yours and who's great for entertaining you and your friends","  A wizard, to identify the items that you find there"});
     AnswerChoice.Add(9,{Type::Socializer,Type::Explorer});
 
-    MapDialogText.Add(10 , {"Someone has PK'ed you (killed you in player vs. player combat). Do you want to:","Find out why, and try to convince them not to do it again ", "Plot your revenge?"});
+    MapDialogText.Add(10 , {"Someone has PK'ed you (killed you in player vs. player combat). Do you want to:","Find out why, and try to convince them not to do it again ", "Plot your revenge"});
     AnswerChoice.Add(10,{Type::Socializer,Type::Killer});
 
     MapDialogText.Add(11 , {"Which is more exciting?", "A well-roleplayed scenario", "A deadly battle"});
@@ -86,63 +86,69 @@ void UUIMainMenu::NativeConstruct() {
     MapDialogText.Add(13 , {"Is it better to be: ","Feared", "Loved"});
     AnswerChoice.Add(13,{Type::Killer,Type::Socializer});
     
-    MapDialogText.Add(14 , {"Would you rather:","Hear what someone has to say","Show them the sharp blade of your axe?"});
+    MapDialogText.Add(14 , {"Would you rather:","Hear what someone has to say","Show them the sharp blade of your axe"});
     AnswerChoice.Add(14,{Type::Socializer,Type::Killer});
 
-    MapDialogText.Add(15 , {"In an online game, a new area opens up. Which do you look forward to more?",
+    MapDialogText.Add(15 , {"In an online game, a new area opens up. Which do you look forward to more",
         "Exploring the new area, and finding out its history","Being the first to get the new equipment from the area"});
     AnswerChoice.Add(15,{Type::Explorer,Type::Achiever});
 
-    MapDialogText.Add(16 , {"In an online game, would you rather be known as:","Someone who can run from any two points in the world, and really knows their way around","The person with the best, most unique equipment in the game?"});
+    MapDialogText.Add(16 , {"In an online game, would you rather be known as:","Someone who can run from any two points in the world, and really knows their way around","The person with the best, most unique equipment in the game"});
     AnswerChoice.Add(16,{Type::Explorer,Type::Achiever});
 
-    MapDialogText.Add(17 , {"Would you rather:","Become a hero faster than your friends","Know more secrets than your friends?"});
+    MapDialogText.Add(17 , {"Would you rather:","Become a hero faster than your friends","Know more secrets than your friends"});
     AnswerChoice.Add(17,{Type::Achiever,Type::Explorer});
 
-    MapDialogText.Add(18 , {"Do you tend to:","Know things no one else does","Have items no one else does?"});
+    MapDialogText.Add(18 , {"Do you tend to:","Know things no one else does","Have items no one else does"});
     AnswerChoice.Add(18,{Type::Explorer,Type::Achiever});
 
-    MapDialogText.Add(19 , {"Which would you rather do:","Solve a riddle no one else has solved","Getting to a certain experience level faster than anyone else?"});
+    MapDialogText.Add(19 , {"Which would you rather do:","Solve a riddle no one else has solved","Getting to a certain experience level faster than anyone else"});
     AnswerChoice.Add(19,{Type::Explorer,Type::Achiever});
 
-    MapDialogText.Add(20 , {"In an online game, would rather join a clan of:","Scholars","Assassins?"});
+    MapDialogText.Add(20 , {"In an online game, would rather join a clan of:","Scholars","Assassins"});
     AnswerChoice.Add(20,{Type::Explorer,Type::Killer});
 
-    MapDialogText.Add(21 , {"Would you rather win:","A trivia contest","An arena battle?"});
+    MapDialogText.Add(21 , {"Would you rather win:","A trivia contest","An arena battle"});
     AnswerChoice.Add(21,{Type::Explorer,Type::Killer});
     
-    MapDialogText.Add(22 , {"If you're alone in an area, do you think:","It's safe to explore","You'll have to look elsewhere for prey?"});
+    MapDialogText.Add(22 , {"If you're alone in an area, do you think:","It's safe to explore","You'll have to look elsewhere for prey"});
     AnswerChoice.Add(22,{Type::Explorer,Type::Killer});
 
     MapDialogText.Add(23 , {"You learn that another player is planning your demise. Do you:",
-        "Go to an area your opponent is unfamiliar with and prepare there","Attack them before he attacks you?"});
+        "Go to an area your opponent is unfamiliar with and prepare there","Attack them before he attacks you"});
     AnswerChoice.Add(23,{Type::Explorer,Type::Killer});
 
     MapDialogText.Add(24 , {"You meet a new player. Do you think of them as:",
-        "Someone who can appreciate your knowledge of the game","As potential prey?"});
+        "Someone who can appreciate your knowledge of the game","As potential prey"});
     AnswerChoice.Add(24,{Type::Explorer,Type::Killer});
 
-    MapDialogText.Add(25 , {"In an online game, would you rather:","Have a sword twice as powerful as any other in the game","Be the most feared person in the game?"});
+    MapDialogText.Add(25 , {"In an online game, would you rather:","Have a sword twice as powerful as any other in the game","Be the most feared person in the game"});
     AnswerChoice.Add(25,{Type::Achiever,Type::Killer});
 
-    MapDialogText.Add(26 , {"In an online game, would you be more prone to brag about:","How many other players you've killed","Your equipment?"});
+    MapDialogText.Add(26 , {"In an online game, would you be more prone to brag about:","How many other players you've killed","Your equipment"});
     AnswerChoice.Add(26,{Type::Killer,Type::Achiever});
 
-    MapDialogText.Add(27 , {"Would you rather have:","A spell to damage other players","A spell that increases the rate at which you gain experience points?"});
+    MapDialogText.Add(27 , {"Would you rather have:","A spell to damage other players","A spell that increases the rate at which you gain experience points"});
     AnswerChoice.Add(27,{Type::Killer,Type::Achiever});
 
-    MapDialogText.Add(28 , {"Would you rather receive as a quest reward:","Experience points","A wand with 3 charges of a spell that lets you control other players, against their will?"});
+    MapDialogText.Add(28 , {"Would you rather receive as a quest reward:","Experience points","A wand with 3 charges of a spell that lets you control other players, against their will"});
     AnswerChoice.Add(28,{Type::Achiever,Type::Killer});
 
-    MapDialogText.Add(29 , {"When playing a video game, is it more fun to:","Have the highest score on the list","Beat your best friend one-on-one?"});
+    MapDialogText.Add(29 , {"When playing a video game, is it more fun to:","Have the highest score on the list","Beat your best friend one-on-one"});
     AnswerChoice.Add(29,{Type::Achiever,Type::Killer});
     
 }
 
 void UUIMainMenu::OnButtonPlayClicked() {
-    
+
     //UGameplayStatics::OpenLevel(GetWorld(), "Tutorial");
-    Switcher->SetActiveWidgetIndex(1);
+    if (USaveGameData* LoadedGame = Cast<USaveGameData>(UGameplayStatics::LoadGameFromSlot("Checkpoint", 0))) {
+        ULevel* LevelTemp = GetWorld()->GetCurrentLevel();
+        Cast<AMainMenu>(LevelTemp->GetLevelScriptActor())->ChangeMenuWidget(nullptr);
+
+        UGameplayStatics::OpenLevel(GetWorld(), "Tutorial", false);
+    }else
+       Switcher->SetActiveWidgetIndex(1);
 
 }
 

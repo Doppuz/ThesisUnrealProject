@@ -21,7 +21,7 @@ void UUIEndScreen::NativeConstruct() {
     Quit->Text->SetText(FText::FromString("Quit"));
     Quit->ButtonPlay->OnClicked.AddDynamic(this,&UUIEndScreen::OnQuitClicked);
 
-    TextBox->SetDialogText("Thanks for playing this test. Now I ask you to take a screenshot, click on the \"Send \" button and upload the file to the page that will open. If you have any problems contact me :).");
+    TextBox->SetDialogText("Thanks for playing this test. Now I ask you to click on the \"Send\" button and upload the file \"Result\" (you can find it in the folder \"ThesisUnrealProject\" of the game folder) to the page that will open. alternatively you can take a screenshot and upload that. If you have any problems contact me :).");
 
 }
 
