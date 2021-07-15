@@ -258,7 +258,7 @@ void ACharacterPawnQuad::RotatePitch(float Axis) {
 }
 
 void ACharacterPawnQuad::RotateYaw(float Axis) {
-	Rotation.Yaw = Axis *  GetWorld()->DeltaTimeSeconds * RotationSpeed;
+	Rotation.Yaw = Axis *  GetWorld()->DeltaTimeSeconds * RotationSpeed/2;
 }
 
 void ACharacterPawnQuad::Jump() {
