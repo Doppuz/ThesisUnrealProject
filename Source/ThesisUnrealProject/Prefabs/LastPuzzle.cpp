@@ -96,6 +96,11 @@ void ALastPuzzle::Tick(float DeltaTime)
 }
 
 void ALastPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
+
+	if(SpokenAllies == 0){
+		DestrGate1->DestroyChildActor();
+		DestrGate2->DestroyChildActor();
+	}
 	
 	if(!SpokenActor->bAlreadySpoken)
 		SpokenAllies += 1;
@@ -115,6 +120,13 @@ void ALastPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 }
 
 void ALastPuzzle::Destruction(ADestructibleElements* Elem) {
+
+	if(CoinsCollected == 0){
+		
+		NPC1->DestroyChildActor();
+		NPC2->DestroyChildActor();
+
+	}
 	
 	FRotator Rotation = FRotator(0,0,0);
 	ACoinController* Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass,Elem->GetActorLocation(),Rotation);

@@ -95,15 +95,24 @@ void AGameModeTutorial::BeginPlay() {
 
 //Assign the UI widget passed as parameter to the screen.
 void AGameModeTutorial::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass) {
+    
     if (CurrentWidget != nullptr){
+
         CurrentWidget->RemoveFromViewport();
         CurrentWidget = nullptr;
+
     }
+
     if (NewWidgetClass != nullptr){
+        
         CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), NewWidgetClass);
+        
         if (CurrentWidget != nullptr){
+
             CurrentWidget->AddToViewport();
+            
         }
+
     }
 }
 

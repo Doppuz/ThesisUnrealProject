@@ -88,9 +88,7 @@ void AFifthPuzzle::BeginPlay()
 
 	//Set overlayed Text
 	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("Collects the coins OR ...");
-	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
 	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("... OR Explore the Dungeon!");
-	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
 
 	TArray<USceneComponent*> Gates;
 	DestructibleGate->GetChildrenComponents(false,Gates);
