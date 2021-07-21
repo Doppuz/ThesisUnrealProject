@@ -10,6 +10,8 @@
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
 #include "../GameInstance/BartleManagerGameInstance.h"
+#include "Components/WidgetComponent.h"
+#include "../UI/OverlayedText.h"
 
 // Sets default values
 AForthPuzzle::AForthPuzzle()
@@ -57,6 +59,15 @@ AForthPuzzle::AForthPuzzle()
 	Puzzle4 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Puzzle4"));
 	Puzzle4->SetupAttachment(PuzzleButtons);
 
+	UI = CreateDefaultSubobject<USceneComponent>(TEXT("UI"));
+	UI->SetupAttachment(RootComponent);
+
+	OverlayedTextCoins = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextCoins"));
+	OverlayedTextCoins->SetupAttachment(UI);
+
+	OverlayedTextWall = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextWall"));
+	OverlayedTextWall->SetupAttachment(UI);
+
 	SpokenAllies = 0;
 	PuzzleCount = 0;
 
@@ -66,6 +77,12 @@ AForthPuzzle::AForthPuzzle()
 void AForthPuzzle::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	//Set overlayed Text
+	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("Press all buttons OR ...");
+	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("... OR talk to everyone.");
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
 
 	TArray<USceneComponent*> NPCArray;
 	NPCs->GetChildrenComponents(false,NPCArray);
@@ -92,6 +109,13 @@ void AForthPuzzle::Tick(float DeltaTime)
 }
 
 void AForthPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
+
+	if(SpokenAllies == 0){
+		Puzzle1->DestroyChildActor();
+		Puzzle2->DestroyChildActor();
+		Puzzle3->DestroyChildActor();
+		Puzzle4->DestroyChildActor();
+	}
 	
 	if(!SpokenActor->bAlreadySpoken)
 		SpokenAllies += 1;
@@ -122,8 +146,16 @@ void AForthPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 	if(OtherActor->IsA(APawn::StaticClass())){
 
 		if(Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass())){
-			
+
 			if(!Cast<APuzzleButton>(Hit.GetActor())->bIsPressed){
+
+				if(SpokenAllies == 0){
+					NPC1->DestroyChildActor();
+					NPC2->DestroyChildActor();
+					NPC3->DestroyChildActor();
+					NPC4->DestroyChildActor();
+				}
+
 				PuzzleCount += 1;
 
 				if(PuzzleCount == 4 && SpokenAllies != 4){

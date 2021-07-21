@@ -53,6 +53,16 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UBoxComponent* Trigger2;
+	
+	UPROPERTY(EditAnywhere, Category = "Components")
+	USceneComponent* UI;
+
+	//OverlayedText
+	UPROPERTY( VisibleAnywhere,Category = "Components")
+	class UWidgetComponent* OverlayedTextCoins;
+
+	UPROPERTY( VisibleAnywhere,Category = "Components" )
+	class UWidgetComponent* OverlayedTextWall;
 
 protected:
 	// Called when the game starts or when spawned

@@ -11,6 +11,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "../GameInstance/BartleManagerGameInstance.h"
 #include "ShakeActor.h"
+#include "Components/WidgetComponent.h"
+#include "../UI/OverlayedText.h"
 
 // Sets default values
 AThirdPuzzle::AThirdPuzzle()
@@ -78,6 +80,15 @@ AThirdPuzzle::AThirdPuzzle()
 	Coin6 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Coin6"));
 	Coin6->SetupAttachment(Coins);
 
+	UI = CreateDefaultSubobject<USceneComponent>(TEXT("UI"));
+	UI->SetupAttachment(RootComponent);
+
+	OverlayedTextCoins = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextCoins"));
+	OverlayedTextCoins->SetupAttachment(UI);
+
+	OverlayedTextWall = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextWall"));
+	OverlayedTextWall->SetupAttachment(UI);
+
 	GatesDestructed = 0;
 	CoinsCollected = 0;
 }
@@ -86,6 +97,10 @@ AThirdPuzzle::AThirdPuzzle()
 void AThirdPuzzle::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//Set overlayed Text
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("Maybe you can destroy this wall OR ...");
+	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("... OR collect these coins.");
 
 	TArray<USceneComponent*> Gates;
 	DestructibleGate->GetChildrenComponents(false,Gates);

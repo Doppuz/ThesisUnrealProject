@@ -51,6 +51,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UChildActorComponent* DestrGate2;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	USceneComponent* UI;
+
+	//OverlayedText
+	UPROPERTY( VisibleAnywhere,Category = "Components")
+	class UWidgetComponent* OverlayedTextGate;
+
+	UPROPERTY( VisibleAnywhere,Category = "Components" )
+	class UWidgetComponent* OverlayedTextPuzzle;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

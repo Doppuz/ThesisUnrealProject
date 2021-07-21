@@ -12,6 +12,8 @@
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
 #include "../GameInstance/BartleManagerGameInstance.h"
+#include "Components/WidgetComponent.h"
+#include "../UI/OverlayedText.h"
 
 // Sets default values
 ALastPuzzle::ALastPuzzle()
@@ -46,6 +48,15 @@ ALastPuzzle::ALastPuzzle()
 	DestrGate2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate2"));
 	DestrGate2->SetupAttachment(DestructibleGate);
 
+	UI = CreateDefaultSubobject<USceneComponent>(TEXT("UI"));
+	UI->SetupAttachment(RootComponent);
+
+	OverlayedTextCoins = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextCoins"));
+	OverlayedTextCoins->SetupAttachment(UI);
+
+	OverlayedTextWall = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextWall"));
+	OverlayedTextWall->SetupAttachment(UI);
+
 	SpokenAllies = 0;
 	CoinsCollected = 0;
 
@@ -55,6 +66,10 @@ ALastPuzzle::ALastPuzzle()
 void ALastPuzzle::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//Set overlayed Text
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("Hit the boxes OR ...");
+	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("... OR talk to everyone.");
 
 	TArray<USceneComponent*> NPCArray;
 	NPCs->GetChildrenComponents(false,NPCArray);

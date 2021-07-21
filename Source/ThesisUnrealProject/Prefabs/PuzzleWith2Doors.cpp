@@ -9,6 +9,8 @@
 #include "../GameModeTutorial.h"
 #include "../GameInstance/BartleManagerGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/WidgetComponent.h"
+#include "../UI/OverlayedText.h"
 
 // Sets default values
 APuzzleWith2Doors::APuzzleWith2Doors()
@@ -50,13 +52,26 @@ APuzzleWith2Doors::APuzzleWith2Doors()
 
 	DestrGate2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate2"));
 	DestrGate2->SetupAttachment(DestructibleGate);
+
+	UI = CreateDefaultSubobject<USceneComponent>(TEXT("UI"));
+	UI->SetupAttachment(RootComponent);
+
+	OverlayedTextGate = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextGate"));
+	OverlayedTextGate->SetupAttachment(UI);
+
+	OverlayedTextPuzzle = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextPuzzle"));
+	OverlayedTextPuzzle->SetupAttachment(UI);
 }
 
 // Called when the game starts or when spawned
 void APuzzleWith2Doors::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//Set overlayed Text
+	Cast<UOverlayedText>(OverlayedTextGate->GetWidget())->SetText("Hit 3 times the gate OR ...");
+	Cast<UOverlayedText>(OverlayedTextPuzzle->GetWidget())->SetText(" ... OR Solve the puzzle!");
+
 	APuzzleButton* Button1 = Cast<APuzzleButton>(Cast<UChildActorComponent>(Puzzle1)->GetChildActor());
 	APuzzleButton* Button2 = Cast<APuzzleButton>(Cast<UChildActorComponent>(Puzzle2)->GetChildActor());
 	APuzzleButton* Button3 = Cast<APuzzleButton>(Cast<UChildActorComponent>(Puzzle3)->GetChildActor());

@@ -12,6 +12,8 @@
 #include "../GameModeTutorial.h"
 #include "../GameInstance/BartleManagerGameInstance.h"
 #include "ShakeActorFallen.h"
+#include "Components/WidgetComponent.h"
+#include "../UI/OverlayedText.h"
 
 // Sets default values
 ASixthPuzzle::ASixthPuzzle()
@@ -60,12 +62,27 @@ ASixthPuzzle::ASixthPuzzle()
 	Trigger2->SetupAttachment(Triggers);
 	Trigger2->OnComponentBeginOverlap.AddDynamic(this, &ASixthPuzzle::OnOverlapEnd);
 
+	UI = CreateDefaultSubobject<USceneComponent>(TEXT("UI"));
+	UI->SetupAttachment(RootComponent);
+
+	OverlayedTextCoins = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextCoins"));
+	OverlayedTextCoins->SetupAttachment(UI);
+
+	OverlayedTextWall = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextWall"));
+	OverlayedTextWall->SetupAttachment(UI);
+
 }
 
 // Called when the game starts or when spawned
 void ASixthPuzzle::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//Set overlayed Text
+	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("Cross the platforms OR ...");
+	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("... OR Try a dark exploration.");
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
 
 	AFallenPlatform* FallenPlat = Cast<AFallenPlatform>(Cast<AShakeActorFallen>(FallenPlatform1->GetChildActor())->ShakingActor->GetChildActor());
 

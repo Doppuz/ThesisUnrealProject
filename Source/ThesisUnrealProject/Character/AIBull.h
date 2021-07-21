@@ -16,20 +16,11 @@ public:
 	// Sets default values for this pawn's properties
 	AAIBull();
 
-	/*UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	USceneComponent* Root;*/
-
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	class UBoxComponent* Collider;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	UStaticMeshComponent* Mesh;
-
-	/*UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	class UBoxComponent* HornCollider;
-
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	UStaticMeshComponent* HornMesh;*/
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Camera)
 	class USpringArmComponent* CameraArmComponent;

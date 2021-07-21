@@ -11,6 +11,8 @@
 #include "../GameInstance/BartleManagerGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "ShakeActor.h"
+#include "Components/WidgetComponent.h"
+#include "../UI/OverlayedText.h"
 
 // Sets default values
 AFifthPuzzle::AFifthPuzzle()
@@ -66,6 +68,15 @@ AFifthPuzzle::AFifthPuzzle()
 	Coin5 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Coin5"));
 	Coin5->SetupAttachment(Coins);
 
+	UI = CreateDefaultSubobject<USceneComponent>(TEXT("UI"));
+	UI->SetupAttachment(RootComponent);
+
+	OverlayedTextCoins = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextCoins"));
+	OverlayedTextCoins->SetupAttachment(UI);
+
+	OverlayedTextWall = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextWall"));
+	OverlayedTextWall->SetupAttachment(UI);
+
 	GatesDestructed = 0;
 	CoinsCollected = 0;
 }
@@ -74,6 +85,12 @@ AFifthPuzzle::AFifthPuzzle()
 void AFifthPuzzle::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//Set overlayed Text
+	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("Collects the coins OR ...");
+	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("... OR Explore the Dungeon!");
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
 
 	TArray<USceneComponent*> Gates;
 	DestructibleGate->GetChildrenComponents(false,Gates);

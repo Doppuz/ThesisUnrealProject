@@ -56,6 +56,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Components")
 	UChildActorComponent* Puzzle4;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	USceneComponent* UI;
+
+	//OverlayedText
+	UPROPERTY( VisibleAnywhere,Category = "Components")
+	class UWidgetComponent* OverlayedTextCoins;
+
+	UPROPERTY( VisibleAnywhere,Category = "Components" )
+	class UWidgetComponent* OverlayedTextWall;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
