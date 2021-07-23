@@ -26,3 +26,4 @@ Achiever: 50.0 Explorer: 50.0 Killer: 33.333336 Socializer: 66.666664 ----------
 Achiever: 66.666664 Explorer: 16.666672 Killer: 50.0 Socializer: 66.666664 ----------- AchieverQ: 50.0 ExplorerQ: 50.0 KillerQ: 50.0 SocializerQ: 50.0 
 Achiever: 33.333336 Explorer: 33.333336 Killer: 66.666664 Socializer: 66.666664 ----------- AchieverQ: 50.0 ExplorerQ: 50.0 KillerQ: 50.0 SocializerQ: 50.0 
 Achiever: 66.666664 Explorer: 50.0 Killer: 50.0 Socializer: 33.333336 ----------- AchieverQ: 46.666668 ExplorerQ: 20.000004 KillerQ: 59.999996 SocializerQ: 73.333336 
+Achiever: 83.333336 Explorer: 33.333336 Killer: 50.0 Socializer: 33.333336 ----------- AchieverQ: 50.0 ExplorerQ: 50.0 KillerQ: 50.0 SocializerQ: 50.0 

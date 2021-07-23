@@ -16,7 +16,7 @@
 #include "../AI/QuadAIController.h"
 #include "DrawDebugHelpers.h"
 #include "PawnInteractiveClass.h"
-#include "../GameModeTutorial.h"
+#include "../GameModeAbstract.h"
 #include "../UI/UIWidgetDialog.h"
 #include "Components/TextBlock.h"
 #include "Engine/TriggerVolume.h"
@@ -105,8 +105,6 @@ void ACharacterPawnQuad::BeginPlay(){
 	SetHealthPercentage(1.f);
 	
 	InitialRotation = CameraArmComponent->GetComponentRotation();
-	Collider->OnComponentBeginOverlap.AddDynamic(this,&ACharacterPawnQuad::OnOverlap);
-	//Collider->OnComponentHit.AddDynamic(this, &ACharacterPawnQuad::OnHit);
 }
 
 //Add damage. If healt == 0, destroy the actor. Switch case to apply changes to the manager.
@@ -119,7 +117,7 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 			CurrentHealth -= FMath::Min(CurrentHealth,Damage);
 
 			//Update player's UI healthBar		
-			AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+			AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 			UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 			DialogWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
 
@@ -201,7 +199,7 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 
 		//DrawDebugLine(GetWorld(),GetActorLocation(),EndPosition, FColor::Red,true);
 
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 
 		if(Hit.GetActor() != nullptr){
@@ -318,17 +316,9 @@ void ACharacterPawnQuad::StopCharacter(bool Value) {
 	Collider->SetSimulatePhysics(Value);
 }
 
-void ACharacterPawnQuad::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
-
-}
-
-void ACharacterPawnQuad::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
-	
-}
-
 void ACharacterPawnQuad::Speak() {
 
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 
 	if(InteractiveActor != nullptr || DialogWidget->TextBox->BoxContainer->IsVisible()){

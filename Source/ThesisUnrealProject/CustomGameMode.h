@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "Blueprint/UserWidget.h"
 #include "Graph/Graph.h"
+#include "GameModeAbstract.h"
 #include "CustomGameMode.generated.h"
 
 class AMazeCell;
@@ -18,7 +19,7 @@ class AGeneralElem;
 class AdaptingExperienceManager;
 
 UCLASS()
-class THESISUNREALPROJECT_API ACustomGameMode : public AGameModeBase
+class THESISUNREALPROJECT_API ACustomGameMode : public AGameModeAbstract
 {
 	GENERATED_BODY()
 	
@@ -38,12 +39,6 @@ public:
     float GetExplorerValue() const;
     float GetSocializerValue() const;
 
-	/** Remove the current menu widget and create a new one from the specified class, if provided. */
-    UFUNCTION(BlueprintCallable, Category = "UMG Game")
-    void ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass);
-
-	UUserWidget* GetCurrentWidgetUI();
-
     //NumberOfChest
     int NumberOfChest; 
 
@@ -60,14 +55,6 @@ protected:
 
     /** Called when the game starts. */
     virtual void BeginPlay() override;
-
-    /** The widget class we will use as our menu when the game starts. */
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UMG Game")
-    TSubclassOf<UUserWidget> StartingWidgetClass;
-
-    /** The widget instance that we are using as our menu. */
-    UPROPERTY()
-    UUserWidget* CurrentWidget;
 
 private:
 	

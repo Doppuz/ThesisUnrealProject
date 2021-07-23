@@ -15,6 +15,8 @@
 #include "Elements/ChestController.h"
 #include "Elements/CoinController.h"
 #include "Elements/CrateElements.h"
+#include "UI/UIWidgetDialog.h"
+#include "UI/UIBox.h"
 
 
 ACustomGameMode::ACustomGameMode() {
@@ -33,7 +35,10 @@ ACustomGameMode::~ACustomGameMode() {
 
 void ACustomGameMode::BeginPlay() {
     Super::BeginPlay();
-    ChangeMenuWidget(StartingWidgetClass);
+
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
+    DialogWidget->HideSizeBox();
+    DialogWidget->TextBox->BoxContainer->Visibility = ESlateVisibility::Hidden;
 
     //Initialize all the components for the maze creation.
     Maze = new TArray<TArray<AMazeCell*>>();
@@ -61,25 +66,6 @@ void ACustomGameMode::BeginPlay() {
     MazeGraph->SetVisitedToZero();
 }
 
-//Assign the UI widget passed as parameter to the screen.
-void ACustomGameMode::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass) {
-    if (CurrentWidget != nullptr){
-        CurrentWidget->RemoveFromViewport();
-        CurrentWidget = nullptr;
-    }
-    if (NewWidgetClass != nullptr){
-        CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), NewWidgetClass);
-        if (CurrentWidget != nullptr){
-            CurrentWidget->AddToViewport();
-        }
-    }
-}
-
-//Get current UI
-UUserWidget* ACustomGameMode::GetCurrentWidgetUI() {
-    return CurrentWidget;
-}
-
 
 //--- Get and Set for the coins and world percentage.
 
@@ -98,21 +84,3 @@ float ACustomGameMode::GetPercentage() const{
 void ACustomGameMode::IncreasePercentage() {
     GetGameState<ACustomGameState>()->MapPercentage += MapIncrement;
 }
-
-/*float ACustomGameMode::GetAchieverValue() const{
-    return GetGameState<ACustomGameState>()->Achiever;
-}
-
-float ACustomGameMode::GetKillerValue() const{
-    return GetGameState<ACustomGameState>()->Killer;    
-}
-
-float ACustomGameMode::GetExplorerValue() const{
-    return GetGameState<ACustomGameState>()->Explorer;
-}
-
-float ACustomGameMode::GetSocializerValue() const{
-    return GetGameState<ACustomGameState>()->Socializer;    
-}*/
-
-//-------------

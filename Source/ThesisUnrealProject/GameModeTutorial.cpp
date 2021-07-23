@@ -25,6 +25,10 @@ void AGameModeTutorial::BeginPlay() {
     
     Super::BeginPlay();
 
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
+    DialogWidget->HideSizeBox();
+    DialogWidget->TextBox->BoxContainer->Visibility = ESlateVisibility::Hidden;
+
     ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
     MyPawn->StopCharacter(false);
     
@@ -87,38 +91,6 @@ void AGameModeTutorial::BeginPlay() {
 
     }
 
-    ChangeMenuWidget(WidgetClass);
-	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
-    DialogWidget->HideSizeBox();
-    DialogWidget->TextBox->BoxContainer->Visibility = ESlateVisibility::Hidden;
-}
-
-//Assign the UI widget passed as parameter to the screen.
-void AGameModeTutorial::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass) {
-    
-    if (CurrentWidget != nullptr){
-
-        CurrentWidget->RemoveFromViewport();
-        CurrentWidget = nullptr;
-
-    }
-
-    if (NewWidgetClass != nullptr){
-        
-        CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), NewWidgetClass);
-        
-        if (CurrentWidget != nullptr){
-
-            CurrentWidget->AddToViewport();
-            
-        }
-
-    }
-}
-
-//Get current UI
-UUserWidget* AGameModeTutorial::GetCurrentWidgetUI() {
-    return CurrentWidget;
 }
 
 //--- Get and Set for the coins
