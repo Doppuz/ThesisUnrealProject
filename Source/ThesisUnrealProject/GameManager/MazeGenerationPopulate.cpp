@@ -47,8 +47,8 @@ void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, T
 
     if(Current->WallNumbers == 3 && !(Current->I == 0 && Current->J == 0))
         Wall3Cells.Add(Current,Cost);
-    else if (Current->NumberRoom == -1)
-        Current->PopulateElem(CrateElementsClass);
+    //else if (Current->NumberRoom == -1)
+    //    Current->PopulateElem(CrateElementsClass);
     
     //Last Cell of the current path. 
     AMazeCell* LastCell = CurrentVisitedCell[CurrentVisitedCell.Num() - 1];
@@ -95,6 +95,26 @@ void MazeGenerationPopulate::DynamicDepthVisitWrapper(AMazeCell* Current, int De
 void MazeGenerationPopulate::SetDynamicVisitedToZero() {
 	for(AMazeCell* Cell: OldPath)
     	Cell->bDynamicIsVisited = false;
+}
+
+void MazeGenerationPopulate::AddDoorsWrapper(AMazeCell* Current){
+    
+    TArray<Side*> Sides = MazeGraph->GetSides(Current);
+
+    for(Side* S:Sides){
+        int a = 0;
+    }
+
+    //if(Sides.Num() != 0)
+    //    AddDoorsWrapper(Sides[0]->To);
+
+}
+
+//Used to add Doors to block the main path.
+void MazeGenerationPopulate::AddDoors() {
+    
+    AddDoorsWrapper(MaxPath[0]);
+    
 }
 
 

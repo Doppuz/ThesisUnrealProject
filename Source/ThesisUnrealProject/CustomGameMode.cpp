@@ -57,7 +57,8 @@ void ACustomGameMode::BeginPlay() {
     float p = 0;
 
     //Check for cells with 3 walls.
-    //Populate->DepthVisit((*Maze)[0][0]);
+    Populate->DepthVisit((*Maze)[0][0]);
+    Populate->AddDoors();
     
     //MazeGraph->SetVisitedToZero();
     //Populate->DynamicDepthVisit((*Maze)[0][0],5);

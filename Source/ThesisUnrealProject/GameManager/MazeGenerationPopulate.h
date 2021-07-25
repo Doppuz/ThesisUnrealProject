@@ -23,6 +23,7 @@ public:
 	void DepthVisit(AMazeCell* Start);
 	void DynamicDepthVisit(AMazeCell* Current);
 	void PopulateChest();
+	void AddDoors();
 
 private:
 	//Cell's graph.
@@ -58,4 +59,7 @@ private:
 	void DynamicDepthVisitWrapper(AMazeCell* Current, int DepthLimit);
 
 	void SetDynamicVisitedToZero();
+
+	void AddDoorsWrapper(AMazeCell* Current);
+
 };

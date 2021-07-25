@@ -65,7 +65,7 @@ void MazeGenerationCreation::InitializeMaze() {
     for (int i = 0; i < Height; i++) {
         TArray<AMazeCell*> Row;
         for (int j = 0; j < Length; j++) {
-            FVector Origin(i * (-549.5) * 1, j * 549.5 * 1, 0); //1100 --- 1.5
+            FVector Origin(i * (-768) * 1, j * 768 * 1, 0); //1100 --- 1.5
             FRotator Rotation(0, 0, 0);
             AMazeCell* CellActor =
                 World->SpawnActor<AMazeCell>(CellClass, Origin, Rotation);
