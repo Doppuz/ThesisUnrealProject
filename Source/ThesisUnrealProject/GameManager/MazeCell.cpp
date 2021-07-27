@@ -102,6 +102,33 @@ void AMazeCell::HideWall(int WallNumber) {
 
 }
 
+FPositionRotation AMazeCell::GetWallPosition(int WallNumber) {
+	
+	FPositionRotation PosRot;
+
+	switch(WallNumber){
+		case 1:
+			PosRot.Position = MeshWall1Component->GetComponentLocation();
+			PosRot.Rotation = MeshWall1Component->GetComponentRotation();
+			return PosRot;
+		case 2:
+			PosRot.Position = MeshWall2Component->GetComponentLocation();
+			PosRot.Rotation = MeshWall2Component->GetComponentRotation();
+			return PosRot;
+		case 3:
+			PosRot.Position = MeshWall3Component->GetComponentLocation();
+			PosRot.Rotation = MeshWall3Component->GetComponentRotation();
+			return PosRot;
+		case 4:
+			PosRot.Position = MeshWall4Component->GetComponentLocation();
+			PosRot.Rotation = MeshWall4Component->GetComponentRotation();
+			return PosRot;
+		default:
+			UE_LOG(LogTemp,Warning,TEXT("Not valid wall number"));
+			return PosRot;
+	}
+}
+
 void AMazeCell::AddElem(AActor* Actor) {
 	ObjectsInside.Add(Actor);
 }
@@ -116,6 +143,28 @@ void AMazeCell::RemoveAllElem() {
 		ObjectsInside[i]->Destroy();
 	}
 	ObjectsInside.Empty();
+}
+
+int AMazeCell::GiveFrontWall(AMazeCell* AdjacentCell) {
+	
+	if(I != AdjacentCell->I){
+		
+		if(I < AdjacentCell->I)
+			return 3;
+		else
+			return 1;
+
+	}else if(J != AdjacentCell->J){
+		
+		if(J < AdjacentCell->J)
+			return 2;
+		else
+			return 4;
+
+	}
+
+	return -1;
+
 }
 
 //Method for spawning the CrateElems in front of a wall.

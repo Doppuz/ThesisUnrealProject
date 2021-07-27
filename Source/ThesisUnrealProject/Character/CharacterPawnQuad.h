@@ -112,8 +112,8 @@ public:
 	USceneComponent* FollowAllyPosition;
 
 	//Health Bar
-	UPROPERTY( VisibleAnywhere )
-	class UWidgetComponent* HealthWidgetComponent;
+	//UPROPERTY( VisibleAnywhere )
+	//class UWidgetComponent* HealthWidgetComponent;
 
 	void SetHealthPercentage(float);
 

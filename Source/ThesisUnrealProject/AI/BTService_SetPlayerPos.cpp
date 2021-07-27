@@ -4,7 +4,6 @@
 #include "BTService_SetPlayerPos.h"
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackBoardComponent.h"
-#include "../Character/CharacterController.h"
 #include "AIController.h"
 #include "NavigationSystem.h"
 

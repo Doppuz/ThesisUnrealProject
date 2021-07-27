@@ -3,47 +3,54 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "MazePopulate.generated.h"
 
 class Graph;
 class AMazeCell;
 class AChestController;
 class ACoinController;
 class AGeneralElem;
+class ADoor;
 
-/**
- * 
- */
-class THESISUNREALPROJECT_API MazeGenerationPopulate
+UCLASS()
+class THESISUNREALPROJECT_API AMazePopulate : public AActor
 {
-public:
-	MazeGenerationPopulate(Graph*, TSubclassOf<AChestController>, TSubclassOf<ACoinController>,
-		TSubclassOf<AGeneralElem>, UWorld*);
-	~MazeGenerationPopulate();
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	AMazePopulate();
 
 	void DepthVisit(AMazeCell* Start);
 	void DynamicDepthVisit(AMazeCell* Current);
 	void PopulateChest();
 	void AddDoors();
 
-private:
 	//Cell's graph.
 	Graph* MazeGraph = nullptr;
+
+private:
 
 	//I sort all the cell with 3 walls.
 	TMap<AMazeCell*,int> Wall3Cells;
 
 	//Class for chest spawn.
+	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AChestController> ChestClass;
 
 	//Class for coins spawn.
+	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ACoinController> CoinClass;
 
-	UWorld* World;
-
 	//Class for Elements spawn.
+	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AGeneralElem> CrateElementsClass;
 
-	//Contains the path the leads to the exit.
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ADoor> DoorClass;
+
+	//Contains the path that leads to the exit.
 	TArray<AMazeCell*> MaxPath;
 
 	//Contains the last path of the Dynamic visit.
@@ -60,6 +67,7 @@ private:
 
 	void SetDynamicVisitedToZero();
 
-	void AddDoorsWrapper(AMazeCell* Current);
+	void AddDoorsWrapper(int);
+
 
 };

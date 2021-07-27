@@ -10,7 +10,6 @@
 #include "../GameManager/MazeCell.h"
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
-#include "../GameManager/MazegenerationPopulate.h"
 #include "../Projectile/SquaredProjectile.h"
 #include "Components/PrimitiveComponent.h"
 #include "../AI/QuadAIController.h"

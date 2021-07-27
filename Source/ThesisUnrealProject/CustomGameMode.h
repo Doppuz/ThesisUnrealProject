@@ -45,61 +45,11 @@ public:
     //NumberOfChest
     int NumberOfCoins; 
 
-    //Graph of the maze
-	Graph* MazeGraph;
-
-	//Pointer to the MazeGenerationPopolate class
-	MazeGenerationPopulate* Populate;
-
+ 
 protected:
 
     /** Called when the game starts. */
     virtual void BeginPlay() override;
-
-private:
-	
-//---------- Parameter for Maze generation ------------------
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int Length = 10;
-
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int Height = 10;
-
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int MazeObstacle = 0;
-
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int Maze2Room = 4;
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int Maze3Room = 0;
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int Maze4Room = 0;
-
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	TSubclassOf<AMazeCell> CellClass;
-
-	//Contains all the cells for the creation.
-	TArray<TArray<AMazeCell*>> *Maze = nullptr;
-	
-	//Contains all the rooms
-	TArray<RoomMaze> *Rooms = nullptr;
-
-	//Pointer to the MazeGenerationCreation class
-	MazeGenerationCreation* Generator;
-
-	//Pointer to the AdaptingExperienceManager class
-	AdaptingExperienceManager* Adapting;
-
-	FVector PlayerPosition;
-//---------------------------------------------------
-	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<AChestController> ChestClass;
-
-	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<ACoinController> CoinClass;
-
-	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<AGeneralElem> CrateElementsClass;
 
 //World percentage increment
     float MapIncrement;

@@ -8,6 +8,16 @@
 
 class AGeneralElem;
 
+USTRUCT(BlueprintType)
+struct FPositionRotation{
+    
+	GENERATED_BODY()
+
+    FVector Position;
+	FRotator Rotation;
+
+};
+
 UCLASS()
 class THESISUNREALPROJECT_API AMazeCell : public AActor
 {
@@ -36,10 +46,14 @@ public:
 	//Methods
 	void HideObstacleWall();
 	void HideWall(int WallNumber);
+	FPositionRotation GetWallPosition(int);
 
 	void AddElem(AActor*);
 	void RemoveElem(AActor*);
 	void RemoveAllElem();
+
+	//Given an adjacent cell, returns the wall beetween the 2 cells. 
+	int GiveFrontWall(AMazeCell*);
 
 	void PopulateElem(TSubclassOf<AGeneralElem>);
 

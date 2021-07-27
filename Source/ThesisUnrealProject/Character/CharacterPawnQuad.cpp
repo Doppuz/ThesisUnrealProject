@@ -10,7 +10,6 @@
 #include "../GameManager/MazeCell.h"
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
-#include "../GameManager/MazegenerationPopulate.h"
 #include "../Projectile/SquaredProjectile.h"
 #include "Components/PrimitiveComponent.h"
 #include "../AI/QuadAIController.h"
@@ -70,8 +69,8 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	SpotLight->SetWorldRotation(FRotator(-20.f,0.f,0.f));	
 	SpotLight->Intensity = 0.f;	
 
-	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Widget"));
-	HealthWidgetComponent->SetupAttachment(RootComponent);
+	//HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Widget"));
+	//HealthWidgetComponent->SetupAttachment(RootComponent);
 
 	MovementSpeed = 400.f;
 	RotationSpeed = 400.f;
@@ -304,10 +303,10 @@ void ACharacterPawnQuad::SetMousePointer(bool Enable) {
 }
 
 void ACharacterPawnQuad::SetHealthPercentage(float Percentage){
-	UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
+	/*UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
 
 	if(HealthWidget != nullptr)
-		HealthWidget->HealthBar->SetPercent(Percentage);
+		HealthWidget->HealthBar->SetPercent(Percentage);*/
 }
 
 //Stop/Start the physics and the movement

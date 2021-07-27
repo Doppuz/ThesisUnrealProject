@@ -1,28 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MazeGenerationPopulate.h"
+#include "MazePopulate.h"
 #include "MazeCell.h"
 #include "../Graph/Graph.h"
 #include "../Elements/ChestController.h"
 #include "../Elements/CoinController.h"
 #include "../CustomGameMode.h"
+#include "../Elements/Door.h"
 
-MazeGenerationPopulate::MazeGenerationPopulate(Graph* MazeGraph, TSubclassOf<AChestController> ChestClass, TSubclassOf<ACoinController> CoinClass,
-                                            TSubclassOf<AGeneralElem> CrateElementsClass, UWorld* World){
-    this->MazeGraph = MazeGraph;
-    this->ChestClass = ChestClass;
-    this->World = World;
-    this->CoinClass = CoinClass;
-    this->CrateElementsClass = CrateElementsClass;
-}
-
-MazeGenerationPopulate::~MazeGenerationPopulate(){
+// Sets default values
+AMazePopulate::AMazePopulate(){
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
 //DepthVisit to search 3 walls-cells and to search the longest path.
-void MazeGenerationPopulate::DepthVisit(AMazeCell* Start) {
+void AMazePopulate::DepthVisit(AMazeCell* Start) {
     MazeGraph->SetVisitedToZero();
     TArray<AMazeCell*> MazeCellMax;
     DepthVisitWrapper(Start,0, TArray<AMazeCell*>(),MazeCellMax);
@@ -34,7 +29,7 @@ void MazeGenerationPopulate::DepthVisit(AMazeCell* Start) {
     
 }
 
-void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,
+void AMazePopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,
         TArray<AMazeCell*> & MazeCellMax) {
     TArray<Side*> Sides = MazeGraph->GetSides(Current); 
     Current->bIsVisited = true;
@@ -61,7 +56,7 @@ void MazeGenerationPopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, T
 }
 
 //Dynamic visit that is computed every time I reach a new cell.
-void MazeGenerationPopulate::DynamicDepthVisit(AMazeCell* Current) {
+void AMazePopulate::DynamicDepthVisit(AMazeCell* Current) {
     NewPath.Empty();
     SetDynamicVisitedToZero();
     DynamicDepthVisitWrapper(Current,9);
@@ -72,7 +67,7 @@ void MazeGenerationPopulate::DynamicDepthVisit(AMazeCell* Current) {
 }
 
 //Wrapper to the visit. New path has the new Nodes. OldPath has the nodes that are not present in the new path anymore.
-void MazeGenerationPopulate::DynamicDepthVisitWrapper(AMazeCell* Current, int DepthLimit) {
+void AMazePopulate::DynamicDepthVisitWrapper(AMazeCell* Current, int DepthLimit) {
     
     Current->bDynamicIsVisited = true;
 
@@ -92,34 +87,50 @@ void MazeGenerationPopulate::DynamicDepthVisitWrapper(AMazeCell* Current, int De
 }
 
 //Set at 0 the value of bDynamicVisited variable in AMazeCell to 0.
-void MazeGenerationPopulate::SetDynamicVisitedToZero() {
+void AMazePopulate::SetDynamicVisitedToZero() {
 	for(AMazeCell* Cell: OldPath)
     	Cell->bDynamicIsVisited = false;
 }
 
-void MazeGenerationPopulate::AddDoorsWrapper(AMazeCell* Current){
-    
-    TArray<Side*> Sides = MazeGraph->GetSides(Current);
+void AMazePopulate::AddDoorsWrapper(int Index){
 
-    for(Side* S:Sides){
-        int a = 0;
+    UE_LOG(LogTemp,Warning,TEXT("%i %i"),MaxPath[Index]->I,MaxPath[Index]->J);
+
+	for(Side* Sides: MazeGraph->GetSides(MaxPath[Index])){
+		
+		if(Sides->To->NumberRoom != -1){
+			
+			if(Index + 1 < MaxPath.Num()){
+				int WallNumber = MaxPath[Index]->GiveFrontWall(MaxPath[Index + 1]);
+
+				if(WallNumber != -1){
+					FPositionRotation PosRot= MaxPath[Index]->GetWallPosition(WallNumber);
+					GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position,FRotator(0.f,90.f,0.f) + PosRot.Rotation);
+				}
+			}
+
+		}
+
+	}
+
+    if(Index + 1 < MaxPath.Num()){
+        AddDoorsWrapper(++Index);
     }
-
     //if(Sides.Num() != 0)
     //    AddDoorsWrapper(Sides[0]->To);
 
 }
 
 //Used to add Doors to block the main path.
-void MazeGenerationPopulate::AddDoors() {
+void AMazePopulate::AddDoors() {
     
-    AddDoorsWrapper(MaxPath[0]);
+    AddDoorsWrapper(0);
     
 }
 
 
 //Spawn the chests in the position where there are 3 walls.
-void MazeGenerationPopulate::PopulateChest() {
+void AMazePopulate::PopulateChest() {
     TArray<AMazeCell*> Cells;
     FVector Position;
     FRotator Rotation;
@@ -130,7 +141,7 @@ void MazeGenerationPopulate::PopulateChest() {
 
     Wall3Cells.GetKeys(Cells);
 
-    int ChestNumber = Cast<ACustomGameMode>(World->GetAuthGameMode())->NumberOfChest;
+    int ChestNumber = Cast<ACustomGameMode>(GetWorld()->GetAuthGameMode())->NumberOfChest;
     
     if(Cells.Num() < ChestNumber)
         UE_LOG(LogTemp,Warning,TEXT("Not enough cells to put chests in."));
@@ -141,7 +152,7 @@ void MazeGenerationPopulate::PopulateChest() {
             Cells[(int) Cells.Num() / (I+1) - 1]->GetActorLocation().Y,
             Cells[(int) Cells.Num() / (I+1) - 1]->GetActorLocation().Z + 500);
         Rotation = FRotator(0,-90 + 90 * (Cells[(int) Cells.Num() / (I+1) - 1]->LastHiddenWall - 1),0);
-        AActor* Chest = World->SpawnActor<AChestController>(ChestClass,Position,Rotation);
+        AActor* Chest = GetWorld()->SpawnActor<AChestController>(ChestClass,Position,Rotation);
         //Chest->SetFolderPath(TEXT("Chests"));
         Cells[(int) Cells.Num() / (I+1) - 1]->AddElem(Chest);
         Cells.RemoveAt((int) Cells.Num() / (I+1) - 1);
@@ -153,7 +164,7 @@ void MazeGenerationPopulate::PopulateChest() {
             Cells[I]->GetActorLocation().Y,
             Cells[I]->GetActorLocation().Z + 200);
         Rotation = FRotator(0,0,0);
-        AActor* Coin = World->SpawnActor<ACoinController>(CoinClass,Position,Rotation);
+        AActor* Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass,Position,Rotation);
         Cells[(int) Cells.Num() / (I+1) - 1]->AddElem(Coin);
         //Coin->SetFolderPath(TEXT("Coins"));
     }
