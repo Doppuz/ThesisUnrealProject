@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BartleManagerGameInstance.h"
+#include "AdaptiveExperience.h"
 
-UBartleManagerGameInstance::UBartleManagerGameInstance() {
-    
+AdaptiveExperience::AdaptiveExperience(){
+
     IncreaseValue = 50.f / 6.f;
 
     Types.Add(Type::Achiever, 50.f);
@@ -19,22 +19,13 @@ UBartleManagerGameInstance::UBartleManagerGameInstance() {
 
 }
 
-void UBartleManagerGameInstance::Init() {
-    Super::Init();
-}
-
-void UBartleManagerGameInstance::Shutdown() {
-    Super::Shutdown();
-}
-
-void UBartleManagerGameInstance::StartGameInstance() {
-    Super::StartGameInstance();
+AdaptiveExperience::~AdaptiveExperience()
+{
 }
 
 //Change these value in an equally distributed way. (-1 means that I don't want to touch that value).
-void UBartleManagerGameInstance::EquallyDistributedUpdate(Type IncreasedType,float IncreasedValue,Type DecreasedType,float DecreasedValue) {
+void AdaptiveExperience::EquallyDistributedUpdate(Type IncreasedType,float IncreasedValue,Type DecreasedType,float DecreasedValue) {
     
-
     if(IncreasedType != -1)
         Types[IncreasedType] += IncreasedValue;
 
@@ -51,7 +42,7 @@ void UBartleManagerGameInstance::EquallyDistributedUpdate(Type IncreasedType,flo
     UE_LOG(LogTemp,Warning,TEXT(" Socializer: %f"), Types[Type::Socializer]);
 }
 
-void UBartleManagerGameInstance::EquallyDistributedUpdate(Type IncreasedType, Type DecreasedType) {
+void AdaptiveExperience::EquallyDistributedUpdate(Type IncreasedType, Type DecreasedType) {
 
     if(IncreasedType != -1)
         Types[IncreasedType] += IncreaseValue;
@@ -69,7 +60,7 @@ void UBartleManagerGameInstance::EquallyDistributedUpdate(Type IncreasedType, Ty
     UE_LOG(LogTemp,Warning,TEXT(" Socializer: %f"), Types[Type::Socializer]);
 }
 
-void UBartleManagerGameInstance::DistributedUpdate(Type IncreasedType, Type DecreasedType) {
+void AdaptiveExperience::DistributedUpdate(Type IncreasedType, Type DecreasedType) {
     
 
     /*if((*Map)[IncreasedType] < (*Map)[DecreasedType]){
@@ -108,13 +99,13 @@ void UBartleManagerGameInstance::DistributedUpdate(Type IncreasedType, Type Decr
     UE_LOG(LogTemp,Warning,TEXT(" Socializer: %f"), Types[Type::Socializer]);
 }
 
-TMap<Type,float> UBartleManagerGameInstance::GetBartleTypes() {
+TMap<Type,float> AdaptiveExperience::GetBartleTypes() {
     
     return Types;
 
 }
 
-void UBartleManagerGameInstance::ResetValue() {
+void AdaptiveExperience::ResetValue() {
     Types[Type::Achiever] = 50;
     Types[Type::Explorer] = 50;
     Types[Type::Socializer] = 50;

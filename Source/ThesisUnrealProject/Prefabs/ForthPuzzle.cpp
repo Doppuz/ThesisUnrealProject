@@ -9,9 +9,8 @@
 #include "Components/SphereComponent.h"
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
-#include "../GameInstance/BartleManagerGameInstance.h"
-#include "Components/WidgetComponent.h"
 #include "../UI/OverlayedText.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 AForthPuzzle::AForthPuzzle()
@@ -131,8 +130,8 @@ void AForthPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 		GameMode->Levels.Add("FifthChoice");
 
 		//Update Bartle's values
-		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->DistributedUpdate(Type::Socializer,Type::Explorer);
+		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->DistributedUpdate(Type::Socializer,Type::Explorer);*/
 
 		SpokenAllies = -1;
 		PuzzleCount = -1;
@@ -171,8 +170,8 @@ void AForthPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 						GameMode->Levels.Add("FifthChoice");
 
 					//Update Bartle's values
-					UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-					Bartle->DistributedUpdate(Type::Explorer,Type::Socializer);
+					/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+					Bartle->DistributedUpdate(Type::Explorer,Type::Socializer);*/
 
 					SpokenAllies = -1;
 					PuzzleCount = -1;

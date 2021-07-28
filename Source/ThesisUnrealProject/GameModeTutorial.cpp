@@ -12,7 +12,6 @@
 #include "CheckPoints/SaveGameData.h"
 #include "CustomGameState.h"
 #include "Engine/LevelStreaming.h"
-#include "GameInstance/BartleManagerGameInstance.h"
 #include "Character/CharacterPawnQuad.h"
 
 AGameModeTutorial::AGameModeTutorial() {
@@ -45,7 +44,7 @@ void AGameModeTutorial::BeginPlay() {
         if(LoadedGame->PlayerLocation != FVector(0.f,0.f,900000.22f))
             MyPawn->SetActorLocation(LoadedGame->PlayerLocation);
 
-        UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+        /*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
         //Load the bartle's type data.
         Bartle->Types[Type::Achiever] = LoadedGame->Achiever;
@@ -56,7 +55,7 @@ void AGameModeTutorial::BeginPlay() {
         Bartle->TypesQuestionary[Type::Achiever] = LoadedGame->AchieverQ;
         Bartle->TypesQuestionary[Type::Explorer] = LoadedGame->ExplorerQ;
         Bartle->TypesQuestionary[Type::Killer] = LoadedGame->KillerQ;
-        Bartle->TypesQuestionary[Type::Socializer] = LoadedGame->SocializerQ;
+        Bartle->TypesQuestionary[Type::Socializer] = LoadedGame->SocializerQ;*/
 
         //Load levels
         Levels = LoadedGame->Levels;

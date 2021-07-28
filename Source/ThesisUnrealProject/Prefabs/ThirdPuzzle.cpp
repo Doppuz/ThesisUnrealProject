@@ -9,10 +9,9 @@
 #include "Components/SphereComponent.h"
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
-#include "../GameInstance/BartleManagerGameInstance.h"
-#include "ShakeActor.h"
-#include "Components/WidgetComponent.h"
 #include "../UI/OverlayedText.h"
+#include "Components/WidgetComponent.h"
+#include "ShakeActor.h"
 
 // Sets default values
 AThirdPuzzle::AThirdPuzzle()
@@ -145,8 +144,8 @@ void AThirdPuzzle::Destruction(ADestructibleElements* Elem) {
 			GameMode->Levels.Add("ThirdChoice");
 
 		//Update Bartle's values
-		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);
+		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);*/
 	
 	}
 
@@ -178,8 +177,8 @@ void AThirdPuzzle::CoinCollected() {
 			GameMode->Levels.Add("ThirdChoice");
 
 		//Update Bartle's values
-		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->EquallyDistributedUpdate(Type::Achiever,Type::Explorer);
+		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->EquallyDistributedUpdate(Type::Achiever,Type::Explorer);*/
 	
 	}
 

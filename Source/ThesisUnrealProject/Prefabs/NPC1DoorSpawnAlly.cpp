@@ -9,7 +9,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "../Character/AICharacterPawnQuad.h"
 #include "../GameModeTutorial.h"
-#include "../GameInstance/BartleManagerGameInstance.h"
 
 // Sets default values
 ANPC1DoorSpawnAlly::ANPC1DoorSpawnAlly()
@@ -89,8 +88,8 @@ void ANPC1DoorSpawnAlly::LeftChoiceEvent() {
 		GameMode->Levels.Add("SixthChoice");
 
 	//Update Bartle's values
-	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->DistributedUpdate(Type::Socializer,Type::Killer);
+	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->DistributedUpdate(Type::Socializer,Type::Killer);*/
 	
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 
@@ -113,8 +112,8 @@ void ANPC1DoorSpawnAlly::RightChoiceEvent() {
 	GameMode->Levels.Add("SixthChoice");
 
 	//Update Bartle's values
-	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->DistributedUpdate(Type::Killer,Type::Socializer);
+	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->DistributedUpdate(Type::Killer,Type::Socializer);*/
 	
 	Trigger->SetCollisionProfileName("NoCollision");
 

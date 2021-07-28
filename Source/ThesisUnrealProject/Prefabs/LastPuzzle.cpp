@@ -11,9 +11,8 @@
 #include "../Elements/CoinController.h"
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
-#include "../GameInstance/BartleManagerGameInstance.h"
-#include "Components/WidgetComponent.h"
 #include "../UI/OverlayedText.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 ALastPuzzle::ALastPuzzle()
@@ -111,8 +110,8 @@ void ALastPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 		Door01->bOpenDoor = true;
 
 		//Update Bartle's values
-		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->DistributedUpdate(Type::Socializer,Type::Achiever);
+		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->DistributedUpdate(Type::Socializer,Type::Achiever);*/
 
 	}
 
@@ -144,8 +143,8 @@ void ALastPuzzle::CoinCollected() {
 		Door01->bOpenDoor = true;
 
 		//Update Bartle's values
-		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->DistributedUpdate(Type::Achiever,Type::Socializer);
+		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->DistributedUpdate(Type::Achiever,Type::Socializer);*/
 
 	}
 }

@@ -8,7 +8,6 @@
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "../GameModeTutorial.h"
-#include "../GameInstance/BartleManagerGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "ShakeActor.h"
 #include "Components/WidgetComponent.h"
@@ -125,8 +124,8 @@ void AFifthPuzzle::Destruction(ADestructibleElements* Elem) {
 		Door03->bOpenDoor = true;
 
 		//Update Bartle's values
-		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->DistributedUpdate(Type::Explorer,Type::Achiever);
+		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->DistributedUpdate(Type::Explorer,Type::Achiever);*/
 
 	}
 
@@ -143,8 +142,8 @@ void AFifthPuzzle::CoinCollected() {
 		Door02->bOpenDoor = true;
 	
 		//Update Bartle's values
-		UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->DistributedUpdate(Type::Achiever,Type::Explorer);
+		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		Bartle->DistributedUpdate(Type::Achiever,Type::Explorer);*/
 
 	}
 

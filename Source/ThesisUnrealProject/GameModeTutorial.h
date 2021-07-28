@@ -13,6 +13,7 @@ class APuzzleButton;
 class ADoor;
 class ATriggerVolume;
 
+enum Type {Achiever, Killer, Socializer, Explorer};
 
 UCLASS()
 class THESISUNREALPROJECT_API AGameModeTutorial : public AGameModeAbstract

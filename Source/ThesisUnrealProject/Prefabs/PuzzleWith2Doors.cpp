@@ -7,7 +7,6 @@
 #include "../Elements/DestructibleElements.h"
 #include "Components/BoxComponent.h"
 #include "../GameModeTutorial.h"
-#include "../GameInstance/BartleManagerGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/WidgetComponent.h"
 #include "../UI/OverlayedText.h"
@@ -132,8 +131,8 @@ void APuzzleWith2Doors::CheckPuzzleActor() {
 	Cast<ADestructibleElements>(DestrGate2->GetChildActor())->DamageValue = 0;
 
 	//Update Bartle's values
-	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Explorer,Type::Killer);
+	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->EquallyDistributedUpdate(Type::Explorer,Type::Killer);*/
 
 	//Open the doors.
 	ADoor* ActorDoor1 = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
@@ -169,8 +168,8 @@ void APuzzleWith2Doors::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 void APuzzleWith2Doors::DestructionEvent(ADestructibleElements* Elem) {
 	
 	//Update Bartle's values
-	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Killer,Type::Explorer);
+	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->EquallyDistributedUpdate(Type::Killer,Type::Explorer);*/
 
 }
 
