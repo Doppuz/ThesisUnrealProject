@@ -112,7 +112,7 @@ void AdaptiveExperience::ResetValue() {
     Types[Type::Killer] = 50;
 }
 
-void UBartleManagerGameInstance::SaveFile(FString) {
+void AdaptiveExperience::SaveFile(FString) {
     FString file = FPaths::ProjectDir();
     file.Append(TEXT("Result.txt"));
 
@@ -137,6 +137,6 @@ void UBartleManagerGameInstance::SaveFile(FString) {
 
 }
 
-void UBartleManagerGameInstance::LoadFile(FString) {
+void AdaptiveExperience::LoadFile(FString) {
     
 }

@@ -46,8 +46,8 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	UStaticMeshComponent* Mesh;
 
-	//UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	//UStaticMeshComponent* EquipmentMesh;
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	UStaticMeshComponent* EquipmentMesh;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	USceneComponent* ProjectileSpawnPosition;
@@ -112,8 +112,8 @@ public:
 	USceneComponent* FollowAllyPosition;
 
 	//Health Bar
-	//UPROPERTY( VisibleAnywhere )
-	//class UWidgetComponent* HealthWidgetComponent;
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	class UWidgetComponent* HealthWidgetComponent;
 
 	void SetHealthPercentage(float);
 

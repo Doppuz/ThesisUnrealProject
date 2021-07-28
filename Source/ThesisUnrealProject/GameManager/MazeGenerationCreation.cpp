@@ -280,6 +280,10 @@ bool MazeGenerationCreation::CheckNearbyRoom(int Row, int Column, int RoomSize) 
 
     }
 
+    for(int i = 0; i < 20; i++){
+            UE_LOG(LogTemp,Warning,TEXT("22"));
+        }
+
     return false;
 
 }

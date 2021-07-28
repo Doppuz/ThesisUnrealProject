@@ -35,10 +35,10 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
 
-	/*EquipmentMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EquipmentMesh"));
-	EquipmentMesh->SetupAttachment(RootComponent);*/
+	EquipmentMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EquipmentMesh"));
+	EquipmentMesh->SetupAttachment(RootComponent);
 
-	//EquipmentMesh->SetWorldLocation(FVector(0,0,32));
+	EquipmentMesh->SetWorldLocation(FVector(0,0,32));
 
 	ProjectileSpawnPosition = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPosition"));
 	ProjectileSpawnPosition->SetupAttachment(RootComponent);
@@ -63,8 +63,8 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	SpotLight->SetWorldRotation(FRotator(-20.f,0.f,0.f));	
 	SpotLight->Intensity = 0.f;	
 
-	//HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Widget"));
-	//HealthWidgetComponent->SetupAttachment(RootComponent);
+	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Widget"));
+	HealthWidgetComponent->SetupAttachment(RootComponent);
 
 	MovementSpeed = 400.f;
 	RotationSpeed = 400.f;
@@ -110,9 +110,9 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 			CurrentHealth -= FMath::Min(CurrentHealth,Damage);
 
 			//Update player's UI healthBar		
-			/*AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+			AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 			UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
-			DialogWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);*/
+			DialogWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
 
 			InvisibleAnimation();
 			bCharacterInvincible = true;	
@@ -192,19 +192,19 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 
 		//DrawDebugLine(GetWorld(),GetActorLocation(),EndPosition, FColor::Red,true);
 
-		/*AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
-		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());*/
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 
 		if(Hit.GetActor() != nullptr){
 			
 			InteractiveActor = Cast<APawnInteractiveClass>(Hit.GetActor());
 
-			//DialogWidget->ViewPopUp();
+			DialogWidget->ViewPopUp();
 		
 		}else{
 			InteractiveActor = nullptr;
-			/*if(DialogWidget != nullptr)
-				DialogWidget->HidePopUp();*/
+			if(DialogWidget != nullptr)
+				DialogWidget->HidePopUp();
 		}
 	}
 
@@ -297,10 +297,10 @@ void ACharacterPawnQuad::SetMousePointer(bool Enable) {
 }
 
 void ACharacterPawnQuad::SetHealthPercentage(float Percentage){
-	/*UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
+	UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());
 
 	if(HealthWidget != nullptr)
-		HealthWidget->HealthBar->SetPercent(Percentage);*/
+		HealthWidget->HealthBar->SetPercent(Percentage);
 }
 
 //Stop/Start the physics and the movement

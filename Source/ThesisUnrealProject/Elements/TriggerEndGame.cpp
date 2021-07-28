@@ -10,7 +10,6 @@
 #include "Components/SpotLightComponent.h"
 #include "../GameModeTutorial.h"
 #include "../UI/UIEndScreen.h"
-#include "../GameInstance/BartleManagerGameInstance.h"
 
 // Sets default values
 ATriggerEndGame::ATriggerEndGame(){
@@ -44,11 +43,12 @@ void ATriggerEndGame::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Oth
 
 			UUIEndScreen* EndScreen = Cast<UUIEndScreen>(GameMode->GetCurrentWidgetUI());
 			
-			UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+			/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 			Bartle->SaveFile("");
 
 			EndScreen->SetTestValue(Bartle->Types[Type::Achiever],Bartle->Types[Type::Explorer],Bartle->Types[Type::Killer],Bartle->Types[Type::Socializer]);
 			EndScreen->SetQuestionaryValue(Bartle->TypesQuestionary[Type::Achiever],Bartle->TypesQuestionary[Type::Explorer],Bartle->TypesQuestionary[Type::Killer],Bartle->TypesQuestionary[Type::Socializer]);
+			*/
 
 			FString file = FPaths::ProjectSavedDir();
     		file.Append(TEXT("SaveGames/Checkpoint.sav"));

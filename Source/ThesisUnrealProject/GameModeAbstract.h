@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Blueprint/UserWidget.h"
+#include "AdaptiveExperience.h"
 #include "GameModeAbstract.generated.h"
 
 /**
@@ -30,6 +31,8 @@ public:
 	/** The widget instance that we are using as our menu. */
     UPROPERTY()
     UUserWidget* CurrentWidget;
+
+	AdaptiveExperience Update;
 
 protected:
 	
