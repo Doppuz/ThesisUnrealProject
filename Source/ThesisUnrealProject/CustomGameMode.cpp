@@ -34,9 +34,9 @@ ACustomGameMode::~ACustomGameMode() {
 void ACustomGameMode::BeginPlay() {
     Super::BeginPlay();
 
-	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
+	/*UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
     DialogWidget->HideSizeBox();
-    DialogWidget->TextBox->BoxContainer->Visibility = ESlateVisibility::Hidden;
+    DialogWidget->TextBox->BoxContainer->Visibility = ESlateVisibility::Hidden;*/
 
 }
 

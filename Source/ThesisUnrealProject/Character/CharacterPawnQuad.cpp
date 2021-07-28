@@ -3,18 +3,12 @@
 
 #include "CharacterPawnQuad.h"
 #include "Components/BoxComponent.h"
-#include "../Elements/CoinController.h"
-#include "../Elements/CrateElements.h"
 #include "Blueprint/UserWidget.h"
 #include "../UI/UIWidget.h"
-#include "../GameManager/MazeCell.h"
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
 #include "../Projectile/SquaredProjectile.h"
-#include "Components/PrimitiveComponent.h"
 #include "../AI/QuadAIController.h"
-#include "DrawDebugHelpers.h"
-#include "PawnInteractiveClass.h"
 #include "../GameModeAbstract.h"
 #include "../UI/UIWidgetDialog.h"
 #include "Components/TextBlock.h"
@@ -41,10 +35,10 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
 
-	EquipmentMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EquipmentMesh"));
-	EquipmentMesh->SetupAttachment(RootComponent);
+	/*EquipmentMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EquipmentMesh"));
+	EquipmentMesh->SetupAttachment(RootComponent);*/
 
-	EquipmentMesh->SetWorldLocation(FVector(0,0,32));
+	//EquipmentMesh->SetWorldLocation(FVector(0,0,32));
 
 	ProjectileSpawnPosition = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPosition"));
 	ProjectileSpawnPosition->SetupAttachment(RootComponent);
@@ -116,9 +110,9 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 			CurrentHealth -= FMath::Min(CurrentHealth,Damage);
 
 			//Update player's UI healthBar		
-			AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+			/*AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 			UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
-			DialogWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
+			DialogWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);*/
 
 			InvisibleAnimation();
 			bCharacterInvincible = true;	
@@ -153,13 +147,13 @@ void ACharacterPawnQuad::InvisibleAnimation() {
 		NumberOfRepetitions += 1;
 		bIsVisible = !bIsVisible;
 		Mesh->SetVisibility(bIsVisible);
-		EquipmentMesh->SetVisibility(bIsVisible);
+		//EquipmentMesh->SetVisibility(bIsVisible);
 		GetWorld()->GetTimerManager().SetTimer(InvisibleTimer,this, &ACharacterPawnQuad::InvisibleAnimation, 0.125f, false);
 	}else{
 		NumberOfRepetitions = 0;
 		bIsVisible = true;
 		Mesh->SetVisibility(bIsVisible);
-		EquipmentMesh->SetVisibility(bIsVisible);
+		//EquipmentMesh->SetVisibility(bIsVisible);
 		bCharacterInvincible = false;
 	}
 }
@@ -198,19 +192,19 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 
 		//DrawDebugLine(GetWorld(),GetActorLocation(),EndPosition, FColor::Red,true);
 
-		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
-		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+		/*AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());*/
 
 		if(Hit.GetActor() != nullptr){
 			
 			InteractiveActor = Cast<APawnInteractiveClass>(Hit.GetActor());
 
-			DialogWidget->ViewPopUp();
+			//DialogWidget->ViewPopUp();
 		
 		}else{
 			InteractiveActor = nullptr;
-			if(DialogWidget != nullptr)
-				DialogWidget->HidePopUp();
+			/*if(DialogWidget != nullptr)
+				DialogWidget->HidePopUp();*/
 		}
 	}
 
@@ -296,10 +290,10 @@ void ACharacterPawnQuad::SetMousePointer(bool Enable) {
 		PlayerController->bShowMouseCursor = Enable;
 		PlayerController->bEnableClickEvents = Enable;
 		PlayerController->bEnableMouseOverEvents = Enable;
-		/*if(Enable)
+		if(Enable)
 			PlayerController->SetInputMode(FInputModeUIOnly());
 		else
-			PlayerController->SetInputMode(FInputModeGameOnly());*/
+			PlayerController->SetInputMode(FInputModeGameOnly());
 }
 
 void ACharacterPawnQuad::SetHealthPercentage(float Percentage){

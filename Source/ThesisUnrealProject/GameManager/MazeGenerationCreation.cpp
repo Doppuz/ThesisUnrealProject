@@ -104,7 +104,8 @@ void MazeGenerationCreation::CreateObstacle(int Obstacles) {
 }
 
 void MazeGenerationCreation::CreateRooms() {
-    for (int i = 0; i < Maze2Room; i++) CreateRoomSize2();
+    for (int i = 0; i < Maze2Room; i++) CreateRoomSize3();
+    //CreateRoomSize2();
 }
 
 //Check for intersection and generate the room.
@@ -115,11 +116,29 @@ void MazeGenerationCreation::CreateRoomSize2() {
     do {
         RowExtr = FMath::RandRange(0, Length - 2);
         ColumnExtr = FMath::RandRange(0, Height - 2);
-    } while (CheckRoomIntersection(RowExtr, ColumnExtr) || (RowExtr == 0 && ColumnExtr == 0));
+    } while (CheckRoomIntersection(RowExtr, ColumnExtr,2) || (RowExtr == 0 && ColumnExtr == 0));
 
     TArray<AMazeCell*> Room;
 
-    RoomWallHide(Room, RowExtr, ColumnExtr, Rooms->Num());
+    RoomWallHide(Room, RowExtr, ColumnExtr, Rooms->Num(),2);
+    RoomMaze m(Room);
+    Rooms->Add(m);
+}
+
+void MazeGenerationCreation::CreateRoomSize3() {
+    int RowExtr;
+    int ColumnExtr;
+
+    do {
+        RowExtr = FMath::RandRange(0, Length - 3);
+        ColumnExtr = FMath::RandRange(0, Height - 3);
+    } while (CheckRoomIntersection(RowExtr, ColumnExtr,3) || (RowExtr == 0 && ColumnExtr == 0));
+
+    TArray<AMazeCell*> Room;
+
+    
+    //RoomWallHide(Room, RowExtr, ColumnExtr, Rooms->Num());
+    RoomWallHide(Room, RowExtr, ColumnExtr, Rooms->Num(),3);
     RoomMaze m(Room);
     Rooms->Add(m);
 }
@@ -200,19 +219,17 @@ void MazeGenerationCreation::CreateMaze() {
 }
 
 //check for intersection: first i check the 4 square that composed the room, then the nearby cells.
-bool MazeGenerationCreation::CheckRoomIntersection(int Row, int Column) {
-    bool RoomInters = (*Maze)[Row][Column]->NumberRoom != -1 ||
-                      (*Maze)[Row][Column + 1]->NumberRoom != -1 ||
-                      (*Maze)[Row + 1][Column]->NumberRoom != -1 ||
-                      (*Maze)[Row + 1][Column + 1]->NumberRoom != -1 ||
-                      (*Maze)[Row][Column]->bIsObstacle ||
-                      (*Maze)[Row][Column + 1]->bIsObstacle ||
-                      (*Maze)[Row + 1][Column]->bIsObstacle ||
-                      (*Maze)[Row + 1][Column + 1]->bIsObstacle;
+bool MazeGenerationCreation::CheckRoomIntersection(int Row, int Column, int RoomSize) {
 
-    if (RoomInters) return true;
+    //Check if the cells are already a room.
+    for(int i = 0; i < RoomSize; i++){
 
-    return CheckNearbyRoom(Row, Column, 2);
+        if((*Maze)[Row][Column]->NumberRoom != -1)
+            return true;
+    
+    }
+
+    return CheckNearbyRoom(Row, Column, 3);
 }
 
 //I push the neighbor if it hasn't been visited yet and, or it is not a room or if it is a room, it doesn't have a door.
@@ -240,131 +257,59 @@ void MazeGenerationCreation::CheckForNeighbors(TArray<AMazeCell*>& Neighbors, in
 }
 
 bool MazeGenerationCreation::CheckNearbyRoom(int Row, int Column, int RoomSize) {
-    bool NeighBoardRoom = false;
-    bool Left = true;
-    bool Right = true;
-    bool Top = true;
-    bool Bot = true;
+    
+    int StartRow = Row - 1;
+    int StartColumn = Column - 1;
 
-    // TopCheck
-    if (Row != 0) {
-        NeighBoardRoom = CheckNearbyRoomWrapper(Row - 1, Column, RoomSize, 0);
-        if (NeighBoardRoom) return true;
-    } else
-        Top = false;
+    for(int i = 0; i < RoomSize + 2; i++){
 
-    // LeftCheck
-    if (Column != 0) {
-        NeighBoardRoom = CheckNearbyRoomWrapper(Row, Column - 1, RoomSize, 1);
-        if (NeighBoardRoom) return true;
-    } else
-        Left = false;
+        for(int j = 0; j < RoomSize + 2; j++){
+            
+            if(StartRow + i >= 0 && StartRow + i < Length){
 
-    // BotCheck
-    if (Row < Length - 2) {
-        NeighBoardRoom = CheckNearbyRoomWrapper(Row + 2, Column, RoomSize, 2);
-        if (NeighBoardRoom) return true;
-    } else
-        Bot = false;
+                if(StartColumn + j >= 0 && StartColumn + j < Length){
 
-    // RightCheck
-    if (Column < Length - 2) {
-        NeighBoardRoom = CheckNearbyRoomWrapper(Row, Column + 2, RoomSize, 3);
-        if (NeighBoardRoom) return true;
-    } else
-        Right = false;
+                    if((*Maze)[StartRow + i][StartColumn + j]->NumberRoom != -1)
+                        return true;
 
-    if (Top) {
-        if (Left) {
-            if ((*Maze)[Row - 1][Column - 1]->NumberRoom != -1 ||
-                (*Maze)[Row - 1][Column - 1]->bIsObstacle)
-                return true;
+                }
+
+            }
+
         }
 
-        if (Right) {
-            if ((*Maze)[Row - 1][Column + RoomSize]->NumberRoom != -1 ||
-                (*Maze)[Row - 1][Column + RoomSize]->bIsObstacle)
-                return true;
-        }
-    }
-
-    if (Bot) {
-        if (Right) {
-            if ((*Maze)[Row + RoomSize][Column + RoomSize]->NumberRoom != -1 ||
-                (*Maze)[Row + RoomSize][Column + RoomSize]->bIsObstacle)
-                return true;
-        }
-        if (Left) {
-            if ((*Maze)[Row + RoomSize][Column - 1]->NumberRoom != -1 ||
-                (*Maze)[Row + RoomSize][Column - 1]->bIsObstacle)
-                return true;
-        }
     }
 
     return false;
+
 }
 
-bool MazeGenerationCreation::CheckNearbyRoomWrapper(int Row, int Column,
-                                                int RoomSize, int Side) {
-    switch (Side) {
-        case 0:
+//Hide the wall that are useless in a room.
+void MazeGenerationCreation::RoomWallHide(TArray<AMazeCell*>& Room, int rowExtr, int columnExtr, int Pos, int WallsNumber) {
 
-            for (int i = 0; i < RoomSize; i++) {
-                if ((*Maze)[Row][Column + i]->NumberRoom != -1 ||
-                    (*Maze)[Row][Column + i]->bIsObstacle)
-                    return true;
-            }
-            break;
-
-        case 1:
-
-            for (int i = 0; i < RoomSize; i++) {
-                if ((*Maze)[Row + i][Column]->NumberRoom != -1 ||
-                    (*Maze)[Row + i][Column]->bIsObstacle)
-                    return true;
-            }
-            break;
-
-        case 2:
-
-            for (int i = 0; i < RoomSize; i++) {
-                if ((*Maze)[Row][Column + i]->NumberRoom != -1 ||
-                    (*Maze)[Row][Column + i]->bIsObstacle)
-                    return true;
-            }
-            break;
-
-        case 3:
-
-            for (int i = 0; i < RoomSize; i++) {
-                if ((*Maze)[Row + i][Column]->NumberRoom != -1 ||
-                    (*Maze)[Row + i][Column]->bIsObstacle)
-                    return true;
-            }
-            break;
-
-        default:
-            break;
-    }
-
-    return false;
-}
-
-void MazeGenerationCreation::RoomWallHide(TArray<AMazeCell*>& Room, int rowExtr,
-                                      int columnExtr, int Pos) {
-    int FirstIndice;
-    int SecondIndice;
-
-    for (int i = 0; i < 2; i++) {
-        SecondIndice = i == 0 ? 3 : 1;
-        for (int j = 0; j < 2; j++) {
-            FirstIndice = (j + 1) * 2;
+    for (int i = 0; i < WallsNumber; i++) {
+        for (int j = 0; j < WallsNumber; j++) {
+            
             (*Maze)[rowExtr + i][columnExtr + j]->NumberRoom = Pos;
-            (*Maze)[rowExtr + i][columnExtr + j]->HideWall(FirstIndice);
-            (*Maze)[rowExtr + i][columnExtr + j]->HideWall(SecondIndice);
+
+            //If condition determined if I need to delete it (Can't delete the borders).
+            if(j != 0)
+                (*Maze)[rowExtr + i][columnExtr + j]->HideWall(4);
+            
+            if(i != 0)
+                (*Maze)[rowExtr + i][columnExtr + j]->HideWall(1);
+            
+            if(j != (WallsNumber - 1))
+                (*Maze)[rowExtr + i][columnExtr + j]->HideWall(2);
+            
+            if(i != (WallsNumber - 1))
+                (*Maze)[rowExtr + i][columnExtr + j]->HideWall(3);
+            
             Room.Add((*Maze)[rowExtr + i][columnExtr + j]);
+
         }
     }
+
 }
 
 

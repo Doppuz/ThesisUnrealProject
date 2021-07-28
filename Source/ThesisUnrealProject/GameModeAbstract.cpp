@@ -26,6 +26,6 @@ void AGameModeAbstract::BeginPlay() {
     
     Super::BeginPlay();
 
-    ChangeMenuWidget(StartingWidgetClass);
+    //ChangeMenuWidget(StartingWidgetClass);
 
 }

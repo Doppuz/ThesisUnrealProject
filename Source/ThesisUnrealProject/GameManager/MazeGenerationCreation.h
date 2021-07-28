@@ -31,10 +31,10 @@ private:
 	void CreateObstacle(int ObstaclesNumber);
 	void CreateRooms();
 	void CreateRoomSize2();
-	bool CheckRoomIntersection(int Row, int Column);
+	void CreateRoomSize3();
+	bool CheckRoomIntersection(int Row, int Column, int RoomSize);
 	bool CheckNearbyRoom(int Row, int Column, int RoomSize);
-	bool CheckNearbyRoomWrapper(int Row, int Column, int RoomSize, int Side);
-	void RoomWallHide(TArray<AMazeCell*>& Room,int rowExtr, int columnExtr, int Pos);
+	void RoomWallHide(TArray<AMazeCell*>& Room, int rowExtr, int columnExtr, int Pos, int WallsNumber);
 	void CreateMazeWrapper(int i, int j);
 	void CheckForNeighbors(TArray<AMazeCell*>& neighbors,int i,int j);
 	void CreateMaze();

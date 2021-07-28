@@ -78,8 +78,8 @@ void ANPC1Door::LeftChoiceEvent() {
 	
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 
-	if(MeshToEquip != nullptr)
-		PlayerPawn->EquipmentMesh->SetStaticMesh(MeshToEquip);
+//	if(MeshToEquip != nullptr)
+//		PlayerPawn->EquipmentMesh->SetStaticMesh(MeshToEquip);
 
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
 

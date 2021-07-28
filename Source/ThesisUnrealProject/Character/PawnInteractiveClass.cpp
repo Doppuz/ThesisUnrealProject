@@ -154,7 +154,7 @@ void APawnInteractiveClass::EndInteraction() {
 //It equips the object.
 void APawnInteractiveClass::Equipment() {
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-	PlayerPawn->EquipmentMesh->SetStaticMesh(MeshToEquip);
+//	PlayerPawn->EquipmentMesh->SetStaticMesh(MeshToEquip);
 }
 
 void APawnInteractiveClass::Choice(int Answer) {

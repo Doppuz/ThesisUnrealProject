@@ -64,7 +64,7 @@ void AGameModeTutorial::BeginPlay() {
         //Character characteristics
         if(LoadedGame->AttackSpeed != 0.f)
             MyPawn->ProjectileTimeout = LoadedGame->AttackSpeed ;
-		MyPawn->EquipmentMesh->SetStaticMesh(LoadedGame->Hat);
+//		MyPawn->EquipmentMesh->SetStaticMesh(LoadedGame->Hat);
   
         if(Levels.Num() != 0){
             FLatentActionInfo LatentInfo;	

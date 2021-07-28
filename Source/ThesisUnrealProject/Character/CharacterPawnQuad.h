@@ -46,8 +46,8 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	UStaticMeshComponent* Mesh;
 
-	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
-	UStaticMeshComponent* EquipmentMesh;
+	//UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	//UStaticMeshComponent* EquipmentMesh;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	USceneComponent* ProjectileSpawnPosition;
