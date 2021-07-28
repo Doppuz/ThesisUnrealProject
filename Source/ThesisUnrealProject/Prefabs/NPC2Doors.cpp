@@ -9,7 +9,6 @@
 #include "Components/BoxComponent.h"
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
-#include "../GameInstance/BartleManagerGameInstance.h"
 
 // Sets default values
 ANPC2Doors::ANPC2Doors()
@@ -70,8 +69,8 @@ void ANPC2Doors::LeftChoiceEvent() {
 	GameMode->Levels.Add("ForthChoice");
 	
 	//Update Bartle's values
-	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Explorer,Type::Socializer);
+	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->EquallyDistributedUpdate(Type::Explorer,Type::Socializer);*/
 
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 1;
@@ -90,8 +89,8 @@ void ANPC2Doors::RightChoiceEvent() {
 	
 
 	//Update Bartle's values
-	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Socializer,Type::Explorer);	
+	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->EquallyDistributedUpdate(Type::Socializer,Type::Explorer);*/
 	
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 2;

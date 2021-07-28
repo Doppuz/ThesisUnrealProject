@@ -3,24 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/GameInstance.h"
-#include "BartleManagerGameInstance.generated.h"
 
 enum Type {Achiever, Killer, Socializer, Explorer};
 
 /**
  * 
  */
-UCLASS()
-class THESISUNREALPROJECT_API UBartleManagerGameInstance : public UGameInstance{
-	GENERATED_BODY()
-	
+class THESISUNREALPROJECT_API AdaptiveExperience{
+
 public:
 
-	UBartleManagerGameInstance();
+	AdaptiveExperience();
+	~AdaptiveExperience();
 
-	// --- Bartle types ----
-	
 	TMap<Type,float> Types;
 	
 	TMap<Type,float> TypesQuestionary;

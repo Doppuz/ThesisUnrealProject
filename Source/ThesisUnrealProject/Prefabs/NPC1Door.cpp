@@ -8,7 +8,6 @@
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
 #include "../GameModeTutorial.h"
-#include "../GameInstance/BartleManagerGameInstance.h"
 
 // Sets default values
 ANPC1Door::ANPC1Door()
@@ -75,8 +74,8 @@ void ANPC1Door::LeftChoiceEvent() {
 	bLeftChoice = true;
 	
 	//Update Bartle's values
-	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Achiever,Type::Socializer);
+	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->EquallyDistributedUpdate(Type::Achiever,Type::Socializer);*/
 	
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 
@@ -96,8 +95,8 @@ void ANPC1Door::RightChoiceEvent() {
 	bRightChoice = true;
 
 	//Update Bartle's values
-	UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Socializer,Type::Achiever);
+	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Bartle->EquallyDistributedUpdate(Type::Socializer,Type::Achiever);*/
 
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 

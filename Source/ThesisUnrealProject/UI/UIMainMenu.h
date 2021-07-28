@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "../GameInstance/BartleManagerGameInstance.h"
+#include "../GameModeTutorial.h"
 #include "UIMainMenu.generated.h"
 
 class UUIButton;
