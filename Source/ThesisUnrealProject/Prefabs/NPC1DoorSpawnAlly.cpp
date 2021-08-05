@@ -88,8 +88,7 @@ void ANPC1DoorSpawnAlly::LeftChoiceEvent() {
 		GameMode->Levels.Add("SixthChoice");
 
 	//Update Bartle's values
-	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->DistributedUpdate(Type::Socializer,Type::Killer);*/
+	GameMode->Update->DistributedUpdate(Type::Socializer,Type::Killer);
 	
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 
@@ -112,8 +111,7 @@ void ANPC1DoorSpawnAlly::RightChoiceEvent() {
 	GameMode->Levels.Add("SixthChoice");
 
 	//Update Bartle's values
-	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->DistributedUpdate(Type::Killer,Type::Socializer);*/
+	GameMode->Update->DistributedUpdate(Type::Killer,Type::Socializer);
 	
 	Trigger->SetCollisionProfileName("NoCollision");
 

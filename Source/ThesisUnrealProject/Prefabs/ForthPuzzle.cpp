@@ -130,8 +130,7 @@ void AForthPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 		GameMode->Levels.Add("FifthChoice");
 
 		//Update Bartle's values
-		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->DistributedUpdate(Type::Socializer,Type::Explorer);*/
+		GameMode->Update->DistributedUpdate(Type::Socializer,Type::Explorer);
 
 		SpokenAllies = -1;
 		PuzzleCount = -1;
@@ -170,8 +169,7 @@ void AForthPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 						GameMode->Levels.Add("FifthChoice");
 
 					//Update Bartle's values
-					/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-					Bartle->DistributedUpdate(Type::Explorer,Type::Socializer);*/
+					GameMode->Update->DistributedUpdate(Type::Explorer,Type::Socializer);
 
 					SpokenAllies = -1;
 					PuzzleCount = -1;

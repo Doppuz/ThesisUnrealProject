@@ -110,8 +110,8 @@ void ALastPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 		Door01->bOpenDoor = true;
 
 		//Update Bartle's values
-		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->DistributedUpdate(Type::Socializer,Type::Achiever);*/
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->Update->DistributedUpdate(Type::Socializer,Type::Achiever);
 
 	}
 
@@ -143,8 +143,8 @@ void ALastPuzzle::CoinCollected() {
 		Door01->bOpenDoor = true;
 
 		//Update Bartle's values
-		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->DistributedUpdate(Type::Achiever,Type::Socializer);*/
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->Update->DistributedUpdate(Type::Achiever,Type::Socializer);
 
 	}
 }

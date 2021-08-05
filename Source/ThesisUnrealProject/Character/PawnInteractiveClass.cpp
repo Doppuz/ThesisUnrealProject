@@ -21,10 +21,12 @@ APawnInteractiveClass::APawnInteractiveClass()
 	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
 	RootComponent = Collider;
 	
-	Collider->SetSimulatePhysics(true);
+	Collider->SetCollisionProfileName("InteractiveElement");
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
+
+	Mesh->SetCollisionProfileName("NoCollision");
 
 	bFocus = true;
 	bAlreadySpoken = false;

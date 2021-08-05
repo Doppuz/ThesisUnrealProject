@@ -121,8 +121,8 @@ void ASixthPuzzle::OnOverlapStart(UPrimitiveComponent * HitComponent, AActor * O
 				Door02->bOpenDoor = true;
 		
 				//Update Bartle's values
-				/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-				Bartle->DistributedUpdate(Type::Explorer,Type::Killer);*/
+				AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+				GameMode->Update->DistributedUpdate(Type::Explorer,Type::Killer);
 		
 			}
 		}
@@ -167,7 +167,7 @@ void ASixthPuzzle::FallenEvent() {
 	Door01->bOpenDoor = true;
 	
 	//Update Bartle's values
-	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->DistributedUpdate(Type::Killer,Type::Explorer);*/
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+	GameMode->Update->DistributedUpdate(Type::Killer,Type::Explorer);
 
 }

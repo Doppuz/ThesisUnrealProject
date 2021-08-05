@@ -124,8 +124,9 @@ void AFifthPuzzle::Destruction(ADestructibleElements* Elem) {
 		Door03->bOpenDoor = true;
 
 		//Update Bartle's values
-		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->DistributedUpdate(Type::Explorer,Type::Achiever);*/
+		
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->Update->DistributedUpdate(Type::Explorer,Type::Achiever);
 
 	}
 
@@ -142,8 +143,8 @@ void AFifthPuzzle::CoinCollected() {
 		Door02->bOpenDoor = true;
 	
 		//Update Bartle's values
-		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->DistributedUpdate(Type::Achiever,Type::Explorer);*/
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->Update->DistributedUpdate(Type::Achiever,Type::Explorer);
 
 	}
 

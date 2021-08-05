@@ -178,8 +178,9 @@ void UUIMainMenu::DialogInteraction(int Increase, int Decrease) {
 
     //Bartle Update
     if(DialogTextContator >= 0 && DialogTextContator < MapDialogText.Num()){
-            /*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-            Bartle->EquallyDistributedUpdate(AnswerChoice[DialogTextContator][Increase],50.f/15.f,AnswerChoice[DialogTextContator][Decrease],50.f/15.f);    */    
+            AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		    GameMode->Update->EquallyDistributedUpdate(
+                AnswerChoice[DialogTextContator][Increase],50.f/15.f,AnswerChoice[DialogTextContator][Decrease],50.f/15.f);       
     }
 
     DialogTextContator += 1;
@@ -200,24 +201,24 @@ void UUIMainMenu::DialogInteraction(int Increase, int Decrease) {
         DialogTextContator += 1;
     }else{
         //Save the initial initial information for the game and store the value of the questionary
-        /*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-        Bartle->TypesQuestionary = Bartle->Types;
-        Bartle->ResetValue();*/
+        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->Update->TypesQuestionary = GameMode->Update->Types;
+        GameMode->Update->ResetValue();
 
         if (USaveGameData* SaveGameInstance = Cast<USaveGameData>(UGameplayStatics::CreateSaveGameObject(USaveGameData::StaticClass()))){
 
 			// Set data on the savegame object.
 			SaveGameInstance->PlayerLocation = FVector(0.f,0.f,900000.22f);
 
-			/*SaveGameInstance->AchieverQ = Bartle->TypesQuestionary[Achiever];
-			SaveGameInstance->KillerQ = Bartle->TypesQuestionary[Killer];
-			SaveGameInstance->ExplorerQ = Bartle->TypesQuestionary[Explorer];
-			SaveGameInstance->SocializerQ = Bartle->TypesQuestionary[Socializer];
+			SaveGameInstance->AchieverQ =  GameMode->Update->TypesQuestionary[Achiever];
+			SaveGameInstance->KillerQ =  GameMode->Update->TypesQuestionary[Killer];
+			SaveGameInstance->ExplorerQ =  GameMode->Update->TypesQuestionary[Explorer];
+			SaveGameInstance->SocializerQ =  GameMode->Update->TypesQuestionary[Socializer];
 
             SaveGameInstance->Achiever = 50.f;
 			SaveGameInstance->Killer = 50.f;
 			SaveGameInstance->Explorer = 50.f;
-			SaveGameInstance->Socializer = 50.f;*/
+			SaveGameInstance->Socializer = 50.f;
 
             TArray<FName> Level = {"FirstPuzzle"};
 

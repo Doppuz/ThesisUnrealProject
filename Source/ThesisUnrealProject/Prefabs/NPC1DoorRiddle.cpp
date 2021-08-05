@@ -54,21 +54,13 @@ void ANPC1DoorRiddle::Tick(float DeltaTime)
 
 void ANPC1DoorRiddle::LeftChoiceEvent() {
 
-	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
-
-	NPC->SpeechContator += 1;
-	NPC->Speak();
-	NPC->SpeechContator = NPC->Speech.Num() - 2;
-
 	ADoor* Door = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
 	Door->bOpenDoor = true;
 
 }
 
 void ANPC1DoorRiddle::RightChoiceEvent() {
-	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(Cast<UChildActorComponent>(NPC1)->GetChildActor());
-	NPC->SpeechContator += 2;
-	NPC->Speak();
+	
 }
 
 void ANPC1DoorRiddle::EndChoiceEvent(APawnInteractiveClass* SpokenActor) {

@@ -49,8 +49,8 @@ void AMazePopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMa
     AMazeCell* LastCell = CurrentVisitedCell[CurrentVisitedCell.Num() - 1];
 
     //Search for the maximum path
-    if(CurrentVisitedCell.Num() > MazeCellMax.Num() && (LastCell->I == 0 || LastCell->I == 9 ||
-                                                        LastCell->J == 0 || LastCell->J == 9))
+    if(CurrentVisitedCell.Num() > MazeCellMax.Num() && (LastCell->I == 0 || LastCell->I == 13 ||
+                                                        LastCell->J == 0 || LastCell->J == 13))
         MazeCellMax = CurrentVisitedCell;
 
 }
@@ -105,7 +105,8 @@ void AMazePopulate::AddDoorsWrapper(int Index){
 
 				if(WallNumber != -1){
 					FPositionRotation PosRot= MaxPath[Index]->GetWallPosition(WallNumber);
-					GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position,FRotator(0.f,90.f,0.f) + PosRot.Rotation);
+					ADoor* Door = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position,FRotator(0.f,90.f,0.f) + PosRot.Rotation);
+                    Door->SetActorScale3D(FVector(1.7f,1.f,0.75f));
 				}
 			}
 

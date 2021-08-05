@@ -44,18 +44,16 @@ void AGameModeTutorial::BeginPlay() {
         if(LoadedGame->PlayerLocation != FVector(0.f,0.f,900000.22f))
             MyPawn->SetActorLocation(LoadedGame->PlayerLocation);
 
-        /*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-
         //Load the bartle's type data.
-        Bartle->Types[Type::Achiever] = LoadedGame->Achiever;
-        Bartle->Types[Type::Explorer] = LoadedGame->Explorer;
-        Bartle->Types[Type::Killer] = LoadedGame->Killer;
-        Bartle->Types[Type::Socializer] = LoadedGame->Socializer;
+        Update->Types[Type::Achiever] = LoadedGame->Achiever;
+        Update->Types[Type::Explorer] = LoadedGame->Explorer;
+        Update->Types[Type::Killer] = LoadedGame->Killer;
+        Update->Types[Type::Socializer] = LoadedGame->Socializer;
 
-        Bartle->TypesQuestionary[Type::Achiever] = LoadedGame->AchieverQ;
-        Bartle->TypesQuestionary[Type::Explorer] = LoadedGame->ExplorerQ;
-        Bartle->TypesQuestionary[Type::Killer] = LoadedGame->KillerQ;
-        Bartle->TypesQuestionary[Type::Socializer] = LoadedGame->SocializerQ;*/
+        Update->TypesQuestionary[Type::Achiever] = LoadedGame->AchieverQ;
+        Update->TypesQuestionary[Type::Explorer] = LoadedGame->ExplorerQ;
+        Update->TypesQuestionary[Type::Killer] = LoadedGame->KillerQ;
+        Update->TypesQuestionary[Type::Socializer] = LoadedGame->SocializerQ;
 
         //Load levels
         Levels = LoadedGame->Levels;

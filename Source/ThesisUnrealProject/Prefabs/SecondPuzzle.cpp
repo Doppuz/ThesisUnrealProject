@@ -114,8 +114,8 @@ void ASecondPuzzle::LeftChoiceEvent() {
 	Cast<ADoor>(Door2->GetChildActor())->bOpenDoor = true;	
 
 	//Update Bartle's values
-	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Killer,Type::Socializer);*/
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+	GameMode->Update->EquallyDistributedUpdate(Type::Killer,Type::Socializer);
 	
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 2;
@@ -127,8 +127,8 @@ void ASecondPuzzle::RightChoiceEvent() {
 	Cast<ADoor>(Door4->GetChildActor())->bOpenDoor = true;
 
 	//Update Bartle's values
-	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Socializer,Type::Killer);*/
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+	GameMode->Update->EquallyDistributedUpdate(Type::Socializer,Type::Killer);
 	
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 2;

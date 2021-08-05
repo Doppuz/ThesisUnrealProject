@@ -147,13 +147,13 @@ void ACharacterPawnQuad::InvisibleAnimation() {
 		NumberOfRepetitions += 1;
 		bIsVisible = !bIsVisible;
 		Mesh->SetVisibility(bIsVisible);
-		//EquipmentMesh->SetVisibility(bIsVisible);
+		EquipmentMesh->SetVisibility(bIsVisible);
 		GetWorld()->GetTimerManager().SetTimer(InvisibleTimer,this, &ACharacterPawnQuad::InvisibleAnimation, 0.125f, false);
 	}else{
 		NumberOfRepetitions = 0;
 		bIsVisible = true;
 		Mesh->SetVisibility(bIsVisible);
-		//EquipmentMesh->SetVisibility(bIsVisible);
+		EquipmentMesh->SetVisibility(bIsVisible);
 		bCharacterInvincible = false;
 	}
 }
@@ -291,7 +291,7 @@ void ACharacterPawnQuad::SetMousePointer(bool Enable) {
 		PlayerController->bEnableClickEvents = Enable;
 		PlayerController->bEnableMouseOverEvents = Enable;
 		if(Enable)
-			PlayerController->SetInputMode(FInputModeUIOnly());
+			PlayerController->SetInputMode(FInputModeGameAndUI());
 		else
 			PlayerController->SetInputMode(FInputModeGameOnly());
 }

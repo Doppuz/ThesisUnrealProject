@@ -3,6 +3,20 @@
 
 #include "GameModeAbstract.h"
 
+
+AGameModeAbstract::AGameModeAbstract() {
+
+	PrimaryActorTick.bCanEverTick = false;
+
+    Update = new AdaptiveExperience();
+
+}
+
+AGameModeAbstract::~AGameModeAbstract() {
+    delete Update;
+}
+
+
 //Assign the UI widget passed as parameter to the screen.
 void AGameModeAbstract::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass) {
     if (CurrentWidget != nullptr){

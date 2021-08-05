@@ -18,6 +18,9 @@ class THESISUNREALPROJECT_API AGameModeAbstract : public AGameModeBase{
 
 public:
 
+	AGameModeAbstract();	
+	~AGameModeAbstract();	
+
 	/** Remove the current menu widget and create a new one from the specified class, if provided. */
     UFUNCTION(BlueprintCallable, Category = "UMG Game")
     void ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass);
@@ -32,7 +35,7 @@ public:
     UPROPERTY()
     UUserWidget* CurrentWidget;
 
-	AdaptiveExperience Update;
+	AdaptiveExperience* Update;
 
 protected:
 	

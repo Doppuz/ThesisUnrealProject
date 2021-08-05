@@ -70,17 +70,15 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 				// Set data on the savegame object.
 				SaveGameInstance->PlayerLocation = MyPawn->GetActorLocation();
 
-				/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+				SaveGameInstance->Achiever = GameMode->Update->GetBartleTypes()[Achiever];
+				SaveGameInstance->Killer = GameMode->Update->GetBartleTypes()[Killer];
+				SaveGameInstance->Explorer = GameMode->Update->GetBartleTypes()[Explorer];
+				SaveGameInstance->Socializer = GameMode->Update->GetBartleTypes()[Socializer];
 
-				SaveGameInstance->Achiever = Bartle->GetBartleTypes()[Achiever];
-				SaveGameInstance->Killer = Bartle->GetBartleTypes()[Killer];
-				SaveGameInstance->Explorer = Bartle->GetBartleTypes()[Explorer];
-				SaveGameInstance->Socializer = Bartle->GetBartleTypes()[Socializer];
-
-				SaveGameInstance->AchieverQ = Bartle->TypesQuestionary[Achiever];
-				SaveGameInstance->KillerQ = Bartle->TypesQuestionary[Killer];
-				SaveGameInstance->ExplorerQ = Bartle->TypesQuestionary[Explorer];
-				SaveGameInstance->SocializerQ = Bartle->TypesQuestionary[Socializer];*/
+				SaveGameInstance->AchieverQ = GameMode->Update->TypesQuestionary[Achiever];
+				SaveGameInstance->KillerQ = GameMode->Update->TypesQuestionary[Killer];
+				SaveGameInstance->ExplorerQ = GameMode->Update->TypesQuestionary[Explorer];
+				SaveGameInstance->SocializerQ = GameMode->Update->TypesQuestionary[Socializer];
 				
 				SaveGameInstance->Levels = GameMode->Levels;
 

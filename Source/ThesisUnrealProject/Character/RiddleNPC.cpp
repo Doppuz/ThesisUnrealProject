@@ -19,12 +19,22 @@ ARiddleNPC::ARiddleNPC() {
 void ARiddleNPC::Choice(int Answer) {
     
 	if(RightAnswerPos == Answer){
+		SpeechContator += 1;
 		
+		Speak();
+
 		LeftChoice.Broadcast();
+		
+		SpeechContator = Speech.Num() - 2;
 
 	}else{
 		
+		SpeechContator += 2;
+		
+		Speak();
+
 		RightChoice.Broadcast();
+
 
 	}
 }

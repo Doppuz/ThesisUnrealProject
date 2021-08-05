@@ -72,8 +72,8 @@ void ANPC1Door::LeftChoiceEvent() {
 	bLeftChoice = true;
 	
 	//Update Bartle's values
-	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Achiever,Type::Socializer);*/
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+	GameMode->Update->EquallyDistributedUpdate(Type::Achiever,Type::Socializer);
 	
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 
@@ -93,8 +93,8 @@ void ANPC1Door::RightChoiceEvent() {
 	bRightChoice = true;
 
 	//Update Bartle's values
-	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Socializer,Type::Achiever);*/
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+	GameMode->Update->EquallyDistributedUpdate(Type::Socializer,Type::Achiever);
 
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 

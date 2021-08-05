@@ -131,8 +131,8 @@ void APuzzleWith2Doors::CheckPuzzleActor() {
 	Cast<ADestructibleElements>(DestrGate2->GetChildActor())->DamageValue = 0;
 
 	//Update Bartle's values
-	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Explorer,Type::Killer);*/
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+	GameMode->Update->EquallyDistributedUpdate(Type::Explorer,Type::Killer);
 
 	//Open the doors.
 	ADoor* ActorDoor1 = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
@@ -168,8 +168,8 @@ void APuzzleWith2Doors::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 void APuzzleWith2Doors::DestructionEvent(ADestructibleElements* Elem) {
 	
 	//Update Bartle's values
-	/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	Bartle->EquallyDistributedUpdate(Type::Killer,Type::Explorer);*/
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+	GameMode->Update->EquallyDistributedUpdate(Type::Killer,Type::Explorer);
 
 }
 

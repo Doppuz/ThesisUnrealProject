@@ -43,13 +43,11 @@ void ATriggerEndGame::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Oth
 
 			UUIEndScreen* EndScreen = Cast<UUIEndScreen>(GameMode->GetCurrentWidgetUI());
 			
-			/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-			Bartle->SaveFile("");
+			GameMode->Update->SaveFile("");
 
-			EndScreen->SetTestValue(Bartle->Types[Type::Achiever],Bartle->Types[Type::Explorer],Bartle->Types[Type::Killer],Bartle->Types[Type::Socializer]);
-			EndScreen->SetQuestionaryValue(Bartle->TypesQuestionary[Type::Achiever],Bartle->TypesQuestionary[Type::Explorer],Bartle->TypesQuestionary[Type::Killer],Bartle->TypesQuestionary[Type::Socializer]);
-			*/
-
+			EndScreen->SetTestValue(GameMode->Update->Types[Type::Achiever],GameMode->Update->Types[Type::Explorer],GameMode->Update->Types[Type::Killer],GameMode->Update->Types[Type::Socializer]);
+			EndScreen->SetQuestionaryValue(GameMode->Update->TypesQuestionary[Type::Achiever],GameMode->Update->TypesQuestionary[Type::Explorer],GameMode->Update->TypesQuestionary[Type::Killer],GameMode->Update->TypesQuestionary[Type::Socializer]);
+			
 			FString file = FPaths::ProjectSavedDir();
     		file.Append(TEXT("SaveGames/Checkpoint.sav"));
 

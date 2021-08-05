@@ -25,12 +25,6 @@ public:
 	
 	virtual void Ask() override;
 
-	UPROPERTY(EditAnywhere, Category = "Doors")
-	TArray<int> LeftDoors;
-
-	UPROPERTY(EditAnywhere, Category = "Doors")
-	TArray<int> RightDoors;
-
 	UPROPERTY(EditAnywhere, Category = "Speak")
 	int RightAnswerPos;
 

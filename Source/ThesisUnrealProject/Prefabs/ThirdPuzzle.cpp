@@ -144,8 +144,7 @@ void AThirdPuzzle::Destruction(ADestructibleElements* Elem) {
 			GameMode->Levels.Add("ThirdChoice");
 
 		//Update Bartle's values
-		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);*/
+		GameMode->Update->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);
 	
 	}
 
@@ -177,8 +176,7 @@ void AThirdPuzzle::CoinCollected() {
 			GameMode->Levels.Add("ThirdChoice");
 
 		//Update Bartle's values
-		/*UBartleManagerGameInstance* Bartle = Cast<UBartleManagerGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-		Bartle->EquallyDistributedUpdate(Type::Achiever,Type::Explorer);*/
+		GameMode->Update->EquallyDistributedUpdate(Type::Achiever,Type::Explorer);
 	
 	}
 
