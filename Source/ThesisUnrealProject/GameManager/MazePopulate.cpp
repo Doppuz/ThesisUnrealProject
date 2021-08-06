@@ -4,10 +4,13 @@
 #include "MazePopulate.h"
 #include "MazeCell.h"
 #include "../Graph/Graph.h"
-#include "../Elements/ChestController.h"
-#include "../Elements/CoinController.h"
+#include "../Elements/GeneralElements/ChestController.h"
+#include "../Elements/GeneralElements/CoinController.h"
 #include "../CustomGameMode.h"
-#include "../Elements/Door.h"
+#include "../Elements/GeneralElements/Door.h"
+#include "RoomMaze.h"
+#include "MazeCell.h"
+#include "../Elements/RumbleArena/RumbleArenaWithDoor.h"
 
 // Sets default values
 AMazePopulate::AMazePopulate(){
@@ -92,22 +95,31 @@ void AMazePopulate::SetDynamicVisitedToZero() {
     	Cell->bDynamicIsVisited = false;
 }
 
+//Index = current cell
 void AMazePopulate::AddDoorsWrapper(int Index){
-
-    UE_LOG(LogTemp,Warning,TEXT("%i %i"),MaxPath[Index]->I,MaxPath[Index]->J);
 
 	for(Side* Sides: MazeGraph->GetSides(MaxPath[Index])){
 		
 		if(Sides->To->NumberRoom != -1){
 			
 			if(Index + 1 < MaxPath.Num()){
+
 				int WallNumber = MaxPath[Index]->GiveFrontWall(MaxPath[Index + 1]);
 
 				if(WallNumber != -1){
+
 					FPositionRotation PosRot= MaxPath[Index]->GetWallPosition(WallNumber);
 					ADoor* Door = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position,FRotator(0.f,90.f,0.f) + PosRot.Rotation);
                     Door->SetActorScale3D(FVector(1.7f,1.f,0.75f));
+
+                    //Spawn of the room
+                    FVector Pos = (*Rooms)[Sides->To->NumberRoom].Room[4]->GetActorLocation();
+                    FRotator Rot = FRotator::ZeroRotator;
+                    ARumbleArenaWithDoor* Arena = GetWorld()->SpawnActor<ARumbleArenaWithDoor>(RumbleArenaClass,Pos,Rot);
+                    Arena->Door = Door;
+
 				}
+
 			}
 
 		}

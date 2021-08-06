@@ -2,15 +2,15 @@
 
 
 #include "SixthPuzzle.h"
-#include "../Elements/Door.h"
+#include "../Elements/GeneralElements/Door.h"
 #include "Components/BoxComponent.h"
-#include "../Elements/PuzzleButton.h"
-#include "../Elements/FallenPlatform.h"
+#include "../Elements/Puzzle/PuzzleButton.h"
+#include "../Elements/Platforms/FallenPlatform.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/SpotLightComponent.h"
 #include "../GameModeTutorial.h"
-#include "../UI/OverlayedText.h"
+#include "../UI/Elements/OverlayedText.h"
 #include "Components/WidgetComponent.h"
 #include "ShakeActorFallen.h"
 

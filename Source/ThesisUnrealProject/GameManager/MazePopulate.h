@@ -12,6 +12,8 @@ class AChestController;
 class ACoinController;
 class AGeneralElem;
 class ADoor;
+class RoomMaze;
+class ARumbleArenaWithDoor;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazePopulate : public AActor
@@ -29,6 +31,9 @@ public:
 
 	//Cell's graph.
 	Graph* MazeGraph = nullptr;
+
+	//Room array
+	TArray<RoomMaze>* Rooms;
 
 private:
 
@@ -49,6 +54,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ADoor> DoorClass;
+
+	//Rooms
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ARumbleArenaWithDoor> RumbleArenaClass;
 
 	//Contains the path that leads to the exit.
 	TArray<AMazeCell*> MaxPath;

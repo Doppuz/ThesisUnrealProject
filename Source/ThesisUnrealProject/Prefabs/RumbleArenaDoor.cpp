@@ -2,9 +2,9 @@
 
 
 #include "RumbleArenaDoor.h"
-#include "../Elements/Door.h"
-#include "../Elements/CoinController.h"
-#include "../Elements/RumbleArena.h"
+#include "../Elements/GeneralElements//Door.h"
+#include "../Elements/GeneralElements/CoinController.h"
+#include "../Elements/RumbleArena/RumbleArena.h"
 #include "NPC1Door2.h"
 
 // Sets default values

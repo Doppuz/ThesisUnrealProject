@@ -3,13 +3,11 @@
 
 #include "MazeGenerationCreation.h"
 
-#include "../Graph/Graph.h"
 #include "Containers/Array.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "MazeCell.h"
 #include "RoomMaze.h"
-#include "../Character/CustomPlayerStart.h"
 
 MazeGenerationCreation::MazeGenerationCreation(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell> CellClass,
         TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph* MazeGraph, UWorld* World) {
@@ -280,10 +278,6 @@ bool MazeGenerationCreation::CheckNearbyRoom(int Row, int Column, int RoomSize) 
 
     }
 
-    for(int i = 0; i < 20; i++){
-            UE_LOG(LogTemp,Warning,TEXT("22"));
-        }
-
     return false;
 
 }
@@ -296,7 +290,7 @@ void MazeGenerationCreation::RoomWallHide(TArray<AMazeCell*>& Room, int rowExtr,
             
             (*Maze)[rowExtr + i][columnExtr + j]->NumberRoom = Pos;
 
-            //If condition determined if I need to delete it (Can't delete the borders).
+            //If condition determine if I need to delete it (Can't delete the borders).
             if(j != 0)
                 (*Maze)[rowExtr + i][columnExtr + j]->HideWall(4);
             
@@ -308,6 +302,9 @@ void MazeGenerationCreation::RoomWallHide(TArray<AMazeCell*>& Room, int rowExtr,
             
             if(i != (WallsNumber - 1))
                 (*Maze)[rowExtr + i][columnExtr + j]->HideWall(3);
+
+            //Delete the plane from the rooms8
+            (*Maze)[rowExtr + i][columnExtr + j]->HideWall(0);
             
             Room.Add((*Maze)[rowExtr + i][columnExtr + j]);
 

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "../Character/PawnInteractiveClass.h"
+#include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "NPC1Door2.generated.h"
 
 UCLASS()

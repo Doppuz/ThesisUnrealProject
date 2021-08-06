@@ -2,14 +2,14 @@
 
 
 #include "ForthPuzzle.h"
-#include "../Elements/Door.h"
-#include "../Elements/PuzzleButton.h"
-#include "../Character/PawnInteractiveClass.h"
+#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/Puzzle/PuzzleButton.h"
+#include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
-#include "../UI/OverlayedText.h"
+#include "../UI/Elements/OverlayedText.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values

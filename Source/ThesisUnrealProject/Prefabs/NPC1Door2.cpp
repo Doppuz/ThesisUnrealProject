@@ -2,8 +2,8 @@
 
 
 #include "NPC1Door2.h"
-#include "../Elements/Door.h"
-#include "../Character/PawnInteractiveClass.h"
+#include "../Elements/GeneralElements/Door.h"
+#include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "Components/BoxComponent.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"

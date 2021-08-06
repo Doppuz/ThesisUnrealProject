@@ -2,14 +2,14 @@
 
 
 #include "PuzzleWith2Doors.h"
-#include "../Elements/Door.h"
-#include "../Elements/PuzzleButton.h"
-#include "../Elements/DestructibleElements.h"
+#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/Puzzle/PuzzleButton.h"
+#include "../Elements/Destructible/DestructibleElements.h"
 #include "Components/BoxComponent.h"
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/WidgetComponent.h"
-#include "../UI/OverlayedText.h"
+#include "../UI/Elements/OverlayedText.h"
 
 // Sets default values
 APuzzleWith2Doors::APuzzleWith2Doors()

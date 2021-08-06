@@ -3,9 +3,9 @@
 
 #include "UIMainMenu.h"
 #include "Components/TextBlock.h"
-#include "UIButton.h"
-#include "UIAnswer.h"
-#include "UIBox.h"
+#include "Elements/UIButton.h"
+#include "Elements/UIAnswer.h"
+#include "Elements/UIBox.h"
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/Border.h"

@@ -12,10 +12,6 @@
 class AMazeCell;
 class RoomMaze;
 class MazeGenerationCreation;
-class MazeGenerationPopulate;
-class AChestController;
-class ACoinController;
-class AGeneralElem;
 class AdaptingExperienceManager;
 
 UCLASS()

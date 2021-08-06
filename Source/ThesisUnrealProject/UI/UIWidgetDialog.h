@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "UserWidgetList.h"
+#include "Elements/UserWidgetList.h"
 #include "UIWidgetDialog.generated.h"
 
 /**

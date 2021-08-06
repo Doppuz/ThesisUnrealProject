@@ -4,13 +4,12 @@
 #include "SquaredProjectile.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "../Elements/DestructibleElements.h"
+#include "../Elements/Destructible/DestructibleElements.h"
 #include "DestructibleComponent.h"
 #include "../GameModeTutorial.h"
 #include "../Character/CharacterPawnQuad.h"
-#include "../AI/QuadAIController.h"
-#include "../Character/AICharacterPawnQuad.h"
-#include "../Elements/CrateElements.h"
+#include "../Character/AllyAI/AICharacterPawnQuad.h"
+#include "../Elements/GeneralElements/CrateElements.h"
 
 // Sets default values
 ASquaredProjectile::ASquaredProjectile(){

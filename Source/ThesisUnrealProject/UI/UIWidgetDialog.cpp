@@ -3,8 +3,7 @@
 
 #include "UIWidgetDialog.h"
 #include "Components/TextBlock.h"
-#include "UIBox.h"
-#include "UserWidgetList.h"
+#include "Elements/UIBox.h"
 #include "Components/SizeBox.h"
 
 void UUIWidgetDialog::NativeConstruct() {

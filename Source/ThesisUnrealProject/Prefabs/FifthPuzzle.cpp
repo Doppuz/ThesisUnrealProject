@@ -2,16 +2,16 @@
 
 
 #include "FifthPuzzle.h"
-#include "../Elements/Door.h"
-#include "../Elements/DestructibleElements.h"
-#include "../Elements/CoinController.h"
+#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/Destructible/DestructibleElements.h"
+#include "../Elements/GeneralElements/CoinController.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
 #include "ShakeActor.h"
 #include "Components/WidgetComponent.h"
-#include "../UI/OverlayedText.h"
+#include "../UI/elements/OverlayedText.h"
 
 // Sets default values
 AFifthPuzzle::AFifthPuzzle()

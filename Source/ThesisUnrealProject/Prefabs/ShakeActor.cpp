@@ -2,7 +2,7 @@
 
 
 #include "ShakeActor.h"
-#include "../Elements/DestructibleElements.h"
+#include "../Elements/Destructible/DestructibleElements.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values

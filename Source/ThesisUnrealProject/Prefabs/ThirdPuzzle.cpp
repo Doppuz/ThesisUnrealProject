@@ -2,14 +2,14 @@
 
 
 #include "ThirdPuzzle.h"
-#include "../Elements/Door.h"
-#include "../Elements/DestructibleElements.h"
-#include "../Elements/CoinController.h"
+#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/Destructible/DestructibleElements.h"
+#include "../Elements/GeneralElements/CoinController.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"
-#include "../UI/OverlayedText.h"
+#include "../UI/Elements/OverlayedText.h"
 #include "Components/WidgetComponent.h"
 #include "ShakeActor.h"
 

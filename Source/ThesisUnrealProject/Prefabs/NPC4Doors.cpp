@@ -2,10 +2,9 @@
 
 
 #include "NPC4Doors.h"
-#include "../Elements/Door.h"
+#include "../Elements/GeneralElements/Door.h"
 #include "../Character/CharacterPawnQuad.h"
-#include "../Character/PawnInteractiveClass.h"
-#include "../Character/PawnInteractiveMove.h"
+#include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "Components/BoxComponent.h"
 #include "../GameModeTutorial.h"
 #include "Kismet/GameplayStatics.h"

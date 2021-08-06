@@ -2,12 +2,11 @@
 
 
 #include "NPC1DoorSpawnAlly.h"
-#include "../Elements/Door.h"
-#include "../Character/PawnInteractiveClass.h"
+#include "../Elements/GeneralElements/Door.h"
 #include "Components/BoxComponent.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
-#include "../Character/AICharacterPawnQuad.h"
+#include "../Character/AllyAI/AICharacterPawnQuad.h"
 #include "../GameModeTutorial.h"
 
 // Sets default values

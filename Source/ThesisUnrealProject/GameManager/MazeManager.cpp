@@ -10,11 +10,6 @@
 #include "MazeGenerationCreation.h"
 #include "Kismet/GameplayStatics.h"
 #include "MazePopulate.h"
-#include "../Elements/ChestController.h"
-#include "../Elements/CoinController.h"
-#include "../Elements/CrateElements.h"
-#include "../UI/UIWidgetDialog.h"
-#include "../UI/UIBox.h"
 
 // Sets default values
 AMazeManager::AMazeManager()
@@ -51,6 +46,7 @@ void AMazeManager::BeginPlay()
     //Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, CoinClass, CrateElementsClass, GetWorld());
 
     PopulateActor->MazeGraph = MazeGraph;
+    PopulateActor->Rooms = Generator->Rooms;
 
     //Check for cells with 3 walls.
     PopulateActor->DepthVisit((*Maze)[0][0]);

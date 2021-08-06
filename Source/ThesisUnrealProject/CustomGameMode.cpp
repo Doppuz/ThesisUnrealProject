@@ -12,11 +12,8 @@
 #include "GameManager/MazeGenerationCreation.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameManager/MazePopulate.h"
-#include "Elements/ChestController.h"
-#include "Elements/CoinController.h"
-#include "Elements/CrateElements.h"
 #include "UI/UIWidgetDialog.h"
-#include "UI/UIBox.h"
+#include "UI/Elements/UIBox.h"
 
 
 ACustomGameMode::ACustomGameMode() {

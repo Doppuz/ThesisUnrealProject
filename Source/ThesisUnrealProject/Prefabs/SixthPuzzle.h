@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "../Character/PawnInteractiveClass.h"
 #include "SixthPuzzle.generated.h"
 
 class AAICharacterPawnQuad;
@@ -49,7 +48,7 @@ public:
 	USceneComponent* Triggers;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
-	UBoxComponent* Trigger1;
+	class UBoxComponent* Trigger1;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	UBoxComponent* Trigger2;

@@ -10,7 +10,7 @@
  #include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
 #include "../UI/UIWidgetDialog.h"
-#include "../UI/HealthBar.h"
+#include "../UI/Elements/HealthBar.h"
 
 // Sets default values
 ACheckpoint::ACheckpoint()

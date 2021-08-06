@@ -2,11 +2,11 @@
 
 
 #include "GameModeTutorial.h"
-#include "Elements/PuzzleButton.h"
-#include "Elements/Door.h"
+#include "Elements/Puzzle/PuzzleButton.h"
+#include "Elements/GeneralElements/Door.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/UIWidgetDialog.h"
-#include "UI/UIBox.h"
+#include "UI/Elements/UIBox.h"
 #include "CustomGameState.h"
 #include "Engine/TriggerVolume.h"
 #include "CheckPoints/SaveGameData.h"

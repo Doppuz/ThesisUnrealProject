@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "DestructibleComponent.h"
 #include "../Projectile/SquaredProjectile.h"
-#include "../AI/QuadAIController.h"
+#include "../AI/Controller/QuadAIController.h"
 #include "../GameModeAbstract.h"
 #include "../UI/UIWidgetDialog.h"
 #include "Components/TextBlock.h"
@@ -17,10 +17,10 @@
 #include "Components/SpotLightComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
-#include "../UI/HealthBar.h"
+#include "../UI/Elements/HealthBar.h"
 #include "Components/ProgressBar.h"
 #include "Components/SizeBox.h"
-#include "../UI/UIBox.h"
+#include "../UI/Elements/UIBox.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){

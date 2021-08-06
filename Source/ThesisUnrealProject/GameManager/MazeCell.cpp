@@ -3,7 +3,7 @@
 
 #include "MazeCell.h"
 #include "Components/BoxComponent.h"
-#include "../Elements/GeneralElem.h"
+#include "../Elements/GeneralElements/GeneralElem.h"
 
 // Sets default values
 AMazeCell::AMazeCell(){
@@ -74,6 +74,9 @@ void AMazeCell::HideObstacleWall() {
 void AMazeCell::HideWall(int WallNumber) {
 	LastHiddenWall = WallNumber;
 	switch(WallNumber){
+		case 0:
+			MeshPlaneComponent->SetStaticMesh(nullptr);
+			break;
 		case 1:
 			MeshWall1Component->SetStaticMesh(nullptr);
 			Walls.Remove(1);

@@ -3,11 +3,10 @@
 
 #include "UIEndScreen.h"
 #include "Components/TextBlock.h"
-#include "UIBox.h"
-#include "UserWidgetList.h"
+#include "Elements/UIBox.h"
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
-#include "UIButton.h"
+#include "Elements/UIButton.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 

@@ -24,6 +24,8 @@ public:
 
 	void PrintMaze();
 	
+	TArray<RoomMaze> *Rooms = nullptr;
+
 private:
 	//Methods
 
@@ -49,7 +51,6 @@ private:
 	TSubclassOf<AMazeCell> CellClass;
 
 	TArray<TArray<AMazeCell*>> *Maze = nullptr;
-	TArray<RoomMaze> *Rooms = nullptr;
 	//TempMaze
 	TArray<TArray<AMazeCell*>> TempMaze;
 	Graph* MazeGraph;

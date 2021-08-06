@@ -2,7 +2,7 @@
 
 
 #include "ShakeActorFallen.h"
-#include "../Elements/FallenPlatform.h"
+#include "../Elements/Platforms/FallenPlatform.h"
 
 void AShakeActorFallen::Shake(float DeltaTime) {
     

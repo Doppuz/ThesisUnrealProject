@@ -10,12 +10,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "PawnInteractiveClass.h"
-#include "EnemyAIAbstract.h"
+#include "AllyAI/PawnInteractiveClass.h"
+#include "EnemyAI/EnemyAIAbstract.h"
 
 #include "CharacterPawnQuad.generated.h"
 
-class AGunController;
 class ASquaredProjectile;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndDelegate);
