@@ -13,7 +13,7 @@ class ACoinController;
 class AGeneralElem;
 class ADoor;
 class RoomMaze;
-class ARumbleArenaWithDoor;
+class AGeneralRoomWithDoor;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazePopulate : public AActor
@@ -57,7 +57,7 @@ private:
 
 	//Rooms
 	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<ARumbleArenaWithDoor> RumbleArenaClass;
+	TSubclassOf<AGeneralRoomWithDoor> RumbleArenaClass;
 
 	//Contains the path that leads to the exit.
 	TArray<AMazeCell*> MaxPath;

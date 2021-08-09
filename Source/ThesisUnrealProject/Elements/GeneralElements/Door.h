@@ -42,6 +42,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Opening")
 	int ID;
 
+	void SetDoorDirection(bool);
+
 
 protected:
 	// Called when the game starts or when spawned

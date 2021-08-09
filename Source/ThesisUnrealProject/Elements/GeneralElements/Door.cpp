@@ -24,7 +24,7 @@ ADoor::ADoor(){
 	bOpenDoor = false;
 	bClose = false;
 	Speed = 0.4f;
-	Distance = 200.f;
+	Distance = 300.f;
 	ID = 0;
 }
 
@@ -35,10 +35,7 @@ void ADoor::BeginPlay(){
 
 	FVector ActorPosition = GetActorLocation();
 
-	if(bClose)
-		FinalPosition = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - Distance);
-	else
-		FinalPosition = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + Distance);
+	SetDoorDirection(bClose);
 	
 }
 
@@ -51,6 +48,16 @@ void ADoor::Tick(float DeltaTime){
 		FVector NewLocation = FMath::Lerp(ActorPosition,FinalPosition, DeltaTime * Speed);
 		SetActorLocation(NewLocation);
 	}
+
+}
+
+void ADoor::SetDoorDirection(bool bIsClosed) {
+	
+	if(bIsClosed)
+		FinalPosition = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - Distance);
+	else
+		FinalPosition = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + Distance);
+
 }
 
 

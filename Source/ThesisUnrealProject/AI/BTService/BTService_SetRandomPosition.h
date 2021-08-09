@@ -15,7 +15,14 @@ class THESISUNREALPROJECT_API UBTService_SetRandomPosition : public UBTService_B
 	GENERATED_BODY()
 
 public:
+
 	UBTService_SetRandomPosition();
+
+	UPROPERTY(EditAnywhere)
+	float ShootRange;
+
+	UPROPERTY(EditAnywhere)
+	float RandomDistance;
 
 protected:
 

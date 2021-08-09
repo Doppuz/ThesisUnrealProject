@@ -98,10 +98,6 @@ public:
 	//LineTracing max range
 	float MaxRange;
 
-	//AI MaxRandomMovement	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	float MaxRandomDistance;
-
 	//Used to move the cannon in the obstacle of puzzle 3.
 	UPROPERTY(EditAnywhere, Category = "AI")
 	bool bStationary;

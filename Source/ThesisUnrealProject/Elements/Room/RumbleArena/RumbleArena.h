@@ -4,8 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "../Spawner/ActorSpawner.h"
-#include "../../Character/EnemyAI/EnemyAIAbstract.h"
+#include "../../Spawner/ActorSpawner.h"
+#include "../../../Character/EnemyAI/EnemyAIAbstract.h"
+#include "../GeneralRoomWithDoor.h"
 #include "RumbleArena.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndArena);
@@ -13,8 +14,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndArena);
 class ACoinController;
 
 UCLASS()
-class THESISUNREALPROJECT_API ARumbleArena : public AActor
-{
+class THESISUNREALPROJECT_API ARumbleArena : public AGeneralRoomWithDoor{
+
 	GENERATED_BODY()
 	
 public:	
@@ -30,15 +31,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 #pragma region Components
-	
-	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
-	USceneComponent* Root;
-
-	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
-	class UBoxComponent* Collider;
-
-	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
-	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	USceneComponent* SpawnPositions;

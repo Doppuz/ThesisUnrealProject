@@ -128,8 +128,8 @@ void MazeGenerationCreation::CreateRoomSize3() {
     int ColumnExtr;
 
     do {
-        RowExtr = FMath::RandRange(0, Length - 3);
-        ColumnExtr = FMath::RandRange(0, Height - 3);
+        RowExtr = FMath::RandRange(1, Length - 4);
+        ColumnExtr = FMath::RandRange(1, Height - 4);
     } while (CheckRoomIntersection(RowExtr, ColumnExtr,3) || (RowExtr == 0 && ColumnExtr == 0));
 
     TArray<AMazeCell*> Room;
@@ -178,21 +178,6 @@ void MazeGenerationCreation::CreateMazeWrapper(int I, int J) {
     } else{
         (*Rooms)[(*Maze)[I][J]->NumberRoom].bDoor = true;
 
-    //I was developping the 
-        /*if(J+2 < 10){
-         
-            (*Maze)[I][J + 1]->HideWall(2);
-            (*Maze)[I][J + 2]->HideWall(4);
-
-            CreateMazeWrapper(I, J + 2); 
-
-        }else if (I+2 < 10){
-            
-            (*Maze)[I + 1][J]->HideWall(3);
-            (*Maze)[I + 2][J]->HideWall(1);
-
-            CreateMazeWrapper(I + 2, J);
-        }*/
     }
 }
 
@@ -220,12 +205,12 @@ void MazeGenerationCreation::CreateMaze() {
 bool MazeGenerationCreation::CheckRoomIntersection(int Row, int Column, int RoomSize) {
 
     //Check if the cells are already a room.
-    for(int i = 0; i < RoomSize; i++){
+    /*for(int i = 0; i < RoomSize; i++){
 
         if((*Maze)[Row][Column]->NumberRoom != -1)
             return true;
     
-    }
+    }*/
 
     return CheckNearbyRoom(Row, Column, 3);
 }

@@ -10,7 +10,7 @@
 #include "../Elements/GeneralElements/Door.h"
 #include "RoomMaze.h"
 #include "MazeCell.h"
-#include "../Elements/RumbleArena/RumbleArenaWithDoor.h"
+#include "../Elements/Room/RumbleArena/RumbleArenaDoorNpc.h"
 
 // Sets default values
 AMazePopulate::AMazePopulate(){
@@ -29,6 +29,7 @@ void AMazePopulate::DepthVisit(AMazeCell* Start) {
     MazeCellMax[MazeCellMax.Num() - 1]->HideWall(2);
     MazeCellMax[MazeCellMax.Num() - 1]->HideWall(3);
     MazeCellMax[MazeCellMax.Num() - 1]->HideWall(4);
+    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(0);
     
 }
 
@@ -51,9 +52,9 @@ void AMazePopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMa
     //Last Cell of the current path. 
     AMazeCell* LastCell = CurrentVisitedCell[CurrentVisitedCell.Num() - 1];
 
-    //Search for the maximum path
-    if(CurrentVisitedCell.Num() > MazeCellMax.Num() && (LastCell->I == 0 || LastCell->I == 13 ||
-                                                        LastCell->J == 0 || LastCell->J == 13))
+    //Search for the maximum path (uncomment below to put the exit in one of the sides)
+    if(CurrentVisitedCell.Num() > MazeCellMax.Num()) //&& (LastCell->I == 0 || LastCell->I == 12 ||
+                                                    //    LastCell->J == 0 || LastCell->J == 12))
         MazeCellMax = CurrentVisitedCell;
 
 }
@@ -104,21 +105,30 @@ void AMazePopulate::AddDoorsWrapper(int Index){
 			
 			if(Index + 1 < MaxPath.Num()){
 
+                FPositionRotation PosRot;
+
+                //Wall number to block the street
 				int WallNumber = MaxPath[Index]->GiveFrontWall(MaxPath[Index + 1]);
 
-				if(WallNumber != -1){
+                //Wall number to close the room
+				int WallNumberRoom = MaxPath[Index]->GiveFrontWall(Sides->To);
 
-					FPositionRotation PosRot= MaxPath[Index]->GetWallPosition(WallNumber);
-					ADoor* Door = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position,FRotator(0.f,90.f,0.f) + PosRot.Rotation);
-                    Door->SetActorScale3D(FVector(1.7f,1.f,0.75f));
+                //Spawn the doors
+				PosRot= MaxPath[Index]->GetWallPosition(WallNumber);
+				ADoor* Door = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position,FRotator(0.f,90.f,0.f) + PosRot.Rotation);
+                Door->SetActorScale3D(FVector(1.7f,1.f,0.75f));
 
-                    //Spawn of the room
-                    FVector Pos = (*Rooms)[Sides->To->NumberRoom].Room[4]->GetActorLocation();
-                    FRotator Rot = FRotator::ZeroRotator;
-                    ARumbleArenaWithDoor* Arena = GetWorld()->SpawnActor<ARumbleArenaWithDoor>(RumbleArenaClass,Pos,Rot);
-                    Arena->Door = Door;
+                PosRot= MaxPath[Index]->GetWallPosition(WallNumberRoom);
+				ADoor* RoomDoor = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position + FVector(0.f,0.f,Door->Distance),FRotator(0.f,90.f,0.f) + PosRot.Rotation);
+                RoomDoor->SetActorScale3D(FVector(1.7f,1.f,0.75f));
+                RoomDoor->SetDoorDirection(true);
 
-				}
+                //Spawn of the room
+                FVector Pos = (*Rooms)[Sides->To->NumberRoom].Room[4]->GetActorLocation();
+                FRotator Rot = FRotator::ZeroRotator;
+                ARumbleArenaDoorNpc* Arena = GetWorld()->SpawnActor<ARumbleArenaDoorNpc>(RumbleArenaClass,Pos,Rot);
+                Arena->Door = Door;
+                Arena->RoomDoor = RoomDoor;
 
 			}
 

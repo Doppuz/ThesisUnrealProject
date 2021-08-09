@@ -78,7 +78,6 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	MaxRange = 300.f;
 	InteractiveActor = nullptr;
 	bStopMovement = false;
-	MaxRandomDistance = 300.f;
 	bStationary = true;
 	NumberOfRepetitions = 0;
 	bIsVisible = true;
