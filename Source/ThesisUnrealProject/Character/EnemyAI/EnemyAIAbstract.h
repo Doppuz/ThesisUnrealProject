@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "EnemyAIAbstract.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEndDelegate,AEnemyAIAbstract*, Enemy);
+
 UCLASS(Abstract)
 class THESISUNREALPROJECT_API AEnemyAIAbstract : public APawn
 {
@@ -34,6 +36,9 @@ public:
 
 	//Check if I am destroyed
 	bool bIAmDestroyed;
+
+	// End delegate
+	FEndDelegate End;
 
 
 };

@@ -17,8 +17,6 @@
 
 class ASquaredProjectile;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndDelegate);
-
 UCLASS()
 class THESISUNREALPROJECT_API ACharacterPawnQuad : public AEnemyAIAbstract{
 	GENERATED_BODY()
@@ -111,10 +109,6 @@ public:
 	class UWidgetComponent* HealthWidgetComponent;
 
 	void SetHealthPercentage(float);
-
-// End delegate
-
-	FEndDelegate End;
 
 // Stop Character (Used to disable physics)
 	void StopCharacter(bool);

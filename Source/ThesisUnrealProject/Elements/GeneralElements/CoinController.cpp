@@ -67,15 +67,15 @@ void ACoinController::OnBoxOverlap(UPrimitiveComponent * HitComponent, AActor * 
 
 void ACoinController::OnCoinOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	
-	if(OtherActor->IsA(APawn::StaticClass())){
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->IncreaseCoins();
+	if(OtherActor->IsA(APawn::StaticClass()) && Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass())){
+		//AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		//GameMode->IncreaseCoins();
 		bIsCollected = true;
 		CollectedDelegate.Broadcast();
-		UUIWidgetDialog* UI = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+		/*UUIWidgetDialog* UI = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 		if(UI->CoinText->GetVisibility() == ESlateVisibility::Hidden)
 			UI->CoinText->SetVisibility(ESlateVisibility::Visible);
-		UI->SetCoinText(GameMode->GetCoins());
+		UI->SetCoinText(GameMode->GetCoins());*/
 		Destroy();
 	}
 }

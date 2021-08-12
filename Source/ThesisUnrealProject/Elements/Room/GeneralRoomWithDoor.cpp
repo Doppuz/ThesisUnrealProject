@@ -12,9 +12,12 @@ AGeneralRoomWithDoor::AGeneralRoomWithDoor() {
 	
 	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
 	Collider->SetupAttachment(RootComponent);
+    Collider->SetWorldScale3D(FVector(35.50f,35.50f,0.50f));
+    Collider->SetWorldLocation(FVector(0.f,0.f,4.8f));
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Collider);
+    Mesh->SetWorldScale3D(FVector(0.65f,0.65f,0.65f));
 
 }
 

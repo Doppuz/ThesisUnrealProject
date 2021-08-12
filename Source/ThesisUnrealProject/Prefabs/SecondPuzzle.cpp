@@ -135,7 +135,7 @@ void ASecondPuzzle::RightChoiceEvent() {
 	NPC->Speak();
 }
 
-void ASecondPuzzle::EndEnemiesEvent() {
+void ASecondPuzzle::EndEnemiesEvent(AEnemyAIAbstract* Enemy) {
 	
 	DeathEnemies += 1;
 	Cast<ADoor>(Door5->GetChildActor())->bOpenDoor = true;

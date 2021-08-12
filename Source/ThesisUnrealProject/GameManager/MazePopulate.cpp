@@ -11,6 +11,7 @@
 #include "RoomMaze.h"
 #include "MazeCell.h"
 #include "../Elements/Room/RumbleArena/RumbleArenaDoorNpc.h"
+#include "../Elements/Room/ArenaEnemies/ArenaEnemies.h"
 
 // Sets default values
 AMazePopulate::AMazePopulate(){
@@ -126,9 +127,10 @@ void AMazePopulate::AddDoorsWrapper(int Index){
                 //Spawn of the room
                 FVector Pos = (*Rooms)[Sides->To->NumberRoom].Room[4]->GetActorLocation();
                 FRotator Rot = FRotator::ZeroRotator;
-                ARumbleArenaDoorNpc* Arena = GetWorld()->SpawnActor<ARumbleArenaDoorNpc>(RumbleArenaClass,Pos,Rot);
+                //ARumbleArenaDoorNpc* Arena = GetWorld()->SpawnActor<ARumbleArenaDoorNpc>(RumbleArenaClass,Pos,Rot);
+                AArenaEnemies* Arena = GetWorld()->SpawnActor<AArenaEnemies>(EnemiesArenaClass,Pos,Rot);
                 Arena->Door = Door;
-                Arena->RoomDoor = RoomDoor;
+                //Arena->RoomDoor = RoomDoor;
 
 			}
 

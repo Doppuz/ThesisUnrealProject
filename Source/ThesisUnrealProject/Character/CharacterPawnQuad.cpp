@@ -129,7 +129,7 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 		if(GetController()->IsA(AQuadAIController::StaticClass())){
 			
 			bIAmDestroyed = true;
-			End.Broadcast();
+			End.Broadcast(this);
 			Destroy();
 			
 		}else if(GetController()->IsA(APlayerController::StaticClass()))

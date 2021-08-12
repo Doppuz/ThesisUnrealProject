@@ -85,7 +85,7 @@ private:
 // ---- Enemies ----
 
 	UFUNCTION()
-	void EndEnemiesEvent();
+	void EndEnemiesEvent(AEnemyAIAbstract* Enemy);
 
 	int DeathEnemies;
 

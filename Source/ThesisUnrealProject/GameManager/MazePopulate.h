@@ -58,6 +58,9 @@ private:
 	//Rooms
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AGeneralRoomWithDoor> RumbleArenaClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AGeneralRoomWithDoor> EnemiesArenaClass;
 
 	//Contains the path that leads to the exit.
 	TArray<AMazeCell*> MaxPath;

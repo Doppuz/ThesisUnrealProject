@@ -72,6 +72,7 @@ float AAIBull::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 
 	if(CurrentHealth == 0){
 		bIAmDestroyed = true;
+		End.Broadcast(this);
 		Destroy();
 	}
 		
