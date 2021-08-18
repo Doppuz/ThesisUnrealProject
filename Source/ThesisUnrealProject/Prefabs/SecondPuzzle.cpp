@@ -3,7 +3,7 @@
 
 #include "SecondPuzzle.h"
 #include "../Elements/GeneralElements/Door.h"
-#include "../Character/CharacterPawnQuad.h"
+#include "../Character/EnemyAI/AIShooterPawn.h"
 #include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "../Character/AllyAI/PawnInteractiveMove.h"
 #include "Components/BoxComponent.h"
@@ -12,8 +12,8 @@
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-ASecondPuzzle::ASecondPuzzle()
-{
+ASecondPuzzle::ASecondPuzzle(){
+	
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
@@ -89,9 +89,9 @@ void ASecondPuzzle::BeginPlay()
 	AActorSpawner* Enemy02 = Cast<AActorSpawner>(SpawnEnemy2->GetChildActor());
 	AActorSpawner* Enemy03 = Cast<AActorSpawner>(SpawnEnemy3->GetChildActor());
 
-	Cast<ACharacterPawnQuad>(Enemy01->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
-	Cast<ACharacterPawnQuad>(Enemy02->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
-	Cast<ACharacterPawnQuad>(Enemy03->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
+	Cast<AAIShooterPawn>(Enemy01->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
+	Cast<AAIShooterPawn>(Enemy02->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
+	Cast<AAIShooterPawn>(Enemy03->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
 
 	Cast<APawnInteractiveMove>(NPC02->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
 	Cast<APawnInteractiveMove>(NPC03->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);

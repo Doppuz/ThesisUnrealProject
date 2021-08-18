@@ -34,4 +34,7 @@ private:
 	//AI Timer movement
 	FTimerHandle MovementTimer;
 	void Movement();
+
+	UPROPERTY(EditAnywhere)
+	bool bStationary = true;
 };

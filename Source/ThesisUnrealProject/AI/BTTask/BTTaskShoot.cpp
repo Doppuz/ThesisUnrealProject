@@ -5,7 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackBoardComponent.h"
 #include "../Controller/QuadAIController.h"
-#include "../../Character/CharacterPawnQuad.h"
+#include "../../Character/EnemyAI/AIShooterPawn.h"
 
 UBTTaskShoot::UBTTaskShoot() {
     NodeName = "Shoot";
@@ -21,7 +21,7 @@ EBTNodeResult::Type UBTTaskShoot::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
     if(AIController == nullptr)
         return EBTNodeResult::Failed;
 
-    ACharacterPawnQuad* AIPawn = Cast<ACharacterPawnQuad>(AIController->GetPawn());
+    AAIShooterPawn* AIPawn = Cast<AAIShooterPawn>(AIController->GetPawn());
     AIPawn->Shoot();
     return EBTNodeResult::Succeeded;
 }

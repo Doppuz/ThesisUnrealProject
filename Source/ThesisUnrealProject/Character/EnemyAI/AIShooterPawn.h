@@ -3,18 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
 #include "EnemyAIAbstract.h"
-#include "AIBull.generated.h"
+#include "AIShooterPawn.generated.h"
 
+class ASquaredProjectile;
+
+/**
+ * 
+ */
 UCLASS()
-class THESISUNREALPROJECT_API AAIBull : public AEnemyAIAbstract{
+class THESISUNREALPROJECT_API AAIShooterPawn : public AEnemyAIAbstract{
 	
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
-	AAIBull();
+
+	AAIShooterPawn();
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
 	class UBoxComponent* Collider;
@@ -31,11 +35,18 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = General)
 	class UFloatingPawnMovement* PawnMovement;
 
-	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = General)
+	USceneComponent* ProjectileSpawnPosition;
 
 	//Health Bar
 	UPROPERTY( VisibleAnywhere )
 	class UWidgetComponent* HealthWidgetComponent;
+
+	//Projectile class
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
+	TSubclassOf<ASquaredProjectile> ProjectileClass;
+
+	float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -45,10 +56,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
-
 	UPROPERTY(EditAnywhere)
 	float Damage;
+
+	void Shoot();
 
 };

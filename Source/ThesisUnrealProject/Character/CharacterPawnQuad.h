@@ -18,7 +18,7 @@
 class ASquaredProjectile;
 
 UCLASS()
-class THESISUNREALPROJECT_API ACharacterPawnQuad : public AEnemyAIAbstract{
+class THESISUNREALPROJECT_API ACharacterPawnQuad : public APawn{
 	GENERATED_BODY()
 
 public:
@@ -90,15 +90,11 @@ public:
 	//Player Mouse Pointer
 	void SetMousePointer(bool);
 
-	//Reference to the NPC who I am talking with
+	//Reference to the NPC who I am talking to
 	class APawnInteractiveClass* AllyNPC;
 
 	//LineTracing max range
 	float MaxRange;
-
-	//Used to move the cannon in the obstacle of puzzle 3.
-	UPROPERTY(EditAnywhere, Category = "AI")
-	bool bStationary;
 	
 	//Position of Ally that follows the player
 	UPROPERTY(EditAnywhere, Category = "AI")
@@ -112,6 +108,12 @@ public:
 
 // Stop Character (Used to disable physics)
 	void StopCharacter(bool);
+
+	UPROPERTY(EditAnywhere)
+	float MaxHealth;
+
+	UPROPERTY(VisibleAnywhere)
+	float CurrentHealth;
 
 protected:
 	// Called when the game starts or when spawned
@@ -142,10 +144,6 @@ private:
 
 	//method to speak with an NPC when I am cole enought to its.
 	void Speak();
-	
-	//Enemy ID
-	UPROPERTY(EditAnywhere)
-	int ID;
 
 	//methos to respawn the player to the last checkpoint.
 	void Rewind();

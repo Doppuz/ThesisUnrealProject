@@ -22,7 +22,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	UBehaviorTree* BTree; 
 
-	bool FirstTime = false;;
+	bool FirstTime = false;
 
 protected:
 	// Called when the game starts or when spawned

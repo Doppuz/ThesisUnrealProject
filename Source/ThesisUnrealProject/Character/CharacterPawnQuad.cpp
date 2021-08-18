@@ -78,7 +78,6 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	MaxRange = 300.f;
 	InteractiveActor = nullptr;
 	bStopMovement = false;
-	bStationary = true;
 	NumberOfRepetitions = 0;
 	bIsVisible = true;
 }
@@ -128,8 +127,8 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	if(CurrentHealth == 0){
 		if(GetController()->IsA(AQuadAIController::StaticClass())){
 			
-			bIAmDestroyed = true;
-			End.Broadcast(this);
+			//bIAmDestroyed = true;
+			//End.Broadcast(this);
 			Destroy();
 			
 		}else if(GetController()->IsA(APlayerController::StaticClass()))

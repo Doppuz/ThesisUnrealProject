@@ -27,7 +27,7 @@ void AQuadAIControllerStationary::Tick(float DeltaTime) {
 
     ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(GetPawn());
 
-    if(!MyPawn->bStationary){
+    if(!bStationary){
         MyPawn->AddActorLocalOffset(FVector(0,MovementValue,0) * DeltaTime * 30);
     }
 
