@@ -17,7 +17,7 @@ class THESISUNREALPROJECT_API MazeGenerationCreation
 public:
 	MazeGenerationCreation(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell> CellClass,
 		TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph* MazeGraph,
-		UWorld* World);
+		UWorld* World, float);
 	~MazeGenerationCreation();
 
 	void StandardMazeCreation();
@@ -47,7 +47,8 @@ private:
 	int MazeObstacle;
 	int Maze2Room;
 	int Maze3Room;
-	int Maze4Room;
+	//used to create the maze at a particular depth
+	float Depth;
 	TSubclassOf<AMazeCell> CellClass;
 
 	TArray<TArray<AMazeCell*>> *Maze = nullptr;

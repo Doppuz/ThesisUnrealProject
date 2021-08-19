@@ -37,7 +37,7 @@ void AMazeManager::BeginPlay()
     MazeGraph = new Graph();
     
     Generator = new MazeGenerationCreation(Length,Height,MazeObstacle,Maze2Room,CellClass,
-        Maze,Rooms,MazeGraph,GetWorld());
+        Maze,Rooms,MazeGraph,GetWorld(),Depth);
 
     Generator->StandardMazeCreation();
 
@@ -45,18 +45,24 @@ void AMazeManager::BeginPlay()
     
     //Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, CoinClass, CrateElementsClass, GetWorld());
 
-    PopulateActor->MazeGraph = MazeGraph;
-    PopulateActor->Rooms = Generator->Rooms;
+    PopulateActor = GetWorld()->SpawnActor<AMazePopulate>(PopulateClass,FVector::ZeroVector,FRotator::ZeroRotator);
 
-    //Check for cells with 3 walls.
-    PopulateActor->DepthVisit((*Maze)[0][0]);
-    PopulateActor->AddDoors();
+    if(PopulateActor != nullptr){
     
-    //MazeGraph->SetVisitedToZero();
-    //Populate->DynamicDepthVisit((*Maze)[0][0],5);
-    //Populate->PopulateChest();
+        PopulateActor->MazeGraph = MazeGraph;
+        PopulateActor->Rooms = Generator->Rooms;
 
-    MazeGraph->SetVisitedToZero();
+        //Check for cells with 3 walls.
+        PopulateActor->DepthVisit((*Maze)[0][0]);
+        PopulateActor->AddDoors();
+        
+        //MazeGraph->SetVisitedToZero();
+        //Populate->DynamicDepthVisit((*Maze)[0][0],5);
+        //Populate->PopulateChest();
+
+        //MazeGraph->SetVisitedToZero();
+    
+    }
 }
 
 // Called every frame

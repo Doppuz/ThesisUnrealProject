@@ -12,6 +12,10 @@
 #include "MazeCell.h"
 #include "../Elements/Room/RumbleArena/RumbleArenaDoorNpc.h"
 #include "../Elements/Room/ArenaEnemies/ArenaEnemies.h"
+#include "../Elements/Room/MazeArena/MazeArena.h"
+#include "Kismet/GameplayStatics.h"
+#include "MazeManager.h"
+#include "../Elements/Triggers/Trigger.h"
 
 // Sets default values
 AMazePopulate::AMazePopulate(){
@@ -124,13 +128,22 @@ void AMazePopulate::AddDoorsWrapper(int Index){
                 RoomDoor->SetActorScale3D(FVector(1.7f,1.f,0.75f));
                 RoomDoor->SetDoorDirection(true);
 
+                //Spawn the trigger
+                ATrigger* Trigger = GetWorld()->SpawnActor<ATrigger>(TriggerClass,PosRot.Position ,PosRot.Rotation); 
+		        Trigger->ChangeVisibility(true);
+                Trigger->SetActorScale3D(FVector(1.f,1.5f,2.f));
+
                 //Spawn of the room
-                FVector Pos = (*Rooms)[Sides->To->NumberRoom].Room[4]->GetActorLocation();
+                /*FVector Pos = (*Rooms)[Sides->To->NumberRoom].Room[4]->GetActorLocation();
                 FRotator Rot = FRotator::ZeroRotator;
                 //ARumbleArenaDoorNpc* Arena = GetWorld()->SpawnActor<ARumbleArenaDoorNpc>(RumbleArenaClass,Pos,Rot);
                 AArenaEnemies* Arena = GetWorld()->SpawnActor<AArenaEnemies>(EnemiesArenaClass,Pos,Rot);
                 Arena->Door = Door;
-                //Arena->RoomDoor = RoomDoor;
+                //Arena->RoomDoor = RoomDoor;*/
+
+                const FTransform SpawnLocAndRotation;
+                AMazeArena* Arena = GetWorld()->SpawnActor<AMazeArena>(MazeArenaClass, SpawnLocAndRotation);
+                Arena->Door = Door;
 
 			}
 

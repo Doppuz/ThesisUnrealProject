@@ -13,6 +13,7 @@ class AMazeCell;
 class RoomMaze;
 class MazeGenerationCreation;
 class AdaptingExperienceManager;
+class AMazePopulate;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -40,6 +41,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	class AMazePopulate* PopulateActor;
 
+	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
+	float Depth = 0;
+
 private:
 	
 //---------- Parameter for Maze generation ------------------
@@ -61,6 +65,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	TSubclassOf<AMazeCell> CellClass;
+
+	//Pupulate actor class.
+	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
+	TSubclassOf<AMazePopulate> PopulateClass;
 
 	//Contains all the cells for the creation.
 	TArray<TArray<AMazeCell*>> *Maze = nullptr;

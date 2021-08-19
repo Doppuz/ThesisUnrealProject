@@ -51,7 +51,7 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	USceneComponent* Spawn9;
-	
+
 // ----- Classes -----
 
 	UPROPERTY(EditAnywhere, Category = "SpawnElements")

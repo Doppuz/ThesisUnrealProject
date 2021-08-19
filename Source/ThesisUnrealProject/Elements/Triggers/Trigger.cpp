@@ -30,10 +30,7 @@ void ATrigger::BeginPlay(){
 	
 	TypeOfOverlap();
 
-	if(bBlockVisibility)
-		Trigger->SetCollisionProfileName(TEXT("TriggerWallNoVisibility"));
-	else
-		Trigger->SetCollisionProfileName(TEXT("TriggerWall"));
+	ChangeVisibility(bBlockVisibility);
 
 }
 
@@ -55,6 +52,16 @@ void ATrigger::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor
 			Controller->MovementValue = -Controller->MovementValue;
 		}
 	}
+
+}
+
+void ATrigger::ChangeVisibility(bool Visibility) {
+	
+	if(Visibility)
+		Trigger->SetCollisionProfileName(TEXT("TriggerWallNoVisibility"));
+	else
+		Trigger->SetCollisionProfileName(TEXT("TriggerWall"));
+
 
 }
 

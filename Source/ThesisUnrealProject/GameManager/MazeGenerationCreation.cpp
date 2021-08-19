@@ -10,7 +10,7 @@
 #include "RoomMaze.h"
 
 MazeGenerationCreation::MazeGenerationCreation(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell> CellClass,
-        TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph* MazeGraph, UWorld* World) {
+        TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph* MazeGraph, UWorld* World,float Depth) {
             this->Length = Length;
             this->Height = Height;
             this->MazeObstacle = MazeObstacle;
@@ -20,6 +20,7 @@ MazeGenerationCreation::MazeGenerationCreation(int Length, int Height, int MazeO
             this->Rooms = Rooms;
             this->MazeGraph = MazeGraph;
             this->World = World;
+            this->Depth = Depth;
 }
 
 MazeGenerationCreation::~MazeGenerationCreation()
@@ -63,7 +64,7 @@ void MazeGenerationCreation::InitializeMaze() {
     for (int i = 0; i < Height; i++) {
         TArray<AMazeCell*> Row;
         for (int j = 0; j < Length; j++) {
-            FVector Origin(i * (-768) * 1, j * 768 * 1, 0); //1100 --- 1.5
+            FVector Origin(i * (-768) * 1, j * 768 * 1, Depth); //1100 --- 1.5
             FRotator Rotation(0, 0, 0);
             AMazeCell* CellActor =
                 World->SpawnActor<AMazeCell>(CellClass, Origin, Rotation);
@@ -91,7 +92,7 @@ void MazeGenerationCreation::CreateObstacle(int Obstacles) {
                       (RowExtr + 1) * (ColumnExtr + 1)) ==
                 AlreadySelectedNumbers.end() &&
             (*Maze)[RowExtr][ColumnExtr]->NumberRoom == -1) {
-            // It doesn't worll for Legth != Heigth
+            // It doesn't work for Length != Heigth
             (*Maze)[RowExtr][ColumnExtr]->bIsObstacle = true;
             (*Maze)[RowExtr][ColumnExtr]->bIsVisited = true;
             (*Maze)[RowExtr][ColumnExtr]->HideObstacleWall();

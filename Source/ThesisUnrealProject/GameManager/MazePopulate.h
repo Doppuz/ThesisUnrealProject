@@ -14,6 +14,8 @@ class AGeneralElem;
 class ADoor;
 class RoomMaze;
 class AGeneralRoomWithDoor;
+class ATrigger;
+class AMazeManager;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazePopulate : public AActor
@@ -24,10 +26,10 @@ public:
 	// Sets default values for this actor's properties
 	AMazePopulate();
 
-	void DepthVisit(AMazeCell* Start);
+	virtual void DepthVisit(AMazeCell* Start);
 	void DynamicDepthVisit(AMazeCell* Current);
 	void PopulateChest();
-	void AddDoors();
+	virtual void AddDoors();
 
 	//Cell's graph.
 	Graph* MazeGraph = nullptr;
@@ -35,7 +37,10 @@ public:
 	//Room array
 	TArray<RoomMaze>* Rooms;
 
-private:
+	//Contains the path that leads to the exit.
+	TArray<AMazeCell*> MaxPath;
+
+protected:
 
 	//I sort all the cell with 3 walls.
 	TMap<AMazeCell*,int> Wall3Cells;
@@ -55,15 +60,19 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ADoor> DoorClass;
 
+	//Class for trigger spawn
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ATrigger> TriggerClass;
+
 	//Rooms
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AGeneralRoomWithDoor> RumbleArenaClass;
 	
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AGeneralRoomWithDoor> EnemiesArenaClass;
-
-	//Contains the path that leads to the exit.
-	TArray<AMazeCell*> MaxPath;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AGeneralRoomWithDoor> MazeArenaClass;
 
 	//Contains the last path of the Dynamic visit.
 	TArray<AMazeCell*> OldPath;

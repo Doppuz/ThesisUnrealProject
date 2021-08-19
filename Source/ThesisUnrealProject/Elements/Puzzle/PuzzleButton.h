@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "PuzzleButton.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSelectedDelegate);
+
 UCLASS()
 class THESISUNREALPROJECT_API APuzzleButton : public AActor
 {
@@ -47,6 +49,9 @@ public:
 
 	//Used mainly in the prefabs to open the door. (ForthPuzzle.cpp)
 	bool bIsPressed;
+
+	//Called when clicked
+	FSelectedDelegate Overlap;
 
 private:
 

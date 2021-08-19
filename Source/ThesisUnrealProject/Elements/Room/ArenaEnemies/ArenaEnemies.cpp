@@ -5,6 +5,7 @@
 #include "../../GeneralElements/CoinController.h"
 #include "../../GeneralElements/Door.h"
 #include "../../../Character/EnemyAI/EnemyAIAbstract.h"
+#include "Components/BoxComponent.h"
 
 AArenaEnemies::AArenaEnemies() {
 
