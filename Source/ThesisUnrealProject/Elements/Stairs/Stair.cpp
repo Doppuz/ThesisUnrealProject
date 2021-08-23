@@ -30,6 +30,19 @@ void AStair::BeginPlay()
 
 	}
 
+	/*for(int i = 0; i < 13; i++){
+
+		for(int j = 0; j < 13; j++){
+		
+			FTransform Transform;
+			FVector SpawnLocation(0.f + 1100.f * i,0.f + 1100.f * j,0.f);
+			Transform.SetLocation(SpawnLocation);
+			Instance->AddInstance(Transform);
+
+		}
+
+	}*/
+
 }
 
 // Called every frame

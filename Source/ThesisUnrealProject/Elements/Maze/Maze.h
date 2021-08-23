@@ -4,32 +4,35 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Stair.generated.h"
+#include "Maze.generated.h"
 
 UCLASS()
-class THESISUNREALPROJECT_API AStair : public AActor
+class THESISUNREALPROJECT_API AMaze : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AStair();
+	AMaze();
 
 	UPROPERTY(VisibleAnywhere)
-	UInstancedStaticMeshComponent* Instance;
+	USceneComponent* Root;
 
-	UPROPERTY(EditAnywhere)
-	float StepsNumber;
+	UPROPERTY(VisibleAnywhere)
+	UInstancedStaticMeshComponent* FloorInstances;
 
-	UPROPERTY(EditAnywhere)
-	bool A;
+	UPROPERTY(VisibleAnywhere)
+	UInstancedStaticMeshComponent* WallInstances;
+
+	void CreateCell(FTransform);
+
+	void CreateLast2Walls(FTransform);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	float MeshLenght;
+
 
 };

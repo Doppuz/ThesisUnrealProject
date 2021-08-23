@@ -7,9 +7,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "MazeCell.h"
 #include "RoomMaze.h"
-#include "MazeGenerationCreation.h"
+#include "MazeGenerationCreation2.h"
 #include "Kismet/GameplayStatics.h"
 #include "MazePopulate.h"
+#include "../Elements/Maze/Maze.h"
 
 // Sets default values
 AMazeManager::AMazeManager()
@@ -36,8 +37,8 @@ void AMazeManager::BeginPlay()
     Rooms = new TArray<RoomMaze>();
     MazeGraph = new Graph();
     
-    Generator = new MazeGenerationCreation(Length,Height,MazeObstacle,Maze2Room,CellClass,
-        Maze,Rooms,MazeGraph,GetWorld(),Depth);
+    Generator = new MazeGenerationCreation2(Length,Height,MazeObstacle,Maze2Room,CellClass,
+        Maze,Rooms,MazeGraph,GetWorld(),Depth,Maze2);
 
     Generator->StandardMazeCreation();
 
@@ -45,7 +46,7 @@ void AMazeManager::BeginPlay()
     
     //Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, CoinClass, CrateElementsClass, GetWorld());
 
-    PopulateActor = GetWorld()->SpawnActor<AMazePopulate>(PopulateClass,FVector::ZeroVector,FRotator::ZeroRotator);
+    /*PopulateActor = GetWorld()->SpawnActor<AMazePopulate>(PopulateClass,FVector::ZeroVector,FRotator::ZeroRotator);
 
     if(PopulateActor != nullptr){
     
@@ -62,7 +63,7 @@ void AMazeManager::BeginPlay()
 
         //MazeGraph->SetVisitedToZero();
     
-    }
+    }*/
 }
 
 // Called every frame
