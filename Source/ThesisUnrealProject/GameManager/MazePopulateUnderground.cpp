@@ -9,7 +9,7 @@
 
 void AMazePopulateUnderground::DepthVisit(AMazeCell* Start) {
     
-    MazeGraph->SetVisitedToZero();
+    //MazeGraph->SetVisitedToZero();
     TArray<AMazeCell*> MazeCellMax;
     DepthVisitWrapper(Start,0, TArray<AMazeCell*>(),MazeCellMax);
     MaxPath = MazeCellMax;

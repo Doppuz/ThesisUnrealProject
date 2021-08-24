@@ -24,9 +24,13 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* WallInstances;
 
-	void CreateCell(FTransform);
+	void CreateFloor(FTransform);
 
-	void CreateLast2Walls(FTransform);
+	void CreateWalls(FTransform);
+
+	void CreateHorizontalWall(FTransform);
+	
+	void CreateVerticalWall(FTransform);
 
 protected:
 	// Called when the game starts or when spawned

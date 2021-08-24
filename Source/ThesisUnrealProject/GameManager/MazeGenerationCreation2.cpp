@@ -6,12 +6,13 @@
 #include "Containers/Array.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
-#include "MazeCell.h"
+#include "MazeCell2.h"
 #include "RoomMaze.h"
 #include "../Elements/Maze/Maze.h"
+#include "../Graph/Graph.h"
 
-MazeGenerationCreation2::MazeGenerationCreation2(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell> CellClass,
-        TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph* MazeGraph, UWorld* World,float Depth, AMaze* Maze2) {
+MazeGenerationCreation2::MazeGenerationCreation2(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell2> CellClass,
+        TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph<AMazeCell2>* MazeGraph, UWorld* World,float Depth, AMaze* Maze2) {
             this->Length = Length;
             this->Height = Height;
             this->MazeObstacle = MazeObstacle;
@@ -31,7 +32,8 @@ MazeGenerationCreation2::~MazeGenerationCreation2()
 
 void MazeGenerationCreation2::StandardMazeCreation() {
     InitializeMaze();
-    
+    CreateMaze(MazeGraph->GetCurrentNode(),nullptr);
+    PrintMaze();
     /*CreateObstacle(MazeObstacle);
     CreateRooms();
     CreateMaze();*/
@@ -40,14 +42,14 @@ void MazeGenerationCreation2::StandardMazeCreation() {
 
 //Used to draw the line for the visual graph
 void MazeGenerationCreation2::PrintMaze() {
-    TArray<AMazeCell*> Nodes = MazeGraph->GetNodes();
+    TArray<AMazeCell2*> Nodes = MazeGraph->GetNodes();
 
-    for (AMazeCell* Cell : Nodes) {
-		for(Side* Edge: MazeGraph->GetSides(Cell)){
+    for (AMazeCell2* Cell : Nodes) {
+		for(Side<AMazeCell2>* Edge: MazeGraph->GetSides(Cell)){
 			DrawDebugLine(World,
-			FVector(Edge->From->GetActorLocation().X, Edge->From->GetActorLocation().Y, Edge->From->GetActorLocation().Z + 700), //700
-			FVector(Edge->To->GetActorLocation().X,Edge->To->GetActorLocation().Y,Edge->To->GetActorLocation().Z + 700),
-			FColor(20, 50, 90),
+			FVector(Edge->From->GetActorLocation().X, Edge->From->GetActorLocation().Y, Edge->From->GetActorLocation().Z + 1100), //700
+			FVector(Edge->To->GetActorLocation().X,Edge->To->GetActorLocation().Y,Edge->To->GetActorLocation().Z + 1100),
+			FColor(100, 0, 0),
 			true,
 			50.f,
 			0,
@@ -56,46 +58,59 @@ void MazeGenerationCreation2::PrintMaze() {
     }
 
     
-    for (AMazeCell* Cell : Nodes) {
+    /*for (AMazeCell* Cell : Nodes) {
 		UE_LOG(LogTemp,Warning,TEXT("%d %d: %i"), Cell->I,Cell->J,MazeGraph->GetSides(Cell).Num());
-    }
+    }*/
 }
 
 //Create the different maze cells.
 void MazeGenerationCreation2::InitializeMaze() {
     
+    FTransform Transform;
+    
     for (int i = 0; i < Height; i++) {
         TArray<AMazeCell*> Row;
         for (int j = 0; j < Length; j++) {
             
-            FTransform Transform;
             FVector Origin(i * (-1100), j * 1100, Depth); //1100 --- 1.5
-            FRotator Rotation(0, 0, 0);
-            Transform.SetLocation(Origin);
-            Maze2->CreateCell(Transform);
+            FRotator Rotator;
 
-            //CellActor->SetFolderPath(TEXT("MazePieces"));
-            //MazeGraph->AddNode(CellActor);
-            //Row.Add(CellActor);
+            AMazeCell2* CellActor = World->SpawnActor<AMazeCell2>(CellClass,Origin,Rotator);
+            CellActor->SetFolderPath(TEXT("MazePieces"));
+
+            Transform.SetLocation(Origin);
+            Maze2->CreateFloor(Transform);
+            Maze2->CreateWalls(Transform);
+
+            MazeGraph->AddNode(CellActor);
+
+            if(i == 0 && j == 0)
+                MazeGraph->SetCurrentNode(CellActor);
+
+            TArray<AMazeCell2*> Cells = MazeGraph->GetNodes();
+
+            //Add the sides to the maze
+
+            if(j != 0 && j % Length != 0)
+                MazeGraph->AddSide(CellActor,Cells[i*Height + j-1],0);
+
+            if(i != 0 && i % Height != 0)
+                MazeGraph->AddSide(CellActor,Cells[i*Height + j - Height],0);
+
         }
-        //Maze->Add(Row);
     }
 
-    for (int i = Height; i < Height + 1; i++) {
-        TArray<AMazeCell*> Row;
-        for (int j = Length; j < Length; j++) {
+    //This second loop is used just to geenerate the first vertical wall and the last horizontal one.
+    for (int i = 0; i < Height; i++) {
             
-            FTransform Transform;
-            FVector Origin(i * (-1100), j * 1100, Depth); //1100 --- 1.5
-            FRotator Rotation(0, 0, 0);
+            FVector Origin(+1100, i * 1100, Depth); //1100 --- 1.5
             Transform.SetLocation(Origin);
-            Maze2->CreateCell(Transform);
+            Maze2->CreateVerticalWall(Transform);
 
-            //CellActor->SetFolderPath(TEXT("MazePieces"));
-            //MazeGraph->AddNode(CellActor);
-            //Row.Add(CellActor);
-        }
-        //Maze->Add(Row);
+            Origin = FVector(-1100 * i, +1100 * Length, Depth); //1100 --- 1.5
+            Transform.SetLocation(Origin);
+            Maze2->CreateHorizontalWall(Transform);
+
     }
 
 }
@@ -166,7 +181,7 @@ void MazeGenerationCreation2::CreateRoomSize3() {
 
 // Wrapper for recursion depth visit
 void MazeGenerationCreation2::CreateMazeWrapper(int I, int J) {
-    TArray<AMazeCell*> Neighbors;
+    /*TArray<AMazeCell*> Neighbors;
     (*Maze)[I][J]->bIsVisited = true;
     //if I am not a room.
     if ((*Maze)[I][J]->NumberRoom == -1) {
@@ -201,27 +216,45 @@ void MazeGenerationCreation2::CreateMazeWrapper(int I, int J) {
     } else{
         (*Rooms)[(*Maze)[I][J]->NumberRoom].bDoor = true;
 
-    }
+    }*/
 }
 
 // Start the maze creation from (RowExtr, ColumnExtr)
-void MazeGenerationCreation2::CreateMaze() {
-    int CellProcessed = 0;
-    int RowExtr;
-    int ColumnExtr;
-    do {
-        RowExtr = FMath::RandRange(0, Length - 1);
-        ColumnExtr = FMath::RandRange(0, Height - 1);
-    } while ((*Maze)[RowExtr][ColumnExtr]->NumberRoom != -1 ||
-             (*Maze)[RowExtr][ColumnExtr]->bIsObstacle);
-    
-    //Change Player start pos, but useless.
-    /*TArray<AActor*> FoundActors;
-    UGameplayStatics::GetAllActorsOfClass(World, ACustomPlayerStart::StaticClass(), FoundActors);
-    FVector CellLocation = (*Maze)[RowExtr][ColumnExtr]->GetActorLocation();
-    FoundActors[0]->SetActorLocation(FVector(CellLocation.X,CellLocation.Y,1000));*/
+void MazeGenerationCreation2::CreateMaze(AMazeCell2* Current,AMazeCell2* Previous) {
 
-    CreateMazeWrapper(RowExtr, ColumnExtr);
+       if(!Current->bIsVisited){
+        
+        Current->bIsVisited = true;
+        TArray<Side<AMazeCell2>*> Neighbors = MazeGraph->GetSides(Current);
+        //CheckForNeighbors(Current, Neighbors);
+
+        //NumberOfTimes the for loop will be execute
+        int Cycles = Neighbors.Num();
+        int Contator = 0;
+
+        while(Contator < Cycles){
+            
+            int NumExtr = FMath::RandRange(0, Neighbors.Num() - 1);
+
+            Side<AMazeCell2>* MazeCell = Neighbors[NumExtr];
+            
+            if(MazeCell->To->bIsVisited && MazeCell->To != Previous){
+            
+                MazeGraph->DeleteSide(Current,MazeCell->To);
+
+            }else{
+                Current->DestroyWall(MazeCell->To);
+                CreateMaze(MazeCell->To,Current);
+            }
+
+            Neighbors.Remove(MazeCell);
+            
+            Contator++;
+
+        }
+    }
+
+
 }
 
 //check for intersection: first i check the 4 square that composed the room, then the nearby cells.
@@ -239,27 +272,15 @@ bool MazeGenerationCreation2::CheckRoomIntersection(int Row, int Column, int Roo
 }
 
 //I push the neighbor if it hasn't been visited yet and, or it is not a room or if it is a room, it doesn't have a door.
-void MazeGenerationCreation2::CheckForNeighbors(TArray<AMazeCell*>& Neighbors, int i,
-                                           int j) {
-    if (i != 0 && !(*Maze)[i - 1][j]->bIsVisited &&
-        ((*Maze)[i - 1][j]->NumberRoom == -1 ||
-         !(*Rooms)[(*Maze)[i - 1][j]->NumberRoom].bDoor))
-        Neighbors.Push((*Maze)[i - 1][j]);
+void MazeGenerationCreation2::CheckForNeighbors(AMazeCell2* Current,TArray<AMazeCell2*>& Neighbors) {
 
-    if (i != (Length - 1) && !(*Maze)[i + 1][j]->bIsVisited &&
-        ((*Maze)[i + 1][j]->NumberRoom == -1 ||
-         !(*Rooms)[(*Maze)[i + 1][j]->NumberRoom].bDoor))
-        Neighbors.Push((*Maze)[i + 1][j]);
+    for(Side<AMazeCell2>* Cell : MazeGraph->GetSides(Current)){
 
-    if (j != 0 && !(*Maze)[i][j - 1]->bIsVisited &&
-        ((*Maze)[i][j - 1]->NumberRoom == -1 ||
-         !(*Rooms)[(*Maze)[i][j - 1]->NumberRoom].bDoor))
-        Neighbors.Push((*Maze)[i][j - 1]);
+        if(!Cell->To->bIsVisited)
+            Neighbors.Add(Cell->To);
 
-    if (j != (Length - 1) && !(*Maze)[i][j + 1]->bIsVisited &&
-        ((*Maze)[i][j + 1]->NumberRoom == -1 ||
-         !(*Rooms)[(*Maze)[i][j + 1]->NumberRoom].bDoor))
-        Neighbors.Push((*Maze)[i][j + 1]);
+    }
+
 }
 
 bool MazeGenerationCreation2::CheckNearbyRoom(int Row, int Column, int RoomSize) {

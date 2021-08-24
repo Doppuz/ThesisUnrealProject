@@ -7,13 +7,28 @@
 
 class AMazeCell;
 
-//template<typename F>
+template<class F>
 class THESISUNREALPROJECT_API Side{
 public:
-	Side(AMazeCell* From,AMazeCell* To, float Weight);
+	Side(F* From,F* To, float Weight);
 	~Side();
 
-	AMazeCell* From;
-	AMazeCell* To;
+	F* From;
+	F* To;
 	float Weight;
 };
+
+//Implementation below
+
+template<class F>
+Side<F>::Side(F* From, F* To, float Weight){
+	this->From = From;
+	this->To = To;
+	this->Weight = Weight;
+}
+
+
+template<class F>
+Side<F>::~Side()
+{
+}

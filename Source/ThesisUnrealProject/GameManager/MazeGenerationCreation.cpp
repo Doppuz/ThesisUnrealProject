@@ -6,10 +6,10 @@
 #include "Containers/Array.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
-#include "MazeCell.h"
+//#include "MazeCell.h"
 #include "RoomMaze.h"
 
-MazeGenerationCreation::MazeGenerationCreation(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell> CellClass,
+/*MazeGenerationCreation::MazeGenerationCreation(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell> CellClass,
         TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph* MazeGraph, UWorld* World,float Depth) {
             this->Length = Length;
             this->Height = Height;
@@ -199,7 +199,7 @@ void MazeGenerationCreation::CreateMaze() {
     FVector CellLocation = (*Maze)[RowExtr][ColumnExtr]->GetActorLocation();
     FoundActors[0]->SetActorLocation(FVector(CellLocation.X,CellLocation.Y,1000));*/
 
-    CreateMazeWrapper(RowExtr, ColumnExtr);
+/*    CreateMazeWrapper(RowExtr, ColumnExtr);
 }
 
 //check for intersection: first i check the 4 square that composed the room, then the nearby cells.
@@ -213,7 +213,7 @@ bool MazeGenerationCreation::CheckRoomIntersection(int Row, int Column, int Room
     
     }*/
 
-    return CheckNearbyRoom(Row, Column, 3);
+/*    return CheckNearbyRoom(Row, Column, 3);
 }
 
 //I push the neighbor if it hasn't been visited yet and, or it is not a room or if it is a room, it doesn't have a door.
@@ -297,6 +297,6 @@ void MazeGenerationCreation::RoomWallHide(TArray<AMazeCell*>& Room, int rowExtr,
         }
     }
 
-}
+}*/
 
 

@@ -7,7 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "../Graph/Graph.h"
 
-class AMazeCell;
+class AMazeCell2;
 class RoomMaze;
 class AMaze;
 /**
@@ -16,8 +16,8 @@ class AMaze;
 class THESISUNREALPROJECT_API MazeGenerationCreation2
 {
 public:
-	MazeGenerationCreation2(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell> CellClass,
-		TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph* MazeGraph,
+	MazeGenerationCreation2(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell2> CellClass,
+		TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph<AMazeCell2>* MazeGraph,
 		UWorld* World, float,AMaze*);
 	~MazeGenerationCreation2();
 
@@ -39,8 +39,8 @@ private:
 	bool CheckNearbyRoom(int Row, int Column, int RoomSize);
 	void RoomWallHide(TArray<AMazeCell*>& Room, int rowExtr, int columnExtr, int Pos, int WallsNumber);
 	void CreateMazeWrapper(int i, int j);
-	void CheckForNeighbors(TArray<AMazeCell*>& neighbors,int i,int j);
-	void CreateMaze();
+	void CheckForNeighbors(AMazeCell2* Current,TArray<AMazeCell2*>& Neighbors);
+	void CreateMaze(AMazeCell2*,AMazeCell2*);
 
 	//Just take the parameter from the Maze Manager class
 	int Length;
@@ -50,12 +50,12 @@ private:
 	int Maze3Room;
 	//used to create the maze at a particular depth
 	float Depth;
-	TSubclassOf<AMazeCell> CellClass;
+	TSubclassOf<AMazeCell2> CellClass;
 
 	TArray<TArray<AMazeCell*>> *Maze = nullptr;
 	//TempMaze
 	TArray<TArray<AMazeCell*>> TempMaze;
-	Graph* MazeGraph;
+	Graph<AMazeCell2>* MazeGraph;
 
 	UWorld* World;
 

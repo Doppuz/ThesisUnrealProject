@@ -23,39 +23,34 @@ AMaze::AMaze(){
 
 }
 
-void AMaze::CreateCell(FTransform Transform) {
+void AMaze::CreateFloor(FTransform Transform) {
 
 	FloorInstances->AddInstance(Transform);
-
-	FVector FloorVector = Transform.GetLocation();
-	FVector Vector = FloorVector - FVector(MeshLenght/2, 0.f,0.f);
-	FRotator Rotator(0.f,90.f,0.f);
-	Transform.SetLocation(Vector);
-
-	WallInstances->AddInstance(Transform);
-
-	Vector = FloorVector - FVector(0.f, MeshLenght/2,0.f);
-	Rotator = FRotator(0.f,90.f,0.f);
-	Transform.SetLocation(Vector);
-	Transform.SetRotation(Rotator.Quaternion());
-
-	WallInstances->AddInstance(Transform);
 	
 }
 
-void AMaze::CreateLast2Walls(FTransform Transform) {
+void AMaze::CreateWalls(FTransform Transform) {
 
-	FVector FloorVector = Transform.GetLocation();
-	FVector Vector = FloorVector - FVector(MeshLenght/2, 0.f,0.f);
-	FRotator Rotator(0.f,90.f,0.f);
+	CreateHorizontalWall(Transform);
+	CreateVerticalWall(Transform);
+
+}
+
+void AMaze::CreateHorizontalWall(FTransform Transform) {
+	
+	FVector Vector = Transform.GetLocation() - FVector(0.f, MeshLenght/2 -400.f,0.f);
+	FRotator Rotator = FRotator(0.f,90.f,0.f);
 	Transform.SetLocation(Vector);
+	Transform.SetRotation(Rotator.Quaternion());
 
 	WallInstances->AddInstance(Transform);
 
-	Vector = FloorVector - FVector(0.f, MeshLenght/2,0.f);
-	Rotator = FRotator(0.f,90.f,0.f);
+}
+
+void AMaze::CreateVerticalWall(FTransform Transform) {
+	
+	FVector Vector = Transform.GetLocation() - FVector(MeshLenght/2, -450.f,0.f);
 	Transform.SetLocation(Vector);
-	Transform.SetRotation(Rotator.Quaternion());
 
 	WallInstances->AddInstance(Transform);
 

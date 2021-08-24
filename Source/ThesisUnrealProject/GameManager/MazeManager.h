@@ -9,7 +9,7 @@
 #include "GameFramework/Actor.h"
 #include "MazeManager.generated.h"
 
-class AMazeCell;
+class AMazeCell2;
 class RoomMaze;
 class MazeGenerationCreation2;
 class AdaptingExperienceManager;
@@ -36,7 +36,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	   //Graph of the maze
-	Graph* MazeGraph;
+	Graph<AMazeCell2>* MazeGraph;
 
 	//Pointer to the MazeGenerationPopolate class
 	UPROPERTY(EditAnywhere)
@@ -65,7 +65,7 @@ private:
 	int Maze4Room = 0;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	TSubclassOf<AMazeCell> CellClass;
+	TSubclassOf<AMazeCell2> CellClass;
 
 	//Pupulate actor class.
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")

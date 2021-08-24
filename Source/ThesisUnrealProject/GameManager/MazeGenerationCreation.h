@@ -7,7 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "../Graph/Graph.h"
 
-class AMazeCell;
+//class AMazeCell;
 class RoomMaze;
 /**
  * 
@@ -15,7 +15,7 @@ class RoomMaze;
 class THESISUNREALPROJECT_API MazeGenerationCreation
 {
 public:
-	MazeGenerationCreation(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell> CellClass,
+	/*MazeGenerationCreation(int Length, int Height, int MazeObstacle, int Maze2Room, TSubclassOf<AMazeCell> CellClass,
 		TArray<TArray<AMazeCell*>> *Maze, TArray<RoomMaze> *Rooms, Graph* MazeGraph,
 		UWorld* World, float);
 	~MazeGenerationCreation();
@@ -56,5 +56,5 @@ private:
 	TArray<TArray<AMazeCell*>> TempMaze;
 	Graph* MazeGraph;
 
-	UWorld* World;
+	UWorld* World;*/
 };

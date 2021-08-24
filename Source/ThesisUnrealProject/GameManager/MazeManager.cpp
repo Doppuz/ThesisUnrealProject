@@ -5,7 +5,7 @@
 #include "Containers/Array.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
-#include "MazeCell.h"
+#include "MazeCell2.h"
 #include "RoomMaze.h"
 #include "MazeGenerationCreation2.h"
 #include "Kismet/GameplayStatics.h"
@@ -35,7 +35,7 @@ void AMazeManager::BeginPlay()
 	//Initialize all the components for the maze creation.
     Maze = new TArray<TArray<AMazeCell*>>();
     Rooms = new TArray<RoomMaze>();
-    MazeGraph = new Graph();
+    MazeGraph = new Graph<AMazeCell2>();
     
     Generator = new MazeGenerationCreation2(Length,Height,MazeObstacle,Maze2Room,CellClass,
         Maze,Rooms,MazeGraph,GetWorld(),Depth,Maze2);

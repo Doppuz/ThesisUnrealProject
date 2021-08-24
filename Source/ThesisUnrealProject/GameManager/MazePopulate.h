@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Graph/Graph.h"
 #include "MazePopulate.generated.h"
 
-class Graph;
+class AMazeCell2;
 class AMazeCell;
+
 class AChestController;
 class ACoinController;
 class AGeneralElem;
@@ -32,7 +34,7 @@ public:
 	virtual void AddDoors();
 
 	//Cell's graph.
-	Graph* MazeGraph = nullptr;
+	Graph<AMazeCell2>* MazeGraph = nullptr;
 
 	//Room array
 	TArray<RoomMaze>* Rooms;

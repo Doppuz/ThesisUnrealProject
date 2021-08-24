@@ -3,6 +3,7 @@
 
 #include "MazePopulate.h"
 #include "MazeCell.h"
+#include "MazeCell2.h"
 #include "../Graph/Graph.h"
 #include "../Elements/GeneralElements/ChestController.h"
 #include "../Elements/GeneralElements/CoinController.h"
@@ -26,7 +27,7 @@ AMazePopulate::AMazePopulate(){
 
 //DepthVisit to search 3 walls-cells and to search the longest path.
 void AMazePopulate::DepthVisit(AMazeCell* Start) {
-    MazeGraph->SetVisitedToZero();
+    /*MazeGraph->SetVisitedToZero();
     TArray<AMazeCell*> MazeCellMax;
     DepthVisitWrapper(Start,0, TArray<AMazeCell*>(),MazeCellMax);
     MaxPath = MazeCellMax;
@@ -34,13 +35,13 @@ void AMazePopulate::DepthVisit(AMazeCell* Start) {
     MazeCellMax[MazeCellMax.Num() - 1]->HideWall(2);
     MazeCellMax[MazeCellMax.Num() - 1]->HideWall(3);
     MazeCellMax[MazeCellMax.Num() - 1]->HideWall(4);
-    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(0);
+    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(0);*/
     
 }
 
 void AMazePopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,
         TArray<AMazeCell*> & MazeCellMax) {
-    TArray<Side*> Sides = MazeGraph->GetSides(Current); 
+    /*TArray<Side*> Sides = MazeGraph->GetSides(Current); 
     Current->bIsVisited = true;
     CurrentVisitedCell.Add(Current);
 
@@ -60,25 +61,25 @@ void AMazePopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMa
     //Search for the maximum path (uncomment below to put the exit in one of the sides)
     if(CurrentVisitedCell.Num() > MazeCellMax.Num()) //&& (LastCell->I == 0 || LastCell->I == 12 ||
                                                     //    LastCell->J == 0 || LastCell->J == 12))
-        MazeCellMax = CurrentVisitedCell;
+        MazeCellMax = CurrentVisitedCell;*/
 
 }
 
 //Dynamic visit that is computed every time I reach a new cell.
 void AMazePopulate::DynamicDepthVisit(AMazeCell* Current) {
-    NewPath.Empty();
+   /* NewPath.Empty();
     SetDynamicVisitedToZero();
     DynamicDepthVisitWrapper(Current,9);
     for(AMazeCell* Cell: OldPath){
         Cell->RemoveAllElem();
     }
-    OldPath = NewPath;
+    OldPath = NewPath;*/
 }
 
 //Wrapper to the visit. New path has the new Nodes. OldPath has the nodes that are not present in the new path anymore.
 void AMazePopulate::DynamicDepthVisitWrapper(AMazeCell* Current, int DepthLimit) {
     
-    Current->bDynamicIsVisited = true;
+    /*Current->bDynamicIsVisited = true;
 
     TArray<Side*> Sides = MazeGraph->GetSides(Current);
     
@@ -91,20 +92,20 @@ void AMazePopulate::DynamicDepthVisitWrapper(AMazeCell* Current, int DepthLimit)
         Current->PopulateElem(CrateElementsClass);
 
     OldPath.Remove(Current);
-    NewPath.Add(Current);
+    NewPath.Add(Current);*/
 
 }
 
 //Set at 0 the value of bDynamicVisited variable in AMazeCell to 0.
 void AMazePopulate::SetDynamicVisitedToZero() {
-	for(AMazeCell* Cell: OldPath)
-    	Cell->bDynamicIsVisited = false;
+	/*for(AMazeCell* Cell: OldPath)
+    	Cell->bDynamicIsVisited = false;*/
 }
 
 //Index = current cell
 void AMazePopulate::AddDoorsWrapper(int Index){
 
-	for(Side* Sides: MazeGraph->GetSides(MaxPath[Index])){
+	/*for(Side* Sides: MazeGraph->GetSides(MaxPath[Index])){
 		
 		if(Sides->To->NumberRoom != -1){
 			
@@ -141,7 +142,7 @@ void AMazePopulate::AddDoorsWrapper(int Index){
                 Arena->Door = Door;
                 //Arena->RoomDoor = RoomDoor;*/
 
-                const FTransform SpawnLocAndRotation;
+                /*const FTransform SpawnLocAndRotation;
                 AMazeArena* Arena = GetWorld()->SpawnActor<AMazeArena>(MazeArenaClass, SpawnLocAndRotation);
                 Arena->Door = Door;
 
@@ -155,21 +156,21 @@ void AMazePopulate::AddDoorsWrapper(int Index){
         AddDoorsWrapper(++Index);
     }
     //if(Sides.Num() != 0)
-    //    AddDoorsWrapper(Sides[0]->To);
+    //    AddDoorsWrapper(Sides[0]->To);*/
 
 }
 
 //Used to add Doors to block the main path.
 void AMazePopulate::AddDoors() {
     
-    AddDoorsWrapper(0);
+   // AddDoorsWrapper(0);
     
 }
 
 
 //Spawn the chests in the position where there are 3 walls.
 void AMazePopulate::PopulateChest() {
-    TArray<AMazeCell*> Cells;
+    /*TArray<AMazeCell*> Cells;
     FVector Position;
     FRotator Rotation;
     
@@ -207,7 +208,7 @@ void AMazePopulate::PopulateChest() {
         //Coin->SetFolderPath(TEXT("Coins"));
     }
 
-    MaxPath[MaxPath.Num() - 1]->RemoveAllElem();
+    MaxPath[MaxPath.Num() - 1]->RemoveAllElem();*/
 
 }
 
