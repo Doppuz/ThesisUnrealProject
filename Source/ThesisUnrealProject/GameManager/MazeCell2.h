@@ -19,10 +19,13 @@ public:
 	
 	bool bIsRoom;
 
+	int RoomNumber;
+
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
 
 	void DestroyWall(AMazeCell2*);
+	void DestroyFloor();
 
 protected:
 	// Called when the game starts or when spawned

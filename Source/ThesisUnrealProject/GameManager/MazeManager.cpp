@@ -37,8 +37,8 @@ void AMazeManager::BeginPlay()
     Rooms = new TArray<RoomMaze>();
     MazeGraph = new Graph<AMazeCell2>();
     
-    Generator = new MazeGenerationCreation2(Length,Height,MazeObstacle,Maze2Room,CellClass,
-        Maze,Rooms,MazeGraph,GetWorld(),Depth,Maze2);
+    Generator = new MazeGenerationCreation2(Length,Height,Maze2Room,CellClass,
+        MazeGraph,GetWorld(),Depth,Maze2);
 
     Generator->StandardMazeCreation();
 

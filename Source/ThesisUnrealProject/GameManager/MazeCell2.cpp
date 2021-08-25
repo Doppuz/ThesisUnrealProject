@@ -15,8 +15,11 @@ AMazeCell2::AMazeCell2(){
 
 	bIsVisited = false;
 	bIsRoom = false;
+	RoomNumber = -1;
+
 }
 
+//Line trace between two nodes, if there is a wall, I destroy it.
 void AMazeCell2::DestroyWall(AMazeCell2* Other) {
 	
 	FHitResult Hit;
@@ -27,14 +30,26 @@ void AMazeCell2::DestroyWall(AMazeCell2* Other) {
 
 	GetWorld()->LineTraceSingleByChannel(Hit,GetActorLocation(),EndPosition,ECollisionChannel::ECC_GameTraceChannel10,CollisionParams);
 
-	/*DrawDebugLine(GetWorld(),
-			GetActorLocation(), //700
-			EndPosition,
-			FColor(100, 0, 0),
-			true,
-			50.f,
-			0,
-			50.f);*/
+	if(Hit.GetActor() != nullptr){
+		
+		if(Hit.GetComponent()->IsA(UInstancedStaticMeshComponent::StaticClass())){
+
+			Cast<UInstancedStaticMeshComponent>(Hit.GetComponent())->RemoveInstance(Hit.Item);
+		
+		}
+
+	}
+
+}
+
+void AMazeCell2::DestroyFloor() {
+	
+	FHitResult Hit;
+	FVector EndPosition = -this->GetActorUpVector() * 2000;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	GetWorld()->LineTraceSingleByChannel(Hit,GetActorLocation(),EndPosition,ECollisionChannel::ECC_GameTraceChannel10,CollisionParams);
 
 	if(Hit.GetActor() != nullptr){
 		
