@@ -32,10 +32,10 @@ private:
 
 	void InitializeMaze();
 	void CreateObstacle(int ObstaclesNumber);
-	void CreateRooms();
+	void CreateRooms(int);
 	void CreateRoomSize2();
 	void CreateRoomSize3();
-	bool CheckRoomIntersection(int Row, int Column, int RoomSize);
+	bool CheckRoomIntersection(TArray<AMazeCell2*>,int);
 	bool CheckNearbyRoom(int Row, int Column, int RoomSize);
 	void RoomWallHide(TArray<AMazeCell*>& Room, int rowExtr, int columnExtr, int Pos, int WallsNumber);
 	void CreateMazeWrapper(int i, int j);
@@ -60,4 +60,7 @@ private:
 	UWorld* World;
 
 	AMaze* Maze2;
+
+	//Distance between 2 cells.
+	float Distance;
 };

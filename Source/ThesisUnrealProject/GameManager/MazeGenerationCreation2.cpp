@@ -24,6 +24,8 @@ MazeGenerationCreation2::MazeGenerationCreation2(int Length, int Height, int Maz
             this->World = World;
             this->Depth = Depth;
             this->Maze2 = Maze2;
+
+            this->Distance = 768.f;
 }
 
 MazeGenerationCreation2::~MazeGenerationCreation2()
@@ -32,8 +34,9 @@ MazeGenerationCreation2::~MazeGenerationCreation2()
 
 void MazeGenerationCreation2::StandardMazeCreation() {
     InitializeMaze();
+    CreateRooms(3);
     CreateMaze(MazeGraph->GetCurrentNode(),nullptr);
-    PrintMaze();
+    //PrintMaze();
     /*CreateObstacle(MazeObstacle);
     CreateRooms();
     CreateMaze();*/
@@ -72,7 +75,7 @@ void MazeGenerationCreation2::InitializeMaze() {
         TArray<AMazeCell*> Row;
         for (int j = 0; j < Length; j++) {
             
-            FVector Origin(i * (-1100), j * 1100, Depth); //1100 --- 1.5
+            FVector Origin(i * (-Distance), j * Distance, Depth); //1100 --- 1.5
             FRotator Rotator;
 
             AMazeCell2* CellActor = World->SpawnActor<AMazeCell2>(CellClass,Origin,Rotator);
@@ -103,11 +106,11 @@ void MazeGenerationCreation2::InitializeMaze() {
     //This second loop is used just to geenerate the first vertical wall and the last horizontal one.
     for (int i = 0; i < Height; i++) {
             
-            FVector Origin(+1100, i * 1100, Depth); //1100 --- 1.5
+            FVector Origin(+Distance, i * Distance, Depth); //1100 --- 1.5
             Transform.SetLocation(Origin);
             Maze2->CreateVerticalWall(Transform);
 
-            Origin = FVector(-1100 * i, +1100 * Length, Depth); //1100 --- 1.5
+            Origin = FVector(-Distance * i, +Distance * Length, Depth); //1100 --- 1.5
             Transform.SetLocation(Origin);
             Maze2->CreateHorizontalWall(Transform);
 
@@ -139,44 +142,43 @@ void MazeGenerationCreation2::CreateObstacle(int Obstacles) {
     }
 }
 
-void MazeGenerationCreation2::CreateRooms() {
-    for (int i = 0; i < Maze2Room; i++) CreateRoomSize3();
-    //CreateRoomSize2();
+void MazeGenerationCreation2::CreateRooms(int RoomSize) {
+    
+    for(int k = 0; k < 4; k++){
+        TArray<AMazeCell2*> Cells = MazeGraph->GetNodes();
+        int NumExtr;
+        
+        do{
+
+            NumExtr = FMath::RandRange(Length,Cells.Num() - Length * RoomSize);
+
+        //Check if I am in the first column and then check if there are at least 5 cells free.
+        }while(CheckRoomIntersection(Cells,NumExtr));
+
+        
+
+        for(int i = 0; i < RoomSize; i++){
+
+            for(int j = 0; j < RoomSize; j++){
+                
+                if(j != RoomSize - 1)
+                    Cells[Length *i + NumExtr + j]->DestroyWall(Cells[Length * i + NumExtr + j + 1]);
+                
+                if(i != RoomSize - 1)
+                    Cells[Length *i + NumExtr + j]->DestroyWall(Cells[Length * (i + 1) + NumExtr + j]);
+
+                Cells[Length *i + NumExtr + j]->bIsRoom = true;
+
+            }   
+
+        }
+    }
+
 }
 
 //Check for intersection and generate the room.
 void MazeGenerationCreation2::CreateRoomSize2() {
-    int RowExtr;
-    int ColumnExtr;
-
-    do {
-        RowExtr = FMath::RandRange(0, Length - 2);
-        ColumnExtr = FMath::RandRange(0, Height - 2);
-    } while (CheckRoomIntersection(RowExtr, ColumnExtr,2) || (RowExtr == 0 && ColumnExtr == 0));
-
-    TArray<AMazeCell*> Room;
-
-    RoomWallHide(Room, RowExtr, ColumnExtr, Rooms->Num(),2);
-    RoomMaze m(Room);
-    Rooms->Add(m);
-}
-
-void MazeGenerationCreation2::CreateRoomSize3() {
-    int RowExtr;
-    int ColumnExtr;
-
-    do {
-        RowExtr = FMath::RandRange(1, Length - 4);
-        ColumnExtr = FMath::RandRange(1, Height - 4);
-    } while (CheckRoomIntersection(RowExtr, ColumnExtr,3) || (RowExtr == 0 && ColumnExtr == 0));
-
-    TArray<AMazeCell*> Room;
-
     
-    //RoomWallHide(Room, RowExtr, ColumnExtr, Rooms->Num());
-    RoomWallHide(Room, RowExtr, ColumnExtr, Rooms->Num(),3);
-    RoomMaze m(Room);
-    Rooms->Add(m);
 }
 
 // Wrapper for recursion depth visit
@@ -238,7 +240,7 @@ void MazeGenerationCreation2::CreateMaze(AMazeCell2* Current,AMazeCell2* Previou
 
             Side<AMazeCell2>* MazeCell = Neighbors[NumExtr];
             
-            if(MazeCell->To->bIsVisited && MazeCell->To != Previous){
+            if((MazeCell->To->bIsVisited && MazeCell->To != Previous) || MazeCell->To->bIsRoom){
             
                 MazeGraph->DeleteSide(Current,MazeCell->To);
 
@@ -257,18 +259,32 @@ void MazeGenerationCreation2::CreateMaze(AMazeCell2* Current,AMazeCell2* Previou
 
 }
 
-//check for intersection: first i check the 4 square that composed the room, then the nearby cells.
-bool MazeGenerationCreation2::CheckRoomIntersection(int Row, int Column, int RoomSize) {
+//First I check If it is in the first column, then if there are at least 4 cells empty in the end. Finally I check the sourrindings cells.
+bool MazeGenerationCreation2::CheckRoomIntersection(TArray<AMazeCell2*> Cells, int NumExtr) {
 
-    //Check if the cells are already a room.
-    /*for(int i = 0; i < RoomSize; i++){
+    if(NumExtr % Length == 0)
+        return true;
+        
+    int a = (int)(NumExtr / Length + 1) * Length - NumExtr;
 
-        if((*Maze)[Row][Column]->NumberRoom != -1)
-            return true;
-    
-    }*/
+    if((int)(NumExtr / Length + 1) * Length - NumExtr < 4)
+        return true;
 
-    return CheckNearbyRoom(Row, Column, 3);
+    int Start = NumExtr - Length - 1;
+
+    for(int i = 0; i < 5; i++){
+
+        for(int j = 0; j < 5; j++){
+
+            if(Cells[Length * i + Start + j]->bIsRoom)
+                return true;
+
+        }
+
+    }
+
+    return false;
+
 }
 
 //I push the neighbor if it hasn't been visited yet and, or it is not a room or if it is a room, it doesn't have a door.

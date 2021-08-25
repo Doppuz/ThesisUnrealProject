@@ -14,7 +14,7 @@ AMazeCell2::AMazeCell2(){
 	RootComponent = Root;
 
 	bIsVisited = false;
-
+	bIsRoom = false;
 }
 
 void AMazeCell2::DestroyWall(AMazeCell2* Other) {

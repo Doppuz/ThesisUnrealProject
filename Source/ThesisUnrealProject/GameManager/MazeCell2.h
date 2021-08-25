@@ -16,6 +16,8 @@ public:
 	AMazeCell2();
 
 	bool bIsVisited;
+	
+	bool bIsRoom;
 
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;

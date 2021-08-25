@@ -19,7 +19,7 @@ AMaze::AMaze(){
     WallInstances->SetupAttachment(RootComponent);
 	WallInstances->SetRelativeLocation(FVector(-50.f,-450.f,280.f));
 
-	MeshLenght = 1000.f;
+	MeshLenght = 768.f;
 
 }
 
@@ -38,7 +38,7 @@ void AMaze::CreateWalls(FTransform Transform) {
 
 void AMaze::CreateHorizontalWall(FTransform Transform) {
 	
-	FVector Vector = Transform.GetLocation() - FVector(0.f, MeshLenght/2 -400.f,0.f);
+	FVector Vector = Transform.GetLocation() - FVector(0.f, MeshLenght/2 -0.f,0.f);
 	FRotator Rotator = FRotator(0.f,90.f,0.f);
 	Transform.SetLocation(Vector);
 	Transform.SetRotation(Rotator.Quaternion());
@@ -49,7 +49,7 @@ void AMaze::CreateHorizontalWall(FTransform Transform) {
 
 void AMaze::CreateVerticalWall(FTransform Transform) {
 	
-	FVector Vector = Transform.GetLocation() - FVector(MeshLenght/2, -450.f,0.f);
+	FVector Vector = Transform.GetLocation() - FVector(MeshLenght/2, -0.f,0.f);
 	Transform.SetLocation(Vector);
 
 	WallInstances->AddInstance(Transform);
