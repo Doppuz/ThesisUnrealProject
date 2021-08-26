@@ -7,11 +7,11 @@
 #include "../Graph/Graph.h"
 
 
-void AMazePopulateUnderground::DepthVisit(AMazeCell* Start) {
+void AMazePopulateUnderground::DepthVisit(AMazeCell2* Start) {
     
     //MazeGraph->SetVisitedToZero();
-    TArray<AMazeCell*> MazeCellMax;
-    DepthVisitWrapper(Start,0, TArray<AMazeCell*>(),MazeCellMax);
+    TArray<AMazeCell2*> MazeCellMax;
+    DepthVisitWrapper(Start,0, TArray<AMazeCell2*>(),MazeCellMax);
     MaxPath = MazeCellMax;
 
 }

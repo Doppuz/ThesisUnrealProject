@@ -18,7 +18,7 @@ class THESISUNREALPROJECT_API AMazePopulateUnderground : public AMazePopulate{
 	
 public:
 
-	virtual void DepthVisit(AMazeCell* Start);
+	virtual void DepthVisit(AMazeCell2* Start);
 
 	virtual void AddDoors();
 

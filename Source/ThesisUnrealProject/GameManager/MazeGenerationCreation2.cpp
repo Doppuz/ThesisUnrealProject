@@ -33,7 +33,7 @@ void MazeGenerationCreation2::StandardMazeCreation() {
     InitializeMaze();
     CreateRooms(3);
     CreateMaze(MazeGraph->GetCurrentNode(),nullptr);
-    PrintMaze();
+    //PrintMaze();
 }
 
 

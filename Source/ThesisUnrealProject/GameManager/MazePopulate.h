@@ -28,10 +28,11 @@ public:
 	// Sets default values for this actor's properties
 	AMazePopulate();
 
-	virtual void DepthVisit(AMazeCell* Start);
-	void DynamicDepthVisit(AMazeCell* Current);
+	virtual void DepthVisit(AMazeCell2* Start);
+	void DynamicDepthVisit(AMazeCell2* Current);
 	void PopulateChest();
 	virtual void AddDoors();
+	void PrintMaze();
 
 	//Cell's graph.
 	Graph<AMazeCell2>* MazeGraph = nullptr;
@@ -40,7 +41,7 @@ public:
 	TArray<RoomMaze>* Rooms;
 
 	//Contains the path that leads to the exit.
-	TArray<AMazeCell*> MaxPath;
+	TArray<AMazeCell2*> MaxPath;
 
 protected:
 
@@ -83,8 +84,8 @@ protected:
 	TArray<AMazeCell*> NewPath;
 
 	//Methods
-	void DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,
-		TArray<AMazeCell*> & MazeCellList);
+	void DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,
+		TArray<AMazeCell2*> & MazeCellList);
 
 	void DynamicDepthVisitWrapper(AMazeCell* Current, int DepthLimit);
 

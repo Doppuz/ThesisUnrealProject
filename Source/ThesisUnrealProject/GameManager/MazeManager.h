@@ -15,6 +15,7 @@ class MazeGenerationCreation2;
 class AdaptingExperienceManager;
 class AMazePopulate;
 class AMaze;
+class ADoor;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -35,18 +36,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	   //Graph of the maze
-	Graph<AMazeCell2>* MazeGraph;
-
-	//Pointer to the MazeGenerationPopolate class
-	UPROPERTY(EditAnywhere)
-	class AMazePopulate* PopulateActor;
-
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	float Depth = 0;
-
 private:
-	
+
+#pragma region MazeManager
+
 //---------- Parameter for Maze generation ------------------
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	int Length = 10;
@@ -58,31 +51,20 @@ private:
 	int MazeObstacle = 0;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int Maze2Room = 4;
+	int MazeRooms = 4;
+
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int Maze3Room = 0;
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	int Maze4Room = 0;
+	float Depth = 0;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	TSubclassOf<AMazeCell2> CellClass;
 
-	//Pupulate actor class.
-	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	TSubclassOf<AMazePopulate> PopulateClass;
+	//Graph of the maze
+	Graph<AMazeCell2>* MazeGraph;
 
 	//Maze meshes actor .
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	AMaze* Maze2;
-
-	//Contains all the cells for the creation.
-	TArray<TArray<AMazeCell*>> *Maze = nullptr;
-	
-	//Contains all the rooms
-	TArray<RoomMaze> *Rooms = nullptr;
-
-	//Pointer to the MazeGenerationCreation class
-	MazeGenerationCreation2* Generator;
 
 	//Pointer to the AdaptingExperienceManager class
 	AdaptingExperienceManager* Adapting;
@@ -92,4 +74,50 @@ private:
 	//World percentage increment
     float MapIncrement;
 
+#pragma endregion
+
+#pragma region MazeCreation
+
+public:
+	
+	void StandardMazeCreation();
+
+	void PrintMaze(TArray<AMazeCell2*> Nodes);
+	
+	//Used to keep track of the rooms with a door.
+	TArray<int> RoomWithDoor;
+
+private:
+
+	//Methods
+	void InitializeMaze();
+	void CreateObstacle(int ObstaclesNumber);
+	void CreateRooms(int);
+	bool CheckRoomIntersection(TArray<AMazeCell2*>,int);
+	void CreateMaze(AMazeCell2*,AMazeCell2*);
+
+	//Distance between 2 cells.
+	float Distance;
+
+#pragma endregion
+
+#pragma region Populate
+
+private:
+
+	//Contains the path that leads to the exit.
+	TArray<AMazeCell2*> MaxPath;
+
+	UPROPERTY(EditAnywhere, Category = "Populate")
+	TSubclassOf<ADoor> DoorClass;
+
+	virtual void DepthVisit(AMazeCell2* Start);
+	void DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,
+		TArray<AMazeCell2*> & MazeCellList);
+	void SetDynamicVisitedToZero();
+
+	void AddDoors(int);
+
+
+#pragma endregion
 };

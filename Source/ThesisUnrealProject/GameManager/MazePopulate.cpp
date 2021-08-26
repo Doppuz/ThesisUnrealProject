@@ -17,6 +17,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MazeManager.h"
 #include "../Elements/Triggers/Trigger.h"
+#include  "DrawDebugHelpers.h"
 
 // Sets default values
 AMazePopulate::AMazePopulate(){
@@ -26,12 +27,13 @@ AMazePopulate::AMazePopulate(){
 }
 
 //DepthVisit to search 3 walls-cells and to search the longest path.
-void AMazePopulate::DepthVisit(AMazeCell* Start) {
-    /*MazeGraph->SetVisitedToZero();
-    TArray<AMazeCell*> MazeCellMax;
-    DepthVisitWrapper(Start,0, TArray<AMazeCell*>(),MazeCellMax);
+void AMazePopulate::DepthVisit(AMazeCell2* Start) {
+    MazeGraph->SetVisitedToZero();
+    TArray<AMazeCell2*> MazeCellMax;
+    DepthVisitWrapper(Start,0, TArray<AMazeCell2*>(),MazeCellMax);
     MaxPath = MazeCellMax;
-    MazeCellMax[MazeCellMax.Num() - 1]->HideWall(1);
+    PrintMaze();
+    /*MazeCellMax[MazeCellMax.Num() - 1]->HideWall(1);
     MazeCellMax[MazeCellMax.Num() - 1]->HideWall(2);
     MazeCellMax[MazeCellMax.Num() - 1]->HideWall(3);
     MazeCellMax[MazeCellMax.Num() - 1]->HideWall(4);
@@ -39,34 +41,34 @@ void AMazePopulate::DepthVisit(AMazeCell* Start) {
     
 }
 
-void AMazePopulate::DepthVisitWrapper(AMazeCell* Current, float Cost, TArray<AMazeCell*> CurrentVisitedCell,
-        TArray<AMazeCell*> & MazeCellMax) {
-    /*TArray<Side*> Sides = MazeGraph->GetSides(Current); 
+void AMazePopulate::DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,
+        TArray<AMazeCell2*> & MazeCellMax) {
+    TArray<Side<AMazeCell2>*> Sides = MazeGraph->GetSides(Current); 
     Current->bIsVisited = true;
     CurrentVisitedCell.Add(Current);
 
-    for(Side* S: MazeGraph->GetSides(Current)){
+    for(Side<AMazeCell2>* S: MazeGraph->GetSides(Current)){
         if(S->To->bIsVisited != true)
             DepthVisitWrapper(S->To, Cost + 1, CurrentVisitedCell, MazeCellMax);
     }
 
-    if(Current->WallNumbers == 3 && !(Current->I == 0 && Current->J == 0))
-        Wall3Cells.Add(Current,Cost);
+    /*if(Current->WallNumbers == 3 && !(Current->I == 0 && Current->J == 0))
+        Wall3Cells.Add(Current,Cost);*/
     //else if (Current->NumberRoom == -1)
     //    Current->PopulateElem(CrateElementsClass);
     
     //Last Cell of the current path. 
-    AMazeCell* LastCell = CurrentVisitedCell[CurrentVisitedCell.Num() - 1];
+    //AMazeCell* LastCell = CurrentVisitedCell[CurrentVisitedCell.Num() - 1];
 
     //Search for the maximum path (uncomment below to put the exit in one of the sides)
     if(CurrentVisitedCell.Num() > MazeCellMax.Num()) //&& (LastCell->I == 0 || LastCell->I == 12 ||
                                                     //    LastCell->J == 0 || LastCell->J == 12))
-        MazeCellMax = CurrentVisitedCell;*/
+        MazeCellMax = CurrentVisitedCell;
 
 }
 
 //Dynamic visit that is computed every time I reach a new cell.
-void AMazePopulate::DynamicDepthVisit(AMazeCell* Current) {
+void AMazePopulate::DynamicDepthVisit(AMazeCell2* Current) {
    /* NewPath.Empty();
     SetDynamicVisitedToZero();
     DynamicDepthVisitWrapper(Current,9);
@@ -165,6 +167,25 @@ void AMazePopulate::AddDoors() {
     
    // AddDoorsWrapper(0);
     
+}
+
+void AMazePopulate::PrintMaze() {
+    
+    TArray<AMazeCell2*> Nodes = MaxPath;
+
+    for (AMazeCell2* Cell : Nodes) {
+		for(Side<AMazeCell2>* Edge: MazeGraph->GetSides(Cell)){
+			DrawDebugLine(GetWorld(),
+			FVector(Edge->From->GetActorLocation().X, Edge->From->GetActorLocation().Y, Edge->From->GetActorLocation().Z + 1100), //700
+			FVector(Edge->To->GetActorLocation().X,Edge->To->GetActorLocation().Y,Edge->To->GetActorLocation().Z + 1100),
+			FColor(100, 0, 0),
+			true,
+			50.f,
+			0,
+			50.f);
+		}
+    }
+
 }
 
 

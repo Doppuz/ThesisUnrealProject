@@ -3,7 +3,7 @@
 
 #include "MazeArena.h"
 #include "Components/BoxComponent.h"
-#include "../../../GameManager/MazeCell.h"
+#include "../../../GameManager/MazeCell2.h"
 #include "../../../GameManager/MazeManager.h"
 #include "../../../GameManager/MazePopulate.h"
 #include "../../Puzzle/PuzzleButton.h"
@@ -21,7 +21,7 @@ void AMazeArena::BeginPlay() {
     const FTransform SpawnLocAndRotation;
     AMazeManager* MazeManager = GetWorld()->SpawnActor<AMazeManager>(MazeManagerClass, SpawnLocAndRotation);
 
-    TArray<AMazeCell*> MazeCellMax = MazeManager->PopulateActor->MaxPath;
+    TArray<AMazeCell2*> MazeCellMax;// = MazeManager->PopulateActor->MaxPath;
 
     FVector Pos = MazeCellMax[MazeCellMax.Num() - 1]->GetActorLocation() + FVector(0.f,0.f,35.f);
     FRotator Rot = MazeCellMax[MazeCellMax.Num() - 1]->GetActorRotation();
