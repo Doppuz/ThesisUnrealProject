@@ -16,6 +16,8 @@ class AdaptingExperienceManager;
 class AMazePopulate;
 class AMaze;
 class ADoor;
+class AGeneralRoomWithDoor;
+class ATrigger;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -83,6 +85,9 @@ public:
 	void StandardMazeCreation();
 
 	void PrintMaze(TArray<AMazeCell2*> Nodes);
+
+	//Keep track of the center the rooms.
+	TMap<int,FVector> RoomCenter;
 	
 	//Used to keep track of the rooms with a door.
 	TArray<int> RoomWithDoor;
@@ -103,6 +108,22 @@ private:
 
 #pragma region Populate
 
+public:
+
+	//Class for trigger spawn
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ATrigger> TriggerClass;
+
+	//Rooms
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AGeneralRoomWithDoor> RumbleArenaClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AGeneralRoomWithDoor> EnemiesArenaClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AGeneralRoomWithDoor> MazeArenaClass;
+
 private:
 
 	//Contains the path that leads to the exit.
@@ -117,6 +138,9 @@ private:
 	void SetDynamicVisitedToZero();
 
 	void AddDoors(int);
+
+	//Choose a room within a range to insert it in the level.
+	void AddRoom(int, ADoor*, ADoor*, FVector);
 
 
 #pragma endregion
