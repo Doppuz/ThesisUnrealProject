@@ -18,6 +18,7 @@ class AMaze;
 class ADoor;
 class AGeneralRoomWithDoor;
 class ATrigger;
+class AStair;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -38,11 +39,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-private:
-
 #pragma region MazeManager
 
 //---------- Parameter for Maze generation ------------------
+
+public:
+
+	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
+	float Depth = 0;
+
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	int Length = 10;
 
@@ -54,19 +59,25 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	int MazeRooms = 4;
-
+	
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	float Depth = 0;
+	bool PopulateMaze = true;
 
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
 	TSubclassOf<AMazeCell2> CellClass;
 
+	//Maze meshes actor.
+	AMaze* MazeActor;
+
+private:
+
 	//Graph of the maze
 	Graph<AMazeCell2>* MazeGraph;
 
-	//Maze meshes actor .
+
+	//Maze meshes actor
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
-	AMaze* Maze2;
+	TSubclassOf<AMaze> MazeActorClass;
 
 	//Pointer to the AdaptingExperienceManager class
 	AdaptingExperienceManager* Adapting;
@@ -124,13 +135,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AGeneralRoomWithDoor> MazeArenaClass;
 
-private:
-
 	//Contains the path that leads to the exit.
 	TArray<AMazeCell2*> MaxPath;
 
+private:
+
 	UPROPERTY(EditAnywhere, Category = "Populate")
 	TSubclassOf<ADoor> DoorClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Populate")
+	TSubclassOf<AStair> StairClass;
 
 	virtual void DepthVisit(AMazeCell2* Start);
 	void DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,
@@ -140,7 +154,7 @@ private:
 	void AddDoors(int);
 
 	//Choose a room within a range to insert it in the level.
-	void AddRoom(int, ADoor*, ADoor*, FVector);
+	void AddRoom(int, ADoor*, ADoor*, FVector, AMazeCell2*);
 
 
 #pragma endregion

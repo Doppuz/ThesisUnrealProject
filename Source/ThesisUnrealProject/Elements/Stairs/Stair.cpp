@@ -24,7 +24,7 @@ void AStair::BeginPlay()
 	for(int i = 0; i < StepsNumber; i++){
 		
 		FTransform Transform;
-		FVector SpawnLocation(0.f + 500.f * i,0.f,0.f - 100.f * i);
+		FVector SpawnLocation(375.f + 700.f * i,0.f,0.f - 100.f * i);
 		Transform.SetLocation(SpawnLocation);
 		Instance->AddInstance(Transform);
 

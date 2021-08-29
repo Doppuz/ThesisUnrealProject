@@ -164,6 +164,4 @@ private:
 
 	//Timer for the above method
 	FTimerHandle InvisibleTimer;
-
-	
 };

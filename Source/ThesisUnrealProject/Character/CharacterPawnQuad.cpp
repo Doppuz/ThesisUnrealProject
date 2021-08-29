@@ -21,6 +21,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/SizeBox.h"
 #include "../UI/Elements/UIBox.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -158,6 +159,7 @@ void ACharacterPawnQuad::InvisibleAnimation() {
 
 // Called every frame
 void ACharacterPawnQuad::Tick(float DeltaTime){
+
 	Super::Tick(DeltaTime);
 
 	//Move the player if it's not interacting with an NPC.

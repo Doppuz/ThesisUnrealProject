@@ -29,9 +29,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<APuzzleButton> PuzzleButtonClass;
 
+	void SetMazeLocation(FVector);
+
 protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	AMazeManager* MazeManager;
 
 };

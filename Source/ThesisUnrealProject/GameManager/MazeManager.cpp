@@ -16,6 +16,7 @@
 #include "../Elements/Room/RumbleArena/RumbleArenaDoorNpc.h"
 #include "../Elements/Room/MazeArena/MazeArena.h"
 #include "../Elements/Triggers/Trigger.h"
+#include "../Elements/Stairs/Stair.h"
 
 // Sets default values
 AMazeManager::AMazeManager()
@@ -39,13 +40,19 @@ void AMazeManager::BeginPlay()
 
 	//Initialize all the components for the maze creation.
     MazeGraph = new Graph<AMazeCell2>();
+    MazeActor = GetWorld()->SpawnActor<AMaze>(MazeActorClass,FVector(0,0,Depth),FRotator::ZeroRotator);
     
     StandardMazeCreation();
 
     DepthVisit(MazeGraph->GetCurrentNode());
-    AddDoors(0);
 
-    //MapIncrement = 100.0/(MazeGraph->GetGraphSize() - 3.0 * Maze2Room);
+    if(PopulateMaze){
+        AddDoors(0);
+    }
+
+    int a = 4;
+
+    //MapIncrement = 100.0/(MazeGraph->GetGraphSize() - 3.0 * MazeActorRoom);
     
     //Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, CoinClass, CrateElementsClass, GetWorld());
 
@@ -116,15 +123,15 @@ void AMazeManager::InitializeMaze() {
         TArray<AMazeCell*> Row;
         for (int j = 0; j < Length; j++) {
             
-            FVector Origin(i * (-Distance) + Maze2->GetActorLocation().X, j * Distance +Maze2->GetActorLocation().Y, Depth); //1100 --- 1.5
+            FVector Origin(i * (-Distance) + MazeActor->GetActorLocation().X, j * Distance +MazeActor->GetActorLocation().Y, 0.f); //1100 --- 1.5
             FRotator Rotator;
 
             AMazeCell2* CellActor = GetWorld()->SpawnActor<AMazeCell2>(CellClass,FVector(i * (-Distance), j * Distance, Depth),Rotator);
             CellActor->SetFolderPath(TEXT("MazePieces"));
 
             Transform.SetLocation(Origin);
-            Maze2->CreateFloor(Transform);
-            Maze2->CreateWalls(Transform);
+            MazeActor->CreateFloor(Transform);
+            MazeActor->CreateWalls(Transform);
 
             MazeGraph->AddNode(CellActor);
 
@@ -147,13 +154,13 @@ void AMazeManager::InitializeMaze() {
     //This second loop is used just to geenerate the first vertical wall and the last horizontal one.
     for (int i = 0; i < Height; i++) {
             
-            FVector Origin(+Distance, i * Distance, Depth);
+            FVector Origin(+Distance, i * Distance, 0);
             Transform.SetLocation(Origin);
-            Maze2->CreateVerticalWall(Transform);
+            MazeActor->CreateVerticalWall(Transform);
 
-            Origin = FVector(-Distance * i, +Distance * Length, Depth);
+            Origin = FVector(-Distance * i, +Distance * Length, 0);
             Transform.SetLocation(Origin);
-            Maze2->CreateHorizontalWall(Transform);
+            MazeActor->CreateHorizontalWall(Transform);
 
     }
 
@@ -360,7 +367,7 @@ void AMazeManager::AddDoors(int Index) {
                 RoomDoor->SetActorScale3D(FVector(1.7f,3.f,0.75f));
                 RoomDoor->SetDoorDirection(true);
 
-                AddRoom(2,Door,RoomDoor,RoomCenter[Sides->To->RoomNumber]);
+                AddRoom(2,Door,RoomDoor,RoomCenter[Sides->To->RoomNumber],Sides->To);
                 /*PosRot= MaxPath[Index]->GetWallPosition(WallNumberRoom);
 				ADoor* RoomDoor = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position + FVector(0.f,0.f,Door->Distance),FRotator(0.f,90.f,0.f) + PosRot.Rotation);
                 RoomDoor->SetActorScale3D(FVector(1.7f,1.f,0.75f));
@@ -395,10 +402,10 @@ void AMazeManager::AddDoors(int Index) {
     
 }
 
-void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos) {
+void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos, AMazeCell2* RoomCell) {
 
     AGeneralRoomWithDoor* Arena;
-    FVector TriggerLocation;
+    FVector Location;
     ATrigger* Trigger;
     
     switch(Index){
@@ -408,9 +415,9 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos)
             Arena = GetWorld()->SpawnActor<AArenaEnemies>(EnemiesArenaClass,Pos,FRotator::ZeroRotator);
             Arena->Door = Door;
             
-            TriggerLocation = RoomDoor->GetActorLocation();
-            TriggerLocation.Z = 150.f;
-            Trigger = GetWorld()->SpawnActor<ATrigger>(TriggerClass,TriggerLocation ,RoomDoor->GetActorRotation()); 
+            Location = RoomDoor->GetActorLocation();
+            Location.Z = 150.f;
+            Trigger = GetWorld()->SpawnActor<ATrigger>(TriggerClass,Location ,RoomDoor->GetActorRotation()); 
 		    Trigger->ChangeVisibility(true);
             Trigger->SetActorScale3D(FVector(1.f,1.5f,2.f));
 
@@ -429,6 +436,41 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos)
             const FTransform SpawnLocAndRotation;
             Arena = GetWorld()->SpawnActor<AMazeArena>(MazeArenaClass, SpawnLocAndRotation);
             Arena->Door = Door;
+            Location = RoomDoor->GetActorLocation();
+            Location.Z = -100.f;
+        
+            //Need to calculate the rotation of the stair in regard to the room door.
+            if(RoomCell->GetActorLocation().X > RoomDoor->GetActorLocation().X ||
+                RoomCell->GetActorLocation().Y < RoomDoor->GetActorLocation().Y)
+
+                GetWorld()->SpawnActor<AStair>(StairClass, Location,RoomDoor->GetActorRotation() - FRotator(0.f,90.f,0.f));  
+
+            else
+
+                GetWorld()->SpawnActor<AStair>(StairClass, Location,RoomDoor->GetActorRotation() + FRotator(0.f,90.f,0.f)); 
+
+            if(RoomDoor->GetActorRotation().Pitch == 90.f){
+            
+                if(RoomCell->GetActorLocation().X > RoomDoor->GetActorLocation().X)
+                    
+                    Cast<AMazeArena>(Arena)->SetMazeLocation(FVector(RoomDoor->GetActorLocation().X,RoomDoor->GetActorLocation().Y + 375 * 8,-750.f));
+
+                else
+                    
+                    Cast<AMazeArena>(Arena)->SetMazeLocation(FVector(RoomDoor->GetActorLocation().X,RoomDoor->GetActorLocation().Y - 375 * 8,-750.f));
+            
+                    
+            }else{
+
+                if(RoomCell->GetActorLocation().Y > RoomDoor->GetActorLocation().Y)
+                    
+                    Cast<AMazeArena>(Arena)->SetMazeLocation(FVector(RoomDoor->GetActorLocation().X - 375 * 8,RoomDoor->GetActorLocation().Y,-750.f));
+              
+                else
+
+                    Cast<AMazeArena>(Arena)->SetMazeLocation(FVector(RoomDoor->GetActorLocation().X + 375 * 8,RoomDoor->GetActorLocation().Y,-750.f));
+                    
+            }
 
             break;
 
