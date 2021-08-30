@@ -8,6 +8,7 @@
 
 class AMazeManager;
 class APuzzleButton;
+class ATriggerSpawnNight;
 
 /**
  * 
@@ -29,13 +30,31 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<APuzzleButton> PuzzleButtonClass;
 
-	void SetMazeLocation(FVector);
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ATriggerSpawnNight> TriggerNightClass;
 
+	ADoor* RoomDoor;
+	TArray<ATriggerSpawnNight*> Triggers;
+
+	void SetMazeLocation(FVector);
+	FVector GetMazeLocation();
+	FVector GetMazeInstanceLocation(int);
+
+	void SetMazeRotation(FRotator);
+
+	virtual void OpenDoor() override;
+
+	void CreateNightTrigger(FTransform);
+	
+	UFUNCTION()
+	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
+
+	AMazeManager* MazeManager;
+	
 protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	AMazeManager* MazeManager;
 
 };

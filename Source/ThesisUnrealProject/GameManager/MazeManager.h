@@ -69,11 +69,10 @@ public:
 	//Maze meshes actor.
 	AMaze* MazeActor;
 
-private:
-
 	//Graph of the maze
 	Graph<AMazeCell2>* MazeGraph;
 
+private:
 
 	//Maze meshes actor
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")

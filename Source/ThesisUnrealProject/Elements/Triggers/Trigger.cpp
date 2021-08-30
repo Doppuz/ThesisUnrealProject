@@ -20,6 +20,7 @@ ATrigger::ATrigger(){
 	Trigger->SetupAttachment(RootComponent);
 
 	bBlockVisibility = false;
+
 }
 
 

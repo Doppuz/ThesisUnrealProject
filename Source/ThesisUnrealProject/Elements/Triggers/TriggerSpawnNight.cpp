@@ -14,6 +14,8 @@ ATriggerSpawnNight::ATriggerSpawnNight(){
 	PrimaryActorTick.bCanEverTick = true;
 
 	LightOn = true;
+	AttenuationRadius = 1000.f;
+
 }
 
 
@@ -35,7 +37,8 @@ void ATriggerSpawnNight::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 			if(!LightOn){
 				
 				UGameplayStatics::UnloadStreamLevel(this, TEXT("Day"), LatentInfo, true);
-				MyPawn->SpotLight->Intensity = 100000.f;	
+				MyPawn->SpotLight->Intensity = 100000.f;
+				MyPawn->SpotLight->AttenuationRadius = AttenuationRadius;
 				//UGameplayStatics::LoadStreamLevel(this, TEXT("Night"), true, true, LatentInfo);
 				
 			}else{

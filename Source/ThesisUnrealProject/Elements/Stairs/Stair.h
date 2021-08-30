@@ -22,6 +22,15 @@ public:
 	float StepsNumber;
 
 	UPROPERTY(EditAnywhere)
+	float StepsDistance;
+
+	UPROPERTY(EditAnywhere)
+	float StepsHeightDistance;
+
+	UPROPERTY(EditAnywhere)
+	float InitialOffset;
+
+	UPROPERTY(EditAnywhere)
 	bool A;
 
 protected:

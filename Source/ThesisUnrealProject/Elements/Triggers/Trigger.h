@@ -28,8 +28,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Visibility")
 	bool bBlockVisibility;
 
-	//Change tehe visibility based on the parameter.
+	//Change the visibility based on the parameter.
 	void ChangeVisibility(bool);
+
 
 
 protected:

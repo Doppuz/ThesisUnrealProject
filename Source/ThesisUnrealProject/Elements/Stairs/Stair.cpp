@@ -13,6 +13,9 @@ AStair::AStair()
     RootComponent = Instance;
 
 	StepsNumber = 8;
+	StepsDistance = 700.f;
+	InitialOffset = 375.f;
+	StepsHeightDistance = -100.f;
 
 }
 
@@ -24,7 +27,7 @@ void AStair::BeginPlay()
 	for(int i = 0; i < StepsNumber; i++){
 		
 		FTransform Transform;
-		FVector SpawnLocation(375.f + 700.f * i,0.f,0.f - 100.f * i);
+		FVector SpawnLocation(InitialOffset + StepsDistance * i,0.f,0.f + StepsHeightDistance * i);
 		Transform.SetLocation(SpawnLocation);
 		Instance->AddInstance(Transform);
 

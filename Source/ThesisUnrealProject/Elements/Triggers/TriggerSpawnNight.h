@@ -20,6 +20,10 @@ public:
 
 	UPROPERTY(EditAnywhere,  Category = "SpawnAlly")
 	TSubclassOf<AAICharacterPawnQuad> AllyClass;
+	
+	//check if the trigger switch on or of fthe light.
+	UPROPERTY(EditAnywhere, Category = "Light")
+	float AttenuationRadius;
 
 
 protected:
