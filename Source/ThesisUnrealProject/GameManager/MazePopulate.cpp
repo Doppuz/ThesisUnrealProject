@@ -13,7 +13,7 @@
 #include "MazeCell.h"
 #include "../Elements/Room/RumbleArena/RumbleArenaDoorNpc.h"
 #include "../Elements/Room/ArenaEnemies/ArenaEnemies.h"
-#include "../Elements/Room/MazeArena/MazeArena.h"
+#include "../Elements/Room/UndergroundRoom/MazeArena/MazeArena.h"
 #include "Kismet/GameplayStatics.h"
 #include "MazeManager.h"
 #include "../Elements/Triggers/Trigger.h"

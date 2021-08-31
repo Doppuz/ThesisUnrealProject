@@ -8,9 +8,9 @@
 
 class ADoor;
 
-/**
- * 
- */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSolvedDelegate,ARiddleNPC*, RiddleActor);
+
 UCLASS()
 class THESISUNREALPROJECT_API ARiddleNPC : public APawnInteractiveClass
 {
@@ -26,5 +26,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Speak")
 	int RightAnswerPos;
+
+	//Door that need to be opened after the riddle is solved;
+	ADoor* ConnectedDoor;
+
+	FSolvedDelegate Solved;
 
 };

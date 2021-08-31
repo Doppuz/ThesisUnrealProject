@@ -4,7 +4,7 @@
 #include "RiddleNPC.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
-#include "../../GameModeTutorial.h"
+#include "../../GameModeAbstract.h"
 #include "../../UI/UIWidgetDialog.h"
 #include "../../UI/Elements/UIBox.h"
 
@@ -22,6 +22,7 @@ void ARiddleNPC::Choice(int Answer) {
 		Speak();
 
 		LeftChoice.Broadcast();
+		Solved.Broadcast(this);
 		
 		SpeechContator = Speech.Num() - 2;
 
@@ -41,7 +42,7 @@ void ARiddleNPC::Ask() {
 	Super::Ask();
 
 	if(Questions[AnswerContator].Answers.Num() > 2){
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
 	
 		DialogWidget->AnswerBox->SetAnswer1(Questions[AnswerContator].Answers[2]);

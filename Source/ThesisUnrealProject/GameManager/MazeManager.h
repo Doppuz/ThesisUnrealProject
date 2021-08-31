@@ -125,14 +125,17 @@ public:
 	TSubclassOf<ATrigger> TriggerClass;
 
 	//Rooms
-	UPROPERTY(EditAnywhere, Category = "Elements")
+	UPROPERTY(EditAnywhere, Category = "Rooms")
 	TSubclassOf<AGeneralRoomWithDoor> RumbleArenaClass;
 	
-	UPROPERTY(EditAnywhere, Category = "Elements")
+	UPROPERTY(EditAnywhere, Category = "Rooms")
 	TSubclassOf<AGeneralRoomWithDoor> EnemiesArenaClass;
 	
-	UPROPERTY(EditAnywhere, Category = "Elements")
+	UPROPERTY(EditAnywhere, Category = "Rooms")
 	TSubclassOf<AGeneralRoomWithDoor> MazeArenaClass;
+
+	UPROPERTY(EditAnywhere, Category = "Rooms")
+	TSubclassOf<AGeneralRoomWithDoor> RiddleArenaClass;
 
 	//Contains the path that leads to the exit.
 	TArray<AMazeCell2*> MaxPath;
@@ -141,9 +144,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Populate")
 	TSubclassOf<ADoor> DoorClass;
-	
-	UPROPERTY(EditAnywhere, Category = "Populate")
-	TSubclassOf<AStair> StairClass;
 
 	virtual void DepthVisit(AMazeCell2* Start);
 	void DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,

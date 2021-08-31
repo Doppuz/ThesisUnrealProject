@@ -3,18 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../GeneralRoomWithDoor.h"
+#include "../GeneralUndergroundRoom.h"
 #include "MazeArena.generated.h"
 
 class AMazeManager;
 class APuzzleButton;
 class ATriggerSpawnNight;
+class AStair;
+class AMazeCell2;
 
 /**
  * 
  */
 UCLASS()
-class THESISUNREALPROJECT_API AMazeArena : public AGeneralRoomWithDoor{
+class THESISUNREALPROJECT_API AMazeArena : public AGeneralUndergroundRoom{
 
 	GENERATED_BODY()
 
@@ -22,34 +24,22 @@ public:
 
 	AMazeArena();
 
-	//Maze to be spawned
-	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<AMazeManager> MazeManagerClass;
-
 	//Class for puzzle button spawn.
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<APuzzleButton> PuzzleButtonClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ATriggerSpawnNight> TriggerNightClass;
-
-	ADoor* RoomDoor;
+	
 	TArray<ATriggerSpawnNight*> Triggers;
-
-	void SetMazeLocation(FVector);
-	FVector GetMazeLocation();
-	FVector GetMazeInstanceLocation(int);
-
-	void SetMazeRotation(FRotator);
+	APuzzleButton* Button;
 
 	virtual void OpenDoor() override;
 
-	void CreateNightTrigger(FTransform);
+	void CreateNightTrigger();
 	
 	UFUNCTION()
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
-
-	AMazeManager* MazeManager;
 	
 protected:
 
