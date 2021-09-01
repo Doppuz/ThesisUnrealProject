@@ -1,0 +1,3 @@
+Hello Adventurer!,To go through this door you need to answer a question:,-,Correct answer!, Wrong answer :(, Bye!
+Stop!,-,Correct answer!, Wrong answer :(,You can now Continue your journey.
+Hey,What a terrible view I have here, You can't go through unless you give me the right answer,-,Pff... Just move on and don't come here again!,AHAHAHAH Try again  Loser, Goodbye

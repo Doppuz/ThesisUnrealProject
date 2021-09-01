@@ -317,10 +317,13 @@ void ACharacterPawnQuad::Speak() {
 	if(InteractiveActor != nullptr || DialogWidget->TextBox->BoxContainer->IsVisible()){
 		if(bStopMovement){
 
-			if(AllyNPC->SpeechContator != AllyNPC->QuestionAt){
+			if(AllyNPC->SpeechContator != AllyNPC->QuestionAt && !AllyNPC->Speech[AllyNPC->SpeechContator].Equals("-")){
 				AllyNPC->SpeechContator = AllyNPC->SpeechContator + 1;
-				if(AllyNPC->SpeechContator == AllyNPC->QuestionAt)
+				if(AllyNPC->SpeechContator == AllyNPC->QuestionAt || 
+					(AllyNPC->SpeechContator < AllyNPC->Speech.Num() && AllyNPC->Speech[AllyNPC->SpeechContator].Equals("-")))
+					
 					AllyNPC->Ask();
+				
 				else
 					AllyNPC->Speak();
 			}

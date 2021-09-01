@@ -94,7 +94,7 @@ public:
 	
 	void StandardMazeCreation();
 
-	void PrintMaze(TArray<AMazeCell2*> Nodes);
+	void PrintMaze(TArray<AMazeCell2*> Nodes,FColor Color);
 
 	//Keep track of the center the rooms.
 	TMap<int,FVector> RoomCenter;
@@ -140,15 +140,30 @@ public:
 	//Contains the path that leads to the exit.
 	TArray<AMazeCell2*> MaxPath;
 
+	//Contains all the other paths that are not included in MaxPath.
+	TArray<TArray<AMazeCell2*>> OtherPaths;
+	
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Populate")
 	TSubclassOf<ADoor> DoorClass;
 
+	//At the beginning empty, They will contain all the speech and quetion taken from a file.
+	TArray<TArray<FString>> Speech;
+	TArray<TArray<FString>> Questions;
+
+	//Memorize the questions and the speech already used.
+	TArray<TArray<FString>> OldSpeech;
+	TArray<TArray<FString>> OldQuestions;
+
+	void LoadFromFile(TArray<TArray<FString>>&, FString FileName);
+
 	virtual void DepthVisit(AMazeCell2* Start);
 	void DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,
 		TArray<AMazeCell2*> & MazeCellList);
 	void SetDynamicVisitedToZero();
+	void CreateOtherPaths(TArray<AMazeCell2*>* NewPath,AMazeCell2* Current, AMazeCell2* Previous, int MaxPathIndex);
 
 	void AddDoors(int);
 

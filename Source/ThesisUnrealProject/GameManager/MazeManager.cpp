@@ -36,9 +36,12 @@ AMazeManager::~AMazeManager() {
 #pragma region MazeManager
 
 // Called when the game starts or when spawned
-void AMazeManager::BeginPlay()
-{
+void AMazeManager::BeginPlay(){
+    
 	Super::BeginPlay();
+
+    LoadFromFile(Speech, "QuestionsSpeech");
+    LoadFromFile(Questions, "Questions");
 
 	//Initialize all the components for the maze creation.
     MazeGraph = new Graph<AMazeCell2>();
@@ -98,14 +101,14 @@ void AMazeManager::StandardMazeCreation() {
 
 
 //Used to draw the line for the visual graph
-void AMazeManager::PrintMaze(TArray<AMazeCell2*> Nodes) {
+void AMazeManager::PrintMaze(TArray<AMazeCell2*> Nodes, FColor Color) {
 
     for (AMazeCell2* Cell : Nodes) {
 		for(Side<AMazeCell2>* Edge: MazeGraph->GetSides(Cell)){
 			DrawDebugLine(GetWorld(),
 			FVector(Edge->From->GetActorLocation().X, Edge->From->GetActorLocation().Y, Edge->From->GetActorLocation().Z + 1100), //700
 			FVector(Edge->To->GetActorLocation().X,Edge->To->GetActorLocation().Y,Edge->To->GetActorLocation().Z + 1100),
-			FColor(100, 0, 0),
+			Color,
 			true,
 			50.f,
 			0,
@@ -126,9 +129,8 @@ void AMazeManager::InitializeMaze() {
         for (int j = 0; j < Length; j++) {
             
             FVector Origin(i * (-Distance) + MazeActor->GetActorLocation().X, j * Distance +MazeActor->GetActorLocation().Y, 0.f); //1100 --- 1.5
-            FRotator Rotator;
 
-            AMazeCell2* CellActor = GetWorld()->SpawnActor<AMazeCell2>(CellClass,FVector(i * (-Distance), j * Distance, Depth),Rotator);
+            AMazeCell2* CellActor = GetWorld()->SpawnActor<AMazeCell2>(CellClass,FVector(i * (-Distance), j * Distance, Depth),FRotator::ZeroRotator);
             //CellActor->SetFolderPath(TEXT("MazePieces"));
             
             FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
@@ -300,13 +302,34 @@ bool AMazeManager::CheckRoomIntersection(TArray<AMazeCell2*> Cells, int NumExtr)
 
 #pragma region Populate
 
+void AMazeManager::LoadFromFile(TArray<TArray<FString>>& List, FString FileName) {
+    
+    TArray<FString> StringArray;
+    FString CompleteFilePath = FPaths::GameSourceDir() + "ThesisUnrealProject/TextFiles/" + FileName +".txt"; 
+    FFileHelper::LoadFileToStringArray(StringArray,*CompleteFilePath);
+
+    for(FString String : StringArray){
+        
+        TArray<FString> Result;
+        String.ParseIntoArray(Result, _T(","),true);
+        List.Add(Result);
+
+    }
+
+}
+
+
 void AMazeManager::DepthVisit(AMazeCell2* Start) {
     
     MazeGraph->SetVisitedToZero();
     TArray<AMazeCell2*> MazeCellMax;
     DepthVisitWrapper(Start,0, TArray<AMazeCell2*>(),MazeCellMax);
     MaxPath = MazeCellMax;
-    //PrintMaze(MaxPath);
+    TArray<AMazeCell2*> NewPath;
+    CreateOtherPaths(&NewPath,MaxPath[0],nullptr,0);
+    //PrintMaze(MaxPath, FColor(0.f,0.f,0.f));
+    for(int i = 0; i < OtherPaths.Num(); i++)
+        PrintMaze(MaxPath, FColor(100, 0, 0));
 
 }
 
@@ -336,6 +359,41 @@ void AMazeManager::SetDynamicVisitedToZero() {
     
     /*for(AMazeCell* Cell: OldPath)
     	Cell->bDynamicIsVisited = false;*/
+
+}
+
+void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Current, AMazeCell2* Previous, int MaxPathIndex){
+    
+    TArray<Side<AMazeCell2>*> Sides = MazeGraph->GetSides(Current);
+        
+    if(Sides.Num() == 1){
+
+        if((*NewPath).Num() > 1)
+            OtherPaths.Add((*NewPath));
+            
+        (*NewPath).Empty();
+
+    }else{
+
+        for(Side<AMazeCell2>* S: Sides){
+                
+            if(!(*NewPath).Contains(Current))
+                (*NewPath).Add(Current);
+
+            if(S->To != MaxPath[MaxPathIndex + 1] && S->To != Previous){
+
+                CreateOtherPaths(NewPath, S->To,Current, MaxPathIndex);
+
+            }
+
+        }
+
+    }
+
+    (*NewPath).Empty();
+
+    if(MaxPathIndex + 1 < MaxPath.Num() && MaxPath[MaxPathIndex] == Current)
+        CreateOtherPaths(NewPath, MaxPath[MaxPathIndex+1],Current, MaxPathIndex+1);
 
 }
 
@@ -457,12 +515,17 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
         case 3:
 
             Arena = GetWorld()->SpawnActorDeferred<ARiddleArena>(RiddleArenaClass, ArenaLocAndRotation);
-            Arena->Door = Door;
-            Cast<ARiddleArena>(Arena)->RoomDoor = RoomDoor;
+            ARiddleArena* CastedArena = Cast<ARiddleArena>(Arena);
+            CastedArena->Door = Door;
+            CastedArena->RoomDoor = RoomDoor;
+            CastedArena->Questions = &Questions;
+            CastedArena->OldQuestions = &OldQuestions;
+            CastedArena->Speech = &Speech;
+            CastedArena->OldSpeech = &OldSpeech;
             Arena->FinishSpawning(ArenaLocAndRotation);
 
-            Cast<ARiddleArena>(Arena)->PositionateRoom(RoomCell);
-            Cast<ARiddleArena>(Arena)->GenerateRiddleDoors();
+            CastedArena->PositionateRoom(RoomCell);
+            CastedArena->GenerateRiddleDoors();
 
     }
 

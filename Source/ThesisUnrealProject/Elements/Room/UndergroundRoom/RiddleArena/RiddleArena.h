@@ -8,6 +8,7 @@
 
 class ADoor;
 class ARiddleNPC;
+class APawnInteractiveClass;
 
 UCLASS()
 class THESISUNREALPROJECT_API ARiddleArena : public AGeneralUndergroundRoom
@@ -21,6 +22,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ARiddleNPC> RiddleNpcClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<APawnInteractiveClass> SpokenNpcClass;
 
 	void GenerateRiddleDoors();
 
@@ -30,8 +34,18 @@ public:
 	UFUNCTION()
 	void EndDialog(APawnInteractiveClass* SpokenActor);
 
+	//Pointers to the maze manager class.
+	TArray<TArray<FString>>* Speech;
+	TArray<TArray<FString>>* Questions;
+	TArray<TArray<FString>>* OldSpeech;
+	TArray<TArray<FString>>* OldQuestions;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void LoadFromFile(TArray<TArray<FString>>&, FString FileName);
+
+	int ShuffleArray(TArray<FString>& ShuffledArray);
 
 };
