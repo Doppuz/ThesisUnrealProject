@@ -152,10 +152,13 @@ private:
 	//At the beginning empty, They will contain all the speech and quetion taken from a file.
 	TArray<TArray<FString>> Speech;
 	TArray<TArray<FString>> Questions;
+	//Used when the NPC is in the last cell of an other path.
+	TArray<TArray<FString>> BlockedSpeech;
 
 	//Memorize the questions and the speech already used.
 	TArray<TArray<FString>> OldSpeech;
 	TArray<TArray<FString>> OldQuestions;
+	TArray<TArray<FString>> OldBlockedSpeech;
 
 	void LoadFromFile(TArray<TArray<FString>>&, FString FileName);
 

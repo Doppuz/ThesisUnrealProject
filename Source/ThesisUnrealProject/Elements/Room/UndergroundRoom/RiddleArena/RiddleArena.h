@@ -37,8 +37,12 @@ public:
 	//Pointers to the maze manager class.
 	TArray<TArray<FString>>* Speech;
 	TArray<TArray<FString>>* Questions;
+	//Used when the NPC is in the last cell of an other path.
+	TArray<TArray<FString>>* BlockedSpeech;
+
 	TArray<TArray<FString>>* OldSpeech;
 	TArray<TArray<FString>>* OldQuestions;
+	TArray<TArray<FString>>* OldBlockedSpeech;
 
 protected:
 	// Called when the game starts or when spawned

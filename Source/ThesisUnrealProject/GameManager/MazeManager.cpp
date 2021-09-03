@@ -42,6 +42,7 @@ void AMazeManager::BeginPlay(){
 
     LoadFromFile(Speech, "QuestionsSpeech");
     LoadFromFile(Questions, "Questions");
+    LoadFromFile(BlockedSpeech, "BlockedSpeech");
 
 	//Initialize all the components for the maze creation.
     MazeGraph = new Graph<AMazeCell2>();
@@ -52,10 +53,10 @@ void AMazeManager::BeginPlay(){
     DepthVisit(MazeGraph->GetCurrentNode());
 
     if(PopulateMaze){
+        
         AddDoors(0);
-    }
 
-    int a = 4;
+    }
 
     //MapIncrement = 100.0/(MazeGraph->GetGraphSize() - 3.0 * MazeActorRoom);
     
@@ -103,7 +104,7 @@ void AMazeManager::StandardMazeCreation() {
 //Used to draw the line for the visual graph
 void AMazeManager::PrintMaze(TArray<AMazeCell2*> Nodes, FColor Color) {
 
-    for (AMazeCell2* Cell : Nodes) {
+    /*for (AMazeCell2* Cell : Nodes) {
 		for(Side<AMazeCell2>* Edge: MazeGraph->GetSides(Cell)){
 			DrawDebugLine(GetWorld(),
 			FVector(Edge->From->GetActorLocation().X, Edge->From->GetActorLocation().Y, Edge->From->GetActorLocation().Z + 1100), //700
@@ -114,6 +115,21 @@ void AMazeManager::PrintMaze(TArray<AMazeCell2*> Nodes, FColor Color) {
 			0,
 			50.f);
 		}
+    }*/
+
+    for(int i = 0 ; i < Nodes.Num(); i++){
+        
+        if(i != Nodes.Num() - 1)
+
+            DrawDebugLine(GetWorld(),
+			FVector(Nodes[i]->GetActorLocation().X, Nodes[i]->GetActorLocation().Y, Nodes[i]->GetActorLocation().Z + 1100), //700
+			FVector(Nodes[i + 1]->GetActorLocation().X,Nodes[i + 1]->GetActorLocation().Y,Nodes[i + 1]->GetActorLocation().Z + 1100),
+			Color,
+			true,
+			50.f,
+			0,
+			50.f);
+
     }
 
 }
@@ -328,8 +344,6 @@ void AMazeManager::DepthVisit(AMazeCell2* Start) {
     TArray<AMazeCell2*> NewPath;
     CreateOtherPaths(&NewPath,MaxPath[0],nullptr,0);
     //PrintMaze(MaxPath, FColor(0.f,0.f,0.f));
-    for(int i = 0; i < OtherPaths.Num(); i++)
-        PrintMaze(MaxPath, FColor(100, 0, 0));
 
 }
 
@@ -368,10 +382,17 @@ void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Cu
         
     if(Sides.Num() == 1){
 
-        if((*NewPath).Num() > 1)
-            OtherPaths.Add((*NewPath));
-            
-        (*NewPath).Empty();
+        if(!(*NewPath).Contains(Current))
+            (*NewPath).Add(Current);
+
+        if(Current->RoomNumber == -1){
+
+            if((*NewPath).Num() > 1)
+                OtherPaths.Add((*NewPath));
+                
+            (*NewPath).Empty();
+
+        }
 
     }else{
 
@@ -522,6 +543,8 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
             CastedArena->OldQuestions = &OldQuestions;
             CastedArena->Speech = &Speech;
             CastedArena->OldSpeech = &OldSpeech;
+            CastedArena->BlockedSpeech = &BlockedSpeech;
+            CastedArena->OldBlockedSpeech = &OldBlockedSpeech;
             Arena->FinishSpawning(ArenaLocAndRotation);
 
             CastedArena->PositionateRoom(RoomCell);

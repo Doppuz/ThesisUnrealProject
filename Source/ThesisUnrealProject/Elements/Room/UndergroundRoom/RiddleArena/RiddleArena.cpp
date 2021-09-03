@@ -94,9 +94,28 @@ void ARiddleArena::GenerateRiddleDoors() {
 
         Contator += 1;
 
-        if(i == MaxPath.Num() - 1)
-            GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass,MaxPath[i]->GetActorLocation(),FRotator::ZeroRotator);
+        if(i == MaxPath.Num() - 1){
+        
+            APawnInteractiveClass* NPC = GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass,MaxPath[i]->GetActorLocation(),FRotator::ZeroRotator);
+            NPC->Speech = TArray<FString>{"It is amazing!","You have reached the end of the Room","Now the door should be opened and you can continue your journey!", "Bye!"};
+        
+        }
 
+    }       
+
+    //Generate ally in the last cells of each other paths.
+    TArray<TArray<AMazeCell2*>> OtherPaths = MazeManager->OtherPaths;
+    
+    for(TArray<AMazeCell2*> Cells : OtherPaths){
+
+        APawnInteractiveClass* NPC = GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass,Cells[Cells.Num() - 1]->GetActorLocation(),FRotator::ZeroRotator);
+        
+        int SpeechNumber = FMath::RandRange(0,(*Questions).Num() - 1);
+        
+        //The first element is the question, instead the other 4 are the answers.
+            NPC->Speech = (*BlockedSpeech)[SpeechNumber];
+            (*OldBlockedSpeech).Add((*BlockedSpeech)[SpeechNumber]);
+            BlockedSpeech->RemoveAt(SpeechNumber);
     }
 
 }
