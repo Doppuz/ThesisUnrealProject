@@ -32,9 +32,11 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	RootComponent = Collider;
 
 	Collider->SetSimulatePhysics(true);
+	Collider->SetNotifyRigidBodyCollision(true);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
+	Mesh->SetCollisionProfileName("NoCollision");
 
 	EquipmentMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EquipmentMesh"));
 	EquipmentMesh->SetupAttachment(RootComponent);
@@ -97,6 +99,9 @@ void ACharacterPawnQuad::BeginPlay(){
 	SetHealthPercentage(1.f);
 	
 	InitialRotation = CameraArmComponent->GetComponentRotation();
+
+	Collider->OnComponentHit.AddDynamic(this,&ACharacterPawnQuad::OnHit);
+
 }
 
 //Add damage. If healt == 0, destroy the actor. Switch case to apply changes to the manager.
@@ -232,7 +237,7 @@ void ACharacterPawnQuad::MoveForward(float Axis) {
 
 	FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);*/
 
-	VectorMovement.X = FMath::Clamp(Axis,-1.f,+1.f) * GetWorld()->DeltaTimeSeconds * MovementSpeed;
+	VectorMovement.X = FMath::Clamp(Axis,-1.f,+1.f) * MovementSpeed * GetWorld()->DeltaTimeSeconds;
 }
 
 void ACharacterPawnQuad::MoveRight(float Axis) {
@@ -241,22 +246,22 @@ void ACharacterPawnQuad::MoveRight(float Axis) {
 
 	FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);*/
 
-	VectorMovement.Y = Axis *  GetWorld()->DeltaTimeSeconds * MovementSpeed;
+	VectorMovement.Y = Axis  * MovementSpeed * GetWorld()->DeltaTimeSeconds;
 }
 
 void ACharacterPawnQuad::RotatePitch(float Axis) {
-	CameraRotation.Pitch = -Axis *  GetWorld()->DeltaTimeSeconds * RotationSpeed/4;
+	CameraRotation.Pitch = -Axis * RotationSpeed * GetWorld()->DeltaTimeSeconds ;
 }
 
 void ACharacterPawnQuad::RotateYaw(float Axis) {
-	Rotation.Yaw = Axis *  GetWorld()->DeltaTimeSeconds * RotationSpeed/2;
+	Rotation.Yaw = Axis * RotationSpeed * GetWorld()->DeltaTimeSeconds;
 }
 
 void ACharacterPawnQuad::Jump() {
 	if(!bAmIJump){
 		Collider->AddImpulse(GetActorUpVector() * JumpForce,NAME_None,true);
 		bAmIJump = true;
-		GetWorld()->GetTimerManager().SetTimer(JumpTimer,this,&ACharacterPawnQuad::SetJump,(JumpForce / 5)/100,false);
+		//GetWorld()->GetTimerManager().SetTimer(JumpTimer,this,&ACharacterPawnQuad::SetJump,(JumpForce / 5)/100,false);
 	}
 }
 
@@ -336,5 +341,12 @@ void ACharacterPawnQuad::Speak() {
 void ACharacterPawnQuad::Rewind() {
 
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+
+}
+
+void ACharacterPawnQuad::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
+
+	if(OtherComponent->ComponentTags.Contains("ResetJump"))
+		bAmIJump = false;
 
 }

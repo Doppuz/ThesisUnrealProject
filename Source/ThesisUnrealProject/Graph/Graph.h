@@ -13,6 +13,7 @@ class THESISUNREALPROJECT_API Graph{
 public:
 
 	void AddNode(F*);
+	void AddNode(F);
 
 	void AddSide(F*, F*, float);
 
@@ -21,13 +22,15 @@ public:
 
 	void DeleteNode(F*);
 	void DeleteSide(F*,F*);
+	void DeleteAll();
 
 	TArray<F*> GetLeaves(float RoomLimit);
 	TArray<F*> GetLeavesNoSpace();
 	TArray<F*> GetNodesMaxDistance();
 
-	F* GetCurrentNode();
+	F* GetParent();
 
+	F* GetCurrentNode();
 	void SetCurrentNode(F*);
 
 	void SetVisitedToZero();
@@ -52,6 +55,15 @@ private:
 
 template<class F>
 void Graph<F>::AddNode(F* N) {
+	if (!Map.Contains(N)) {
+		TArray<Side<F>*> List;
+		Map.Add(N, List);
+	}else
+		UE_LOG(LogTemp, Warning, TEXT("Node already present in the list"));
+}
+
+template<class F>
+void Graph<F>::AddNode(F N) {
 	if (!Map.Contains(N)) {
 		TArray<Side<F>*> List;
 		Map.Add(N, List);
@@ -117,6 +129,14 @@ void Graph<F>::DeleteSide(F* First,F* Second) {
 
 }
 
+template<class F>
+void Graph<F>::DeleteAll() {
+	
+	for(F* Node: GetNodes())
+		Map.Remove(Node);	
+
+}
+
 
 template<class F>
 TArray<F*> Graph<F>::GetLeaves(float RoomLimit) {
@@ -174,7 +194,6 @@ TArray<F*> Graph<F>::GetNodesMaxDistance() {
 	}
 	return Fathers;	
 }
-
 
 template<class F>
 F* Graph<F>::GetCurrentNode() {

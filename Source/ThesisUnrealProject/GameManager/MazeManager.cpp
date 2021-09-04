@@ -56,7 +56,14 @@ void AMazeManager::BeginPlay(){
         
         AddDoors(0);
 
+        PrintMaze(MaxPath, FColor(0.f,0.f,100.f));
+
+        //for(TArray<AMazeCell2*> Cells: OtherPaths)
+        //    PrintMaze(Cells, FColor(0.f,100.f,0.f));
+
+        UE_LOG(LogTemp,Warning,TEXT("Others path: %i"), OtherPaths.Num());
     }
+
 
     //MapIncrement = 100.0/(MazeGraph->GetGraphSize() - 3.0 * MazeActorRoom);
     
@@ -342,7 +349,9 @@ void AMazeManager::DepthVisit(AMazeCell2* Start) {
     DepthVisitWrapper(Start,0, TArray<AMazeCell2*>(),MazeCellMax);
     MaxPath = MazeCellMax;
     TArray<AMazeCell2*> NewPath;
-    CreateOtherPaths(&NewPath,MaxPath[0],nullptr,0);
+    Graph<TArray<AMazeCell2*>> OtherGraph;
+    CreateOtherPaths(&NewPath,MaxPath[0],nullptr,0,&OtherGraph,nullptr);
+    int a = 0;
     //PrintMaze(MaxPath, FColor(0.f,0.f,0.f));
 
 }
@@ -376,20 +385,55 @@ void AMazeManager::SetDynamicVisitedToZero() {
 
 }
 
-void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Current, AMazeCell2* Previous, int MaxPathIndex){
+void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Current, AMazeCell2* Previous, int MaxPathIndex, Graph<TArray<AMazeCell2*>>* OtherGraph,
+    TArray<AMazeCell2*>* CurrentNode){
     
     TArray<Side<AMazeCell2>*> Sides = MazeGraph->GetSides(Current);
+    
+    if(!MaxPath.Contains(Current) && Sides.Num() > 2){
         
-    if(Sides.Num() == 1){
+        TArray<AMazeCell2*> Node = (*NewPath);
+        OtherGraph->AddNode(&Node);
+
+        if(CurrentNode != nullptr)
+
+            OtherGraph->AddSide(CurrentNode,&Node,0.f);
+        
+        (*NewPath).Empty();
+
+        for(Side<AMazeCell2>* S: Sides){
+                
+            if(!(*NewPath).Contains(Current))
+                (*NewPath).Add(Current);
+
+            if(S->To != MaxPath[MaxPathIndex + 1] && S->To != Previous){
+
+                CreateOtherPaths(NewPath, S->To,Current, MaxPathIndex,OtherGraph,&Node);
+
+            }
+
+        }
+
+
+    }if(Sides.Num() == 1){
 
         if(!(*NewPath).Contains(Current))
             (*NewPath).Add(Current);
 
         if(Current->RoomNumber == -1){
 
-            if((*NewPath).Num() > 1)
-                OtherPaths.Add((*NewPath));
+            if((*NewPath).Num() > 1){
+            
+                TArray<AMazeCell2*> Node = (*NewPath);
+                OtherGraph->AddNode(&Node);
+                if(CurrentNode != nullptr){
+
+                    OtherGraph->AddSide(&Node,OtherGraph->GetCurrentNode(),0.f);
                 
+                }
+            
+            }
+
             (*NewPath).Empty();
 
         }
@@ -403,7 +447,7 @@ void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Cu
 
             if(S->To != MaxPath[MaxPathIndex + 1] && S->To != Previous){
 
-                CreateOtherPaths(NewPath, S->To,Current, MaxPathIndex);
+                CreateOtherPaths(NewPath, S->To,Current, MaxPathIndex,OtherGraph,CurrentNode);
 
             }
 
@@ -413,8 +457,14 @@ void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Cu
 
     (*NewPath).Empty();
 
-    if(MaxPathIndex + 1 < MaxPath.Num() && MaxPath[MaxPathIndex] == Current)
-        CreateOtherPaths(NewPath, MaxPath[MaxPathIndex+1],Current, MaxPathIndex+1);
+    if(MaxPathIndex + 1 < MaxPath.Num() && MaxPath[MaxPathIndex] == Current){
+        
+        OtherPaths.Add((*OtherGraph));
+        OtherGraph->DeleteAll();
+        CreateOtherPaths(NewPath, MaxPath[MaxPathIndex+1],Current, MaxPathIndex+1,OtherGraph,CurrentNode);
+
+
+    }
 
 }
 
@@ -452,6 +502,7 @@ void AMazeManager::AddDoors(int Index) {
                 RoomDoor->SetDoorDirection(true);
 
                 AddRoom(3,Door,RoomDoor,RoomCenter[Sides->To->RoomNumber],Sides->To);
+
                 /*PosRot= MaxPath[Index]->GetWallPosition(WallNumberRoom);
 				ADoor* RoomDoor = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position + FVector(0.f,0.f,Door->Distance),FRotator(0.f,90.f,0.f) + PosRot.Rotation);
                 RoomDoor->SetActorScale3D(FVector(1.7f,1.f,0.75f));

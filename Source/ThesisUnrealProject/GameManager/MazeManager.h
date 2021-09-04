@@ -141,7 +141,7 @@ public:
 	TArray<AMazeCell2*> MaxPath;
 
 	//Contains all the other paths that are not included in MaxPath.
-	TArray<TArray<AMazeCell2*>> OtherPaths;
+	TArray<Graph<TArray<AMazeCell2*>>> OtherPaths;
 	
 
 private:
@@ -166,7 +166,7 @@ private:
 	void DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,
 		TArray<AMazeCell2*> & MazeCellList);
 	void SetDynamicVisitedToZero();
-	void CreateOtherPaths(TArray<AMazeCell2*>* NewPath,AMazeCell2* Current, AMazeCell2* Previous, int MaxPathIndex);
+	void CreateOtherPaths(TArray<AMazeCell2*>* NewPath,AMazeCell2* Current, AMazeCell2* Previous, int MaxPathIndex,Graph<TArray<AMazeCell2*>>*,TArray<AMazeCell2*>* CurrentNode);
 
 	void AddDoors(int);
 

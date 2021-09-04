@@ -31,6 +31,8 @@ public:
 	UFUNCTION()
 	void OpenRiddleDoor(ARiddleNPC* RiddleActor);
 
+	void OpenDoor(ARiddleNPC* RiddleActor);
+
 	UFUNCTION()
 	void EndDialog(APawnInteractiveClass* SpokenActor);
 

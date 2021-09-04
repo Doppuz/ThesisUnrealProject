@@ -14,6 +14,8 @@ AMaze::AMaze(){
 
 	FloorInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("FloorInstances"));
     FloorInstances->SetupAttachment(RootComponent);
+	FloorInstances->SetNotifyRigidBodyCollision(true);
+	FloorInstances->ComponentTags.Add("ResetJump");
 
 	WallInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("WallInstances"));
     WallInstances->SetupAttachment(RootComponent);

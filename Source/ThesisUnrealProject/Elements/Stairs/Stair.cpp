@@ -11,6 +11,7 @@ AStair::AStair()
 
 	Instance = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Root"));
     RootComponent = Instance;
+	Instance->ComponentTags.Add("ResetJump");
 
 	StepsNumber = 8;
 	StepsDistance = 700.f;

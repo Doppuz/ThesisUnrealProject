@@ -10,10 +10,13 @@
 #include "../../../../Character/AllyAI/PawnInteractiveClass.h"
 #include "Misc/FileHelper.h"
 #include "Kismet/KismetArrayLibrary.h"
+#include "Components/BoxComponent.h"
 
 void ARiddleArena::BeginPlay() {
     
     Super::BeginPlay();
+
+    Collider->SetCollisionProfileName("NoCollision");
 
 }
 
@@ -62,6 +65,10 @@ void ARiddleArena::GenerateRiddleDoors() {
 	        int SpeechNumber = FMath::RandRange(0,(*Speech).Num() - 1);
             NPC->Speech = (*Speech)[SpeechNumber];
 
+            if(i + 3 >= MaxPath.Num() - 1){
+                NPC->Solved.AddDynamic(this,&ARiddleArena::OpenDoor);
+            }
+
             //Creation of NPC conversation parameter.
             FQuestion Question; 
             
@@ -103,20 +110,26 @@ void ARiddleArena::GenerateRiddleDoors() {
 
     }       
 
-    //Generate ally in the last cells of each other paths.
-    TArray<TArray<AMazeCell2*>> OtherPaths = MazeManager->OtherPaths;
+    //Generate allies in the last cells of each other paths.
+/*    TArray<TArray<AMazeCell2*>> OtherPaths = MazeManager->OtherPaths;
     
     for(TArray<AMazeCell2*> Cells : OtherPaths){
 
         APawnInteractiveClass* NPC = GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass,Cells[Cells.Num() - 1]->GetActorLocation(),FRotator::ZeroRotator);
         
-        int SpeechNumber = FMath::RandRange(0,(*Questions).Num() - 1);
+        if((*BlockedSpeech).Num() == 0){
+
+            (*BlockedSpeech) = (*OldBlockedSpeech);
+            OldBlockedSpeech->Empty();
         
-        //The first element is the question, instead the other 4 are the answers.
-            NPC->Speech = (*BlockedSpeech)[SpeechNumber];
-            (*OldBlockedSpeech).Add((*BlockedSpeech)[SpeechNumber]);
-            BlockedSpeech->RemoveAt(SpeechNumber);
-    }
+        }
+
+        int SpeechNumber = FMath::RandRange(0,(*BlockedSpeech).Num() - 1);
+        
+        NPC->Speech = (*BlockedSpeech)[SpeechNumber];
+        (*OldBlockedSpeech).Add((*BlockedSpeech)[SpeechNumber]);
+        BlockedSpeech->RemoveAt(SpeechNumber);
+    }*/
 
 }
 
@@ -124,6 +137,15 @@ void ARiddleArena::OpenRiddleDoor(ARiddleNPC* RiddleActor) {
     
     RiddleActor->ConnectedDoor->bOpenDoor = true;
 
+}
+
+void ARiddleArena::OpenDoor(ARiddleNPC* RiddleActor) {
+
+    if(Door != nullptr){
+        Door->bOpenDoor = true;
+    }else
+        UE_LOG(LogTemp,Warning,TEXT("No door selected! (ARiddleArena)"));
+    
 }
 
 void ARiddleArena::EndDialog(APawnInteractiveClass* SpokenActor) {

@@ -148,6 +148,9 @@ private:
 	//methos to respawn the player to the last checkpoint.
 	void Rewind();
 
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
 //Invincible Section
 
 	//Parameter to make the character invincible.
