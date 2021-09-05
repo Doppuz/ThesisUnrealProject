@@ -27,6 +27,13 @@ public:
 	void DestroyWall(AMazeCell2*);
 	void DestroyFloor();
 
+	// == Operator overloading
+	FORCEINLINE bool operator == (const AMazeCell2 &Other){
+		
+		return GetName() == Other.GetName();
+
+	}
+
 protected:
 
 	void LineTracing(FVector);

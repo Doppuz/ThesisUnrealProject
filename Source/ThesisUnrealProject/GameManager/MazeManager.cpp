@@ -19,6 +19,8 @@
 #include "../Elements/Triggers/Trigger.h"
 #include "../Elements/Triggers/TriggerSpawnNight.h"
 #include "../Elements/Stairs/Stair.h"
+#include "../Character/EnemyAI/AIBull.h"
+#include "../Character/EnemyAI/AIShooterPawn.h"
 
 // Sets default values
 AMazeManager::AMazeManager()
@@ -30,7 +32,18 @@ AMazeManager::AMazeManager()
 }
 
 AMazeManager::~AMazeManager() {
+    
     delete MazeGraph;
+
+    for(Graph<TArray<AMazeCell2*>> G : OtherPaths){
+
+        for(TArray<AMazeCell2*>* N : G.GetNodes())
+            
+            delete N;
+
+    }
+
+
 }
 
 #pragma region MazeManager
@@ -56,12 +69,17 @@ void AMazeManager::BeginPlay(){
         
         AddDoors(0);
 
-        PrintMaze(MaxPath, FColor(0.f,0.f,100.f));
+        GenerateEnemies();
 
-        //for(TArray<AMazeCell2*> Cells: OtherPaths)
-        //    PrintMaze(Cells, FColor(0.f,100.f,0.f));
+        /*PrintMaze(MaxPath, FColor(0.f,0.f,100.f));
 
-        UE_LOG(LogTemp,Warning,TEXT("Others path: %i"), OtherPaths.Num());
+        for(int i = 0; i < OtherPaths.Num(); i++){
+            for(TArray<AMazeCell2*>* Cell : OtherPaths[i].GetNodes())
+                PrintMaze((*Cell),FColor(0.f,100.f,0.f));
+
+        }
+        UE_LOG(LogTemp,Warning,TEXT("Others path: %i"), OtherPaths.Num());*/
+
     }
 
 
@@ -385,19 +403,29 @@ void AMazeManager::SetDynamicVisitedToZero() {
 
 }
 
+//Creates a graph for each path which is not part of the max path.
 void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Current, AMazeCell2* Previous, int MaxPathIndex, Graph<TArray<AMazeCell2*>>* OtherGraph,
     TArray<AMazeCell2*>* CurrentNode){
     
     TArray<Side<AMazeCell2>*> Sides = MazeGraph->GetSides(Current);
     
+    //The process is divided in 3 parts. First check if I am in a crossroad.
     if(!MaxPath.Contains(Current) && Sides.Num() > 2){
         
-        TArray<AMazeCell2*> Node = (*NewPath);
-        OtherGraph->AddNode(&Node);
+        if(!(*NewPath).Contains(Current))
+            (*NewPath).Add(Current);
 
-        if(CurrentNode != nullptr)
+        
+        TArray<AMazeCell2*>* Node = new TArray<AMazeCell2*>(*NewPath);
+        
+        if(!OtherGraph->Contains(Node)){
+            OtherGraph->AddNode(Node);
 
-            OtherGraph->AddSide(CurrentNode,&Node,0.f);
+            if(CurrentNode != nullptr)
+
+                OtherGraph->AddSide(CurrentNode,Node,0.f);
+
+        }
         
         (*NewPath).Empty();
 
@@ -408,28 +436,31 @@ void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Cu
 
             if(S->To != MaxPath[MaxPathIndex + 1] && S->To != Previous){
 
-                CreateOtherPaths(NewPath, S->To,Current, MaxPathIndex,OtherGraph,&Node);
+                CreateOtherPaths(NewPath, S->To,Current, MaxPathIndex,OtherGraph,Node);
 
             }
 
         }
 
-
+    //the if it is at the end of the street
     }if(Sides.Num() == 1){
 
         if(!(*NewPath).Contains(Current))
             (*NewPath).Add(Current);
 
-        if(Current->RoomNumber == -1){
+        if(!Current->bIsRoom || Previous != MaxPath[MaxPathIndex]){
 
             if((*NewPath).Num() > 1){
             
-                TArray<AMazeCell2*> Node = (*NewPath);
-                OtherGraph->AddNode(&Node);
-                if(CurrentNode != nullptr){
+                TArray<AMazeCell2*>* Node = new TArray<AMazeCell2*>(*NewPath);
 
-                    OtherGraph->AddSide(&Node,OtherGraph->GetCurrentNode(),0.f);
-                
+                if(!OtherGraph->Contains(Node)){
+                    OtherGraph->AddNode(Node);
+
+                    if(CurrentNode != nullptr)
+
+                        OtherGraph->AddSide(CurrentNode,Node,0.f);
+
                 }
             
             }
@@ -438,8 +469,9 @@ void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Cu
 
         }
 
+    //Any ohter cases.
     }else{
-
+        
         for(Side<AMazeCell2>* S: Sides){
                 
             if(!(*NewPath).Contains(Current))
@@ -457,10 +489,13 @@ void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Cu
 
     (*NewPath).Empty();
 
+    //If I am in maxpath I proceed along the maxpth path.
     if(MaxPathIndex + 1 < MaxPath.Num() && MaxPath[MaxPathIndex] == Current){
         
-        OtherPaths.Add((*OtherGraph));
-        OtherGraph->DeleteAll();
+        if(OtherGraph->GetNodes().Num() != 0){
+            OtherPaths.Add((*OtherGraph));
+            OtherGraph->DeleteAll();
+        }
         CreateOtherPaths(NewPath, MaxPath[MaxPathIndex+1],Current, MaxPathIndex+1,OtherGraph,CurrentNode);
 
 
@@ -501,7 +536,7 @@ void AMazeManager::AddDoors(int Index) {
                 RoomDoor->SetActorScale3D(FVector(1.7f,3.f,0.75f));
                 RoomDoor->SetDoorDirection(true);
 
-                AddRoom(3,Door,RoomDoor,RoomCenter[Sides->To->RoomNumber],Sides->To);
+                AddRoom(FMath::RandRange(0,3),Door,RoomDoor,RoomCenter[Sides->To->RoomNumber],Sides->To);
 
                 /*PosRot= MaxPath[Index]->GetWallPosition(WallNumberRoom);
 				ADoor* RoomDoor = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position + FVector(0.f,0.f,Door->Distance),FRotator(0.f,90.f,0.f) + PosRot.Rotation);
@@ -600,6 +635,19 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
 
             CastedArena->PositionateRoom(RoomCell);
             CastedArena->GenerateRiddleDoors();
+
+    }
+
+}
+
+void AMazeManager::GenerateEnemies() {
+    
+    for(int i = 2; i < MaxPath.Num(); i += 4){
+
+        if(FMath::RandRange(0,1) == 0)
+            GetWorld()->SpawnActor<AAIBull>(BullEnemyClass,MaxPath[i]->GetActorLocation(), FRotator::ZeroRotator);
+        else
+            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[i]->GetActorLocation(), FRotator::ZeroRotator);
 
     }
 

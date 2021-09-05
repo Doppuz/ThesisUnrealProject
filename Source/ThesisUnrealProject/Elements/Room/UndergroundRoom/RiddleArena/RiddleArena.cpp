@@ -111,25 +111,34 @@ void ARiddleArena::GenerateRiddleDoors() {
     }       
 
     //Generate allies in the last cells of each other paths.
-/*    TArray<TArray<AMazeCell2*>> OtherPaths = MazeManager->OtherPaths;
+    TArray<Graph<TArray<AMazeCell2*>>> OtherPaths = MazeManager->OtherPaths;
     
-    for(TArray<AMazeCell2*> Cells : OtherPaths){
+    for(Graph<TArray<AMazeCell2*>> Grp : OtherPaths){
 
-        APawnInteractiveClass* NPC = GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass,Cells[Cells.Num() - 1]->GetActorLocation(),FRotator::ZeroRotator);
-        
-        if((*BlockedSpeech).Num() == 0){
+        TArray<TArray<AMazeCell2*>*> Leaves = Grp.GetLeaves();
 
-            (*BlockedSpeech) = (*OldBlockedSpeech);
-            OldBlockedSpeech->Empty();
+        for(TArray<AMazeCell2*>* Cells: Leaves){
+
+            if(!(*Cells)[Cells->Num() - 1]->bIsRoom){
+                APawnInteractiveClass* NPC = GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass,(*Cells)[Cells->Num() - 1]->GetActorLocation(),FRotator::ZeroRotator);
+                
+                if((*BlockedSpeech).Num() == 0){
+
+                    (*BlockedSpeech) = (*OldBlockedSpeech);
+                    OldBlockedSpeech->Empty();
+                
+                }
+
+                int SpeechNumber = FMath::RandRange(0,(*BlockedSpeech).Num() - 1);
+                
+                NPC->Speech = (*BlockedSpeech)[SpeechNumber];
+                (*OldBlockedSpeech).Add((*BlockedSpeech)[SpeechNumber]);
+                BlockedSpeech->RemoveAt(SpeechNumber);
+            }
         
         }
 
-        int SpeechNumber = FMath::RandRange(0,(*BlockedSpeech).Num() - 1);
-        
-        NPC->Speech = (*BlockedSpeech)[SpeechNumber];
-        (*OldBlockedSpeech).Add((*BlockedSpeech)[SpeechNumber]);
-        BlockedSpeech->RemoveAt(SpeechNumber);
-    }*/
+    }
 
 }
 

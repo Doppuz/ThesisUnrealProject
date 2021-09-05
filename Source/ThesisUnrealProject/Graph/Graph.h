@@ -13,7 +13,6 @@ class THESISUNREALPROJECT_API Graph{
 public:
 
 	void AddNode(F*);
-	void AddNode(F);
 
 	void AddSide(F*, F*, float);
 
@@ -24,7 +23,7 @@ public:
 	void DeleteSide(F*,F*);
 	void DeleteAll();
 
-	TArray<F*> GetLeaves(float RoomLimit);
+	TArray<F*> GetLeaves();
 	TArray<F*> GetLeavesNoSpace();
 	TArray<F*> GetNodesMaxDistance();
 
@@ -39,6 +38,8 @@ public:
 	void MoveCurrentNode(F* );
 
 	int GetGraphSize();
+
+	bool Contains(F*);
 
 protected:
 
@@ -55,15 +56,6 @@ private:
 
 template<class F>
 void Graph<F>::AddNode(F* N) {
-	if (!Map.Contains(N)) {
-		TArray<Side<F>*> List;
-		Map.Add(N, List);
-	}else
-		UE_LOG(LogTemp, Warning, TEXT("Node already present in the list"));
-}
-
-template<class F>
-void Graph<F>::AddNode(F N) {
 	if (!Map.Contains(N)) {
 		TArray<Side<F>*> List;
 		Map.Add(N, List);
@@ -137,19 +129,21 @@ void Graph<F>::DeleteAll() {
 
 }
 
-
+//Used when the graph is built as a Tree (Like in my case).
 template<class F>
-TArray<F*> Graph<F>::GetLeaves(float RoomLimit) {
+TArray<F*> Graph<F>::GetLeaves() {
 	TArray<F*> Leaves = GetNodes();
 	TArray<F*> Result;
 
 	if(Leaves.Num() > 1)
 		Leaves.RemoveAt(0);
+	else
+		return Leaves;
 
-	for (F* TmpSpace: Leaves) {
+	for (F* Node: Leaves) {
 
-		//if (Map[TmpSpace].Num() < 2 && TmpSpace->Size > RoomLimit)
-		//	Result.Add(TmpSpace);
+		if(GetSides(Node).Num() == 1)
+			Result.Add(Node);
 		
 	}
 	return Result;
@@ -239,6 +233,23 @@ void Graph<F>::MoveCurrentNode(F* NewNode) {
 template<class F>
 int Graph<F>::GetGraphSize() {
 	return Map.Num();	
+}
+
+template<class F>
+bool Graph<F>::Contains(F* Current) {
+	
+	if(Map.Contains(Current))
+		return true;
+
+	for(F* Node : GetNodes()){
+
+		if((*Node) == (*Current))
+			return true;
+
+	}
+
+	return false;
+
 }
 
 

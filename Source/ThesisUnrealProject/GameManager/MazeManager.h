@@ -19,6 +19,8 @@ class ADoor;
 class AGeneralRoomWithDoor;
 class ATrigger;
 class AStair;
+class AAIBull;
+class AAIShooterPawn;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -149,6 +151,13 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Populate")
 	TSubclassOf<ADoor> DoorClass;
 
+	UPROPERTY(EditAnywhere, Category = "Enemies")
+	TSubclassOf<AAIBull> BullEnemyClass;
+
+	UPROPERTY(EditAnywhere, Category = "Enemies")
+	TSubclassOf<AAIShooterPawn> ShooterEnemyClass;
+
+
 	//At the beginning empty, They will contain all the speech and quetion taken from a file.
 	TArray<TArray<FString>> Speech;
 	TArray<TArray<FString>> Questions;
@@ -172,6 +181,9 @@ private:
 
 	//Choose a room within a range to insert it in the level.
 	void AddRoom(int, ADoor*, ADoor*, FVector, AMazeCell2*);
+
+	//Generate the enemies in the level
+	void GenerateEnemies();
 
 
 #pragma endregion
