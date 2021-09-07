@@ -22,6 +22,7 @@
 #include "Components/SizeBox.h"
 #include "../UI/Elements/UIBox.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "../Elements/Stairs/Stair.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -50,8 +51,8 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 
 	CameraArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("ArmComponent"));
 	CameraArmComponent->SetupAttachment(RootComponent);
-	
-	CameraArmComponent->TargetArmLength = 500.f;
+	CameraArmComponent->TargetArmLength = 1500.f;
+	CameraArmComponent->SetWorldRotation(FRotator(-60.f,0.f,0.f));
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(CameraArmComponent);
@@ -69,7 +70,7 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	HealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Health Widget"));
 	HealthWidgetComponent->SetupAttachment(RootComponent);
 
-	MovementSpeed = 400.f;
+	MovementSpeed = 600.f;
 	RotationSpeed = 400.f;
 	JumpForce = 500.f;
 	bAmIJump = false;
@@ -83,6 +84,9 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	bStopMovement = false;
 	NumberOfRepetitions = 0;
 	bIsVisible = true;
+	bIAmDodging = false;
+	DodgingMovement = 2000.f;
+	DodgingTime = 0.05f;
 }
 
 
@@ -131,14 +135,8 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	}
 
 	if(CurrentHealth == 0){
-		if(GetController()->IsA(AQuadAIController::StaticClass())){
-			
-			//bIAmDestroyed = true;
-			//End.Broadcast(this);
-			Destroy();
-			
-		}else if(GetController()->IsA(APlayerController::StaticClass()))
-			UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+		/*if(GetController()->IsA(APlayerController::StaticClass()))
+			UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);*/
 	}
 		
 	return Damage;
@@ -181,7 +179,7 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 	//Add rotation
 	if(!CameraRotation.IsZero() && !bStopMovement){
 		float CurrentPitch = CameraArmComponent->GetComponentRotation().Pitch;
-		if((CurrentPitch + CameraRotation.Pitch) > InitialRotation.Pitch - 20 && (CurrentPitch + CameraRotation.Pitch) < InitialRotation.Pitch + 20)
+		if((CurrentPitch + CameraRotation.Pitch) > InitialRotation.Pitch && (CurrentPitch + CameraRotation.Pitch) < InitialRotation.Pitch + 30)
 			CameraArmComponent->AddLocalRotation(CameraRotation);
 	}
 
@@ -226,6 +224,7 @@ void ACharacterPawnQuad::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction("Speak",IE_Pressed,this, &ACharacterPawnQuad::Speak);
 	PlayerInputComponent->BindAction("Shoot",IE_Pressed,this, &ACharacterPawnQuad::Shoot);
 	PlayerInputComponent->BindAction("Rewind",IE_Pressed,this, &ACharacterPawnQuad::Rewind);
+	PlayerInputComponent->BindAction("Dodge",IE_Pressed,this, &ACharacterPawnQuad::Dodge);
 
 	PlayerInputComponent->BindAxis("MoveForward",this,&ACharacterPawnQuad::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight",this,&ACharacterPawnQuad::MoveRight);
@@ -344,9 +343,34 @@ void ACharacterPawnQuad::Rewind() {
 
 }
 
+void ACharacterPawnQuad::Dodge() {
+	
+	if(!bIAmDodging){
+
+		bIAmDodging = true;
+		LastMovSpeed = MovementSpeed;
+		MovementSpeed = DodgingMovement;
+		GetWorld()->GetTimerManager().SetTimer(DodgeStopTimer,this, &ACharacterPawnQuad::EndDodging, DodgingTime, false);
+
+	}
+
+}
+
+void ACharacterPawnQuad::EndDodging() {
+	
+	if(MovementSpeed != LastMovSpeed){
+		
+		MovementSpeed = LastMovSpeed;
+		GetWorld()->GetTimerManager().SetTimer(DodgeStopTimer,this, &ACharacterPawnQuad::EndDodging, 1.f, false);
+
+	}else
+		bIAmDodging = false;
+
+
+}
+
 void ACharacterPawnQuad::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 
-	if(OtherComponent->ComponentTags.Contains("ResetJump"))
-		bAmIJump = false;
+	bAmIJump = false;
 
 }

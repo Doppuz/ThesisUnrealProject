@@ -7,7 +7,15 @@
 #include "../../Maze/Maze.h"
 #include "../../../Elements/GeneralElements/Door.h"
 #include "../../../Elements/Stairs/Stair.h"
+#include "../../Portal/Portal.h"
 
+
+AGeneralUndergroundRoom::AGeneralUndergroundRoom() {
+
+    SpawnPortalPosition = CreateDefaultSubobject<USceneComponent>(TEXT("SpawnPortalPosition"));
+    SpawnPortalPosition->SetupAttachment(RootComponent);
+    
+}
 
 void AGeneralUndergroundRoom::BeginPlay() {
     
@@ -22,75 +30,13 @@ void AGeneralUndergroundRoom::BeginPlay() {
     MazeManager->PopulateMaze = false;
     MazeManager->FinishSpawning(SpawnLocAndRotation);
 
-    MazeManager->MazeActor->WallInstances->RemoveInstance(0);
+    MazeManager->MazeActor->SetActorLocation(PortalPosition);
 
-}
+    StartPortal = GetWorld()->SpawnActor<APortal>(PortalClass, SpawnPortalPosition->GetComponentLocation(), SpawnPortalPosition->GetComponentRotation());
+    StartPortal->SetActorScale3D(FVector(2.5f,2.5f,1.f));
+    StartPortal->NewPosition = MazeManager->MazeGraph->GetNodes()[0]->GetActorLocation();
 
-void AGeneralUndergroundRoom::PositionateRoom(AMazeCell2* RoomCell) {
-    
-    FVector Location;
-    AStair* Stair;
-    FVector MazeLocation;
-    FVector DoorPos;
-
-    FVector StairsLocation = RoomDoor->GetActorLocation();
-    StairsLocation.Z = -100.f;
-
-    //If condition to rotate the stair and the room according to the door.
-    if(RoomDoor->GetActorLocation().X == RoomCell->GetActorLocation().X){
-            
-        //Check if the everything haa to be positionate on the right or left side.
-        if(RoomCell->GetActorLocation().Y > RoomDoor->GetActorLocation().Y){
-                    
-            Stair = GetWorld()->SpawnActor<AStair>(StairClass, StairsLocation,RoomDoor->GetActorRotation() + FRotator(0.f,90.f,0.f)); 
-            MazeLocation = FVector(RoomDoor->GetActorLocation().X,RoomDoor->GetActorLocation().Y + Stair->StepsDistance * Stair->StepsNumber + Stair->InitialOffset,
-                Stair->StepsHeightDistance * (Stair->StepsNumber - 1));
-            MazeManager->MazeActor->SetActorLocation(MazeLocation);
-            //Here SetMazeRotation is useless because it would be Fotator(0.f,0.f,0.f).
-            DoorPos = MazeLocation - FVector(0.f,Stair->InitialOffset,0.f);
-
-        }else{
-                    
-            Stair = GetWorld()->SpawnActor<AStair>(StairClass, StairsLocation,RoomDoor->GetActorRotation() - FRotator(0.f,90.f,0.f));  
-            MazeLocation = FVector(RoomDoor->GetActorLocation().X,RoomDoor->GetActorLocation().Y - Stair->StepsDistance * Stair->StepsNumber - Stair->InitialOffset,
-                Stair->StepsHeightDistance * (Stair->StepsNumber - 1));
-            MazeManager->MazeActor->SetActorLocation(MazeLocation);
-            MazeManager->MazeActor->SetActorRotation(FRotator(0.f,180.f,0.f));
-            //Change the position of the room door accroding to the new room.
-            DoorPos = MazeLocation + FVector(0.f,Stair->InitialOffset,0.f);
-
-        }
-                    
-    }else{
-
-
-        if(RoomCell->GetActorLocation().X > RoomDoor->GetActorLocation().X){
-                                    
-            Stair = GetWorld()->SpawnActor<AStair>(StairClass, StairsLocation,RoomDoor->GetActorRotation() - FRotator(0.f,90.f,0.f));  
-            MazeLocation = FVector(RoomDoor->GetActorLocation().X + Stair->StepsDistance * Stair->StepsNumber + Stair->InitialOffset,RoomDoor->GetActorLocation().Y,
-                Stair->StepsHeightDistance * (Stair->StepsNumber - 1));
-            MazeManager->MazeActor->SetActorLocation(MazeLocation);
-            MazeManager->MazeActor->SetActorRotation(FRotator(0.f,-90.f,0.f));
-                    
-            DoorPos = MazeLocation - FVector(Stair->InitialOffset,0.f,0.f);;
-              
-        }else{
-
-            Stair = GetWorld()->SpawnActor<AStair>(StairClass, StairsLocation,RoomDoor->GetActorRotation() + FRotator(0.f,90.f,0.f)); 
-            MazeLocation = FVector(RoomDoor->GetActorLocation().X - Stair->StepsDistance * Stair->StepsNumber - Stair->InitialOffset,RoomDoor->GetActorLocation().Y,
-                Stair->StepsHeightDistance * (Stair->StepsNumber - 1));
-            MazeManager->MazeActor->SetActorLocation(MazeLocation);
-            MazeManager->MazeActor->SetActorRotation(FRotator(0.f,90.f,0.f)); 
-            DoorPos = MazeLocation + FVector(Stair->InitialOffset,0.f,0.f);;
-
-        }
-    }
-
-    //Change the position of the door of the underground maze.
-    DoorPos.Z += 400.f;
-    RoomDoor->SetActorLocation(DoorPos);
-    RoomDoor->SetDoorDirection(true);
-    RoomDoor->Speed = 3.0f;
-    RoomDoor->SetActorScale3D(FVector(1.7f,3.f,0.75f));
+    EndPortal = GetWorld()->SpawnActor<APortal>(PortalClass, MazeManager->MaxPath[MazeManager->MaxPath.Num() - 1]->GetActorLocation(), FRotator::ZeroRotator);
+    EndPortal->NewPosition = StartPortal->GetActorLocation();
 
 }

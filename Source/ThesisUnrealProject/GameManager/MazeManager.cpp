@@ -28,7 +28,8 @@ AMazeManager::AMazeManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-    this->Distance = 770.f;
+    this->Distance = 770.f; //770
+    
 }
 
 AMazeManager::~AMazeManager() {
@@ -52,6 +53,11 @@ AMazeManager::~AMazeManager() {
 void AMazeManager::BeginPlay(){
     
 	Super::BeginPlay();
+
+    ArenaSpawnLocation.Add(FVector(0.f,0.f,20000.f));
+    ArenaSpawnLocation.Add(FVector(0.f,0.f,-40000.f));
+    ArenaSpawnLocation.Add(FVector(0.f,0.f,60000.f));
+    ArenaSpawnLocation.Add(FVector(0.f,0.f,-80000.f));
 
     LoadFromFile(Speech, "QuestionsSpeech");
     LoadFromFile(Questions, "Questions");
@@ -147,7 +153,7 @@ void AMazeManager::PrintMaze(TArray<AMazeCell2*> Nodes, FColor Color) {
         if(i != Nodes.Num() - 1)
 
             DrawDebugLine(GetWorld(),
-			FVector(Nodes[i]->GetActorLocation().X, Nodes[i]->GetActorLocation().Y, Nodes[i]->GetActorLocation().Z + 1100), //700
+			FVector(Nodes[i]->GetActorLocation().X, Nodes[i]->GetActorLocation().Y, Nodes[i]->GetActorLocation().Z + 1100), //1100
 			FVector(Nodes[i + 1]->GetActorLocation().X,Nodes[i + 1]->GetActorLocation().Y,Nodes[i + 1]->GetActorLocation().Z + 1100),
 			Color,
 			true,
@@ -171,7 +177,8 @@ void AMazeManager::InitializeMaze() {
             
             FVector Origin(i * (-Distance) + MazeActor->GetActorLocation().X, j * Distance +MazeActor->GetActorLocation().Y, 0.f); //1100 --- 1.5
 
-            AMazeCell2* CellActor = GetWorld()->SpawnActor<AMazeCell2>(CellClass,FVector(i * (-Distance), j * Distance, Depth),FRotator::ZeroRotator);
+            FVector MazeActorScale = MazeActor->GetActorScale3D();
+            AMazeCell2* CellActor = GetWorld()->SpawnActor<AMazeCell2>(CellClass,FVector(MazeActorScale.X * i * (-Distance),MazeActorScale.Y * j * Distance, Depth),FRotator::ZeroRotator);
             //CellActor->SetFolderPath(TEXT("MazePieces"));
             
             FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
@@ -536,7 +543,7 @@ void AMazeManager::AddDoors(int Index) {
                 RoomDoor->SetActorScale3D(FVector(1.7f,3.f,0.75f));
                 RoomDoor->SetDoorDirection(true);
 
-                AddRoom(FMath::RandRange(0,3),Door,RoomDoor,RoomCenter[Sides->To->RoomNumber],Sides->To);
+                AddRoom(2,Door,RoomDoor,RoomCenter[Sides->To->RoomNumber],Sides->To); //FMath::RandRange(0,3)
 
                 /*PosRot= MaxPath[Index]->GetWallPosition(WallNumberRoom);
 				ADoor* RoomDoor = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position + FVector(0.f,0.f,Door->Distance),FRotator(0.f,90.f,0.f) + PosRot.Rotation);
@@ -580,8 +587,12 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
     ATrigger* Trigger;
     FVector MazeLocation;
     FVector DoorPos;
-    FTransform ArenaLocAndRotation;
+    int ExtrNum;
     
+    FTransform ArenaLocAndRotation;
+    ArenaLocAndRotation.SetLocation(Pos);
+    ArenaLocAndRotation.SetRotation(FRotator::ZeroRotator.Quaternion()); 
+
     switch(Index){
 
         case 0:
@@ -600,7 +611,6 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
         case 1:
         
             Arena = GetWorld()->SpawnActor<ARumbleArenaDoorNpc>(RumbleArenaClass,Pos,FRotator::ZeroRotator);
-            Arena->Door = Door;
             Cast<ARumbleArenaDoorNpc>(Arena)->RoomDoor = RoomDoor;
 
             break;
@@ -609,13 +619,10 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
 
             Arena = GetWorld()->SpawnActorDeferred<AMazeArena>(MazeArenaClass, ArenaLocAndRotation);
             Arena->Door = Door;
-            Cast<AMazeArena>(Arena)->RoomDoor = RoomDoor;
+            ExtrNum = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
+            Cast<AMazeArena>(Arena)->PortalPosition = ArenaSpawnLocation[ExtrNum];
+            ArenaSpawnLocation.RemoveAt(ExtrNum);
             Arena->FinishSpawning(ArenaLocAndRotation);
-
-            Cast<AMazeArena>(Arena)->PositionateRoom(RoomCell);
-
-            //Spawn Night Trigger.
-            Cast<AMazeArena>(Arena)->CreateNightTrigger();
 
             break;
 
@@ -624,18 +631,21 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
             Arena = GetWorld()->SpawnActorDeferred<ARiddleArena>(RiddleArenaClass, ArenaLocAndRotation);
             ARiddleArena* CastedArena = Cast<ARiddleArena>(Arena);
             CastedArena->Door = Door;
-            CastedArena->RoomDoor = RoomDoor;
             CastedArena->Questions = &Questions;
             CastedArena->OldQuestions = &OldQuestions;
             CastedArena->Speech = &Speech;
             CastedArena->OldSpeech = &OldSpeech;
             CastedArena->BlockedSpeech = &BlockedSpeech;
             CastedArena->OldBlockedSpeech = &OldBlockedSpeech;
+            
+            ExtrNum = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
+            CastedArena->PortalPosition = ArenaSpawnLocation[ExtrNum];
+            ArenaSpawnLocation.RemoveAt(ExtrNum);
+
             Arena->FinishSpawning(ArenaLocAndRotation);
 
-            CastedArena->PositionateRoom(RoomCell);
             CastedArena->GenerateRiddleDoors();
-
+            break;
     }
 
 }

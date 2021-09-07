@@ -10,6 +10,7 @@ class AMazeManager;
 class AMazeCell2;
 class ADoor;
 class AStair;
+class APortal;
 
 UCLASS(Abstract)
 class THESISUNREALPROJECT_API AGeneralUndergroundRoom : public AGeneralRoomWithDoor{
@@ -18,19 +19,23 @@ class THESISUNREALPROJECT_API AGeneralUndergroundRoom : public AGeneralRoomWithD
 
 public:
 
+	AGeneralUndergroundRoom();
+	
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* SpawnPortalPosition;
+
 	//Maze to be spawned
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AMazeManager> MazeManagerClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<AStair> StairClass;
+	TSubclassOf<APortal> PortalClass;
 
-
-	ADoor* RoomDoor;
+	APortal* StartPortal;
+	APortal* EndPortal;
 	AMazeManager* MazeManager;
 
-	//RoomCell : First cell inside the room.
-	void PositionateRoom(AMazeCell2* RoomCell);
+	FVector PortalPosition;
 
 protected:
 

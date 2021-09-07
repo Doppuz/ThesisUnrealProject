@@ -142,7 +142,7 @@ private:
 	//InteractiveActor
 	APawnInteractiveClass* InteractiveActor;
 
-	//method to speak with an NPC when I am cole enought to its.
+	//method to speak with an NPC when I am close enought to its.
 	void Speak();
 
 	//methos to respawn the player to the last checkpoint.
@@ -167,4 +167,27 @@ private:
 
 	//Timer for the above method
 	FTimerHandle InvisibleTimer;
+
+//Dodge section
+
+	void Dodge();
+
+	//Timer to stop the dodge
+	FTimerHandle DodgeStopTimer;
+
+	//To avoid to dodge forever
+	bool bIAmDodging;
+
+	//
+	void EndDodging();
+
+	//Mov speed before dodging
+	float LastMovSpeed;
+
+	UPROPERTY(EditAnywhere, Category = "Dodge")
+	float DodgingMovement;
+	
+	UPROPERTY(EditAnywhere, Category = "Dodge")
+	float DodgingTime;
+
 };

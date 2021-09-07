@@ -15,14 +15,9 @@
 #include "../../../../Elements/GeneralElements/Door.h"
 #include "../../../../Elements/Stairs/Stair.h"
 #include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "../../../../GameManager/MazeCell2.h"
-
-AMazeArena::AMazeArena() {
-    
-    Collider->SetCollisionProfileName("NoCollision");
-
-}
-
+#include "../../../Portal/Portal.h"
 
 void AMazeArena::BeginPlay() {
 
@@ -52,31 +47,7 @@ void AMazeArena::OpenDoor() {
     MyPawn->SpotLight->Intensity = 0.f;	
 	UGameplayStatics::LoadStreamLevel(this, TEXT("Day"), true, true, LatentInfo);
 
-    RoomDoor->SetDoorDirection(false);
-
-}
-
-void AMazeArena::CreateNightTrigger() {
-
-    FTransform SpawnLocAndRotation;
-
-    //Spawn night trigger in the seconds cells of the new maze.
-    for(Side<AMazeCell2>* S: MazeManager->MazeGraph->GetSides(MazeManager->MazeGraph->GetNodes()[0])){
-                
-        SpawnLocAndRotation.SetRotation(RoomDoor->GetActorRotation().Quaternion());
-        SpawnLocAndRotation.SetLocation(S->To->GetActorLocation());
-        ATriggerSpawnNight* Trigger = GetWorld()->SpawnActorDeferred<ATriggerSpawnNight>(TriggerNightClass,SpawnLocAndRotation);
-        Trigger->SetActorScale3D(FVector(15.f,1.2f,1.f));
-        Trigger->AttenuationRadius = 2500.f;
-        Trigger->FinishSpawning(SpawnLocAndRotation);
-        Trigger->Trigger->OnComponentBeginOverlap.AddDynamic(this,&AMazeArena::OnOverlap);
-
-        Triggers.Add(Trigger);
-
-    }
-    
-    //Needed because its rotatation can change while moving the room
-    Button->SetActorRotation(FRotator(0.f,0.f,0.f));
+    StartPortal->Collider->OnComponentBeginOverlap.AddDynamic(this,&AMazeArena::OnOverlapPortal);
 
 }
 
@@ -87,11 +58,21 @@ void AMazeArena::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAct
 		
 		if(MyPawn->GetController()->IsA(APlayerController::StaticClass())){
 
-            RoomDoor->bOpenDoor = true;
             for(ATriggerSpawnNight* Trigger: Triggers)
                 Trigger->Destroy();
 
 		}
 	}
 
+}
+
+void AMazeArena::OnOverlapPortal(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
+
+	if(OtherActor->IsA(APawn::StaticClass()) && Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass())){
+        
+        TArray<ULevelStreaming *> Livelli = GetWorld()->GetStreamingLevels();
+        int a = 0;
+
+    }
+    
 }

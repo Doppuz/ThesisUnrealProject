@@ -5,7 +5,9 @@
 #include "Components/BoxComponent.h"
 #include "../GeneralElements/Door.h"
 
-AGeneralRoomWithDoor::AGeneralRoomWithDoor() {
+AGeneralRoomWithDoor::AGeneralRoomWithDoor() {	
+    
+    PrimaryActorTick.bCanEverTick = false;
 
     Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;

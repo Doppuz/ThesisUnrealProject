@@ -157,6 +157,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enemies")
 	TSubclassOf<AAIShooterPawn> ShooterEnemyClass;
 
+	//Arena spawn positions.
+	TArray<FVector> ArenaSpawnLocation;
 
 	//At the beginning empty, They will contain all the speech and quetion taken from a file.
 	TArray<TArray<FString>> Speech;

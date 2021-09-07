@@ -11,6 +11,7 @@ class APuzzleButton;
 class ATriggerSpawnNight;
 class AStair;
 class AMazeCell2;
+class APortal;
 
 /**
  * 
@@ -21,8 +22,6 @@ class THESISUNREALPROJECT_API AMazeArena : public AGeneralUndergroundRoom{
 	GENERATED_BODY()
 
 public:
-
-	AMazeArena();
 
 	//Class for puzzle button spawn.
 	UPROPERTY(EditAnywhere, Category = "Elements")
@@ -36,11 +35,12 @@ public:
 
 	virtual void OpenDoor() override;
 
-	void CreateNightTrigger();
-	
 	UFUNCTION()
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
-	
+
+	UFUNCTION()
+	void OnOverlapPortal(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
+
 protected:
 
 	// Called when the game starts or when spawned
