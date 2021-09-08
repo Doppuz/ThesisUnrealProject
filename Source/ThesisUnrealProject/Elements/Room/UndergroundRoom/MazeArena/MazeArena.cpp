@@ -17,7 +17,9 @@
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "../../../../GameManager/MazeCell2.h"
-#include "../../../Portal/Portal.h"
+#include "../../../Portal/Portal.h"	
+#include "Engine/LevelStreaming.h"
+#include "../../../../GameModeAbstract.h"
 
 void AMazeArena::BeginPlay() {
 
@@ -34,6 +36,7 @@ void AMazeArena::BeginPlay() {
     FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
     Button->AttachToActor(MazeManager->MazeActor,TransformRules);
 
+    StartPortal->Collider->OnComponentBeginOverlap.AddDynamic(this,&AMazeArena::OnOverlapPortal);
     
 }
 
@@ -47,7 +50,8 @@ void AMazeArena::OpenDoor() {
     MyPawn->SpotLight->Intensity = 0.f;	
 	UGameplayStatics::LoadStreamLevel(this, TEXT("Day"), true, true, LatentInfo);
 
-    StartPortal->Collider->OnComponentBeginOverlap.AddDynamic(this,&AMazeArena::OnOverlapPortal);
+    EndPortal = GetWorld()->SpawnActor<APortal>(PortalClass, MazeManager->MaxPath[MazeManager->MaxPath.Num() - 2]->GetActorLocation(), FRotator::ZeroRotator);
+    EndPortal->NewPosition = StartPortal->GetActorLocation() + FVector(0.f,0.f,50.f);
 
 }
 
@@ -70,8 +74,12 @@ void AMazeArena::OnOverlapPortal(UPrimitiveComponent * HitComponent, AActor * Ot
 
 	if(OtherActor->IsA(APawn::StaticClass()) && Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass())){
         
-        TArray<ULevelStreaming *> Livelli = GetWorld()->GetStreamingLevels();
-        int a = 0;
+        FLatentActionInfo LatentInfo;
+        ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+
+        UGameplayStatics::UnloadStreamLevel(this, TEXT("Day"), LatentInfo, true);
+		MyPawn->SpotLight->Intensity = 100000.f;
+		MyPawn->SpotLight->AttenuationRadius = 3500.f;
 
     }
     

@@ -11,12 +11,11 @@
 #include "Misc/FileHelper.h"
 #include "Kismet/KismetArrayLibrary.h"
 #include "Components/BoxComponent.h"
+#include "../../../Portal/Portal.h"	
 
 void ARiddleArena::BeginPlay() {
     
     Super::BeginPlay();
-
-    Collider->SetCollisionProfileName("NoCollision");
 
 }
 
@@ -103,9 +102,9 @@ void ARiddleArena::GenerateRiddleDoors() {
 
         if(i == MaxPath.Num() - 1){
         
-            APawnInteractiveClass* NPC = GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass,MaxPath[i]->GetActorLocation(),FRotator::ZeroRotator);
-            NPC->Speech = TArray<FString>{"It is amazing!","You have reached the end of the Room","Now the door should be opened and you can continue your journey!", "Bye!"};
-        
+            EndPortal = GetWorld()->SpawnActor<APortal>(PortalClass,MaxPath[i]->GetActorLocation(),FRotator::ZeroRotator);
+            EndPortal->NewPosition = StartPortal->GetActorLocation();
+
         }
 
     }       

@@ -4,20 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Services/BTService_BlackboardBase.h"
-#include "BTService_SetFocus.generated.h"
+#include "BTService_Timer.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THESISUNREALPROJECT_API UBTService_SetFocus : public UBTService_BlackboardBase
-{
-	GENERATED_BODY()
+class THESISUNREALPROJECT_API UBTService_Timer : public UBTService_BlackboardBase{
 
+	GENERATED_BODY()
+	
 public:
-	UBTService_SetFocus();
+
+	UBTService_Timer();
 
 protected:
+
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 };

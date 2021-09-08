@@ -51,8 +51,8 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 
 	CameraArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("ArmComponent"));
 	CameraArmComponent->SetupAttachment(RootComponent);
-	CameraArmComponent->TargetArmLength = 1500.f;
-	CameraArmComponent->SetWorldRotation(FRotator(-60.f,0.f,0.f));
+	CameraArmComponent->TargetArmLength = 500.f; //500
+	//CameraArmComponent->SetWorldRotation(FRotator(-60.f,0.f,0.f));
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(CameraArmComponent);
@@ -179,7 +179,7 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 	//Add rotation
 	if(!CameraRotation.IsZero() && !bStopMovement){
 		float CurrentPitch = CameraArmComponent->GetComponentRotation().Pitch;
-		if((CurrentPitch + CameraRotation.Pitch) > InitialRotation.Pitch && (CurrentPitch + CameraRotation.Pitch) < InitialRotation.Pitch + 30)
+		if((CurrentPitch + CameraRotation.Pitch) > InitialRotation.Pitch -20 && (CurrentPitch + CameraRotation.Pitch) < InitialRotation.Pitch + 20) //20, +20
 			CameraArmComponent->AddLocalRotation(CameraRotation);
 	}
 

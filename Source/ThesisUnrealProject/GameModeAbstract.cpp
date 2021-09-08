@@ -40,6 +40,8 @@ void AGameModeAbstract::BeginPlay() {
     
     Super::BeginPlay();
 
+    LoadedLevels.Add("Day");
+
     ChangeMenuWidget(StartingWidgetClass);
 
 }

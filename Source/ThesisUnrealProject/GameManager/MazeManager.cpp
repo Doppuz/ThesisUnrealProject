@@ -21,6 +21,7 @@
 #include "../Elements/Stairs/Stair.h"
 #include "../Character/EnemyAI/AIBull.h"
 #include "../Character/EnemyAI/AIShooterPawn.h"
+#include "../Character/EnemyAI/PatrolAIPawn.h"
 
 // Sets default values
 AMazeManager::AMazeManager()
@@ -54,10 +55,10 @@ void AMazeManager::BeginPlay(){
     
 	Super::BeginPlay();
 
-    ArenaSpawnLocation.Add(FVector(0.f,0.f,20000.f));
-    ArenaSpawnLocation.Add(FVector(0.f,0.f,-40000.f));
-    ArenaSpawnLocation.Add(FVector(0.f,0.f,60000.f));
-    ArenaSpawnLocation.Add(FVector(0.f,0.f,-80000.f));
+    ArenaSpawnLocation.Add(FVector(100000.f,100000.f,0.f));
+    ArenaSpawnLocation.Add(FVector(-100000.f,100000.f,0.f));
+    ArenaSpawnLocation.Add(FVector(100000.f,-100000.f,0.f));
+    ArenaSpawnLocation.Add(FVector(-100000.f,-100000.f,0.f));
 
     LoadFromFile(Speech, "QuestionsSpeech");
     LoadFromFile(Questions, "Questions");
@@ -538,12 +539,12 @@ void AMazeManager::AddDoors(int Index) {
                     Rot = FRotator(0.f,0.f,0.f);
 
                 Pos =  (Sides->To->GetActorLocation() + MaxPath[Index]->GetActorLocation()) / 2.f;
-                Pos.Z = 600.f;
+                Pos.Z = 500.f;
                 ADoor* RoomDoor = GetWorld()->SpawnActor<ADoor>(DoorClass,Pos,Rot);
                 RoomDoor->SetActorScale3D(FVector(1.7f,3.f,0.75f));
                 RoomDoor->SetDoorDirection(true);
 
-                AddRoom(2,Door,RoomDoor,RoomCenter[Sides->To->RoomNumber],Sides->To); //FMath::RandRange(0,3)
+                AddRoom(FMath::RandRange(0,3),Door,RoomDoor,RoomCenter[Sides->To->RoomNumber],Sides->To); //FMath::RandRange(0,3)
 
                 /*PosRot= MaxPath[Index]->GetWallPosition(WallNumberRoom);
 				ADoor* RoomDoor = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position + FVector(0.f,0.f,Door->Distance),FRotator(0.f,90.f,0.f) + PosRot.Rotation);
@@ -611,6 +612,7 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
         case 1:
         
             Arena = GetWorld()->SpawnActor<ARumbleArenaDoorNpc>(RumbleArenaClass,Pos,FRotator::ZeroRotator);
+            Arena->Door = Door;
             Cast<ARumbleArenaDoorNpc>(Arena)->RoomDoor = RoomDoor;
 
             break;
@@ -652,12 +654,18 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
 
 void AMazeManager::GenerateEnemies() {
     
-    for(int i = 2; i < MaxPath.Num(); i += 4){
+    for(int i = 2; i < MaxPath.Num() - 2; i += 4){ //MaxPath.Num() - 2
 
-        if(FMath::RandRange(0,1) == 0)
+        /*if(FMath::RandRange(0,1) == 0)
             GetWorld()->SpawnActor<AAIBull>(BullEnemyClass,MaxPath[i]->GetActorLocation(), FRotator::ZeroRotator);
         else
-            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[i]->GetActorLocation(), FRotator::ZeroRotator);
+            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[i]->GetActorLocation(), FRotator::ZeroRotator);*/
+        
+        IInterfaceMovableAI* Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyClass,MaxPath[i - 1]->GetActorLocation(), FRotator::ZeroRotator);
+        Enemy->Positions.Add(MaxPath[i - 1]->GetActorLocation());
+        Enemy->Positions.Add(MaxPath[i]->GetActorLocation());
+        Enemy->Positions.Add(MaxPath[i + 1]->GetActorLocation());
+        Enemy->SetInitialValue(MaxPath[i]->GetActorLocation(),1,true);
 
     }
 

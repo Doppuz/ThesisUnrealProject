@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "../Graph/Graph.h"
 #include "GameFramework/Actor.h"
+#include "../Character/InterfaceMovableAI.h"
 #include "MazeManager.generated.h"
 
 class AMazeCell2;
@@ -21,6 +22,7 @@ class ATrigger;
 class AStair;
 class AAIBull;
 class AAIShooterPawn;
+class APatrolAIPawn;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -156,6 +158,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Enemies")
 	TSubclassOf<AAIShooterPawn> ShooterEnemyClass;
+
+	UPROPERTY(EditAnywhere, Category = "Enemies", meta=( MustImplement= "InterfaceMovableAI" ))
+	TSubclassOf<APawn> PatrolEnemyClass;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;

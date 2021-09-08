@@ -33,10 +33,6 @@ void AGeneralUndergroundRoom::BeginPlay() {
     MazeManager->MazeActor->SetActorLocation(PortalPosition);
 
     StartPortal = GetWorld()->SpawnActor<APortal>(PortalClass, SpawnPortalPosition->GetComponentLocation(), SpawnPortalPosition->GetComponentRotation());
-    StartPortal->SetActorScale3D(FVector(2.5f,2.5f,1.f));
     StartPortal->NewPosition = MazeManager->MazeGraph->GetNodes()[0]->GetActorLocation();
-
-    EndPortal = GetWorld()->SpawnActor<APortal>(PortalClass, MazeManager->MaxPath[MazeManager->MaxPath.Num() - 1]->GetActorLocation(), FRotator::ZeroRotator);
-    EndPortal->NewPosition = StartPortal->GetActorLocation();
 
 }

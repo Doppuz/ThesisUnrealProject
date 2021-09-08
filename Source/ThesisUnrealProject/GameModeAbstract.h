@@ -37,6 +37,9 @@ public:
 
 	AdaptiveExperience* Update;
 
+	//Array that keeps all the level that have been loaded.
+	TArray<FString> LoadedLevels;
+
 protected:
 	
 	// Called when the game starts or when spawned
