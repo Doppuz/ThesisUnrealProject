@@ -11,6 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "PawnInteractiveClass.h"
+#include "../InterfaceMovableAI.h"
 
 #include "PawnInteractiveMove.generated.h"
 
@@ -18,7 +19,7 @@ class ASquaredProjectile;
 class UFloatingPawnMovement;
 
 UCLASS()
-class THESISUNREALPROJECT_API APawnInteractiveMove : public APawnInteractiveClass{
+class THESISUNREALPROJECT_API APawnInteractiveMove : public APawnInteractiveClass, public IInterfaceMovableAI{
 	GENERATED_BODY()
 
 public:
@@ -50,6 +51,8 @@ public:
 	//Time between 2 projectile
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
 	float ProjectileTimeout;
+
+	virtual void SetInitialValue(FVector Pos, int Contator, bool Direction) override;
 
 //---- General ---
 	void Choice(int) override;

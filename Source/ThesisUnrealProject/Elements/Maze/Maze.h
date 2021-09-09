@@ -24,6 +24,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* WallInstances;
 
+	UPROPERTY(VisibleAnywhere)
+	UInstancedStaticMeshComponent* ObstacleInstances;
+
 	void CreateFloor(FTransform);
 
 	void CreateWalls(FTransform);
@@ -32,11 +35,15 @@ public:
 	
 	void CreateVerticalWall(FTransform);
 
+	void CreateObstacle(FTransform);
+
+	float ObstacleSize;
+	float ObstacleHeight;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	float MeshLenght;
-
 
 };

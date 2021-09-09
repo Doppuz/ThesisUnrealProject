@@ -54,6 +54,16 @@ void APawnInteractiveMove::Tick(float DeltaTime){
 
 }
 
+void APawnInteractiveMove::SetInitialValue(FVector Pos, int Contator, bool Direction) {
+	
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector("NewPosition",Pos);
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector("StartLocation",Pos);
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsInt("Contator",Contator);
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool("Direction",Direction);
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool("NotEIsPressed",true);
+	
+}
+
 //Methods called after question onclick event.
 void APawnInteractiveMove::Choice(int Answer) {
 	

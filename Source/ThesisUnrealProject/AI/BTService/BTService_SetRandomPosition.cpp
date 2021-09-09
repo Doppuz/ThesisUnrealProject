@@ -25,7 +25,7 @@ void UBTService_SetRandomPosition::TickNode(UBehaviorTreeComponent& OwnerComp, u
 
     APawn* AIPawn = AIController->GetPawn();
 
-    float Distance = (PlayerPawn->GetActorLocation() - AIPawn->GetActorLocation()).Size();
+    float Distance = FMath::Abs((PlayerPawn->GetActorLocation() - AIPawn->GetActorLocation()).Size());
 
     if(!AIController->LineOfSightTo(PlayerPawn) || Distance > ShootRange){ //1000
         //AIController->ClearFocus(EAIFocusPriority::Gameplay);

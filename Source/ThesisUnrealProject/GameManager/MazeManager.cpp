@@ -661,14 +661,144 @@ void AMazeManager::GenerateEnemies() {
         else
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[i]->GetActorLocation(), FRotator::ZeroRotator);*/
         
-        IInterfaceMovableAI* Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyClass,MaxPath[i - 1]->GetActorLocation(), FRotator::ZeroRotator);
-        Enemy->Positions.Add(MaxPath[i - 1]->GetActorLocation());
-        Enemy->Positions.Add(MaxPath[i]->GetActorLocation());
-        Enemy->Positions.Add(MaxPath[i + 1]->GetActorLocation());
-        Enemy->SetInitialValue(MaxPath[i]->GetActorLocation(),1,true);
+        AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]);
+        
+    }
+
+}
+
+void AMazeManager::AddEnemy(int Index, AMazeCell2* Cell) {
+
+    IInterfaceMovableAI* Enemy;
+    int CellIndex;
+        FVector Offset;
+
+    switch (Index){
+
+    case 0:
+        GetWorld()->SpawnActor<AAIBull>(BullEnemyClass,Cell->GetActorLocation(), FRotator::ZeroRotator);
+        break;
+    
+    case 1:
+        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Cell->GetActorLocation(), FRotator::ZeroRotator);
+        break;
+    
+    case 2:
+        
+        CellIndex = MaxPath.IndexOfByKey(Cell);
+
+        SetOffsetVector(CellIndex,Offset);
+
+        Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyClass,Cell->GetActorLocation() + Offset, FRotator::ZeroRotator);
+        Enemy->Positions.Add(Cell->GetActorLocation() + Offset);
+        
+        SetOffsetVector(CellIndex + 1,Offset);
+        Enemy->Positions.Add(MaxPath[CellIndex + 1]->GetActorLocation() + Offset);
+
+        SetOffsetVector(CellIndex + 2,Offset);
+        Enemy->Positions.Add(MaxPath[CellIndex + 2]->GetActorLocation() + Offset);
+        
+        Enemy->SetInitialValue(Cell->GetActorLocation(),1,true);
+ 
+        SetOffsetVector(CellIndex,Offset);
+
+        Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyClass,Cell->GetActorLocation() - Offset, FRotator::ZeroRotator);
+        Enemy->Positions.Add(Cell->GetActorLocation() - Offset);
+
+        SetOffsetVector(CellIndex + 1,Offset);
+        Enemy->Positions.Add(MaxPath[CellIndex + 1]->GetActorLocation() - Offset);
+        
+        SetOffsetVector(CellIndex + 2,Offset);
+        Enemy->Positions.Add(MaxPath[CellIndex + 2]->GetActorLocation() - Offset);
+
+        Enemy->SetInitialValue(Cell->GetActorLocation(),1,true);
+
+        //TypeOfPatrolswalls(CellIndex);
+
+        break;
+
+    case 3:
+
+        Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(MoveAIClass,Cell->GetActorLocation(), FRotator::ZeroRotator);
+        Enemy->Positions.Add(Cell->GetActorLocation());
+        Enemy->Positions.Add(MaxPath[MaxPath.IndexOfByKey(Cell) + 1]->GetActorLocation());
+        Enemy->Positions.Add(MaxPath[MaxPath.IndexOfByKey(Cell) + 2]->GetActorLocation());
+        Enemy->SetInitialValue(Cell->GetActorLocation(),1,true);
+
+        break;
+    
+    }
+
+}
+
+
+#pragma region Obstacle
+
+void AMazeManager::SetOffsetVector(int Index, FVector& Offset) {
+        
+        if((MaxPath[Index]->GetActorLocation().X - MaxPath[Index + 1]->GetActorLocation().X) < 0.1f)
+            Offset = FVector(250.f,0.f,0.f);
+        else
+            Offset = FVector(0.f,250.f,0.f);
+
+}
+
+void AMazeManager::LineTracing(FHitResult& Hit,FVector StartPosition, FVector EndPosition) {
+
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	GetWorld()->LineTraceSingleByChannel(Hit,StartPosition,EndPosition,ECollisionChannel::ECC_GameTraceChannel10,CollisionParams);
+    
+}
+
+void AMazeManager::GeneratePatrolsWalls(FVector StartPos, FVector EndPos, FVector EndLineTracingPos) {
+    
+    FTransform Transform;
+    Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
+    
+    FHitResult Hit;
+
+    LineTracing(Hit,StartPos,EndLineTracingPos);
+    if(Hit.GetActor() !=nullptr){
+        Transform.SetLocation(EndPos);
+        MazeActor->CreateObstacle(Transform);
+    }
+
+}
+
+void AMazeManager::TypeOfPatrolswalls(int CellIndex) {
+    
+    for(int i = 0; i< 3; i++){
+
+        if((MaxPath[CellIndex + i]->GetActorLocation().X - MaxPath[CellIndex + i + 1]->GetActorLocation().X) < 0.1f){
+
+            GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
+                MaxPath[CellIndex + i]->GetActorLocation() + FVector(Distance/2 - MazeActor->ObstacleSize,0.f,MazeActor->ObstacleHeight),
+                MaxPath[CellIndex + i]->GetActorLocation() + FVector(Distance - MazeActor->ObstacleSize,0.f,MazeActor->ObstacleHeight));
+
+            GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
+                (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(Distance/2 - MazeActor->ObstacleSize,0.f,-MazeActor->ObstacleHeight),
+                (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(Distance - MazeActor->ObstacleSize,0.f,-MazeActor->ObstacleHeight));
+
+        }else{
+
+            GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
+                MaxPath[CellIndex + i]->GetActorLocation() + FVector(0.f,Distance/2 - MazeActor->ObstacleSize,MazeActor->ObstacleHeight),
+                MaxPath[CellIndex + i]->GetActorLocation() + FVector(0.f,Distance  - MazeActor->ObstacleSize,MazeActor->ObstacleHeight));
+                
+            GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
+                (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(0.f,Distance/2 - MazeActor->ObstacleSize,-MazeActor->ObstacleHeight),
+                (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(0.f,Distance - MazeActor->ObstacleSize,-MazeActor->ObstacleHeight));
+
+
+        }
 
     }
 
 }
+
+
+#pragma endregion
 
 #pragma endregion

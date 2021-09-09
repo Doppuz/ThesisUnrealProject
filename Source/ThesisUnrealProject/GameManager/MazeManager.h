@@ -162,6 +162,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enemies", meta=( MustImplement= "InterfaceMovableAI" ))
 	TSubclassOf<APawn> PatrolEnemyClass;
 
+	UPROPERTY(EditAnywhere, Category = "Enemies", meta=( MustImplement= "InterfaceMovableAI" ))
+	TSubclassOf<APawn> MoveAIClass;
+
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
 
@@ -192,6 +195,20 @@ private:
 	//Generate the enemies in the level
 	void GenerateEnemies();
 
+	//Add the enemy in the level
+	void AddEnemy(int Index, AMazeCell2* Cell);
+
+#pragma region Obstacle
+
+	void SetOffsetVector(int, FVector&);
+
+	void LineTracing(FHitResult&,FVector, FVector);
+
+	void GeneratePatrolsWalls(FVector, FVector, FVector);
+
+	void TypeOfPatrolswalls(int CellIndex);
+
+#pragma endregion
 
 #pragma endregion
 };

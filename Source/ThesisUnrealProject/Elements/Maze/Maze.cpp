@@ -21,7 +21,12 @@ AMaze::AMaze(){
     WallInstances->SetupAttachment(RootComponent);
 	WallInstances->SetRelativeLocation(FVector(-50.f,-450.f,280.f));
 
+	ObstacleInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("ObstacleInstances"));
+    ObstacleInstances->SetupAttachment(RootComponent);
+
 	MeshLenght = 768.f;
+	ObstacleSize = 100.f;
+	ObstacleHeight = 190.f;
 
 }
 
@@ -55,6 +60,12 @@ void AMaze::CreateVerticalWall(FTransform Transform) {
 	Transform.SetLocation(Vector);
 
 	WallInstances->AddInstance(Transform);
+
+}
+
+void AMaze::CreateObstacle(FTransform Transform) {
+	
+	int Index = ObstacleInstances->AddInstance(Transform);
 
 }
 
