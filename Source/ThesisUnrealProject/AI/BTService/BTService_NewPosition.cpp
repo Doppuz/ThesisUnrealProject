@@ -35,7 +35,8 @@ void UBTService_NewPosition::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
             else
                 OwnerComp.GetBlackboardComponent()->SetValueAsInt("Contator",OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator") - 1); 
 
-            OwnerComp.GetBlackboardComponent()->SetValueAsVector("NewPosition",AIPawn->Positions[OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator")] + FVector(0.f,0.f,-16.f)); //Just for beeing a little be smoother.
+            if(AIPawn->Positions.Num() > 0)
+                OwnerComp.GetBlackboardComponent()->SetValueAsVector("NewPosition",AIPawn->Positions[OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator")] + FVector(0.f,0.f,-16.f)); //Just for beeing a little be smoother.
 
         }
 

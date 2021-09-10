@@ -206,7 +206,7 @@ private:
 
 	void GeneratePatrolsWalls(FVector, FVector, FVector);
 
-	void TypeOfPatrolswalls(int CellIndex);
+	void TypeOfPatrolswalls(int CellIndex, int Index);
 
 #pragma endregion
 
