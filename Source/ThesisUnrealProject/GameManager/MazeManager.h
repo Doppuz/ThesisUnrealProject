@@ -165,6 +165,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enemies", meta=( MustImplement= "InterfaceMovableAI" ))
 	TSubclassOf<APawn> MoveAIClass;
 
+	UPROPERTY(EditAnywhere, Category = "Enemies", meta=( MustImplement= "InterfaceMovableAI" ))
+	TSubclassOf<APawn> MoveAIClass2;
+
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
 
@@ -206,9 +209,14 @@ private:
 
 	void GeneratePatrolsWalls(FVector, FVector, FVector);
 
-	void TypeOfPatrolswalls(int CellIndex, int Index);
+	void TypeOfPatrols(int CellIndex, int Index);
+
+	void TypeOfMoveAlly(int CellIndex, int Index);
+
+	void GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex);
 
 #pragma endregion
+
 
 #pragma endregion
 };

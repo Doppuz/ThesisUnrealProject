@@ -102,8 +102,8 @@ void ARiddleArena::GenerateRiddleDoors() {
 
         if(i == MaxPath.Num() - 1){
         
-            EndPortal = GetWorld()->SpawnActor<APortal>(PortalClass,MaxPath[i]->GetActorLocation(),FRotator::ZeroRotator);
-            EndPortal->NewPosition = StartPortal->GetActorLocation();
+            EndPortal = GetWorld()->SpawnActor<APortal>(PortalClass,MaxPath[i]->GetActorLocation() -  FVector(0.f,0.f,50.f),FRotator::ZeroRotator);
+            EndPortal->NewPosition = StartPortal->GetActorLocation() + FVector(0.f,0.f,50.f);
 
         }
 

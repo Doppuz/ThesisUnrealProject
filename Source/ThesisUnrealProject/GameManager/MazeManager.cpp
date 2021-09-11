@@ -546,28 +546,6 @@ void AMazeManager::AddDoors(int Index) {
 
                 AddRoom(FMath::RandRange(0,3),Door,RoomDoor,RoomCenter[Sides->To->RoomNumber],Sides->To); //FMath::RandRange(0,3)
 
-                /*PosRot= MaxPath[Index]->GetWallPosition(WallNumberRoom);
-				ADoor* RoomDoor = GetWorld()->SpawnActor<ADoor>(DoorClass,PosRot.Position + FVector(0.f,0.f,Door->Distance),FRotator(0.f,90.f,0.f) + PosRot.Rotation);
-                RoomDoor->SetActorScale3D(FVector(1.7f,1.f,0.75f));
-                RoomDoor->SetDoorDirection(true);
-
-                //Spawn the trigger
-                ATrigger* Trigger = GetWorld()->SpawnActor<ATrigger>(TriggerClass,PosRot.Position ,PosRot.Rotation); 
-		        Trigger->ChangeVisibility(true);
-                Trigger->SetActorScale3D(FVector(1.f,1.5f,2.f));*/
-
-                //Spawn of the room
-                /*FVector Pos = (*Rooms)[Sides->To->NumberRoom].Room[4]->GetActorLocation();
-                FRotator Rot = FRotator::ZeroRotator;
-                //ARumbleArenaDoorNpc* Arena = GetWorld()->SpawnActor<ARumbleArenaDoorNpc>(RumbleArenaClass,Pos,Rot);
-                AArenaEnemies* Arena = GetWorld()->SpawnActor<AArenaEnemies>(EnemiesArenaClass,Pos,Rot);
-                Arena->Door = Door;
-                //Arena->RoomDoor = RoomDoor;*/
-
-                /*const FTransform SpawnLocAndRotation;
-                AMazeArena* Arena = GetWorld()->SpawnActor<AMazeArena>(MazeArenaClass, SpawnLocAndRotation);
-                Arena->Door = Door;*/
-
 			}
 
 		}
@@ -661,7 +639,7 @@ void AMazeManager::GenerateEnemies() {
         else
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[i]->GetActorLocation(), FRotator::ZeroRotator);*/
         
-        AddEnemy(2, MaxPath[i - 1]); //FMath::RandRange(0,3)
+        AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
         
     }
 
@@ -669,8 +647,7 @@ void AMazeManager::GenerateEnemies() {
 
 void AMazeManager::AddEnemy(int Index, AMazeCell2* Cell) {
 
-    IInterfaceMovableAI* Enemy;
-    int CellIndex;
+    int CellIndex = MaxPath.IndexOfByKey(Cell);
 
     switch (Index){
 
@@ -679,23 +656,20 @@ void AMazeManager::AddEnemy(int Index, AMazeCell2* Cell) {
         break;
     
     case 1:
-        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Cell->GetActorLocation(), FRotator::ZeroRotator);
+        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Cell->GetActorLocation() , FRotator::ZeroRotator);
+        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
+        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
         break;
     
     case 2:
         
-        CellIndex = MaxPath.IndexOfByKey(Cell);
-        TypeOfPatrolswalls(FMath::RandRange(0,1),CellIndex);
+        TypeOfPatrols(FMath::RandRange(0,1),CellIndex);
 
         break;
 
     case 3:
 
-        Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(MoveAIClass,Cell->GetActorLocation(), FRotator::ZeroRotator);
-        Enemy->Positions.Add(Cell->GetActorLocation());
-        Enemy->Positions.Add(MaxPath[MaxPath.IndexOfByKey(Cell) + 1]->GetActorLocation());
-        Enemy->Positions.Add(MaxPath[MaxPath.IndexOfByKey(Cell) + 2]->GetActorLocation());
-        Enemy->SetInitialValue(Cell->GetActorLocation(),1,true);
+        TypeOfMoveAlly(FMath::RandRange(0,1),CellIndex);
 
         break;
     
@@ -742,10 +716,9 @@ void AMazeManager::GeneratePatrolsWalls(FVector StartPos, FVector EndPos, FVecto
 
 }
 
-void AMazeManager::TypeOfPatrolswalls(int Index, int CellIndex) {
+void AMazeManager::TypeOfPatrols(int Index, int CellIndex) {
     
     IInterfaceMovableAI* Enemy;
-    IInterfaceMovableAI* SecondEnemy;
     FVector Offset;
     FVector LastOffset;
     FTransform Transform;
@@ -795,12 +768,59 @@ void AMazeManager::TypeOfPatrolswalls(int Index, int CellIndex) {
 
     case 1:
 
+        TypeOfMoveAlly(CellIndex,Index);
+    
+    default:
+        break;
+
+    }
+
+    
+
+}
+
+void AMazeManager::TypeOfMoveAlly(int Index, int CellIndex) {
+    
+    IInterfaceMovableAI* Enemy;
+
+    switch (Index){
+
+    case 0:
+        
+        Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(MoveAIClass2,MaxPath[CellIndex]->GetActorLocation(), FRotator::ZeroRotator);
+        Enemy->Positions.Add(MaxPath[CellIndex]->GetActorLocation());
+        Enemy->Positions.Add(MaxPath[MaxPath.IndexOfByKey(MaxPath[CellIndex]) + 1]->GetActorLocation());
+        Enemy->Positions.Add(MaxPath[MaxPath.IndexOfByKey(MaxPath[CellIndex]) + 2]->GetActorLocation());
+        Enemy->SetInitialValue(MaxPath[CellIndex]->GetActorLocation(),1,true);
+
+
+        break;
+
+    case 1:
+
+        GenerateSideActor(MoveAIClass,CellIndex);
+        
+        break;
+
+    }
+
+}
+
+//generate two actor in the sides of a cell and adds obstacles in the middle. (for 3 cells)
+void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex) {
+        
+        IInterfaceMovableAI* Enemy;
+        IInterfaceMovableAI* SecondEnemy;
+        FVector Offset;
+        FVector LastOffset;
+        FTransform Transform;
+
         //Generate an Offset based on the position of two cells.
         SetOffsetVector(CellIndex,Offset);
 
         //Generate two enemies.
-        Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyClass,MaxPath[CellIndex]->GetActorLocation() + Offset, FRotator::ZeroRotator);
-        SecondEnemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyClass,MaxPath[CellIndex]->GetActorLocation() - Offset, FRotator::ZeroRotator);
+        Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(AIClass,MaxPath[CellIndex]->GetActorLocation() + Offset, FRotator::ZeroRotator);
+        SecondEnemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(AIClass,MaxPath[CellIndex]->GetActorLocation() - Offset, FRotator::ZeroRotator);
 
         /*for the number of cells I consider (This case 3), I assign the new position to the patrol's array. The offset is used
         to arrange the position.*/
@@ -828,13 +848,6 @@ void AMazeManager::TypeOfPatrolswalls(int Index, int CellIndex) {
 
         Enemy->SetInitialValue(Cast<APawn>(Enemy)->GetActorLocation(),0,true);
         SecondEnemy->SetInitialValue(Cast<APawn>(SecondEnemy)->GetActorLocation(),0,true);
-    
-    default:
-        break;
-
-    }
-
-    
 
 }
 

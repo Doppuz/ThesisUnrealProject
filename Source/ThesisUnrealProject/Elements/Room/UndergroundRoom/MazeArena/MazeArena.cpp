@@ -51,7 +51,7 @@ void AMazeArena::OpenDoor() {
 	UGameplayStatics::LoadStreamLevel(this, TEXT("Day"), true, true, LatentInfo);
 
     EndPortal = GetWorld()->SpawnActor<APortal>(PortalClass, MazeManager->MaxPath[MazeManager->MaxPath.Num() - 2]->GetActorLocation(), FRotator::ZeroRotator);
-    EndPortal->NewPosition = StartPortal->GetActorLocation() + FVector(0.f,0.f,50.f);
+    EndPortal->NewPosition = StartPortal->GetActorLocation() + FVector(0.f,0.f,50.f)+ FVector(0.f,0.f,50.f);
 
 }
 
