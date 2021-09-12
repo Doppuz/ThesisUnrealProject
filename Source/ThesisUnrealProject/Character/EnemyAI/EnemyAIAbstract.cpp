@@ -10,6 +10,7 @@ AEnemyAIAbstract::AEnemyAIAbstract()
 	PrimaryActorTick.bCanEverTick = true;
 
 	bIAmDestroyed = false;
+	bSpawnCoin = false;
 
 }
 

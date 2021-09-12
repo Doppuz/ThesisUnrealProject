@@ -15,6 +15,7 @@
 #include "Components/ProgressBar.h"
 #include "../../GameModeTutorial.h"
 #include "../../UI/UIWidgetDialog.h"
+#include "../../Elements/GeneralElements/CoinController.h"
 
 // Sets default values
 AAIBull::AAIBull(){
@@ -70,9 +71,13 @@ float AAIBull::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);
 
 	if(CurrentHealth == 0){
+
 		bIAmDestroyed = true;
 		End.Broadcast(this);
 		Destroy();
+		if(bSpawnCoin)
+			GetWorld()->SpawnActor<ACoinController>(SpawnCoin, GetActorLocation(), FRotator::ZeroRotator);
+
 	}
 		
 	return DamageTaken;

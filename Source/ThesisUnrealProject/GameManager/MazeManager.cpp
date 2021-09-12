@@ -647,18 +647,21 @@ void AMazeManager::GenerateEnemies() {
 
 void AMazeManager::AddEnemy(int Index, AMazeCell2* Cell) {
 
+    FTransform Transform;
     int CellIndex = MaxPath.IndexOfByKey(Cell);
 
     switch (Index){
 
     case 0:
-        GetWorld()->SpawnActor<AAIBull>(BullEnemyClass,Cell->GetActorLocation(), FRotator::ZeroRotator);
+
+        TypeOfCoinEnemies(FMath::RandRange(0,1),CellIndex);
+        
         break;
     
     case 1:
-        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Cell->GetActorLocation() , FRotator::ZeroRotator);
-        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
-        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
+
+        TypeOfEnemies(FMath::RandRange(0,1),CellIndex);
+
         break;
     
     case 2:
@@ -736,28 +739,7 @@ void AMazeManager::TypeOfPatrols(int Index, int CellIndex) {
 
             Enemy->Positions.Add(MaxPath[CellIndex + i]->GetActorLocation());
 
-            if((MaxPath[CellIndex + i]->GetActorLocation().X - MaxPath[CellIndex + i + 1]->GetActorLocation().X) < 0.1f){
-
-                GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
-                    MaxPath[CellIndex + i]->GetActorLocation() + FVector(Distance/2 - MazeActor->ObstacleSize,0.f,MazeActor->ObstacleHeight),
-                    MaxPath[CellIndex + i]->GetActorLocation() + FVector(Distance - MazeActor->ObstacleSize,0.f,MazeActor->ObstacleHeight));
-
-                GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
-                    (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(Distance/2 - MazeActor->ObstacleSize,0.f,-MazeActor->ObstacleHeight) + FVector(0.f,MazeActor->ObstacleSize/2,0.f),
-                    (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(Distance - MazeActor->ObstacleSize,0.f,-MazeActor->ObstacleHeight) + FVector(0.f,MazeActor->ObstacleSize/2,0.f));
-
-            }else{
-
-                GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
-                    MaxPath[CellIndex + i]->GetActorLocation() + FVector(0.f,Distance/2 - MazeActor->ObstacleSize,MazeActor->ObstacleHeight),
-                    MaxPath[CellIndex + i]->GetActorLocation() + FVector(0.f,Distance  - MazeActor->ObstacleSize,MazeActor->ObstacleHeight));
-                    
-                GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
-                    (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(0.f,Distance/2 - MazeActor->ObstacleSize,-MazeActor->ObstacleHeight) + FVector(MazeActor->ObstacleSize/2,0.f,0.f),
-                    (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(0.f,Distance - MazeActor->ObstacleSize,-MazeActor->ObstacleHeight) + FVector(MazeActor->ObstacleSize/2,0.f,0.f));
-
-
-            }
+            GenerateSideWalls(CellIndex,i);
 
         }
         
@@ -792,7 +774,6 @@ void AMazeManager::TypeOfMoveAlly(int Index, int CellIndex) {
         Enemy->Positions.Add(MaxPath[MaxPath.IndexOfByKey(MaxPath[CellIndex]) + 1]->GetActorLocation());
         Enemy->Positions.Add(MaxPath[MaxPath.IndexOfByKey(MaxPath[CellIndex]) + 2]->GetActorLocation());
         Enemy->SetInitialValue(MaxPath[CellIndex]->GetActorLocation(),1,true);
-
 
         break;
 
@@ -848,6 +829,116 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex) 
 
         Enemy->SetInitialValue(Cast<APawn>(Enemy)->GetActorLocation(),0,true);
         SecondEnemy->SetInitialValue(Cast<APawn>(SecondEnemy)->GetActorLocation(),0,true);
+
+}
+
+void AMazeManager::GenerateSideWalls(int CellIndex, int i) {
+    
+    if((MaxPath[CellIndex + i]->GetActorLocation().X - MaxPath[CellIndex + i + 1]->GetActorLocation().X) < 0.1f){
+
+        GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
+            MaxPath[CellIndex + i]->GetActorLocation() + FVector(Distance/2 - MazeActor->ObstacleSize,0.f,MazeActor->ObstacleHeight),
+            MaxPath[CellIndex + i]->GetActorLocation() + FVector(Distance - MazeActor->ObstacleSize,0.f,MazeActor->ObstacleHeight));
+
+         GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
+            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(Distance/2 - MazeActor->ObstacleSize,0.f,-MazeActor->ObstacleHeight) + FVector(0.f,MazeActor->ObstacleSize/2,0.f),
+            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(Distance - MazeActor->ObstacleSize,0.f,-MazeActor->ObstacleHeight) + FVector(0.f,MazeActor->ObstacleSize/2,0.f));
+
+    }else{
+
+        GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
+            MaxPath[CellIndex + i]->GetActorLocation() + FVector(0.f,Distance/2 - MazeActor->ObstacleSize,MazeActor->ObstacleHeight),
+            MaxPath[CellIndex + i]->GetActorLocation() + FVector(0.f,Distance  - MazeActor->ObstacleSize,MazeActor->ObstacleHeight));
+                    
+        GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
+            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(0.f,Distance/2 - MazeActor->ObstacleSize,-MazeActor->ObstacleHeight) + FVector(MazeActor->ObstacleSize/2,0.f,0.f),
+            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(0.f,Distance - MazeActor->ObstacleSize,-MazeActor->ObstacleHeight) + FVector(MazeActor->ObstacleSize/2,0.f,0.f));
+
+
+    }
+
+}
+
+void AMazeManager::TypeOfEnemies(int Index, int CellIndex) {
+    
+    FVector Offset;
+    FVector Pos;
+
+    switch(Index){
+
+        case 0:
+
+            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex]->GetActorLocation() , FRotator::ZeroRotator);
+            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
+            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
+            GenerateSideWalls(CellIndex,0);
+            GenerateSideWalls(CellIndex,1);
+            GenerateSideWalls(CellIndex,2);
+
+            break;
+        
+        case 1:
+
+            SetOffsetVector(0,Offset);
+            Pos = (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation()) / 2;
+            GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset/2, FRotator::ZeroRotator);
+            GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos - Offset/2, FRotator::ZeroRotator);
+            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
+            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
+            GenerateSideWalls(CellIndex,0);
+            GenerateSideWalls(CellIndex,1);
+            GenerateSideWalls(CellIndex,2);
+
+            break;
+
+    }
+
+}
+
+void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex) {
+    
+    FVector Offset;
+    FVector Pos;
+    AEnemyAIAbstract* Enemy;
+
+    switch(Index){
+
+        case 0:
+
+            Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex]->GetActorLocation() , FRotator::ZeroRotator);
+            Enemy->bSpawnCoin = true;
+            Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
+            Enemy->bSpawnCoin = true;
+            Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
+            Enemy->bSpawnCoin = true;
+            
+            GenerateSideWalls(CellIndex,0);
+            GenerateSideWalls(CellIndex,1);
+            GenerateSideWalls(CellIndex,2);
+
+            break;
+        
+        case 1:
+
+            SetOffsetVector(0,Offset);
+            Pos = (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation()) / 2;
+            
+            Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset/2, FRotator::ZeroRotator);
+            Enemy->bSpawnCoin = true;
+            Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos - Offset/2, FRotator::ZeroRotator);
+            Enemy->bSpawnCoin = true;
+            Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
+            Enemy->bSpawnCoin = true;
+            Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
+            Enemy->bSpawnCoin = true;
+
+            GenerateSideWalls(CellIndex,0);
+            GenerateSideWalls(CellIndex,1);
+            GenerateSideWalls(CellIndex,2);
+
+            break;
+
+    }
 
 }
 

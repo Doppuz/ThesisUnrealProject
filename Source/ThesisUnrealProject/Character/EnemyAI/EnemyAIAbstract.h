@@ -8,6 +8,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEndDelegate,AEnemyAIAbstract*, Enemy);
 
+class ACoinController;
+
 UCLASS(Abstract)
 class THESISUNREALPROJECT_API AEnemyAIAbstract : public APawn
 {
@@ -36,6 +38,13 @@ public:
 
 	//Check if I am destroyed
 	bool bIAmDestroyed;
+
+	//Tick it if you want to spawn a coin after the death of the Enemy.
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	bool bSpawnCoin;
+
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	TSubclassOf<ACoinController> SpawnCoin;
 
 	// End delegate
 	FEndDelegate End;

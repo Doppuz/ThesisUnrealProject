@@ -215,6 +215,12 @@ private:
 
 	void GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex);
 
+	void GenerateSideWalls(int CellIndex, int i);
+
+	void TypeOfEnemies(int Index, int CellIndex);
+
+	void TypeOfCoinEnemies(int Index, int CellIndex);
+
 #pragma endregion
 
 
