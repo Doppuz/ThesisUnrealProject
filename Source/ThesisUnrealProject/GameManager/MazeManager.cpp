@@ -22,6 +22,7 @@
 #include "../Character/EnemyAI/AIBull.h"
 #include "../Character/EnemyAI/AIShooterPawn.h"
 #include "../Character/EnemyAI/PatrolAIPawn.h"
+#include "../Elements/GeneralElements/GeneralElem.h"
 
 // Sets default values
 AMazeManager::AMazeManager()
@@ -78,40 +79,10 @@ void AMazeManager::BeginPlay(){
 
         GenerateEnemies();
 
-        /*PrintMaze(MaxPath, FColor(0.f,0.f,100.f));
-
-        for(int i = 0; i < OtherPaths.Num(); i++){
-            for(TArray<AMazeCell2*>* Cell : OtherPaths[i].GetNodes())
-                PrintMaze((*Cell),FColor(0.f,100.f,0.f));
-
-        }
-        UE_LOG(LogTemp,Warning,TEXT("Others path: %i"), OtherPaths.Num());*/
+        GenerateOtherElements();
 
     }
 
-
-    //MapIncrement = 100.0/(MazeGraph->GetGraphSize() - 3.0 * MazeActorRoom);
-    
-    //Populate = new MazeGenerationPopulate(MazeGraph,ChestClass, CoinClass, CrateElementsClass, GetWorld());
-
-    /*PopulateActor = GetWorld()->SpawnActor<AMazePopulate>(PopulateClass,FVector::ZeroVector,FRotator::ZeroRotator);
-
-    if(PopulateActor != nullptr){
-    
-        PopulateActor->MazeGraph = MazeGraph;
-        //PopulateActor->Rooms = Generator->Rooms;
-
-        //Check for cells with 3 walls.
-        PopulateActor->DepthVisit(MazeGraph->GetCurrentNode());
-        //PopulateActor->AddDoors();
-        
-        //MazeGraph->SetVisitedToZero();
-        //Populate->DynamicDepthVisit((*Maze)[0][0],5);
-        //Populate->PopulateChest();
-
-        //MazeGraph->SetVisitedToZero();
-    
-    }*/
 }
 
 // Called every frame
@@ -632,16 +603,10 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
 
 void AMazeManager::GenerateEnemies() {
     
-    for(int i = 2; i < MaxPath.Num() - 2; i += 4){ //MaxPath.Num() - 2
+    for(int i = 2; i < MaxPath.Num() - 2; i += 3) //MaxPath.Num() - 2
 
-        /*if(FMath::RandRange(0,1) == 0)
-            GetWorld()->SpawnActor<AAIBull>(BullEnemyClass,MaxPath[i]->GetActorLocation(), FRotator::ZeroRotator);
-        else
-            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[i]->GetActorLocation(), FRotator::ZeroRotator);*/
-        
         AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
         
-    }
 
 }
 
@@ -681,16 +646,17 @@ void AMazeManager::AddEnemy(int Index, AMazeCell2* Cell) {
 }
 
 
-#pragma region Obstacle
 
-//Calculate the offset based on the position of the Cell (index).
-void AMazeManager::SetOffsetVector(int Index, FVector& Offset) {
+//Calculate the offset based on the position of the Cell (index) and return a direction of the 2 adjacent cells.
+bool AMazeManager::SetOffsetVector(int Index, FVector& Offset, float Value) {
         
-        if(FMath::Abs((MaxPath[Index]->GetActorLocation().X - MaxPath[Index + 1]->GetActorLocation().X)) < 0.1f)
-            Offset = FVector(220.f,0.f,0.f);
-        else
-            Offset = FVector(0.f,220.f,0.f);
-
+        if(FMath::Abs((MaxPath[Index]->GetActorLocation().X - MaxPath[Index + 1]->GetActorLocation().X)) < 0.1f){
+            Offset = FVector(Value,0.f,0.f);
+            return true;
+        }else{
+            Offset = FVector(0.f,Value,0.f);
+            return false;
+        }
 }
 
 //Normal ray tracing.
@@ -700,11 +666,11 @@ void AMazeManager::LineTracing(FHitResult& Hit,FVector StartPosition, FVector En
 	CollisionParams.AddIgnoredActor(this);
 
 	GetWorld()->LineTraceSingleByChannel(Hit,StartPosition,EndPosition,ECollisionChannel::ECC_GameTraceChannel10,CollisionParams);
-    
+
 }
 
 //It performs a ray tracing, If it doesn't find a wall, it doesn't create the obstacle.
-void AMazeManager::GeneratePatrolsWalls(FVector StartPos, FVector EndPos, FVector EndLineTracingPos) {
+void AMazeManager::GenerateDecorations(FVector StartPos, FVector EndPos, FVector EndLineTracingPos, bool Spawn,TSubclassOf<AGeneralElem> SpawnActor) {
     
     FTransform Transform;
     Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
@@ -712,9 +678,13 @@ void AMazeManager::GeneratePatrolsWalls(FVector StartPos, FVector EndPos, FVecto
     FHitResult Hit;
 
     LineTracing(Hit,StartPos,EndLineTracingPos);
-    if(Hit.GetActor() !=nullptr){
+    if(Hit.GetActor() != nullptr){
         Transform.SetLocation(EndPos);
-        MazeActor->CreateObstacle(Transform);
+        if(!Spawn)
+            MazeActor->CreateObstacle(Transform);
+        else
+            GetWorld()->SpawnActor<AGeneralElem>(SpawnActor,Transform);      
+        
     }
 
 }
@@ -739,7 +709,7 @@ void AMazeManager::TypeOfPatrols(int Index, int CellIndex) {
 
             Enemy->Positions.Add(MaxPath[CellIndex + i]->GetActorLocation());
 
-            GenerateSideWalls(CellIndex,i);
+            GenerateSideElements(CellIndex,i, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr);
 
         }
         
@@ -769,11 +739,10 @@ void AMazeManager::TypeOfMoveAlly(int Index, int CellIndex) {
 
     case 0:
         
-        Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(MoveAIClass2,MaxPath[CellIndex]->GetActorLocation(), FRotator::ZeroRotator);
-        Enemy->Positions.Add(MaxPath[CellIndex]->GetActorLocation());
-        Enemy->Positions.Add(MaxPath[MaxPath.IndexOfByKey(MaxPath[CellIndex]) + 1]->GetActorLocation());
-        Enemy->Positions.Add(MaxPath[MaxPath.IndexOfByKey(MaxPath[CellIndex]) + 2]->GetActorLocation());
-        Enemy->SetInitialValue(MaxPath[CellIndex]->GetActorLocation(),1,true);
+        for(int i = 0; i < 3; i++){
+            Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(MoveAIClass2,MaxPath[CellIndex + i]->GetActorLocation(), FRotator::ZeroRotator);
+            Enemy->SetInitialValue(MaxPath[CellIndex + i]->GetActorLocation(),1,true);
+        }
 
         break;
 
@@ -797,7 +766,7 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex) 
         FTransform Transform;
 
         //Generate an Offset based on the position of two cells.
-        SetOffsetVector(CellIndex,Offset);
+        SetOffsetVector(CellIndex,Offset,220.f);
 
         //Generate two enemies.
         Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(AIClass,MaxPath[CellIndex]->GetActorLocation() + Offset, FRotator::ZeroRotator);
@@ -808,7 +777,7 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex) 
         for(int i = 0; i < 3; i++){
             LastOffset = Offset;
 
-            SetOffsetVector(CellIndex + i,Offset);
+            SetOffsetVector(CellIndex + i,Offset,220.f);
             if(LastOffset != Offset){
 
                 Enemy->Positions.Add(MaxPath[CellIndex + i]->GetActorLocation() + Offset + LastOffset);
@@ -832,30 +801,32 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex) 
 
 }
 
-void AMazeManager::GenerateSideWalls(int CellIndex, int i) {
+//Generate walls one beside the middle ad one in the angle.
+void AMazeManager::GenerateSideElements(int CellIndex, int i, float HeightOffset, float SideOffset, float OffsetValue, bool Spawn,TSubclassOf<AGeneralElem> SpawnActor) {
     
-    if((MaxPath[CellIndex + i]->GetActorLocation().X - MaxPath[CellIndex + i + 1]->GetActorLocation().X) < 0.1f){
+    FVector Offset;
+    SetOffsetVector(CellIndex + i,Offset,OffsetValue);
 
-        GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
-            MaxPath[CellIndex + i]->GetActorLocation() + FVector(Distance/2 - MazeActor->ObstacleSize,0.f,MazeActor->ObstacleHeight),
-            MaxPath[CellIndex + i]->GetActorLocation() + FVector(Distance - MazeActor->ObstacleSize,0.f,MazeActor->ObstacleHeight));
+    GenerateDecorations(MaxPath[CellIndex + i]->GetActorLocation(),
+        MaxPath[CellIndex + i]->GetActorLocation() + Offset + FVector(0.f,0.f,HeightOffset),
+        MaxPath[CellIndex + i]->GetActorLocation() + 2 * Offset ,
+        Spawn,SpawnActor);
+    
+    bool Value = SetOffsetVector(CellIndex + i,Offset,OffsetValue);
 
-         GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
-            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(Distance/2 - MazeActor->ObstacleSize,0.f,-MazeActor->ObstacleHeight) + FVector(0.f,MazeActor->ObstacleSize/2,0.f),
-            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(Distance - MazeActor->ObstacleSize,0.f,-MazeActor->ObstacleHeight) + FVector(0.f,MazeActor->ObstacleSize/2,0.f));
+    if(Value)
 
-    }else{
+        GenerateDecorations(MaxPath[CellIndex + i]->GetActorLocation(),
+            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - Offset + FVector(0.f,SideOffset,HeightOffset),
+            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - 2 * Offset + FVector(0.f,SideOffset,HeightOffset),
+            Spawn,SpawnActor);
 
-        GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
-            MaxPath[CellIndex + i]->GetActorLocation() + FVector(0.f,Distance/2 - MazeActor->ObstacleSize,MazeActor->ObstacleHeight),
-            MaxPath[CellIndex + i]->GetActorLocation() + FVector(0.f,Distance  - MazeActor->ObstacleSize,MazeActor->ObstacleHeight));
-                    
-        GeneratePatrolsWalls(MaxPath[CellIndex + i]->GetActorLocation(),
-            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(0.f,Distance/2 - MazeActor->ObstacleSize,-MazeActor->ObstacleHeight) + FVector(MazeActor->ObstacleSize/2,0.f,0.f),
-            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - FVector(0.f,Distance - MazeActor->ObstacleSize,-MazeActor->ObstacleHeight) + FVector(MazeActor->ObstacleSize/2,0.f,0.f));
-
-
-    }
+    else
+        
+        GenerateDecorations(MaxPath[CellIndex + i]->GetActorLocation(),
+            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - Offset + FVector(SideOffset,0.f,HeightOffset) ,
+            (MaxPath[CellIndex + i]->GetActorLocation() + MaxPath[CellIndex + i + 1]->GetActorLocation())/2 - 2 * Offset + FVector(SideOffset,0.f,HeightOffset),
+            Spawn,SpawnActor);
 
 }
 
@@ -871,23 +842,23 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex) {
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex]->GetActorLocation() , FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
-            GenerateSideWalls(CellIndex,0);
-            GenerateSideWalls(CellIndex,1);
-            GenerateSideWalls(CellIndex,2);
+            GenerateSideElements(CellIndex,0, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr);
+            GenerateSideElements(CellIndex,1, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr);
+            GenerateSideElements(CellIndex,2, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr);
 
             break;
         
         case 1:
 
-            SetOffsetVector(0,Offset);
+            SetOffsetVector(CellIndex,Offset,220.f);
             Pos = (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation()) / 2;
             GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset/2, FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos - Offset/2, FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
-            GenerateSideWalls(CellIndex,0);
-            GenerateSideWalls(CellIndex,1);
-            GenerateSideWalls(CellIndex,2);
+            GenerateSideElements(CellIndex,0, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr);
+            GenerateSideElements(CellIndex,1, MazeActor->ObstacleHeight, -25.f, 320.f, false,  nullptr);
+            GenerateSideElements(CellIndex,2, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr);
 
             break;
 
@@ -911,38 +882,38 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex) {
             Enemy->bSpawnCoin = true;
             Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
-            
-            GenerateSideWalls(CellIndex,0);
-            GenerateSideWalls(CellIndex,1);
-            GenerateSideWalls(CellIndex,2);
 
             break;
         
         case 1:
-
-            SetOffsetVector(0,Offset);
-            Pos = (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation()) / 2;
             
-            Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset/2, FRotator::ZeroRotator);
+            SetOffsetVector(CellIndex,Offset,110.f);
+            Pos = (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation()) / 2 + Offset;
+            
+            Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset, FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
-            Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos - Offset/2, FRotator::ZeroRotator);
+            Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos - Offset, FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
             Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
             Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
 
-            GenerateSideWalls(CellIndex,0);
-            GenerateSideWalls(CellIndex,1);
-            GenerateSideWalls(CellIndex,2);
-
             break;
 
     }
 
+    //Create Crate Actors.
+    for(int i = 0; i < 3; i++)       
+        GenerateSideElements(CellIndex + i,0, -50.f, -40.f, 290.f, true,CrateClass);
+
+
 }
 
+void AMazeManager::GenerateOtherElements() {
 
-#pragma endregion
+
+    
+}
 
 #pragma endregion

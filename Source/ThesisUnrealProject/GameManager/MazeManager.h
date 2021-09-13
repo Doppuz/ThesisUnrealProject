@@ -23,6 +23,7 @@ class AStair;
 class AAIBull;
 class AAIShooterPawn;
 class APatrolAIPawn;
+class AGeneralElem;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -153,6 +154,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Populate")
 	TSubclassOf<ADoor> DoorClass;
 
+	UPROPERTY(EditAnywhere, Category = "Populate")
+	TSubclassOf<AGeneralElem> CrateClass;
+
 	UPROPERTY(EditAnywhere, Category = "Enemies")
 	TSubclassOf<AAIBull> BullEnemyClass;
 
@@ -167,6 +171,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Enemies", meta=( MustImplement= "InterfaceMovableAI" ))
 	TSubclassOf<APawn> MoveAIClass2;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<APawn> ShooterObstacle;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
@@ -201,27 +208,31 @@ private:
 	//Add the enemy in the level
 	void AddEnemy(int Index, AMazeCell2* Cell);
 
-#pragma region Obstacle
+// --- Wrapper methods for adding enemy ---
 
-	void SetOffsetVector(int, FVector&);
+	bool SetOffsetVector(int, FVector&, float Value);
 
 	void LineTracing(FHitResult&,FVector, FVector);
 
-	void GeneratePatrolsWalls(FVector, FVector, FVector);
-
-	void TypeOfPatrols(int CellIndex, int Index);
-
-	void TypeOfMoveAlly(int CellIndex, int Index);
+	void GenerateDecorations(FVector, FVector, FVector,bool,TSubclassOf<AGeneralElem>);
 
 	void GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex);
+	
+	void GenerateSideElements(int CellIndex, int i, float HeightOffset, float SideOffset, float OffsetValue, bool, TSubclassOf<AGeneralElem>);
 
-	void GenerateSideWalls(int CellIndex, int i);
+// --- Type Of Enemies ---
+
+	void TypeOfMoveAlly(int CellIndex, int Index);
+	
+	void TypeOfPatrols(int CellIndex, int Index);
 
 	void TypeOfEnemies(int Index, int CellIndex);
 
 	void TypeOfCoinEnemies(int Index, int CellIndex);
 
-#pragma endregion
+// --- Other Elements ---
+	
+	void GenerateOtherElements();
 
 
 #pragma endregion
