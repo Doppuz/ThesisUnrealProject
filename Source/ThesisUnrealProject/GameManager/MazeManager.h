@@ -24,6 +24,8 @@ class AAIBull;
 class AAIShooterPawn;
 class APatrolAIPawn;
 class AGeneralElem;
+class ADoorKiller;
+class ADoorRiddle;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -173,7 +175,10 @@ private:
 	TSubclassOf<APawn> MoveAIClass2;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<APawn> ShooterObstacle;
+	TSubclassOf<ADoorKiller> DoorKillerClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ADoorRiddle> DoorRiddleClass;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
@@ -201,6 +206,8 @@ private:
 
 	//Choose a room within a range to insert it in the level.
 	void AddRoom(int, ADoor*, ADoor*, FVector, AMazeCell2*);
+
+// --- Add enemies ---
 
 	//Generate the enemies in the level
 	void GenerateEnemies();
@@ -233,6 +240,11 @@ private:
 // --- Other Elements ---
 	
 	void GenerateOtherElements();
+
+	void AddOtherElement(int Index, AMazeCell2* Cell);
+
+	//Compare the position of the cells and return the right Rotation of the door.
+	FRotator GetDoorRotation(int CellIndex);
 
 
 #pragma endregion

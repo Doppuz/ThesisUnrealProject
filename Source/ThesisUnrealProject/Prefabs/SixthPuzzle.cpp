@@ -2,7 +2,7 @@
 
 
 #include "SixthPuzzle.h"
-#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/GeneralElements/Doors/Door.h"
 #include "Components/BoxComponent.h"
 #include "../Elements/Puzzle/PuzzleButton.h"
 #include "../Elements/Platforms/FallenPlatform.h"

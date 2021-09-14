@@ -2,7 +2,7 @@
 
 
 #include "RumbleArenaDoor.h"
-#include "../Elements/GeneralElements//Door.h"
+#include "../Elements/GeneralElements/Doors/Door.h"
 #include "../Elements/GeneralElements/CoinController.h"
 #include "../Elements/Room/RumbleArena/RumbleArena.h"
 #include "NPC1Door2.h"

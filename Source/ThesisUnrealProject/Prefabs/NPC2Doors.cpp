@@ -2,7 +2,7 @@
 
 
 #include "NPC2Doors.h"
-#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/GeneralElements/Doors/Door.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "Components/BoxComponent.h"

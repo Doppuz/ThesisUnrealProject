@@ -3,7 +3,7 @@
 
 #include "RiddleAndDoor.h"
 #include "../../../Character/AllyAI/RiddleNPC.h"
-#include "../../../Elements/GeneralElements/Door.h"
+#include "../../../Elements/GeneralElements/Doors/Door.h"
 
 // Sets default values
 ARiddleAndDoor::ARiddleAndDoor(){

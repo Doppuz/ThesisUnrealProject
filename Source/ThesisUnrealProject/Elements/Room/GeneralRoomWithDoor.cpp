@@ -3,7 +3,7 @@
 
 #include "GeneralRoomWithDoor.h"
 #include "Components/BoxComponent.h"
-#include "../GeneralElements/Door.h"
+#include "../GeneralElements/Doors/Door.h"
 
 AGeneralRoomWithDoor::AGeneralRoomWithDoor() {	
     

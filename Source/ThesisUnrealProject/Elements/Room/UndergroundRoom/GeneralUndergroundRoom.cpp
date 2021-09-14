@@ -5,7 +5,7 @@
 #include "../../../GameManager/MazeManager.h"
 #include "../../../GameManager/MazeCell2.h"
 #include "../../Maze/Maze.h"
-#include "../../../Elements/GeneralElements/Door.h"
+#include "../../../Elements/GeneralElements/Doors/Door.h"
 #include "../../../Elements/Stairs/Stair.h"
 #include "../../Portal/Portal.h"
 

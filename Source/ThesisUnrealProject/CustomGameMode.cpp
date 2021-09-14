@@ -9,9 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameManager/MazeCell.h"
 #include "GameManager/RoomMaze.h"
-#include "GameManager/MazeGenerationCreation.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameManager/MazePopulate.h"
 #include "UI/UIWidgetDialog.h"
 #include "UI/Elements/UIBox.h"
 

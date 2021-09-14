@@ -2,7 +2,7 @@
 
 
 #include "NPC1DoorRiddle.h"
-#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/GeneralElements/Doors/Door.h"
 #include "Components/BoxComponent.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"

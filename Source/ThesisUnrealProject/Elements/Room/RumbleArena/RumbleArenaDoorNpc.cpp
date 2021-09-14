@@ -3,7 +3,7 @@
 
 #include "RumbleArenaDoorNpc.h"
 #include "../../../Character/AllyAI/PawnInteractiveClass.h"
-#include "../../GeneralElements/Door.h"
+#include "../../GeneralElements/Doors/Door.h"
 
 void ARumbleArenaDoorNpc::Tick(float DeltaTime) {
     

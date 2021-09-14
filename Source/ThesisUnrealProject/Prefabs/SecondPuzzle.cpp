@@ -2,7 +2,7 @@
 
 
 #include "SecondPuzzle.h"
-#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/GeneralElements/Doors/Door.h"
 #include "../Character/EnemyAI/AIShooterPawn.h"
 #include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "../Character/AllyAI/PawnInteractiveMove.h"

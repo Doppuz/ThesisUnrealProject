@@ -2,7 +2,7 @@
 
 
 #include "PuzzleWith2Doors.h"
-#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/GeneralElements/Doors/Door.h"
 #include "../Elements/Puzzle/PuzzleButton.h"
 #include "../Elements/Destructible/DestructibleElements.h"
 #include "Components/BoxComponent.h"

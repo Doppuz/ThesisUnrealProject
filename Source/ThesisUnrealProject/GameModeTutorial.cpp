@@ -3,7 +3,7 @@
 
 #include "GameModeTutorial.h"
 #include "Elements/Puzzle/PuzzleButton.h"
-#include "Elements/GeneralElements/Door.h"
+#include "Elements/GeneralElements/Doors/Door.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/UIWidgetDialog.h"
 #include "UI/Elements/UIBox.h"

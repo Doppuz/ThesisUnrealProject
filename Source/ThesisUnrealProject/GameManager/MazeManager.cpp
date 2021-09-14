@@ -7,11 +7,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "MazeCell2.h"
 #include "RoomMaze.h"
-#include "MazeGenerationCreation2.h"
 #include "Kismet/GameplayStatics.h"
-#include "MazePopulate.h"
 #include "../Elements/Maze/Maze.h"
-#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/GeneralElements/Doors/Door.h"
+#include "../Elements/GeneralElements/Doors/DoorKiller.h"
+#include "../Elements/GeneralElements/Doors/DoorRiddle.h"
 #include "../Elements/Room/ArenaEnemies/ArenaEnemies.h"
 #include "../Elements/Room/RumbleArena/RumbleArenaDoorNpc.h"
 #include "../Elements/Room/UndergroundRoom/MazeArena/MazeArena.h"
@@ -25,8 +25,8 @@
 #include "../Elements/GeneralElements/GeneralElem.h"
 
 // Sets default values
-AMazeManager::AMazeManager()
-{
+AMazeManager::AMazeManager(){
+
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -77,7 +77,7 @@ void AMazeManager::BeginPlay(){
         
         AddDoors(0);
 
-        GenerateEnemies();
+        //GenerateEnemies();
 
         GenerateOtherElements();
 
@@ -840,7 +840,6 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex) {
         case 0:
 
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex]->GetActorLocation() , FRotator::ZeroRotator);
-            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
             GenerateSideElements(CellIndex,0, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr);
             GenerateSideElements(CellIndex,1, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr);
@@ -853,8 +852,6 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex) {
             SetOffsetVector(CellIndex,Offset,220.f);
             Pos = (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation()) / 2;
             GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset/2, FRotator::ZeroRotator);
-            GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos - Offset/2, FRotator::ZeroRotator);
-            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
             GenerateSideElements(CellIndex,0, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr);
             GenerateSideElements(CellIndex,1, MazeActor->ObstacleHeight, -25.f, 320.f, false,  nullptr);
@@ -878,8 +875,6 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex) {
 
             Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex]->GetActorLocation() , FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
-            Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
-            Enemy->bSpawnCoin = true;
             Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
 
@@ -891,10 +886,6 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex) {
             Pos = (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation()) / 2 + Offset;
             
             Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset, FRotator::ZeroRotator);
-            Enemy->bSpawnCoin = true;
-            Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos - Offset, FRotator::ZeroRotator);
-            Enemy->bSpawnCoin = true;
-            Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
             Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
@@ -912,8 +903,75 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex) {
 
 void AMazeManager::GenerateOtherElements() {
 
+     for(int i = 2; i < MaxPath.Num() - 2; i += 3) //MaxPath.Num() - 2
 
+        AddOtherElement(1,MaxPath[i]);
+        //AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
+        
     
+}
+
+void AMazeManager::AddOtherElement(int Index, AMazeCell2* Cell) {
+
+    int CellIndex = MaxPath.IndexOfByKey(Cell);
+    ADoor* Actor;
+    FTransform Transform;
+
+    switch(Index){
+        
+        //KillerDoor
+        case 0:
+            
+            GetWorld()->SpawnActor<ADoorKiller>(DoorKillerClass, (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
+                    GetDoorRotation(CellIndex));
+
+            break;
+
+        case 1:
+
+            Transform.SetLocation((MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2);
+            Transform.SetRotation(GetDoorRotation(CellIndex).Quaternion());
+            Actor = GetWorld()->SpawnActorDeferred<ADoorRiddle>(DoorRiddleClass,Transform);
+            Cast<ADoorRiddle>(Actor)->Speech = &Speech;
+            Cast<ADoorRiddle>(Actor)->OldSpeech = &OldSpeech;
+            Cast<ADoorRiddle>(Actor)->Questions = &Questions;
+            Cast<ADoorRiddle>(Actor)->OldQuestions = &OldQuestions;
+            
+            
+
+            break;
+
+    }
+    
+}
+
+FRotator AMazeManager::GetDoorRotation(int CellIndex) {
+       
+    FVector Offset;
+
+    if(SetOffsetVector(CellIndex, Offset,0.f)){
+
+       //Need to check the exact orientation of the actor by compare The Y (X) value.
+        if(FMath::Abs(MaxPath[CellIndex + 1]->GetActorLocation().Y) > FMath::Abs(MaxPath[CellIndex]->GetActorLocation().Y))
+
+            return FRotator(0.f,180.f,0.f);
+
+        else
+
+            return FRotator::ZeroRotator;
+
+    }else{
+                
+        if(FMath::Abs(MaxPath[CellIndex + 1]->GetActorLocation().X) > FMath::Abs(MaxPath[CellIndex]->GetActorLocation().X))
+                
+            return FRotator(0.f,-90.f,0.f);
+                
+        else
+
+            return FRotator(0.f,90.f,0.f);
+
+    }
+
 }
 
 #pragma endregion

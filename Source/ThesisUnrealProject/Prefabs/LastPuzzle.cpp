@@ -2,7 +2,7 @@
 
 
 #include "LastPuzzle.h"
-#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/GeneralElements/Doors/Door.h"
 #include "../Elements/Puzzle/PuzzleButton.h"
 #include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "Components/BoxComponent.h"

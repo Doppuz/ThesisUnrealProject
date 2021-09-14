@@ -9,7 +9,7 @@
 #include "AIController.h"
 #include "../../UI/UIWidgetDialog.h"
 #include "../../UI/Elements/UIBox.h"
-#include "../../Elements/GeneralElements/Door.h"
+#include "../../Elements/GeneralElements/Doors/Door.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values

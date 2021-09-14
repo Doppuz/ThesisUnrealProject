@@ -2,7 +2,7 @@
 
 
 #include "FifthPuzzle.h"
-#include "../Elements/GeneralElements/Door.h"
+#include "../Elements/GeneralElements/Doors/Door.h"
 #include "../Elements/Destructible/DestructibleElements.h"
 #include "../Elements/GeneralElements/CoinController.h"
 #include "Components/BoxComponent.h"

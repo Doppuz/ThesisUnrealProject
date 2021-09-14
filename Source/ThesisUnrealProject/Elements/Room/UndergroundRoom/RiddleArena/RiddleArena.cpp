@@ -5,7 +5,7 @@
 #include "../../../../GameManager/MazeCell2.h"
 #include "../../../../GameManager/MazeManager.h"
 #include "../../Elements/RiddleAndDoor.h"
-#include "../../../GeneralElements/Door.h"
+#include "../../../GeneralElements/Doors/Door.h"
 #include "../../../../Character/AllyAI/RiddleNPC.h"
 #include "../../../../Character/AllyAI/PawnInteractiveClass.h"
 #include "Misc/FileHelper.h"
