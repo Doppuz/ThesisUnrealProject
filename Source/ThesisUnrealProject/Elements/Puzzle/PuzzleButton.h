@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "PuzzleButton.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSelectedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSelectedDelegate,APuzzleButton*,Elem);
 
 UCLASS()
 class THESISUNREALPROJECT_API APuzzleButton : public AActor

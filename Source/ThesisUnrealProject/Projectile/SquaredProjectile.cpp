@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "../Elements/Destructible/DestructibleElements.h"
+#include "../Elements/Destructible/GenericDestructibleElements.h"
 #include "DestructibleComponent.h"
 #include "../GameModeTutorial.h"
 #include "../Character/CharacterPawnQuad.h"
@@ -95,7 +96,12 @@ void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 		
 		Cast<ACrateElements>(OtherActor)->DestructibleComponent->ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 30000);	
 	
+	} else if(OtherActor->IsA(AGenericDestructibleElements::StaticClass())){
+		
+		Cast<AGenericDestructibleElements>(OtherActor)->DestructibleMesh->ApplyDamage(1.f,Hit.ImpactPoint, Hit.ImpactNormal,10000.f);// ApplyRadiusDamage(1.f,Hit.ImpactPoint,1000.f,1000,true); //ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 2000);	
+		
 	}
+
 	Destroy();
 }
 

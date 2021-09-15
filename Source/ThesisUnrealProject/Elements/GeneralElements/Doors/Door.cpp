@@ -61,4 +61,10 @@ void ADoor::SetDoorDirection(bool bIsClosed) {
 
 }
 
+void ADoor::OpenDoor() {
+	
+	bOpenDoor = true;
+
+}
+
 

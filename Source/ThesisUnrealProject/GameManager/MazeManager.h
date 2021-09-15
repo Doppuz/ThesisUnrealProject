@@ -26,6 +26,8 @@ class APatrolAIPawn;
 class AGeneralElem;
 class ADoorKiller;
 class ADoorRiddle;
+class ADoorAchiever;
+class ADoorExplorer;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -179,6 +181,12 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ADoorRiddle> DoorRiddleClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ADoorAchiever> DoorAchieverClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ADoorExplorer> DoorExplorerClass;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;

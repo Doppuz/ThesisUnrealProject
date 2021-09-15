@@ -49,7 +49,7 @@ void APuzzleButton::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Other
 			
 				bDisableOverlap = true;
 				Mesh->SetMaterial(0,ButtonColor);
-				Overlap.Broadcast();
+				Overlap.Broadcast(this);
 			
 				//if(GetParentActor() != nullptr && GetParentActor()->IsA(APuzzleWith2Doors::StaticClass())){
 					

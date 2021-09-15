@@ -33,7 +33,8 @@ public:
 	TArray<ATriggerSpawnNight*> Triggers;
 	APuzzleButton* Button;
 
-	virtual void OpenDoor() override;
+	UFUNCTION()
+	void OpenDoorPuzzle(APuzzleButton* Elem);
 
 	UFUNCTION()
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);

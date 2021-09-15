@@ -30,7 +30,7 @@ void AMazeArena::BeginPlay() {
     FRotator Rot = MazeCellMax[MazeCellMax.Num() - 1]->GetActorRotation();
 
     Button = GetWorld()->SpawnActor<APuzzleButton>(PuzzleButtonClass, Pos, Rot);
-    Button->Overlap.AddDynamic(this,&AMazeArena::OpenDoor);
+    Button->Overlap.AddDynamic(this,&AMazeArena::OpenDoorPuzzle);
 
     FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
     Button->AttachToActor(MazeManager->MazeActor,TransformRules);
@@ -39,9 +39,12 @@ void AMazeArena::BeginPlay() {
     
 }
 
-void AMazeArena::OpenDoor() {
+void AMazeArena::OpenDoorPuzzle(APuzzleButton* Elem) {
     
-    Super::OpenDoor();
+    if(Door != nullptr){
+        Door->bOpenDoor = true;
+    }else
+        UE_LOG(LogTemp,Warning,TEXT("No door selected! (GeneralRoomWithDoor)"));
 
     ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 	FLatentActionInfo LatentInfo;

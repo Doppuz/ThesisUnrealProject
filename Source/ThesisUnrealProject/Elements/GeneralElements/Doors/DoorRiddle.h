@@ -37,7 +37,6 @@ protected:
 
 	int ShuffleArray(TArray<FString>& ShuffledArray);
 
-	UFUNCTION()
 	void OpenDoor(ARiddleNPC* RiddleActor);
 
 };

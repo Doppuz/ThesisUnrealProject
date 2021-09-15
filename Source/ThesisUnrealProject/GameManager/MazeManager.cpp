@@ -12,6 +12,8 @@
 #include "../Elements/GeneralElements/Doors/Door.h"
 #include "../Elements/GeneralElements/Doors/DoorKiller.h"
 #include "../Elements/GeneralElements/Doors/DoorRiddle.h"
+#include "../Elements/GeneralElements/Doors/DoorAchiever.h"
+#include "../Elements/GeneralElements/Doors/DoorExplorer.h"
 #include "../Elements/Room/ArenaEnemies/ArenaEnemies.h"
 #include "../Elements/Room/RumbleArena/RumbleArenaDoorNpc.h"
 #include "../Elements/Room/UndergroundRoom/MazeArena/MazeArena.h"
@@ -77,7 +79,7 @@ void AMazeManager::BeginPlay(){
         
         AddDoors(0);
 
-        //GenerateEnemies();
+        GenerateEnemies();
 
         GenerateOtherElements();
 
@@ -603,10 +605,12 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
 
 void AMazeManager::GenerateEnemies() {
     
-    for(int i = 2; i < MaxPath.Num() - 2; i += 3) //MaxPath.Num() - 2
+    for(int i = 2; i < MaxPath.Num() - 2; i += 3){ //MaxPath.Num() - 2
 
-        AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
+        if((i - 2) % 9 != 0)
+            AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
         
+    }
 
 }
 
@@ -641,6 +645,10 @@ void AMazeManager::AddEnemy(int Index, AMazeCell2* Cell) {
 
         break;
     
+    default:
+        UE_LOG(LogTemp,Warning,TEXT("AddEnemy"));
+        break;
+
     }
 
 }
@@ -720,9 +728,11 @@ void AMazeManager::TypeOfPatrols(int Index, int CellIndex) {
 
     case 1:
 
-        TypeOfMoveAlly(CellIndex,Index);
-    
+        GenerateSideActor(PatrolEnemyClass,CellIndex);
+        break;
+
     default:
+        UE_LOG(LogTemp,Warning,TEXT("TypeOfPatrols"));
         break;
 
     }
@@ -750,6 +760,10 @@ void AMazeManager::TypeOfMoveAlly(int Index, int CellIndex) {
 
         GenerateSideActor(MoveAIClass,CellIndex);
         
+        break;
+
+    default:
+        UE_LOG(LogTemp,Warning,TEXT("TypeOfMoveAlly"));
         break;
 
     }
@@ -858,7 +872,10 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex) {
             GenerateSideElements(CellIndex,2, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr);
 
             break;
-
+        
+        default:
+            UE_LOG(LogTemp,Warning,TEXT("TypeOfEnemies"));
+            break;
     }
 
 }
@@ -891,6 +908,10 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex) {
             Enemy->bSpawnCoin = true;
 
             break;
+        
+        default:
+            UE_LOG(LogTemp,Warning,TEXT("TypeOfCoinEnemies"));
+            break;
 
     }
 
@@ -905,7 +926,8 @@ void AMazeManager::GenerateOtherElements() {
 
      for(int i = 2; i < MaxPath.Num() - 2; i += 3) //MaxPath.Num() - 2
 
-        AddOtherElement(1,MaxPath[i]);
+        if(i != 2 && (i - 2) % 9 == 0)
+            AddOtherElement(FMath::RandRange(0,3),MaxPath[i]);
         //AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
         
     
@@ -936,11 +958,26 @@ void AMazeManager::AddOtherElement(int Index, AMazeCell2* Cell) {
             Cast<ADoorRiddle>(Actor)->OldSpeech = &OldSpeech;
             Cast<ADoorRiddle>(Actor)->Questions = &Questions;
             Cast<ADoorRiddle>(Actor)->OldQuestions = &OldQuestions;
-            
-            
 
             break;
 
+        case 2:
+
+            GetWorld()->SpawnActor<ADoorAchiever>(DoorAchieverClass, (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
+                    GetDoorRotation(CellIndex));
+
+            break;
+
+        case 3:
+            
+            GetWorld()->SpawnActor<ADoorExplorer>(DoorExplorerClass, (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
+                    GetDoorRotation(CellIndex));
+
+            break;
+
+        default:
+            UE_LOG(LogTemp,Warning,TEXT("AddOtherElement"));
+            break;
     }
     
 }
