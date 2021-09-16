@@ -6,6 +6,7 @@
 #include "../../Projectile/SquaredProjectile.h"
 #include "../../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
+#include "../../Elements/Platforms/ShakingFallenPlatform.h"
 
 // Sets default values
 ADeathTrigger::ADeathTrigger(){
@@ -31,10 +32,18 @@ void ADeathTrigger::Tick(float DeltaTime){
 void ADeathTrigger::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+		
 		ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(OtherActor);
 		if(MyPawn->GetController()->IsA(APlayerController::StaticClass())){
 			UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 		}
-	}
+
+	}else if(OtherActor->IsA(AShakingFallenPlatform::StaticClass())){
+		
+		GetWorld()->SpawnActor<AShakingFallenPlatform>(OtherActor->GetClass(),Cast<AShakingFallenPlatform>(OtherActor)->StartPos,FRotator::ZeroRotator);
+		OtherActor->Destroy();
+
+	}else
+		OtherActor->Destroy();
 
 }

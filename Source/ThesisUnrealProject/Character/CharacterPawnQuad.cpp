@@ -371,6 +371,7 @@ void ACharacterPawnQuad::EndDodging() {
 
 void ACharacterPawnQuad::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 
-	bAmIJump = false;
+	if(OtherComponent->ComponentTags.Num() > 0 && OtherComponent->ComponentTags[0] == "ResetJump")
+		bAmIJump = false;
 
 }

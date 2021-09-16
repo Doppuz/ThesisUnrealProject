@@ -9,8 +9,8 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FFallenDelegate);
 
 UCLASS()
-class THESISUNREALPROJECT_API AFallenPlatform : public AActor
-{
+class THESISUNREALPROJECT_API AFallenPlatform : public AActor{
+	
 	GENERATED_BODY()
 	
 public:	
@@ -54,9 +54,9 @@ public:
 	//Event when the platform is touched by the player
 	FFallenDelegate FallenDelegate;
 
-private:
+protected:
 	
 	UFUNCTION()    
-    void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+    virtual void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 };

@@ -28,6 +28,8 @@ class ADoorKiller;
 class ADoorRiddle;
 class ADoorAchiever;
 class ADoorExplorer;
+class AShakingFallenPlatform;
+class ACoinController;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -188,6 +190,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ADoorExplorer> DoorExplorerClass;
 
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AShakingFallenPlatform> ShakingFallenPlatform;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ACoinController> CoinClass;
+
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
 
@@ -218,7 +226,7 @@ private:
 // --- Add enemies ---
 
 	//Generate the enemies in the level
-	void GenerateEnemies();
+	void GenerateElements();
 
 	//Add the enemy in the level
 	void AddEnemy(int Index, AMazeCell2* Cell);
@@ -245,15 +253,20 @@ private:
 
 	void TypeOfCoinEnemies(int Index, int CellIndex);
 
-// --- Other Elements ---
+// --- BlockedDoor Elements ---
 	
-	void GenerateOtherElements();
+	void GenerateDoors();
 
-	void AddOtherElement(int Index, AMazeCell2* Cell);
+	void AddDoor(int Index, AMazeCell2* Cell);
 
 	//Compare the position of the cells and return the right Rotation of the door.
 	FRotator GetDoorRotation(int CellIndex);
 
+// --- Fallen Plat ---
+
+	void AddFallenPlatforms(int Index, AMazeCell2* Cell);
+
+	void CreatePlatforms(AMazeCell2* Cell, float Value);
 
 #pragma endregion
 };

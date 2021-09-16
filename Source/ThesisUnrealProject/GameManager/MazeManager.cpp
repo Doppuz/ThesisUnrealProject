@@ -14,6 +14,7 @@
 #include "../Elements/GeneralElements/Doors/DoorRiddle.h"
 #include "../Elements/GeneralElements/Doors/DoorAchiever.h"
 #include "../Elements/GeneralElements/Doors/DoorExplorer.h"
+#include "../Elements/GeneralElements/CoinController.h"
 #include "../Elements/Room/ArenaEnemies/ArenaEnemies.h"
 #include "../Elements/Room/RumbleArena/RumbleArenaDoorNpc.h"
 #include "../Elements/Room/UndergroundRoom/MazeArena/MazeArena.h"
@@ -25,6 +26,7 @@
 #include "../Character/EnemyAI/AIShooterPawn.h"
 #include "../Character/EnemyAI/PatrolAIPawn.h"
 #include "../Elements/GeneralElements/GeneralElem.h"
+#include "../Elements/Platforms/ShakingFallenPlatform.h"
 
 // Sets default values
 AMazeManager::AMazeManager(){
@@ -77,11 +79,11 @@ void AMazeManager::BeginPlay(){
 
     if(PopulateMaze){
         
-        AddDoors(0);
+        //AddDoors(0);
 
-        GenerateEnemies();
+        GenerateElements();
 
-        GenerateOtherElements();
+        GenerateDoors();
 
     }
 
@@ -603,13 +605,19 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
 
 }
 
-void AMazeManager::GenerateEnemies() {
+void AMazeManager::GenerateElements() {
     
-    for(int i = 2; i < MaxPath.Num() - 2; i += 3){ //MaxPath.Num() - 2
+    for(int i = 2; i < MaxPath.Num() - 2; i += 4){ //MaxPath.Num() - 2
 
-        if((i - 2) % 9 != 0)
-            AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
+        if(i == 2 || (i - 2) % 9 != 0){
         
+            //AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
+            if(FMath::RandRange(0,1) == 0)
+                AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]);
+            else
+                AddFallenPlatforms(FMath::RandRange(0,3), MaxPath[i - 1]);
+        
+        }
     }
 
 }
@@ -922,18 +930,18 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex) {
 
 }
 
-void AMazeManager::GenerateOtherElements() {
+void AMazeManager::GenerateDoors() {
 
      for(int i = 2; i < MaxPath.Num() - 2; i += 3) //MaxPath.Num() - 2
 
         if(i != 2 && (i - 2) % 9 == 0)
-            AddOtherElement(FMath::RandRange(0,3),MaxPath[i]);
+            AddDoor(FMath::RandRange(0,3),MaxPath[i]);
         //AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
         
     
 }
 
-void AMazeManager::AddOtherElement(int Index, AMazeCell2* Cell) {
+void AMazeManager::AddDoor(int Index, AMazeCell2* Cell) {
 
     int CellIndex = MaxPath.IndexOfByKey(Cell);
     ADoor* Actor;
@@ -976,7 +984,7 @@ void AMazeManager::AddOtherElement(int Index, AMazeCell2* Cell) {
             break;
 
         default:
-            UE_LOG(LogTemp,Warning,TEXT("AddOtherElement"));
+            UE_LOG(LogTemp,Warning,TEXT("AddDoor"));
             break;
     }
     
@@ -1009,6 +1017,80 @@ FRotator AMazeManager::GetDoorRotation(int CellIndex) {
 
     }
 
+}
+
+void AMazeManager::AddFallenPlatforms(int Index, AMazeCell2* Cell) {
+    
+    IInterfaceMovableAI* Enemy;* Enemy;
+    int CellIndex = MaxPath.IndexOfByKey(Cell);
+    float OffsetX;
+    float OffsetY;
+    
+    Cell->DestroyFloor();
+    CreatePlatforms(Cell,150.f);
+            
+    MaxPath[CellIndex + 2]->DestroyFloor();
+    CreatePlatforms(MaxPath[CellIndex + 2],150.f);
+    
+    GetWorld()->SpawnActor<ACoinController>(CoinClass,MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,10.f),MaxPath[CellIndex]->GetActorRotation());          
+    GetWorld()->SpawnActor<ACoinController>(CoinClass,MaxPath[CellIndex + 2]->GetActorLocation() - FVector(0.f,0.f,10.f),MaxPath[CellIndex + 2]->GetActorRotation());          
+
+    switch(Index){
+
+        case 0:
+
+            GetWorld()->SpawnActor<AGeneralElem>(CrateClass,MaxPath[CellIndex + 1]->GetActorLocation() - FVector(0.f,0.f,50.f),MaxPath[CellIndex + 1]->GetActorRotation());
+            OffsetX = FMath::RandRange(100.f,200.f);
+            OffsetY = FMath::RandRange(100.f,200.f);
+            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() + FVector(OffsetX,OffsetY,10.f),MaxPath[CellIndex + 1]->GetActorRotation())->bSpawnCoin = true;
+
+            break;
+        
+        case 1:
+
+            OffsetX = FMath::RandRange(100.f,200.f);
+            OffsetY = FMath::RandRange(100.f,200.f);
+            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() + FVector(-OffsetX,-OffsetY,10.f),MaxPath[CellIndex + 1]->GetActorRotation());
+            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() + FVector(OffsetX,OffsetY,10.f),MaxPath[CellIndex + 1]->GetActorRotation());
+
+            break;
+
+        case 2:
+
+            OffsetX = FMath::RandRange(100.f,200.f);
+            OffsetY = FMath::RandRange(100.f,200.f);
+            GetWorld()->SpawnActor<IInterfaceMovableAI>(MoveAIClass2,MaxPath[CellIndex + 1]->GetActorLocation() + FVector(OffsetX,OffsetY,10.f), FRotator::ZeroRotator)->SetInitialValue(MaxPath[CellIndex + 1]->GetActorLocation(),1,true);
+            GetWorld()->SpawnActor<IInterfaceMovableAI>(MoveAIClass2,MaxPath[CellIndex + 1]->GetActorLocation() + FVector(-OffsetX,-OffsetY,10.f), FRotator::ZeroRotator)->SetInitialValue(MaxPath[CellIndex + 1]->GetActorLocation(),1,true);
+
+            break;
+
+        case 3:
+
+            if(FMath::RandRange(0,1) == 0){
+                Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation()  + FVector(250.f,250.f,-10.f), FRotator::ZeroRotator);
+                Enemy->Positions.Add(MaxPath[CellIndex + 1]->GetActorLocation() + FVector(300.f,300.f,-10.f));
+                Enemy->Positions.Add(MaxPath[CellIndex + 1]->GetActorLocation() + FVector(-300.f,-300.f,-10.f));
+                Enemy->SetInitialValue(Cast<APawn>(Enemy)->GetActorLocation(),0,true);
+            }else{
+                Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyClass,MaxPath[CellIndex + 1]->GetActorLocation() +  FVector(250.f,-250.f,-10.f), FRotator::ZeroRotator);
+                Enemy->Positions.Add(MaxPath[CellIndex + 1]->GetActorLocation() + FVector(300.f,-300.f,-10.f));
+                Enemy->Positions.Add(MaxPath[CellIndex + 1]->GetActorLocation() + FVector(-300.f,300.f,-10.f));
+                Enemy->SetInitialValue(Cast<APawn>(Enemy)->GetActorLocation(),0,true);
+            }
+
+            break;
+
+    }
+
+}
+
+void AMazeManager::CreatePlatforms(AMazeCell2* Cell, float Value) {
+    
+    GetWorld()->SpawnActor<AShakingFallenPlatform>(ShakingFallenPlatform,Cell->GetActorLocation() + FVector(0.f,0.f,-60.f),Cell->GetActorRotation());
+    /*GetWorld()->SpawnActor<AShakingFallenPlatform>(ShakingFallenPlatform,Cell->GetActorLocation() + FVector(Value,Value,-60.f),Cell->GetActorRotation());
+    GetWorld()->SpawnActor<AShakingFallenPlatform>(ShakingFallenPlatform,Cell->GetActorLocation() + FVector(-Value,Value,-60.f),Cell->GetActorRotation());
+    GetWorld()->SpawnActor<AShakingFallenPlatform>(ShakingFallenPlatform,Cell->GetActorLocation() + FVector(-Value,-Value,-60.f),Cell->GetActorRotation());
+    */
 }
 
 #pragma endregion
