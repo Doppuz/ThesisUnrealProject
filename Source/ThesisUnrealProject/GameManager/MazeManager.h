@@ -30,6 +30,11 @@ class ADoorAchiever;
 class ADoorExplorer;
 class AShakingFallenPlatform;
 class ACoinController;
+class APortal;
+class APortalExplorerLogic;
+class APuzzleButton;
+class APortalKillerLogic;
+class ARoomKiller;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -196,6 +201,21 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ACoinController> CoinClass;
 
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<APortal> PortalClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<APortalExplorerLogic> PortalExplorerLogicClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<APortalKillerLogic> PortalKillerLogicClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<APuzzleButton> PuzzleButtonClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ARoomKiller> KillerRoomClass;
+
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
 
@@ -267,6 +287,9 @@ private:
 	void AddFallenPlatforms(int Index, AMazeCell2* Cell);
 
 	void CreatePlatforms(AMazeCell2* Cell, float Value);
+
+// --- Portal Door ---
+	void PortalType(int Index, AMazeCell2* Cell);
 
 #pragma endregion
 };

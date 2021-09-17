@@ -50,7 +50,7 @@ public:
 	//Used mainly in the prefabs to open the door. (ForthPuzzle.cpp)
 	bool bIsPressed;
 
-	//Called when clicked
+	//Called when pressed
 	FSelectedDelegate Overlap;
 
 private:

@@ -2,6 +2,7 @@
 
 
 #include "Portal.h"
+#include "../../Character/CharacterPawnQuad.h"
 
 // Sets default values
 APortal::APortal(){
@@ -31,7 +32,7 @@ void APortal::BeginPlay(){
 
 void APortal::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	
-	if(OtherActor->IsA(APawn::StaticClass()) && Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass())){
+	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 		OtherActor->SetActorLocation(NewPosition);
 		Destroy();
 	}

@@ -65,4 +65,3 @@ void APuzzleButton::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Other
 int APuzzleButton::GetID() {
 	return ID;
 }
-
