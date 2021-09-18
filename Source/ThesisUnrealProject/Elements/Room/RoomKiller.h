@@ -78,6 +78,9 @@ public:
 	UFUNCTION()
 	void Start();
 
+	UFUNCTION()
+	void ReStartNpc(APawnInteractiveClass* SpokenActor);
+
 	bool bStart = false;
 
 private:

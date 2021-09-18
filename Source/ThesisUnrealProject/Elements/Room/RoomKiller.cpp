@@ -49,8 +49,21 @@ void ARoomKiller::BeginPlay(){
 	Spawners.Add(GetWorld()->SpawnActor<AActorSpawner>(SpawnerClass,FourthSpawnPosition->GetComponentLocation(),
 		FourthSpawnPosition->GetComponentRotation()));
 
-	InteractiveActor = GetWorld()->SpawnActor<APawnInteractiveClass>(NpcClass,PortalSpawnPosition->GetComponentLocation() + FVector(0.f,0.f,100.f),FRotator::ZeroRotator);
+	InteractiveActor = GetWorld()->SpawnActor<APawnInteractiveClass>(NpcClass,PortalSpawnPosition->GetComponentLocation() + FVector(0.f,0.f,+83.f),FRotator::ZeroRotator);
 	InteractiveActor->LeftChoice.AddDynamic(this,&ARoomKiller::Start);
+	InteractiveActor->EndDialog.AddDynamic(this,&ARoomKiller::ReStartNpc);
+
+	//Select a speech.
+    InteractiveActor->Speech = TArray<FString>{"You are going to fight some enemies in a battle royale with a number of rounds.", "-"};
+
+    //Creation of NPC conversation parameter.
+    FQuestion Question; 
+
+    Question.Question = "Are you ready?";
+    Question.Answers.Add("Yes");
+    Question.Answers.Add("No");
+    InteractiveActor->Questions.Add(Question);
+	InteractiveActor->QuestionAt = 1;
 
 }
 
@@ -102,6 +115,12 @@ void ARoomKiller::Start() {
 	
     InteractiveActor->Destroy();
 	bStart = true;
+}
+
+void ARoomKiller::ReStartNpc(APawnInteractiveClass* SpokenActor) {
+	
+	InteractiveActor->QuestionAt = 1;
+
 }
 
 bool ARoomKiller::CheckAllEnemyDeath() {

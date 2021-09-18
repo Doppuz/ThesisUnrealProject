@@ -70,14 +70,6 @@ void AMazeManager::BeginPlay(){
     ArenaSpawnLocation.Add(FVector(-100000.f,100000.f,0.f));
     ArenaSpawnLocation.Add(FVector(100000.f,-100000.f,0.f));
     ArenaSpawnLocation.Add(FVector(-100000.f,-100000.f,0.f));  
-    ArenaSpawnLocation.Add(FVector(200000.f,200000.f,0.f));
-    ArenaSpawnLocation.Add(FVector(-200000.f,200000.f,0.f));
-    ArenaSpawnLocation.Add(FVector(200000.f,-200000.f,0.f));
-    ArenaSpawnLocation.Add(FVector(-200000.f,-200000.f,0.f));
-    ArenaSpawnLocation.Add(FVector(300000.f,300000.f,0.f));
-    ArenaSpawnLocation.Add(FVector(-300000.f,300000.f,0.f));
-    ArenaSpawnLocation.Add(FVector(300000.f,-300000.f,0.f));
-    ArenaSpawnLocation.Add(FVector(-300000.f,-300000.f,0.f));
 
     LoadFromFile(Speech, "QuestionsSpeech");
     LoadFromFile(Questions, "Questions");
@@ -1174,7 +1166,7 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
 
             //Create the portal
             StartPortal = GetWorld()->SpawnActor<APortal>(PortalClass, MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f), FRotator::ZeroRotator);
-            StartPortal->NewPosition = RoomKiller->SpawnPositions->GetComponentLocation();
+            StartPortal->NewPosition = RoomKiller->SpawnPositions->GetComponentLocation() + FVector(-100.f,-100.f,+50.f);
 
             //Create the logic        
             LogicKiller = GetWorld()->SpawnActorDeferred<APortalKillerLogic>(PortalKillerLogicClass, SpawnLocAndRotation);

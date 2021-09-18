@@ -38,7 +38,7 @@ void APortalKillerLogic::OpenDoor() {
 	Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
 
 	EndPortal = GetWorld()->SpawnActorDeferred<APortal>(PortalClass, Transform);
-    EndPortal->NewPosition = PortalStartPos + FVector(0.f,0.f,100.f);
+    EndPortal->NewPosition = PortalStartPos;
 	EndPortal->FinishSpawning(Transform);
 
 }
