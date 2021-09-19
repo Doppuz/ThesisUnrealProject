@@ -23,6 +23,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ARiddleNPC> RiddleNpcClass;
 
+	ARiddleNPC* NPC;
+
 	//Pointers to the maze manager class.
 	TArray<TArray<FString>>* Speech;
 	TArray<TArray<FString>>* Questions;
@@ -38,5 +40,8 @@ protected:
 	int ShuffleArray(TArray<FString>& ShuffledArray);
 
 	void OpenDoor(ARiddleNPC* RiddleActor);
+
+	UFUNCTION()
+	void EndDialog(APawnInteractiveClass* SpokenActor);
 
 };

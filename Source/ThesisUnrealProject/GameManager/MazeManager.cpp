@@ -29,9 +29,10 @@
 #include "../Elements/GeneralElements/GeneralElem.h"
 #include "../Elements/Platforms/ShakingFallenPlatform.h"
 #include "../Elements/Portal/Portal.h"
-#include "../Elements/PortalLogic/PortalExplorerLogic.h"
-#include "../Elements/PortalLogic/PortalKillerLogic.h"
+#include "../Elements/Portal/PortalNight.h"
 #include "../Elements/Puzzle/PuzzleButton.h"
+#include "../Elements/Puzzle/PuzzleButtonPortal.h"
+#include "MazeTypes/SocializerMaze.h"
 
 
 // Sets default values
@@ -85,7 +86,7 @@ void AMazeManager::BeginPlay(){
 
     if(PopulateMaze){
         
-        //AddDoors(0);
+        //AddDoors(1);
 
         //GenerateElements();
 
@@ -943,7 +944,7 @@ void AMazeManager::GenerateDoors() {
     //    if(i != 2 && (i - 2) % 9 == 0){
             //AddDoor(FMath::RandRange(0,3),MaxPath[i]);
         //AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
-            PortalType(1,MaxPath[2]);
+            PortalType(2,MaxPath[2]);
 
             
      //   }
@@ -974,6 +975,7 @@ void AMazeManager::AddDoor(int Index, AMazeCell2* Cell) {
             Cast<ADoorRiddle>(Actor)->OldSpeech = &OldSpeech;
             Cast<ADoorRiddle>(Actor)->Questions = &Questions;
             Cast<ADoorRiddle>(Actor)->OldQuestions = &OldQuestions;
+            Actor->FinishSpawning(Transform);
 
             break;
 
@@ -1103,14 +1105,14 @@ void AMazeManager::CreatePlatforms(AMazeCell2* Cell, float Value) {
 
 void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
     
-    APortalExplorerLogic* LogicExplorer;
-    APortalKillerLogic* LogicKiller;
     ARoomKiller* RoomKiller;
     ADoor* Door;
-    APuzzleButton* Button;
+    APuzzleButtonPortal* ButtonPortal;
     FTransform SpawnLocAndRotation;
     AMazeManager* MazeManager;
+    ASocializerMaze* SocializerMaze;
     APortal* StartPortal;
+    APortalNight* StartPortalNight;
     int CellIndex = MaxPath.IndexOfByKey(Cell);
     int NumExtr;
 
@@ -1118,14 +1120,6 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
 
         //Create Maze for explorer.
         case 0 :
-
-            //Create the door
-            Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                GetDoorRotation(CellIndex));
-            Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
-
-            //Create the puzzle
-            Button = GetWorld()->SpawnActor<APuzzleButton>(PuzzleButtonClass, FVector::ZeroVector, FRotator::ZeroRotator);
 
             //Create the maze
             MazeManager = GetWorld()->SpawnActorDeferred<AMazeManager>(this->GetClass(), SpawnLocAndRotation);
@@ -1135,22 +1129,29 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             MazeManager->MazeRooms = 0;
             MazeManager->PopulateMaze = false;
             MazeManager->FinishSpawning(SpawnLocAndRotation);
-
+            
             NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
             MazeManager->MazeActor->SetActorLocation(ArenaSpawnLocation[NumExtr]);
             ArenaSpawnLocation.RemoveAt(NumExtr);
 
+            //Create the door
+            Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
+                GetDoorRotation(CellIndex));
+            Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
+ 
             //Create the portal
-            StartPortal = GetWorld()->SpawnActor<APortal>(PortalClass, MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f), FRotator::ZeroRotator);
-            StartPortal->NewPosition = MazeManager->MazeGraph->GetNodes()[0]->GetActorLocation();
+            StartPortalNight = GetWorld()->SpawnActor<APortalNight>(PortalNightClass, MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f), FRotator::ZeroRotator);
+            StartPortalNight->NewPosition = MazeManager->MazeGraph->GetNodes()[0]->GetActorLocation();
 
-            //Create the logic        
-            LogicExplorer = GetWorld()->SpawnActorDeferred<APortalExplorerLogic>(PortalExplorerLogicClass, SpawnLocAndRotation);
-            LogicExplorer->MazeManager = MazeManager;
-            LogicExplorer->Door = Door;
-            LogicExplorer->Button = Button;
-            LogicExplorer->StartPortal = StartPortal;
-            LogicExplorer->FinishSpawning(SpawnLocAndRotation);
+            //Create the puzzle
+            SpawnLocAndRotation.SetLocation(MazeManager->MaxPath[MazeManager->MaxPath.Num() - 1]->GetActorLocation() + FVector(0.f,0.f,-35.f));
+            SpawnLocAndRotation.SetRotation(MazeManager->MaxPath[MazeManager->MaxPath.Num() - 1]->GetActorRotation().Quaternion());
+            ButtonPortal = GetWorld()->SpawnActorDeferred<APuzzleButtonPortal>(PuzzleButtonPortalClass, SpawnLocAndRotation);
+            ButtonPortal->Door = Door;
+            ButtonPortal->StartPortal = StartPortalNight;
+            ButtonPortal->EndSpawnPosition = MazeManager->MaxPath[MazeManager->MaxPath.Num() - 2]->GetActorLocation() - FVector(0.f,0.f,50.f);
+            ButtonPortal->FinishSpawning(SpawnLocAndRotation);
+
             break;
 
         case 1:
@@ -1160,22 +1161,54 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
                 GetDoorRotation(CellIndex));
             Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
 
+            //Extract a position and spawn the room
             NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
-            RoomKiller = GetWorld()->SpawnActor<ARoomKiller>(KillerRoomClass, ArenaSpawnLocation[NumExtr], FRotator::ZeroRotator);
+            SpawnLocAndRotation.SetLocation(ArenaSpawnLocation[NumExtr]);
+            RoomKiller = GetWorld()->SpawnActor<ARoomKiller>(KillerRoomClass, SpawnLocAndRotation);
+            RoomKiller->Door = Door;
             ArenaSpawnLocation.RemoveAt(NumExtr);
 
             //Create the portal
-            StartPortal = GetWorld()->SpawnActor<APortal>(PortalClass, MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f), FRotator::ZeroRotator);
+            SpawnLocAndRotation.SetLocation(MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f));
+            SpawnLocAndRotation.SetRotation(FRotator::ZeroRotator.Quaternion());
+            StartPortal = GetWorld()->SpawnActor<APortal>(PortalClass, SpawnLocAndRotation);
             StartPortal->NewPosition = RoomKiller->SpawnPositions->GetComponentLocation() + FVector(-100.f,-100.f,+50.f);
+            StartPortal->FinishSpawning(SpawnLocAndRotation);
 
-            //Create the logic        
-            LogicKiller = GetWorld()->SpawnActorDeferred<APortalKillerLogic>(PortalKillerLogicClass, SpawnLocAndRotation);
-            LogicKiller->RoomKiller = RoomKiller;
-            LogicKiller->Door = Door;
-            LogicKiller->StartPortal = StartPortal;
-            LogicKiller->FinishSpawning(SpawnLocAndRotation);
+            RoomKiller->StartPortalPos = StartPortal->GetActorLocation();
+
             break;
 
+        case 2:
+            
+            //Create the door
+            Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
+                GetDoorRotation(CellIndex));
+            Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
+
+            //Create the maze
+            SocializerMaze = GetWorld()->SpawnActorDeferred<ASocializerMaze>(SocializerMazeClass, SpawnLocAndRotation);
+            SocializerMaze->Depth = -750.f;
+            SocializerMaze->Length = 5;
+            SocializerMaze->Height = 5;
+            SocializerMaze->MazeRooms = 0;
+            SocializerMaze->ExternalDoor = Door;
+            SocializerMaze->FinishSpawning(SpawnLocAndRotation);
+
+            NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
+            SocializerMaze->MazeActor->SetActorLocation(ArenaSpawnLocation[NumExtr]);
+            ArenaSpawnLocation.RemoveAt(NumExtr);
+
+            //Create the portal
+            SpawnLocAndRotation.SetLocation(MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f));
+            SpawnLocAndRotation.SetRotation(FRotator::ZeroRotator.Quaternion());
+            StartPortal = GetWorld()->SpawnActorDeferred<APortal>(PortalClass, SpawnLocAndRotation);
+            StartPortal->NewPosition = SocializerMaze->MazeGraph->GetNodes()[0]->GetActorLocation();
+            StartPortal->FinishSpawning(SpawnLocAndRotation);
+
+            SocializerMaze->StartPortalPos = StartPortal->GetActorLocation();
+
+            break;
     }
     
 }

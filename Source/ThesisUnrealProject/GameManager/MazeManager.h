@@ -31,10 +31,12 @@ class ADoorExplorer;
 class AShakingFallenPlatform;
 class ACoinController;
 class APortal;
-class APortalExplorerLogic;
 class APuzzleButton;
-class APortalKillerLogic;
 class ARoomKiller;
+class ASocializerMaze;
+class APuzzleButtonPortal;
+class APortalNight;
+class APortalOpenDoor;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor
@@ -88,7 +90,7 @@ public:
 	//Graph of the maze
 	Graph<AMazeCell2>* MazeGraph;
 
-private:
+protected:
 
 	//Maze meshes actor
 	UPROPERTY(EditAnywhere, Category = "MazeGeneration")
@@ -118,7 +120,7 @@ public:
 	//Used to keep track of the rooms with a door.
 	TArray<int> RoomWithDoor;
 
-private:
+protected:
 
 	//Methods
 	void InitializeMaze();
@@ -160,7 +162,7 @@ public:
 	TArray<Graph<TArray<AMazeCell2*>>> OtherPaths;
 	
 
-private:
+protected:
 
 	UPROPERTY(EditAnywhere, Category = "Populate")
 	TSubclassOf<ADoor> DoorClass;
@@ -205,16 +207,19 @@ private:
 	TSubclassOf<APortal> PortalClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<APortalExplorerLogic> PortalExplorerLogicClass;
-
-	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<APortalKillerLogic> PortalKillerLogicClass;
+	TSubclassOf<APortalNight> PortalNightClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<APuzzleButton> PuzzleButtonClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<APuzzleButtonPortal> PuzzleButtonPortalClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ARoomKiller> KillerRoomClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ASocializerMaze> SocializerMazeClass;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
@@ -292,4 +297,5 @@ private:
 	void PortalType(int Index, AMazeCell2* Cell);
 
 #pragma endregion
+
 };

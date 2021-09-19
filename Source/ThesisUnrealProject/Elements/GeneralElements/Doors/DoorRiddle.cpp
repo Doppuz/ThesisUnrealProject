@@ -15,8 +15,12 @@ void ADoorRiddle::BeginPlay() {
 
     Super::BeginPlay();
 
-    ARiddleNPC* NPC = GetWorld()->SpawnActor<ARiddleNPC>( RiddleNpcClass, SpawnPos1->GetComponentLocation(), SpawnPos1->GetComponentRotation());
+    NPC = GetWorld()->SpawnActor<ARiddleNPC>( RiddleNpcClass, SpawnPos1->GetComponentLocation(), SpawnPos1->GetComponentRotation());
     NPC->Solved.AddDynamic(this,&ADoorRiddle::OpenDoor);
+    NPC->EndDialog.AddDynamic(this,&ADoorRiddle::EndDialog);
+
+    FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
+    NPC->AttachToActor(this,TransformRules);
     
     //Select a speech.
     int SpeechNumber = FMath::RandRange(0,(*Speech).Num() - 1);
@@ -72,6 +76,42 @@ int ADoorRiddle::ShuffleArray(TArray<FString>& ShuffledArray) {
 void ADoorRiddle::OpenDoor(ARiddleNPC* RiddleActor) {
     
     bOpenDoor = true;
+
+}
+
+void ADoorRiddle::EndDialog(APawnInteractiveClass* SpokenActor) {
+    
+    if(!bOpenDoor){
+	
+    	Cast<ARiddleNPC>(SpokenActor)->QuestionAt = 200; 
+
+        //Change the questoin every time I answer incorrectly.
+
+        FQuestion Question; 
+            
+        if((*Questions).Num() < 1){
+            
+            (*Questions) = (*OldQuestions);
+            (*OldQuestions).Empty();
+            
+        }
+
+        int QuestionNumber = FMath::RandRange(0,(*Questions).Num() - 1);
+        Question.Question = (*Questions)[QuestionNumber][0];
+        (*OldQuestions).Add((*Questions)[QuestionNumber]);
+        (*Questions)[QuestionNumber].RemoveAt(0);
+        Question.Answers = (*Questions)[QuestionNumber];
+        
+        Cast<ARiddleNPC>(SpokenActor)->RightAnswerPos = ShuffleArray((*Questions)[QuestionNumber]);
+            
+        Question.Answers = (*Questions)[QuestionNumber];
+        (*Questions).RemoveAt(QuestionNumber);
+
+        SpokenActor->Questions.RemoveAt(0);
+        SpokenActor->Questions.Add(Question);
+    
+    }else
+        Cast<ARiddleNPC>(SpokenActor)->QuestionAt = -1; 
 
 }
 

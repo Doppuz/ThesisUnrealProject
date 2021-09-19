@@ -3,6 +3,8 @@
 
 #include "RoomKiller.h"
 #include "../../Character/AllyAI/PawnInteractiveClass.h"
+#include "../../Elements/GeneralElements/Doors/Door.h"
+#include "../../Elements/Portal/Portal.h"
 
 // Sets default values
 ARoomKiller::ARoomKiller()
@@ -64,6 +66,8 @@ void ARoomKiller::BeginPlay(){
     Question.Answers.Add("No");
     InteractiveActor->Questions.Add(Question);
 	InteractiveActor->QuestionAt = 1;
+
+	EndArena.AddDynamic(this, &ARoomKiller::OpenDoor);
 
 }
 
@@ -135,6 +139,20 @@ bool ARoomKiller::CheckAllEnemyDeath() {
 	TurnNumbers -= 1;
 
 	return true;
+}
+
+void ARoomKiller::OpenDoor() {
+
+    Door->bOpenDoor = true;
+
+	FTransform Transform;
+	Transform.SetLocation(PortalSpawnPosition->GetComponentLocation());
+	Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
+
+	APortal* EndPortal = GetWorld()->SpawnActorDeferred<APortal>(PortalClass, Transform);
+    EndPortal->NewPosition = StartPortalPos;
+	EndPortal->FinishSpawning(Transform);
+	
 }
 
 

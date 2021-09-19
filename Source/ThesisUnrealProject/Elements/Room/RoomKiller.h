@@ -11,6 +11,8 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndArenaDelegate);
 
 class APawnInteractiveClass;
+class APortal;
+class ADoor;
 
 UCLASS()
 class THESISUNREALPROJECT_API ARoomKiller : public ARoom
@@ -28,6 +30,13 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<APortal> PortalClass;
+
+	ADoor* Door;
+
+	FVector StartPortalPos;
 
 #pragma region Components
 
@@ -83,10 +92,11 @@ public:
 
 	bool bStart = false;
 
-private:
+protected:
 
 	bool CheckAllEnemyDeath();
 
-
+	UFUNCTION()
+	void OpenDoor();
 
 };
