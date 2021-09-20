@@ -37,10 +37,11 @@ class ASocializerMaze;
 class APuzzleButtonPortal;
 class APortalNight;
 class APortalOpenDoor;
+class ARoomAchiever;
 
 UCLASS()
-class THESISUNREALPROJECT_API AMazeManager : public AActor
-{
+class THESISUNREALPROJECT_API AMazeManager : public AActor{
+	
 	GENERATED_BODY()
 	
 public:	
@@ -217,6 +218,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ARoomKiller> KillerRoomClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ARoomAchiever> RoomAchieverClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ASocializerMaze> SocializerMazeClass;

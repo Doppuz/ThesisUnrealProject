@@ -12,7 +12,7 @@ void APortalNight::BeginPlay() {
     
     Super::BeginPlay();
     
-    Collider->OnComponentBeginOverlap.AddDynamic(this,&APortalNight::OnOverlap);
+    //Collider->OnComponentBeginOverlap.AddDynamic(this,&APortalNight::OnOverlap);
 
 }
 

@@ -35,6 +35,7 @@ ACoinController::ACoinController(){
 	OffSetValue = 1.f;
 	ID = -1;
 	bIsCollected = false;
+	bCanMove = true;
 }
 
 // Called when the game starts or when spawned
@@ -54,7 +55,8 @@ void ACoinController::Tick(float DeltaTime){
 
 	AddActorLocalRotation(Quaternion);
 
-	CoinCollider->AddLocalOffset(FVector(0,0,OffSetValue));
+	if(bCanMove)
+		CoinCollider->AddLocalOffset(FVector(0,0,OffSetValue));
 	
 }
 

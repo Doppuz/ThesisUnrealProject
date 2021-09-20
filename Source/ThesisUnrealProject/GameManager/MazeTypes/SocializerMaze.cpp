@@ -25,12 +25,15 @@ void ASocializerMaze::GenerateRiddleDoors() {
 
     FTransform Transform;
     int Contator = 0;
+
+    MazeActor->SetActorLocation(MazeActorPos);
     
-    for(int i = 1; i < MaxPath.Num(); i += 4){
+    for(int i = 1; i < MaxPath.Num() - 1; i += 4){
 
             Contator = 0;
 
             Transform.SetLocation((MaxPath[i]->GetActorLocation() + MaxPath[i + 1]->GetActorLocation())/2);
+            UE_LOG(LogTemp,Warning,TEXT("Before, %f %f"), MaxPath[i]->GetActorLocation().Y,  MaxPath[i]->GetActorLocation().X);
             Transform.SetRotation(GetDoorRotation(i).Quaternion());
             ADoorRiddle* Door = GetWorld()->SpawnActorDeferred<ADoorRiddle>(DoorRiddleClass,Transform);
             Door->Speech = &Speech;
@@ -92,7 +95,7 @@ void ASocializerMaze::OpenDoor(ARiddleNPC* RiddleActor) {
         UE_LOG(LogTemp,Warning, TEXT("No Door in SocializerMaze"));
 
     FTransform Transform;
-	Transform.SetLocation(MaxPath[MaxPath.Num() - 1]->GetActorLocation());
+	Transform.SetLocation(MaxPath[MaxPath.Num() - 1]->GetActorLocation() - FVector(0.f,0.f,50.f));
 	Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
 
 	APortal* EndPortal = GetWorld()->SpawnActorDeferred<APortal>(PortalClass, Transform);

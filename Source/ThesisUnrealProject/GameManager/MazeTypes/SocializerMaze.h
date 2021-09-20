@@ -30,6 +30,8 @@ public:
 
 	FVector StartPortalPos;
 
+	FVector MazeActorPos;
+
 	void GenerateRiddleDoors();
 
 	UFUNCTION()

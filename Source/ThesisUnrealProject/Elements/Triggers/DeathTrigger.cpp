@@ -7,6 +7,7 @@
 #include "../../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
 #include "../../Elements/Platforms/ShakingFallenPlatform.h"
+#include "../../Character/EnemyAI/EnemyAIAbstract.h"
 
 // Sets default values
 ADeathTrigger::ADeathTrigger(){
@@ -41,6 +42,13 @@ void ADeathTrigger::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Other
 	}else if(OtherActor->IsA(AShakingFallenPlatform::StaticClass())){
 		
 		GetWorld()->SpawnActor<AShakingFallenPlatform>(OtherActor->GetClass(),Cast<AShakingFallenPlatform>(OtherActor)->StartPos,FRotator::ZeroRotator);
+		OtherActor->Destroy();
+
+	}else if(OtherActor->IsA(AEnemyAIAbstract::StaticClass())){
+		
+		AEnemyAIAbstract* Enemy = Cast<AEnemyAIAbstract>(OtherActor);
+		Enemy->bIAmDestroyed = true;
+		Enemy->End.Broadcast(Enemy);
 		OtherActor->Destroy();
 
 	}else

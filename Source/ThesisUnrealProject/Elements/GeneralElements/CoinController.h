@@ -60,6 +60,9 @@ public:
 // --- Coin collection delegate ---
 	FCoinCollectedDelegate CollectedDelegate;
 
+	UPROPERTY(EditAnywhere)
+	bool bCanMove;
+
 private:
 
 	UFUNCTION()
