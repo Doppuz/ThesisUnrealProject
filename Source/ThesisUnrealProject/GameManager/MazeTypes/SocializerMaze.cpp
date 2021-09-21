@@ -34,7 +34,7 @@ void ASocializerMaze::GenerateRiddleDoors() {
 
             Transform.SetLocation((MaxPath[i]->GetActorLocation() + MaxPath[i + 1]->GetActorLocation())/2);
             UE_LOG(LogTemp,Warning,TEXT("Before, %f %f"), MaxPath[i]->GetActorLocation().Y,  MaxPath[i]->GetActorLocation().X);
-            Transform.SetRotation(GetDoorRotation(i).Quaternion());
+            Transform.SetRotation(GetDoorRotation(MaxPath[1 + i],MaxPath[i]).Quaternion());
             ADoorRiddle* Door = GetWorld()->SpawnActorDeferred<ADoorRiddle>(DoorRiddleClass,Transform);
             Door->Speech = &Speech;
             Door->OldSpeech = &OldSpeech;

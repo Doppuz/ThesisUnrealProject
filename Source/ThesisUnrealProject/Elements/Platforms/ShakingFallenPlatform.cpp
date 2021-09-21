@@ -62,7 +62,7 @@ void AShakingFallenPlatform::Shake(float DeltaTime) {
 void AShakingFallenPlatform::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 
     if(OtherActor->IsA(APawn::StaticClass())){
-		if(Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass()) && !bIsFallen){
+		if(Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass())){
 			bStopShaking = true;
 		}
 	}

@@ -38,6 +38,7 @@ class APuzzleButtonPortal;
 class APortalNight;
 class APortalOpenDoor;
 class ARoomAchiever;
+class ADestructibleElements;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor{
@@ -224,6 +225,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ASocializerMaze> SocializerMazeClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ADestructibleElements> DestructibleShakeClass;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
@@ -262,7 +266,7 @@ protected:
 
 // --- Wrapper methods for adding enemy ---
 
-	bool SetOffsetVector(int, FVector&, float Value);
+	bool SetOffsetVector(AMazeCell2* AheadCell, AMazeCell2* BehindCell, FVector&, float Value);
 
 	void LineTracing(FHitResult&,FVector, FVector);
 
@@ -289,7 +293,7 @@ protected:
 	void AddDoor(int Index, AMazeCell2* Cell);
 
 	//Compare the position of the cells and return the right Rotation of the door.
-	FRotator GetDoorRotation(int CellIndex);
+	FRotator GetDoorRotation(AMazeCell2* AheadCell, AMazeCell2* BehindCell);
 
 // --- Fallen Plat ---
 
@@ -299,6 +303,10 @@ protected:
 
 // --- Portal Door ---
 	void PortalType(int Index, AMazeCell2* Cell);
+
+// --- OtherPaths ---
+
+	void PopulateOtherPath();
 
 #pragma endregion
 

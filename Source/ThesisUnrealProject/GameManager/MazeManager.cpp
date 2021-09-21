@@ -34,6 +34,7 @@
 #include "../Elements/Puzzle/PuzzleButton.h"
 #include "../Elements/Puzzle/PuzzleButtonPortal.h"
 #include "MazeTypes/SocializerMaze.h"
+#include "../Elements/Destructible/DestructibleElements.h"
 
 
 // Sets default values
@@ -92,6 +93,8 @@ void AMazeManager::BeginPlay(){
         GenerateElements();
 
         GenerateDoors();
+
+        PopulateOtherPath();
 
     }
 
@@ -615,7 +618,7 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
 
 void AMazeManager::GenerateElements() {
     
-    for(int i = 2; i < MaxPath.Num() - 2; i += 4){ //MaxPath.Num() - 2
+    for(int i = 2; i < MaxPath.Num() - 2; i += 5){ //MaxPath.Num() - 2
 
         if(i == 2 || (i - 2) % 10 != 0){
         
@@ -672,9 +675,9 @@ void AMazeManager::AddEnemy(int Index, AMazeCell2* Cell) {
 
 
 //Calculate the offset based on the position of the Cell (index) and return a direction of the 2 adjacent cells.
-bool AMazeManager::SetOffsetVector(int Index, FVector& Offset, float Value) {
+bool AMazeManager::SetOffsetVector(AMazeCell2* AheadCell, AMazeCell2* BehindCell, FVector& Offset, float Value) {
         
-        if(FMath::Abs((MaxPath[Index]->GetActorLocation().X - MaxPath[Index + 1]->GetActorLocation().X)) < 0.1f){
+        if(FMath::Abs((BehindCell->GetActorLocation().X - AheadCell->GetActorLocation().X)) < 0.1f){
             Offset = FVector(Value,0.f,0.f);
             return true;
         }else{
@@ -796,7 +799,7 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex) 
         FTransform Transform;
 
         //Generate an Offset based on the position of two cells.
-        SetOffsetVector(CellIndex,Offset,220.f);
+        SetOffsetVector(MaxPath[CellIndex + 1],MaxPath[CellIndex],Offset,220.f);
 
         //Generate two enemies.
         Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(AIClass,MaxPath[CellIndex]->GetActorLocation() + Offset, FRotator::ZeroRotator);
@@ -807,7 +810,7 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex) 
         for(int i = 0; i < 3; i++){
             LastOffset = Offset;
 
-            SetOffsetVector(CellIndex + i,Offset,220.f);
+            SetOffsetVector(MaxPath[CellIndex + 1 + i],MaxPath[CellIndex + i],Offset,220.f);
             if(LastOffset != Offset){
 
                 Enemy->Positions.Add(MaxPath[CellIndex + i]->GetActorLocation() + Offset + LastOffset);
@@ -835,14 +838,14 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex) 
 void AMazeManager::GenerateSideElements(int CellIndex, int i, float HeightOffset, float SideOffset, float OffsetValue, bool Spawn,TSubclassOf<AGeneralElem> SpawnActor) {
     
     FVector Offset;
-    SetOffsetVector(CellIndex + i,Offset,OffsetValue);
+    SetOffsetVector(MaxPath[CellIndex + 1 + i],MaxPath[CellIndex + i],Offset,OffsetValue);
 
     GenerateDecorations(MaxPath[CellIndex + i]->GetActorLocation(),
         MaxPath[CellIndex + i]->GetActorLocation() + Offset + FVector(0.f,0.f,HeightOffset),
         MaxPath[CellIndex + i]->GetActorLocation() + 2 * Offset ,
         Spawn,SpawnActor);
     
-    bool Value = SetOffsetVector(CellIndex + i,Offset,OffsetValue);
+    bool Value = SetOffsetVector(MaxPath[CellIndex + 1 + i],MaxPath[CellIndex + i],Offset,OffsetValue);
 
     if(Value)
 
@@ -879,7 +882,7 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex) {
         
         case 1:
 
-            SetOffsetVector(CellIndex,Offset,220.f);
+            SetOffsetVector(MaxPath[CellIndex + 1],MaxPath[CellIndex],Offset,220.f);
             Pos = (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation()) / 2;
             GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset/2, FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
@@ -915,7 +918,7 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex) {
         
         case 1:
             
-            SetOffsetVector(CellIndex,Offset,110.f);
+            SetOffsetVector(MaxPath[CellIndex + 1],MaxPath[CellIndex],Offset,110.f);
             Pos = (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation()) / 2 + Offset;
             
             Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset, FRotator::ZeroRotator);
@@ -963,14 +966,14 @@ void AMazeManager::AddDoor(int Index, AMazeCell2* Cell) {
         case 0:
             
             GetWorld()->SpawnActor<ADoorKiller>(DoorKillerClass, (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                    GetDoorRotation(CellIndex));
+                    GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
 
             break;
 
         case 1:
 
             Transform.SetLocation((MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2);
-            Transform.SetRotation(GetDoorRotation(CellIndex).Quaternion());
+            Transform.SetRotation(GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]).Quaternion());
             Actor = GetWorld()->SpawnActorDeferred<ADoorRiddle>(DoorRiddleClass,Transform);
             Cast<ADoorRiddle>(Actor)->Speech = &Speech;
             Cast<ADoorRiddle>(Actor)->OldSpeech = &OldSpeech;
@@ -983,14 +986,14 @@ void AMazeManager::AddDoor(int Index, AMazeCell2* Cell) {
         case 2:
 
             GetWorld()->SpawnActor<ADoorAchiever>(DoorAchieverClass, (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                    GetDoorRotation(CellIndex));
+                    GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
 
             break;
 
         case 3:
             
             GetWorld()->SpawnActor<ADoorExplorer>(DoorExplorerClass, (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                    GetDoorRotation(CellIndex));
+                    GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
 
             break;
 
@@ -1001,15 +1004,15 @@ void AMazeManager::AddDoor(int Index, AMazeCell2* Cell) {
     
 }
 
-FRotator AMazeManager::GetDoorRotation(int CellIndex) {
+FRotator AMazeManager::GetDoorRotation(AMazeCell2* AheadCell, AMazeCell2* BehindCell) {
        
     FVector Offset;
     FVector ParentOffset = MazeActor->GetActorLocation();
 
-    if(SetOffsetVector(CellIndex, Offset,0.f)){
+    if(SetOffsetVector(AheadCell, BehindCell, Offset,0.f)){
 
        //Need to check the exact orientation of the actor by compare The Y (X) value.
-        if(FMath::Abs(MaxPath[CellIndex + 1]->GetActorLocation().Y - ParentOffset.Y) > FMath::Abs(MaxPath[CellIndex]->GetActorLocation().Y - ParentOffset.Y))
+        if(FMath::Abs(AheadCell->GetActorLocation().Y - ParentOffset.Y) > FMath::Abs(BehindCell->GetActorLocation().Y - ParentOffset.Y))
 
             return FRotator(0.f,180.f,0.f);
 
@@ -1019,7 +1022,7 @@ FRotator AMazeManager::GetDoorRotation(int CellIndex) {
 
     }else{
                 
-        if(FMath::Abs(MaxPath[CellIndex + 1]->GetActorLocation().X - ParentOffset.X) > FMath::Abs(MaxPath[CellIndex]->GetActorLocation().X - ParentOffset.X))
+        if(FMath::Abs(AheadCell->GetActorLocation().X - ParentOffset.X) > FMath::Abs(BehindCell->GetActorLocation().X - ParentOffset.X))
                 
             return FRotator(0.f,-90.f,0.f);
                 
@@ -1139,7 +1142,7 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
 
             //Create the door
             Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                GetDoorRotation(CellIndex));
+                GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
             Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
  
             //Create the portal
@@ -1161,7 +1164,7 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
 
             //Create the door
             Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                GetDoorRotation(CellIndex));
+                GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
             Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
 
             //Extract a position and spawn the room
@@ -1186,7 +1189,7 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             
             //Create the door
             Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                GetDoorRotation(CellIndex));
+                GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
             Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
 
             //Create the maze
@@ -1217,7 +1220,7 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
         case 3:
             
             Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                GetDoorRotation(CellIndex));
+                GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
             Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
 
             NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
@@ -1239,6 +1242,21 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             break;
     }
     
+}
+
+void AMazeManager::PopulateOtherPath() {
+    
+    for(Graph<TArray<AMazeCell2*>> Path : OtherPaths){
+
+        AMazeCell2* CentralCell = Path.GetNodes()[0][0][0];
+        AMazeCell2* FirstCell = Path.GetNodes()[0][0][1];
+        TArray< AMazeCell2* > Array = Path.GetNodes()[0][0];
+
+        GetWorld()->SpawnActor<ADestructibleElements>(DestructibleShakeClass, (CentralCell->GetActorLocation() + FirstCell->GetActorLocation())/2,
+            GetDoorRotation(FirstCell,CentralCell));
+
+    }
+
 }
 
 #pragma endregion
