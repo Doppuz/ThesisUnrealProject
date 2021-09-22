@@ -21,9 +21,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ADoorRiddle> DoorRiddle;
-	
-	UPROPERTY(EditAnywhere, Category = "Elements")
-	TSubclassOf<APawnInteractiveClass> SpokenNpcClass;
 
 	//Maze's Door
 	ADoor* ExternalDoor;

@@ -59,6 +59,10 @@ void Graph<F>::AddNode(F* N) {
 	if (!Map.Contains(N)) {
 		TArray<Side<F>*> List;
 		Map.Add(N, List);
+
+		if(CurrentNode == nullptr)
+			CurrentNode = N;
+
 	}else
 		UE_LOG(LogTemp, Warning, TEXT("Node already present in the list"));
 }
@@ -126,6 +130,8 @@ void Graph<F>::DeleteAll() {
 	
 	for(F* Node: GetNodes())
 		Map.Remove(Node);	
+
+	CurrentNode = nullptr;
 
 }
 

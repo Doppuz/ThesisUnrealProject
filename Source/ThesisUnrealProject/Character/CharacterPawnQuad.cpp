@@ -307,6 +307,17 @@ void ACharacterPawnQuad::SetHealthPercentage(float Percentage){
 		HealthWidget->HealthBar->SetPercent(Percentage);
 }
 
+void ACharacterPawnQuad::IncreaseHealth(float Life) {
+
+	CurrentHealth = FMath::Min(CurrentHealth + Life,MaxHealth);
+
+	//Update player's UI healthBar		
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+	DialogWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
+	
+}
+
 //Stop/Start the physics and the movement
 void ACharacterPawnQuad::StopCharacter(bool Value) {
 	bStopMovement = !Value;

@@ -15,6 +15,7 @@
 #include "../Elements/GeneralElements/Doors/DoorAchiever.h"
 #include "../Elements/GeneralElements/Doors/DoorExplorer.h"
 #include "../Elements/GeneralElements/CoinController.h"
+#include "../Elements/GeneralElements/Heart.h"
 #include "../Elements/Room/RoomKiller.h"
 #include "../Elements/Room/RoomAchiever.h"
 #include "../Elements/Room/ArenaEnemies/ArenaEnemies.h"
@@ -27,6 +28,7 @@
 #include "../Character/EnemyAI/AIBull.h"
 #include "../Character/EnemyAI/AIShooterPawn.h"
 #include "../Character/EnemyAI/PatrolAIPawn.h"
+#include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "../Elements/GeneralElements/GeneralElem.h"
 #include "../Elements/Platforms/ShakingFallenPlatform.h"
 #include "../Elements/Portal/Portal.h"
@@ -35,6 +37,7 @@
 #include "../Elements/Puzzle/PuzzleButtonPortal.h"
 #include "MazeTypes/SocializerMaze.h"
 #include "../Elements/Destructible/DestructibleElements.h"
+#include "../Elements/Statue/StatueInteractElem.h"
 
 
 // Sets default values
@@ -618,7 +621,7 @@ void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos,
 
 void AMazeManager::GenerateElements() {
     
-    for(int i = 2; i < MaxPath.Num() - 2; i += 5){ //MaxPath.Num() - 2
+    for(int i = 2; i < MaxPath.Num() - 2; i += 4){ //MaxPath.Num() - 2
 
         if(i == 2 || (i - 2) % 10 != 0){
         
@@ -1248,15 +1251,69 @@ void AMazeManager::PopulateOtherPath() {
     
     for(Graph<TArray<AMazeCell2*>> Path : OtherPaths){
 
-        AMazeCell2* CentralCell = Path.GetNodes()[0][0][0];
-        AMazeCell2* FirstCell = Path.GetNodes()[0][0][1];
-        TArray< AMazeCell2* > Array = Path.GetNodes()[0][0];
+        AMazeCell2* CentralCell = (*Path.GetCurrentNode())[0];   
+        AMazeCell2* FirstCell = (*Path.GetCurrentNode())[1];
 
         GetWorld()->SpawnActor<ADestructibleElements>(DestructibleShakeClass, (CentralCell->GetActorLocation() + FirstCell->GetActorLocation())/2,
             GetDoorRotation(FirstCell,CentralCell));
 
+        TArray<TArray<AMazeCell2 *> *> Leaves = Path.GetLeaves();
+
+        for(TArray<AMazeCell2 *>* Leaf: Leaves){
+            
+            SpawnExtraElem(FMath::RandRange(0,2),(*Leaf)[Leaf->Num() - 1],(*Leaf)[Leaf->Num() - 2]);
+
+        }
+
+        TArray<AMazeCell2*> T;
+
+        for(TArray< AMazeCell2* >* Nodes : Path.GetNodes()){
+
+            PrintMaze((*Nodes),FColor(0.f,0.f,0.f));
+            
+            for(AMazeCell2* Nod : (*Nodes)){
+
+                if(!T.Contains(Nod))
+                    T.Add(Nod);
+
+            }
+
+        }
+
+        UE_LOG(LogTemp,Warning,TEXT("%i"), T.Num() - 1);
+
+
     }
 
+}
+
+void AMazeManager::SpawnExtraElem(int Index, AMazeCell2* AfterCell, AMazeCell2* BeforeCell) {
+
+    switch(Index){
+
+        case 0:
+            
+            GetWorld()->SpawnActor<AStatueInteractElem>(StatueClass, AfterCell->GetActorLocation(),
+                GetDoorRotation(AfterCell,BeforeCell));
+
+            break;
+
+        case 1:
+            
+            GetWorld()->SpawnActor<AHeart>(HeartClass, AfterCell->GetActorLocation(),
+                GetDoorRotation(AfterCell,BeforeCell));
+
+            break;
+
+        case 2:
+
+            GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass, AfterCell->GetActorLocation(),
+                GetDoorRotation(AfterCell,BeforeCell));
+
+            break;
+
+    }
+    
 }
 
 #pragma endregion

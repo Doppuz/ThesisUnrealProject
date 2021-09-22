@@ -106,6 +106,8 @@ public:
 
 	void SetHealthPercentage(float);
 
+	void IncreaseHealth(float Life);
+
 // Stop Character (Used to disable physics)
 	void StopCharacter(bool);
 

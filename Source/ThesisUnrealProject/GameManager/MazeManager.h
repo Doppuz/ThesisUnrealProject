@@ -39,6 +39,9 @@ class APortalNight;
 class APortalOpenDoor;
 class ARoomAchiever;
 class ADestructibleElements;
+class AStatueInteractElem;
+class AHeart;
+class APawnInteractiveClass;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor{
@@ -228,6 +231,15 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ADestructibleElements> DestructibleShakeClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AStatueInteractElem> StatueClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AHeart> HeartClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<APawnInteractiveClass> SpokenNpcClass;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
@@ -307,6 +319,8 @@ protected:
 // --- OtherPaths ---
 
 	void PopulateOtherPath();
+
+	void SpawnExtraElem(int, AMazeCell2*,AMazeCell2*);
 
 #pragma endregion
 
