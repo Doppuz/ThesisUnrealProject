@@ -95,6 +95,8 @@ public:
 	//Graph of the maze
 	Graph<AMazeCell2>* MazeGraph;
 
+	TArray<TArray<AMazeCell2*>> MaxPaths;
+
 protected:
 
 	//Maze meshes actor
@@ -165,7 +167,8 @@ public:
 
 	//Contains all the other paths that are not included in MaxPath.
 	TArray<Graph<TArray<AMazeCell2*>>> OtherPaths;
-	
+
+	void Populate(TArray<AMazeCell2*>);
 
 protected:
 
@@ -259,9 +262,9 @@ protected:
 
 	virtual void DepthVisit(AMazeCell2* Start);
 	void DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,
-		TArray<AMazeCell2*> & MazeCellList);
+		TArray<AMazeCell2*> & MazeCellList, Graph<AMazeCell2>* CurrentGraph);
 	void SetDynamicVisitedToZero();
-	void CreateOtherPaths(TArray<AMazeCell2*>* NewPath,AMazeCell2* Current, AMazeCell2* Previous, int MaxPathIndex,Graph<TArray<AMazeCell2*>>*,TArray<AMazeCell2*>* CurrentNode);
+	void CreateOtherPaths(Graph<AMazeCell2>* OtherGraph, AMazeCell2* Current, AMazeCell2* Previous);
 
 	void AddDoors(int);
 

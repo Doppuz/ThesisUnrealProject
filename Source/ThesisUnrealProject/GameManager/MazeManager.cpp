@@ -97,7 +97,9 @@ void AMazeManager::BeginPlay(){
 
         GenerateDoors();
 
-        PopulateOtherPath();
+        //PopulateOtherPath();
+
+        Populate(MaxPath);
 
     }
 
@@ -340,6 +342,95 @@ bool AMazeManager::CheckRoomIntersection(TArray<AMazeCell2*> Cells, int NumExtr)
 
 #pragma region Populate
 
+void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
+    
+    for(int i = 0; i < Path.Num(); i++){
+
+        for(Side<AMazeCell2>* S: MazeGraph->GetSides(Path[i])){
+
+            if(i != Path.Num() - 1 && S->To != Path[i + 1]){
+
+                bool bCanIContinue = true;
+
+
+                if(i != 0 && S->To == Path[i - 1])
+                    bCanIContinue = false;
+
+                if(i == 0){
+                    
+                    if(MaxPath.Contains(S->To)){
+                        
+                        bCanIContinue = false;
+                        break;
+
+                    }else{
+
+                        for(TArray<AMazeCell2*> Path : MaxPaths){
+                            
+                            if(Path.Contains(S->To)){
+                        
+                                bCanIContinue = false;
+                                break;
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                if(bCanIContinue){
+                    Graph<AMazeCell2>* NewGraph = new Graph<AMazeCell2>();
+                    CreateOtherPaths(NewGraph,S->To, Path[i]);
+
+                    NewGraph->SetVisitedToZero();
+                    TArray<AMazeCell2*> MazeCellMax;
+                    
+                    DepthVisitWrapper(S->To,0, TArray<AMazeCell2*>(),MazeCellMax, NewGraph);
+
+                    MaxPaths.Add(MazeCellMax);
+                    
+                    PrintMaze(MazeCellMax, FColor(0.f,0.f,0.f));
+
+                    FString s = "";
+                    TArray<AMazeCell2*> T = NewGraph->GetNodes();
+
+                    NewGraph->SetVisitedToZero();
+
+                    for(int j = 0; j < MazeCellMax.Num(); j++)
+                        MazeCellMax[j]->bIsVisited = true;
+
+                    delete NewGraph;
+
+                    if(MazeCellMax.Num() > 6){
+                        
+                        //GenerateElements();
+
+                        SpawnExtraElem(FMath::RandRange(0,2),MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
+                        
+                    }else{
+
+                        if(MazeCellMax.Num() > 1)
+                            SpawnExtraElem(FMath::RandRange(0,2),MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
+                        else
+                            SpawnExtraElem(FMath::RandRange(0,2),MazeCellMax[MazeCellMax.Num() - 1],Path[i]);
+
+                    }
+
+                    Populate(MazeCellMax);
+
+                }
+
+            }
+
+
+        }
+
+    }
+
+}
+
 void AMazeManager::LoadFromFile(TArray<TArray<FString>>& List, FString FileName) {
     
     TArray<FString> StringArray;
@@ -361,30 +452,26 @@ void AMazeManager::DepthVisit(AMazeCell2* Start) {
     
     MazeGraph->SetVisitedToZero();
     TArray<AMazeCell2*> MazeCellMax;
-    DepthVisitWrapper(Start,0, TArray<AMazeCell2*>(),MazeCellMax);
+    DepthVisitWrapper(Start,0, TArray<AMazeCell2*>(),MazeCellMax, MazeGraph);
     MaxPath = MazeCellMax;
     TArray<AMazeCell2*> NewPath;
     Graph<TArray<AMazeCell2*>> OtherGraph;
-    CreateOtherPaths(&NewPath,MaxPath[0],nullptr,0,&OtherGraph,nullptr);
-    int a = 0;
+
     //PrintMaze(MaxPath, FColor(0.f,0.f,0.f));
 
 }
 
 void AMazeManager::DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,
-        TArray<AMazeCell2*> & MazeCellMax) {
+        TArray<AMazeCell2*> & MazeCellMax, Graph<AMazeCell2>* CurrentGraph) {
     
-    TArray<Side<AMazeCell2>*> Sides = MazeGraph->GetSides(Current); 
+    TArray<Side<AMazeCell2>*> Sides = CurrentGraph->GetSides(Current); 
     Current->bIsVisited = true;
     CurrentVisitedCell.Add(Current);
 
-    for(Side<AMazeCell2>* S: MazeGraph->GetSides(Current)){
+    for(Side<AMazeCell2>* S: CurrentGraph->GetSides(Current)){
         if(S->To->bIsVisited != true)
-            DepthVisitWrapper(S->To, Cost + 1, CurrentVisitedCell, MazeCellMax);
+            DepthVisitWrapper(S->To, Cost + 1, CurrentVisitedCell, MazeCellMax,CurrentGraph);
     }
-    
-    //Last Cell of the current path. 
-    //AMazeCell* LastCell = CurrentVisitedCell[CurrentVisitedCell.Num() - 1];
 
     //Search for the maximum path (uncomment below to put the exit in one of the sides)
     if(CurrentVisitedCell.Num() > MazeCellMax.Num()) //&& (LastCell->I == 0 || LastCell->I == 12 ||
@@ -401,13 +488,27 @@ void AMazeManager::SetDynamicVisitedToZero() {
 }
 
 //Creates a graph for each path which is not part of the max path.
-void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Current, AMazeCell2* Previous, int MaxPathIndex, Graph<TArray<AMazeCell2*>>* OtherGraph,
-    TArray<AMazeCell2*>* CurrentNode){
+void AMazeManager::CreateOtherPaths(Graph<AMazeCell2>* OtherGraph, AMazeCell2* Current, AMazeCell2* Previous){
     
     TArray<Side<AMazeCell2>*> Sides = MazeGraph->GetSides(Current);
     
+    OtherGraph->AddNode(Current);
+
+    for(Side<AMazeCell2>* S: Sides){
+
+        if(Previous != nullptr && OtherGraph->Contains(Previous)) //I don't wanna insert in the graph the cell that is part of one other Max path.
+            OtherGraph->AddSide(Current, Previous, 0);
+
+        if(S->To != Previous){
+
+            CreateOtherPaths(OtherGraph, S->To, Current);
+        
+        }
+
+    }
+    
     //The process is divided in 3 parts. First check if I am in a crossroad.
-    if(!MaxPath.Contains(Current) && Sides.Num() > 2){
+    /*if(!MaxPath.Contains(Current) && Sides.Num() > 2){
         
         if(!(*NewPath).Contains(Current))
             (*NewPath).Add(Current);
@@ -496,7 +597,7 @@ void AMazeManager::CreateOtherPaths(TArray<AMazeCell2*>* NewPath, AMazeCell2* Cu
         CreateOtherPaths(NewPath, MaxPath[MaxPathIndex+1],Current, MaxPathIndex+1,OtherGraph,CurrentNode);
 
 
-    }
+    }*/
 
 }
 
@@ -921,12 +1022,12 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex) {
         
         case 1:
             
-            SetOffsetVector(MaxPath[CellIndex + 1],MaxPath[CellIndex],Offset,110.f);
+            SetOffsetVector(MaxPath[CellIndex + 1],MaxPath[CellIndex],Offset,110.f); //110
             Pos = (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation()) / 2 + Offset;
             
-            Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset, FRotator::ZeroRotator);
+            Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset , FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
-            Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
+            Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,MaxPath[CellIndex + 2]->GetActorLocation(), FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
 
             break;
@@ -953,7 +1054,7 @@ void AMazeManager::GenerateDoors() {
         
     }
     
-    PortalType(FMath::RandRange(0,3),MaxPath[MaxPath.Num() - 2]);      
+    PortalType(FMath::RandRange(0,0),MaxPath[MaxPath.Num() - 2]);      
 
 }
 
@@ -1249,7 +1350,7 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
 
 void AMazeManager::PopulateOtherPath() {
     
-    for(Graph<TArray<AMazeCell2*>> Path : OtherPaths){
+    /*for(Graph<TArray<AMazeCell2*>> Path : OtherPaths){
 
         AMazeCell2* CentralCell = (*Path.GetCurrentNode())[0];   
         AMazeCell2* FirstCell = (*Path.GetCurrentNode())[1];
@@ -1268,8 +1369,6 @@ void AMazeManager::PopulateOtherPath() {
         TArray<AMazeCell2*> T;
 
         for(TArray< AMazeCell2* >* Nodes : Path.GetNodes()){
-
-            PrintMaze((*Nodes),FColor(0.f,0.f,0.f));
             
             for(AMazeCell2* Nod : (*Nodes)){
 
@@ -1283,7 +1382,7 @@ void AMazeManager::PopulateOtherPath() {
         UE_LOG(LogTemp,Warning,TEXT("%i"), T.Num() - 1);
 
 
-    }
+    }*/
 
 }
 
