@@ -52,7 +52,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = Projectile)
 	float ProjectileTimeout;
 
-	virtual void SetInitialValue(FVector Pos, int Contator, bool Direction) override;
+	virtual void SetInitialValue(FVector Pos, int Contator, bool Direction, bool SameDirection) override;
 
 //---- General ---
 	void Choice(int) override;

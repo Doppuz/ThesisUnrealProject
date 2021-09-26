@@ -55,11 +55,12 @@ APatrolAI2::APatrolAI2()
 
 }
 
-void APatrolAI2::SetInitialValue(FVector Pos, int Contator, bool Direction) {
+void APatrolAI2::SetInitialValue(FVector Pos, int Contator, bool Direction, bool SameDirection) {
 	
 	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector("NewPosition",Pos);
 	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsInt("Contator",Contator);
 	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool("Direction",Direction);
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool("SameDirection",SameDirection);
 
 }
 

@@ -38,7 +38,7 @@ public:
 	class UCapsuleComponent* CapsuleTrigger;
 
 	//Set initial value in the blackboard;
-	virtual void SetInitialValue(FVector Pos, int Contator, bool Direction) override;
+	virtual void SetInitialValue(FVector Pos, int Contator, bool Direction, bool SameDirection) override;
 
 protected:
 	// Called when the game starts or when spawned

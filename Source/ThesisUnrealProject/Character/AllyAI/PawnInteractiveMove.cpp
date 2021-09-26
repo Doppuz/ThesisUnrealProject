@@ -54,7 +54,7 @@ void APawnInteractiveMove::Tick(float DeltaTime){
 
 }
 
-void APawnInteractiveMove::SetInitialValue(FVector Pos, int Contator, bool Direction) {
+void APawnInteractiveMove::SetInitialValue(FVector Pos, int Contator, bool Direction,bool SameDirection) {
 	
 	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector("NewPosition",Pos);
 	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector("StartLocation",Pos);

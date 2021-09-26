@@ -24,6 +24,6 @@ public:
 
 	TArray<FVector> Positions;
 
-	virtual void SetInitialValue(FVector, int, bool);
+	virtual void SetInitialValue(FVector, int, bool, bool);
 
 };

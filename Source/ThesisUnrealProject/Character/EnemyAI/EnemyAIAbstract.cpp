@@ -4,8 +4,8 @@
 #include "EnemyAIAbstract.h"
 
 // Sets default values
-AEnemyAIAbstract::AEnemyAIAbstract()
-{
+AEnemyAIAbstract::AEnemyAIAbstract(){
+
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -15,8 +15,8 @@ AEnemyAIAbstract::AEnemyAIAbstract()
 }
 
 // Called when the game starts or when spawned
-void AEnemyAIAbstract::BeginPlay()
-{
+void AEnemyAIAbstract::BeginPlay(){
+	
 	Super::BeginPlay();
 
 }

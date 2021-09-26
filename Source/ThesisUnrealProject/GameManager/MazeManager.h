@@ -42,6 +42,7 @@ class ADestructibleElements;
 class AStatueInteractElem;
 class AHeart;
 class APawnInteractiveClass;
+class ATrap;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor{
@@ -186,6 +187,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Enemies", meta=( MustImplement= "InterfaceMovableAI" ))
 	TSubclassOf<APawn> PatrolEnemyClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Enemies", meta=( MustImplement= "InterfaceMovableAI" ))
+	TSubclassOf<APawn> PatrolEnemyCircularClass;
 
 	UPROPERTY(EditAnywhere, Category = "Enemies", meta=( MustImplement= "InterfaceMovableAI" ))
 	TSubclassOf<APawn> MoveAIClass;
@@ -243,6 +247,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<APawnInteractiveClass> SpokenNpcClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ATrap> TrapClass;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
@@ -274,10 +281,10 @@ protected:
 // --- Add enemies ---
 
 	//Generate the enemies in the level
-	void GenerateElements();
+	void GenerateElements(TArray<AMazeCell2*> Path);
 
 	//Add the enemy in the level
-	void AddEnemy(int Index, AMazeCell2* Cell);
+	void AddEnemy(int Index, AMazeCell2* Cell, TArray<AMazeCell2*> Path);
 
 // --- Wrapper methods for adding enemy ---
 
@@ -287,19 +294,19 @@ protected:
 
 	void GenerateDecorations(FVector, FVector, FVector,bool,TSubclassOf<AGeneralElem>);
 
-	void GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex);
+	void GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex, TArray<AMazeCell2*> Path);
 	
-	void GenerateSideElements(int CellIndex, int i, float HeightOffset, float SideOffset, float OffsetValue, bool, TSubclassOf<AGeneralElem>);
+	void GenerateSideElements(int CellIndex, int i, float HeightOffset, float SideOffset, float OffsetValue, bool, TSubclassOf<AGeneralElem>, TArray<AMazeCell2*> Path);
 
 // --- Type Of Enemies ---
 
-	void TypeOfMoveAlly(int CellIndex, int Index);
+	void TypeOfMoveAlly(int CellIndex, int Index, TArray<AMazeCell2*> Path);
 	
-	void TypeOfPatrols(int CellIndex, int Index);
+	void TypeOfPatrols(int CellIndex, int Index, TArray<AMazeCell2*> Path);
 
-	void TypeOfEnemies(int Index, int CellIndex);
+	void TypeOfEnemies(int Index, int CellIndex, TArray<AMazeCell2*> Path);
 
-	void TypeOfCoinEnemies(int Index, int CellIndex);
+	void TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2*> Path);
 
 // --- BlockedDoor Elements ---
 	
@@ -312,7 +319,7 @@ protected:
 
 // --- Fallen Plat ---
 
-	void AddFallenPlatforms(int Index, AMazeCell2* Cell);
+	void AddFallenPlatforms(int Index, AMazeCell2* Cell, TArray<AMazeCell2*> Path);
 
 	void CreatePlatforms(AMazeCell2* Cell, float Value);
 

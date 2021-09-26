@@ -25,15 +25,21 @@ void UBTService_NewPosition::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
         //Need to do like this because the service is shared with all the controllers.
         if((OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation() - OwnerComp.GetBlackboardComponent()->GetValueAsVector("NewPosition")).Size() < 100.f){
 
-            if(OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator") == AIPawn->Positions.Num() -1)
-                OwnerComp.GetBlackboardComponent()->SetValueAsBool("Direction", false);
-            else if(OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator") == 0)
-                OwnerComp.GetBlackboardComponent()->SetValueAsBool("Direction", true);
+            //two type of movement: 1) move to every position and then turn back. 2) move in a circular way.
+            if(OwnerComp.GetBlackboardComponent()->GetValueAsBool("SameDirection")){
+                
+                if(OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator") == AIPawn->Positions.Num() -1)
+                    OwnerComp.GetBlackboardComponent()->SetValueAsBool("Direction", false);
+                else if(OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator") == 0)
+                    OwnerComp.GetBlackboardComponent()->SetValueAsBool("Direction", true);
 
-            if(OwnerComp.GetBlackboardComponent()->GetValueAsBool("Direction"))
-                OwnerComp.GetBlackboardComponent()->SetValueAsInt("Contator",OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator") + 1); 
-            else
-                OwnerComp.GetBlackboardComponent()->SetValueAsInt("Contator",OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator") - 1); 
+                if(OwnerComp.GetBlackboardComponent()->GetValueAsBool("Direction"))
+                    OwnerComp.GetBlackboardComponent()->SetValueAsInt("Contator",OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator") + 1); 
+                else
+                    OwnerComp.GetBlackboardComponent()->SetValueAsInt("Contator",OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator") - 1); 
+
+            }else
+                OwnerComp.GetBlackboardComponent()->SetValueAsInt("Contator",(OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator") + 1)%AIPawn->Positions.Num()); 
 
             if(AIPawn->Positions.Num() > 0)
                 OwnerComp.GetBlackboardComponent()->SetValueAsVector("NewPosition",AIPawn->Positions[OwnerComp.GetBlackboardComponent()->GetValueAsInt("Contator")] + FVector(0.f,0.f,-16.f)); //Just for beeing a little be smoother.
