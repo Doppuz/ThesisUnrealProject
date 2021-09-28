@@ -43,6 +43,8 @@ class AStatueInteractElem;
 class AHeart;
 class APawnInteractiveClass;
 class ATrap;
+class AGenericDestructibleElements;
+class ATriggerSpawnAlly;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor{
@@ -214,6 +216,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ACoinController> CoinClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ACoinController> CoinHorizontalClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<APortal> PortalClass;
@@ -240,6 +245,12 @@ protected:
 	TSubclassOf<ADestructibleElements> DestructibleShakeClass;
 	
 	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AGenericDestructibleElements> DestrElem;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AActor> MetalCrateClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AStatueInteractElem> StatueClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
@@ -250,6 +261,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ATrap> TrapClass;
+		
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ATriggerSpawnAlly> TriggerSpawnAllyClass;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
