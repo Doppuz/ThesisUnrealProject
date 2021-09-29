@@ -117,6 +117,14 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	float CurrentHealth;
 
+
+// Hats
+
+	TArray<TArray<UMaterialInterface*>> HatMaterials;
+	int CurrentHatMaterial = -1;
+
+	void ChangeHat();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

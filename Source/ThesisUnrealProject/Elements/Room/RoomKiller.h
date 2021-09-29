@@ -85,7 +85,7 @@ public:
 	APawnInteractiveClass* InteractiveActor;
 
 	UFUNCTION()
-	void Start();
+	virtual void Start();
 
 	UFUNCTION()
 	void ReStartNpc(APawnInteractiveClass* SpokenActor);

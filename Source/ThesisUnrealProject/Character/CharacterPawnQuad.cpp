@@ -225,6 +225,7 @@ void ACharacterPawnQuad::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction("Shoot",IE_Pressed,this, &ACharacterPawnQuad::Shoot);
 	PlayerInputComponent->BindAction("Rewind",IE_Pressed,this, &ACharacterPawnQuad::Rewind);
 	PlayerInputComponent->BindAction("Dodge",IE_Pressed,this, &ACharacterPawnQuad::Dodge);
+	PlayerInputComponent->BindAction("Hat",IE_Pressed,this, &ACharacterPawnQuad::ChangeHat);
 
 	PlayerInputComponent->BindAxis("MoveForward",this,&ACharacterPawnQuad::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight",this,&ACharacterPawnQuad::MoveRight);
@@ -322,6 +323,15 @@ void ACharacterPawnQuad::IncreaseHealth(float Life) {
 void ACharacterPawnQuad::StopCharacter(bool Value) {
 	bStopMovement = !Value;
 	Collider->SetSimulatePhysics(Value);
+}
+
+void ACharacterPawnQuad::ChangeHat() {
+
+	if(HatMaterials.Num() > 0){
+		CurrentHatMaterial = (CurrentHatMaterial + 1) % HatMaterials.Num();
+		EquipmentMesh->SetMaterial(0,HatMaterials[CurrentHatMaterial][0]);
+		EquipmentMesh->SetMaterial(1,HatMaterials[CurrentHatMaterial][1]);
+	}
 }
 
 void ACharacterPawnQuad::Speak() {

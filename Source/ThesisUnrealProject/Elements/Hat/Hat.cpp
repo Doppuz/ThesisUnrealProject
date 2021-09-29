@@ -31,6 +31,9 @@ void AHat::OnHatOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor,
 	
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 
+		Cast<ACharacterPawnQuad>(OtherActor)->EquipmentMesh->SetStaticMesh(Mesh->GetStaticMesh());
+		Cast<ACharacterPawnQuad>(OtherActor)->HatMaterials.Add(Mesh->GetMaterials());
+		Cast<ACharacterPawnQuad>(OtherActor)->ChangeHat();
 		Destroy();
 
 	}
@@ -41,6 +44,8 @@ void AHat::OnHatOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor,
 void AHat::Tick(float DeltaTime){
 
 	Super::Tick(DeltaTime);
+
+	AddActorWorldRotation(FRotator(0.f,3.f,0.f));
 
 }
 

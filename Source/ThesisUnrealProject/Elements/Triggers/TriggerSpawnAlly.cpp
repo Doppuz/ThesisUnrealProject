@@ -4,6 +4,7 @@
 #include "TriggerSpawnAlly.h"
 #include "Components/BoxComponent.h"
 #include "../../Character/AllyAI/AICharacterPawnQuad.h"
+#include "../../Character/CharacterPawnQuad.h"
 
 // Sets default values
 ATriggerSpawnAlly::ATriggerSpawnAlly(){
@@ -31,7 +32,7 @@ void ATriggerSpawnAlly::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 		APawn* MyPawn = Cast<APawn>(OtherActor);
 		if(MyPawn->GetController()->IsA(APlayerController::StaticClass())){
-			GetWorld()->SpawnActor<AAICharacterPawnQuad>(AllyClass,
+			AAICharacterPawnQuad* AIAlly = GetWorld()->SpawnActor<AAICharacterPawnQuad>(AllyClass,
 				FVector(GetActorLocation().X,GetActorLocation().Y,MyPawn->GetActorLocation().Z)
 				,GetActorRotation());
 			Destroy();
@@ -39,3 +40,4 @@ void ATriggerSpawnAlly::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 	}
 
 }
+

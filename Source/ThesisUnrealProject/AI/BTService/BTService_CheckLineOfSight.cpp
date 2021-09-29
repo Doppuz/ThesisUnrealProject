@@ -8,6 +8,7 @@
 #include "../../Character/AllyAI/AICharacterPawnQuad.h"
 #include "../../Character/EnemyAI/EnemyAIAbstract.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "DrawDebugHelpers.h"
 
 UBTService_CheckLineOfSight::UBTService_CheckLineOfSight() {
     NodeName = "LineOfSight";
@@ -27,7 +28,7 @@ void UBTService_CheckLineOfSight::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 
     //float RandomDistance = Cast<ACharacterPawnQuad>(AIPawn)->MaxRandomDistance;
     
-    FVector End = AIController->GetPawn()->GetActorLocation() + AIController->GetPawn()->GetActorRotation().Vector() * 1000;
+    FVector End = AIController->GetPawn()->GetActorLocation() + AIController->GetPawn()->GetActorRotation().Vector() * 1500;
 
 	FCollisionQueryParams Params(NAME_None, true, AIController->GetPawn());
 
@@ -37,13 +38,15 @@ void UBTService_CheckLineOfSight::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 
     FHitResult Hit;
 
-    UKismetSystemLibrary::BoxTraceSingle(GetWorld(),AIController->GetPawn()->GetActorLocation(), End,FVector(16.f,16.f,16.f),
-        AIController->GetPawn()->GetActorRotation(), UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel7),
-        true, IgnoredActors, EDrawDebugTrace::None,Hit,true);
+    GetWorld()->LineTraceSingleByChannel(Hit,AIController->GetPawn()->GetActorLocation(),End,ECollisionChannel::ECC_GameTraceChannel7,
+        Params);
 
     AEnemyAIAbstract* Enemy = Cast<AEnemyAIAbstract>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("CurrentEnemy"));
 
     TArray<AActor*> Enemies = Cast<AAICharacterPawnQuad>(AIController->GetPawn())->Enemies;
+
+    if(Hit.GetActor() != nullptr)
+        UE_LOG(LogTemp,Warning,TEXT("%s"), *Hit.GetActor()->GetName());
 
     if(Hit.GetActor() != nullptr && Enemy != nullptr && Enemies.Contains(Hit.GetActor())){// || Distance > 1000.f){ //1000
         OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("CanISeeTheEnemy"),true);

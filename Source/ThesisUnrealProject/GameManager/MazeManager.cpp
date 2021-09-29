@@ -18,6 +18,7 @@
 #include "../Elements/GeneralElements/Heart.h"
 #include "../Elements/Room/RoomKiller.h"
 #include "../Elements/Room/RoomAchiever.h"
+#include "../Elements/Room/RoomSocializer.h"
 #include "../Elements/Room/ArenaEnemies/ArenaEnemies.h"
 #include "../Elements/Room/RumbleArena/RumbleArenaDoorNpc.h"
 #include "../Elements/Room/UndergroundRoom/MazeArena/MazeArena.h"
@@ -41,6 +42,7 @@
 #include "../Obstacle/Trap.h"
 #include "../Elements/Destructible/GenericDestructibleElements.h"
 #include "../Elements/Triggers/TriggerSpawnAlly.h"
+#include "../Elements/Hat/Hat.h"
 
 // Sets default values
 AMazeManager::AMazeManager(){
@@ -131,14 +133,7 @@ void AMazeManager::PrintMaze(TArray<AMazeCell2*> Nodes, FColor Color) {
 
     /*for (AMazeCell2* Cell : Nodes) {
 		for(Side<AMazeCell2>* Edge: MazeGraph->GetSides(Cell)){
-			DrawDebugLine(GetWorld(),
-			FVector(Edge->From->GetActorLocation().X, Edge->From->GetActorLocation().Y, Edge->From->GetActorLocation().Z + 1100), //700
-			FVector(Edge->To->GetActorLocation().X,Edge->To->GetActorLocation().Y,Edge->To->GetActorLocation().Z + 1100),
-			Color,
-			true,
-			50.f,
-			0,
-			50.f);
+			3
 		}
     }*/
 
@@ -395,8 +390,6 @@ void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
                     DepthVisitWrapper(S->To,0, TArray<AMazeCell2*>(),MazeCellMax, NewGraph);
 
                     MaxPaths.Add(MazeCellMax);
-                    
-                    PrintMaze(MazeCellMax, FColor(0.f,0.f,0.f));
 
                     FString s = "";
                     TArray<AMazeCell2*> T = NewGraph->GetNodes();
@@ -412,14 +405,14 @@ void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
                         
                         GenerateElements(MazeCellMax);
 
-                        SpawnExtraElem(FMath::RandRange(0,2),MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
+                        SpawnExtraElem(3,MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
                         
                     }else{
 
                         if(MazeCellMax.Num() > 1)
-                            SpawnExtraElem(FMath::RandRange(0,2),MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
+                            SpawnExtraElem(3,MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
                         else
-                            SpawnExtraElem(FMath::RandRange(0,2),MazeCellMax[MazeCellMax.Num() - 1],Path[i]);
+                            SpawnExtraElem(3,MazeCellMax[MazeCellMax.Num() - 1],Path[i]);
 
                     }
 
@@ -733,7 +726,7 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
         
             //AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
             if(FMath::RandRange(0,2) < 2)
-                AddEnemy(3, Path[i - 1], Path);
+                AddEnemy(FMath::RandRange(0,3), Path[i - 1], Path);
             else
                 AddFallenPlatforms(FMath::RandRange(0,3), Path[i - 1], Path);
         
@@ -769,7 +762,7 @@ void AMazeManager::AddEnemy(int Index, AMazeCell2* Cell, TArray<AMazeCell2*> Pat
 
     case 3:
 
-        TypeOfMoveAlly(2,CellIndex, Path);
+        TypeOfMoveAlly(FMath::RandRange(0,2),CellIndex, Path);
 
         break;
     
@@ -918,6 +911,7 @@ void AMazeManager::TypeOfPatrols(int Index, int CellIndex, TArray<AMazeCell2*> P
 void AMazeManager::TypeOfMoveAlly(int Index, int CellIndex, TArray<AMazeCell2*> Path) {
     
     IInterfaceMovableAI* Enemy;
+    FTransform Transform;
 
     switch (Index){
 
@@ -938,10 +932,21 @@ void AMazeManager::TypeOfMoveAlly(int Index, int CellIndex, TArray<AMazeCell2*> 
 
     case 2:
 
-        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
-        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex + 1]->GetActorLocation() , FRotator::ZeroRotator);
-
-        GetWorld()->SpawnActor<ATriggerSpawnAlly>(TriggerSpawnAllyClass,Path[CellIndex - 1]->GetActorLocation() , FRotator::ZeroRotator);
+        Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(MoveAIClass2,(Path[CellIndex + 1]->GetActorLocation() + Path[CellIndex + 2]->GetActorLocation())/2, FRotator::ZeroRotator);
+        Enemy->SetInitialValue((Path[CellIndex + 1]->GetActorLocation() + Path[CellIndex + 2]->GetActorLocation())/2,1,true, true);
+        
+        for(int i = 0; i < 3; i = i + 2){
+    
+            Transform.SetLocation((Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation()) / 2);
+            Transform.SetRotation(GetDoorRotation(Path[CellIndex + i + 1],Path[CellIndex + i]).Quaternion());
+            ADoorRiddle* Door = GetWorld()->SpawnActorDeferred<ADoorRiddle>(DoorRiddleClass,Transform);
+            Cast<ADoorRiddle>(Door)->Speech = &Speech;
+            Cast<ADoorRiddle>(Door)->OldSpeech = &OldSpeech;
+            Cast<ADoorRiddle>(Door)->Questions = &Questions;
+            Cast<ADoorRiddle>(Door)->OldQuestions = &OldQuestions;
+            Door->FinishSpawning(Transform);
+    
+        }
 
         break;
 
@@ -1182,7 +1187,7 @@ void AMazeManager::GenerateDoors() {
         
     }
     
-    PortalType(FMath::RandRange(0,0),MaxPath[MaxPath.Num() - 2]);      
+    PortalType(2,MaxPath[MaxPath.Num() - 2]);      
 
 }
 
@@ -1343,12 +1348,13 @@ void AMazeManager::CreatePlatforms(AMazeCell2* Cell, float Value) {
 void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
     
     ARoomKiller* RoomKiller;
+    ARoomSocializer* RoomSocializer;
     ARoomAchiever* RoomAchiever;
     ADoor* Door;
     APuzzleButtonPortal* ButtonPortal;
     FTransform SpawnLocAndRotation;
     AMazeManager* MazeManager;
-    ASocializerMaze* SocializerMaze;
+    //ASocializerMaze* SocializerMaze;
     APortal* StartPortal;
     APortalNight* StartPortalNight;
     int CellIndex = MaxPath.IndexOfByKey(Cell);
@@ -1418,34 +1424,27 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             break;
 
         case 2:
-            
+
             //Create the door
             Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
                 GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
             Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
 
-            //Create the maze
-            SocializerMaze = GetWorld()->SpawnActorDeferred<ASocializerMaze>(SocializerMazeClass, SpawnLocAndRotation);
-            SocializerMaze->Depth = -750.f;
-            SocializerMaze->Length = 5;
-            SocializerMaze->Height = 5;
-            SocializerMaze->MazeRooms = 0;
-            SocializerMaze->ExternalDoor = Door;
-
+            //Extract a position and spawn the room
             NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
-            SocializerMaze->MazeActorPos = ArenaSpawnLocation[NumExtr];
+            SpawnLocAndRotation.SetLocation(ArenaSpawnLocation[NumExtr] - FVector(0.f,0.f,100.f));
+            RoomSocializer = GetWorld()->SpawnActor<ARoomSocializer>(SocializerRoomClass, SpawnLocAndRotation);
+            RoomSocializer->Door = Door;
             ArenaSpawnLocation.RemoveAt(NumExtr);
-
-            SocializerMaze->FinishSpawning(SpawnLocAndRotation);
 
             //Create the portal
             SpawnLocAndRotation.SetLocation(MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f));
             SpawnLocAndRotation.SetRotation(FRotator::ZeroRotator.Quaternion());
             StartPortal = GetWorld()->SpawnActorDeferred<APortal>(PortalClass, SpawnLocAndRotation);
-            StartPortal->NewPosition = SocializerMaze->MazeGraph->GetNodes()[0]->GetActorLocation();
+            StartPortal->NewPosition = RoomSocializer->SpawnPositions->GetComponentLocation() + FVector(-100.f,-100.f,+50.f);
             StartPortal->FinishSpawning(SpawnLocAndRotation);
 
-            SocializerMaze->StartPortalPos = StartPortal->GetActorLocation();
+            RoomSocializer->StartPortalPos = StartPortal->GetActorLocation();
 
             break;
 
@@ -1536,6 +1535,23 @@ void AMazeManager::SpawnExtraElem(int Index, AMazeCell2* AfterCell, AMazeCell2* 
 
             GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass, AfterCell->GetActorLocation(),
                 GetDoorRotation(AfterCell,BeforeCell));
+
+            break;
+
+        case 3:
+
+            if(HatClasses.Num() > 0 && FMath::RandRange(0,9) > 2){
+
+                int NumExtr = FMath::RandRange(0,HatClasses.Num() - 1);
+                GetWorld()->SpawnActor<AHat>(HatClasses[NumExtr], AfterCell->GetActorLocation(), FRotator::ZeroRotator);
+                HatClasses.RemoveAt(NumExtr);
+
+            }else{
+
+                GetWorld()->SpawnActor<ACoinController>(CoinClass, AfterCell->GetActorLocation(),
+                GetDoorRotation(AfterCell,BeforeCell));
+
+            }
 
             break;
 

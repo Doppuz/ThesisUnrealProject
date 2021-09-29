@@ -61,6 +61,7 @@ void APawnInteractiveMove::SetInitialValue(FVector Pos, int Contator, bool Direc
 	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsInt("Contator",Contator);
 	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool("Direction",Direction);
 	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool("NotEIsPressed",true);
+	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool("SameDirection",SameDirection);
 	
 }
 

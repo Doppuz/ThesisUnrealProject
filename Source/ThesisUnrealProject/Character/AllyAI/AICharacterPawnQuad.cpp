@@ -46,10 +46,10 @@ float AAICharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& D
 
 void AAICharacterPawnQuad::OnBeginTriggerOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
     
-    if(OtherActor->IsA(AEnemyAIAbstract::StaticClass()) && OtherActor != this){
+    if(OtherActor->IsA(AEnemyAIAbstract::StaticClass()) && !OtherActor->IsA(AAICharacterPawnQuad::StaticClass())){
         
         AController* MyController = Cast<AEnemyAIAbstract>(OtherActor)->GetController();
-        if(MyController == nullptr ||  MyController->IsA(APlayerController::StaticClass()))
+        if(MyController == nullptr ||  MyController->IsA(APlayerController::StaticClass()) || OtherActor == this)
             return;
 
         Enemies.Add(Cast<AEnemyAIAbstract>(OtherActor));

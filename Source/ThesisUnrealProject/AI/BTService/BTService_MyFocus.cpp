@@ -6,6 +6,7 @@
 #include "../../Character/InterfaceMovableAI.h"
 #include "BehaviorTree/BlackBoardComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "../../Character/AllyAI/AICharacterPawnQuad.h"
 
 
 UBTService_MyFocus::UBTService_MyFocus() {
@@ -16,18 +17,14 @@ UBTService_MyFocus::UBTService_MyFocus() {
 
 void UBTService_MyFocus::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
 
-    if(OwnerComp.GetAIOwner()->GetPawn()->Implements<UInterfaceMovableAI>()){
+    if(GetSelectedBlackboardKey().IsValid()){
 
-        IInterfaceMovableAI* AIPawn = Cast<IInterfaceMovableAI>(OwnerComp.GetAIOwner()->GetPawn());
-
-        FVector Direction = Cast<APawn>(AIPawn)->GetActorLocation() - OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
-        Direction.Z = 0.f;
-
-        Cast<APawn>(AIPawn)->SetActorRotation(Direction.Rotation());
-
-    }else{
-
-        UE_LOG(LogTemp,Warning,TEXT("Error in ServiceNewPosition : No Movable interface implemented"));
+        FVector Direction = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey()) - OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation();
+        Direction.Z = 0;
+        FRotator Rotator = Direction.Rotation();
+        APawn* P = OwnerComp.GetAIOwner()->GetPawn();
+            
+        OwnerComp.GetAIOwner()->GetPawn()->SetActorRotation(Direction.Rotation());
 
     }
 

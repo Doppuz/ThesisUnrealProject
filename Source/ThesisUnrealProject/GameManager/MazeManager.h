@@ -38,6 +38,7 @@ class APuzzleButtonPortal;
 class APortalNight;
 class APortalOpenDoor;
 class ARoomAchiever;
+class ARoomSocializer;
 class ADestructibleElements;
 class AStatueInteractElem;
 class AHeart;
@@ -45,6 +46,7 @@ class APawnInteractiveClass;
 class ATrap;
 class AGenericDestructibleElements;
 class ATriggerSpawnAlly;
+class AHat;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor{
@@ -236,6 +238,9 @@ protected:
 	TSubclassOf<ARoomKiller> KillerRoomClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ARoomSocializer> SocializerRoomClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ARoomAchiever> RoomAchieverClass;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
@@ -264,6 +269,9 @@ protected:
 		
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ATriggerSpawnAlly> TriggerSpawnAllyClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TArray<TSubclassOf<AHat>> HatClasses;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;

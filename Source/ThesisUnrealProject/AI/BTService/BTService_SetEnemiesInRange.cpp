@@ -27,9 +27,9 @@ void UBTService_SetEnemiesInRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
         FVector PlayerPosition = PlayerPawn->GetActorLocation() - PlayerPawn->GetActorForwardVector() * 200;
 
         if(FMath::RandRange(0,1) == 0)
-            OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("AsidePosition"),PlayerPosition + PlayerPawn->GetActorRightVector() * 200);
+            OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("AsidePosition"),PlayerPosition + PlayerPawn->GetActorRightVector() * 300);
         else
-            OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("AsidePosition"),PlayerPosition + PlayerPawn->GetActorRightVector() * (-200));
+            OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("AsidePosition"),PlayerPosition + PlayerPawn->GetActorRightVector() * (-300));
 
     }else{
         FVector PlayerFollowPosition = OwnerComp.GetBlackboardComponent()->GetValueAsVector("PlayerFollowLocation");

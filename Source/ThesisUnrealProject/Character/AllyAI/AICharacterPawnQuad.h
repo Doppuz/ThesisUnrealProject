@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../CharacterPawnQuad.h"
+#include "../EnemyAI/AIShooterPawn.h"
 #include "../EnemyAI/EnemyAIAbstract.h"
 #include "AICharacterPawnQuad.generated.h"
 
@@ -11,8 +11,8 @@
  * 
  */
 UCLASS()
-class THESISUNREALPROJECT_API AAICharacterPawnQuad : public ACharacterPawnQuad
-{
+class THESISUNREALPROJECT_API AAICharacterPawnQuad : public AAIShooterPawn{
+
 	GENERATED_BODY()
 
 public:
