@@ -13,15 +13,7 @@
 // Sets default values
 ATriggerEndGame::ATriggerEndGame(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-}
-
-
-// Called when the game starts or when spawned
-void ATriggerEndGame::BeginPlay(){
-	
-	Super::BeginPlay();
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -63,11 +55,5 @@ void ATriggerEndGame::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Oth
 
 		}
 	}
-
-}
-
-// Called every frame
-void ATriggerEndGame::Tick(float DeltaTime){
-	Super::Tick(DeltaTime);
 
 }

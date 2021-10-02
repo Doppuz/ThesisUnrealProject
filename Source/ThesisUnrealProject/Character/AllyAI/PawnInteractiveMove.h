@@ -25,9 +25,6 @@ class THESISUNREALPROJECT_API APawnInteractiveMove : public APawnInteractiveClas
 public:
 	// Sets default values for this character's properties
 	APawnInteractiveMove();
-	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Camera)
 	USpringArmComponent* CameraArmComponent;

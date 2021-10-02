@@ -15,9 +15,6 @@ public:
 	// Sets default values for this actor's properties
 	ASquaredProjectile();
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "General")
 	class UBoxComponent* Collider;
 

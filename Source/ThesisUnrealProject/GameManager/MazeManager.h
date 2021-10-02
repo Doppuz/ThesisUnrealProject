@@ -11,13 +11,11 @@
 #include "MazeManager.generated.h"
 
 class AMazeCell2;
-class RoomMaze;
 class MazeGenerationCreation2;
 class AdaptingExperienceManager;
 class AMazePopulate;
 class AMaze;
 class ADoor;
-class AGeneralRoomWithDoor;
 class ATrigger;
 class AStair;
 class AAIBull;
@@ -47,6 +45,7 @@ class ATrap;
 class AGenericDestructibleElements;
 class ATriggerSpawnAlly;
 class AHat;
+class ACheckPointLevel1;
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor{
@@ -137,7 +136,6 @@ protected:
 	//Methods
 	void InitializeMaze();
 	void CreateObstacle(int ObstaclesNumber);
-	void CreateRooms(int);
 	bool CheckRoomIntersection(TArray<AMazeCell2*>,int);
 	void CreateMaze(AMazeCell2*,AMazeCell2*);
 
@@ -153,19 +151,6 @@ public:
 	//Class for trigger spawn
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ATrigger> TriggerClass;
-
-	//Rooms
-	UPROPERTY(EditAnywhere, Category = "Rooms")
-	TSubclassOf<AGeneralRoomWithDoor> RumbleArenaClass;
-	
-	UPROPERTY(EditAnywhere, Category = "Rooms")
-	TSubclassOf<AGeneralRoomWithDoor> EnemiesArenaClass;
-	
-	UPROPERTY(EditAnywhere, Category = "Rooms")
-	TSubclassOf<AGeneralRoomWithDoor> MazeArenaClass;
-
-	UPROPERTY(EditAnywhere, Category = "Rooms")
-	TSubclassOf<AGeneralRoomWithDoor> RiddleArenaClass;
 
 	//Contains the path that leads to the exit.
 	TArray<AMazeCell2*> MaxPath;
@@ -273,6 +258,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TArray<TSubclassOf<AHat>> HatClasses;
 
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ACheckPointLevel1> CheckPointClass;
+
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
 
@@ -292,13 +280,7 @@ protected:
 	virtual void DepthVisit(AMazeCell2* Start);
 	void DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,
 		TArray<AMazeCell2*> & MazeCellList, Graph<AMazeCell2>* CurrentGraph);
-	void SetDynamicVisitedToZero();
 	void CreateOtherPaths(Graph<AMazeCell2>* OtherGraph, AMazeCell2* Current, AMazeCell2* Previous);
-
-	void AddDoors(int);
-
-	//Choose a room within a range to insert it in the level.
-	void AddRoom(int, ADoor*, ADoor*, FVector, AMazeCell2*);
 
 // --- Add enemies ---
 
@@ -330,9 +312,9 @@ protected:
 
 	void TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2*> Path);
 
+	void AddDoubleCircularPatrol(AMazeCell2*);
+
 // --- BlockedDoor Elements ---
-	
-	void GenerateDoors();
 
 	void AddDoor(int Index, AMazeCell2* Cell);
 
@@ -350,9 +332,9 @@ protected:
 
 // --- OtherPaths ---
 
-	void PopulateOtherPath();
-
 	void SpawnExtraElem(int, AMazeCell2*,AMazeCell2*);
+
+	void SpawnSigleCellElem(int, AMazeCell2*);
 
 #pragma endregion
 

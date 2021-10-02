@@ -41,8 +41,4 @@ protected:
 	//Define the overlap type (begin/end). It is called in the BeginPlay.
 	virtual void TypeOfOverlap();
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };

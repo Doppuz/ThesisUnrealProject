@@ -6,6 +6,12 @@
 #include "BehaviorTree/BlackBoardComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 
+AQuadAIBull::AQuadAIBull() {
+    
+	PrimaryActorTick.bCanEverTick = false;
+
+}
+
 void AQuadAIBull::BeginPlay() {
     
     Super::BeginPlay();
@@ -17,11 +23,5 @@ void AQuadAIBull::BeginPlay() {
                                                                                  
     }else
         UE_LOG(LogTemp,Warning,TEXT("No Behavior Tree"));
-
-}
-
-void AQuadAIBull::Tick(float DeltaTime) {
-    
-    Super::Tick(DeltaTime);
 
 }

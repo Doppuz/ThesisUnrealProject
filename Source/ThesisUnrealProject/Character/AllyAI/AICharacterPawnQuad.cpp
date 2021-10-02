@@ -7,15 +7,11 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 AAICharacterPawnQuad::AAICharacterPawnQuad() {
+
+    PrimaryActorTick.bCanEverTick = true;
     
     EnemyInRangeTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerInRange"));
     EnemyInRangeTrigger->SetupAttachment(RootComponent);
-
-}
-
-void AAICharacterPawnQuad::BeginPlay() {
-
-    Super::BeginPlay();
 
 }
 
@@ -25,6 +21,7 @@ void AAICharacterPawnQuad::Tick(float DeltaTime) {
 
     EnemyInRangeTrigger->GetOverlappingActors(UnSortedEnemies,AEnemyAIAbstract::StaticClass());
     
+    //Sort actors based on the distance location from the AI.
     UnSortedEnemies.Sort( 
         [this](const AActor& FirstElem, const AActor& SecondElem)  {
          return (FirstElem.GetActorLocation() - this->GetActorLocation()).Size() > 
@@ -32,9 +29,6 @@ void AAICharacterPawnQuad::Tick(float DeltaTime) {
     });
 
     Enemies = UnSortedEnemies;
-
-    //for(AEnemyAIAbstract* Enemy: Enemies)
-    //    UE_LOG(LogTemp,Warning,TEXT(" %s : %f "), *Enemy->GetName(), (Enemy->GetActorLocation() - this->GetActorLocation()).Size());
 
 }
 

@@ -15,11 +15,6 @@ class THESISUNREALPROJECT_API AChestController : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AChestController();
-	virtual void Tick(float DeltaTime) override;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 private:
 

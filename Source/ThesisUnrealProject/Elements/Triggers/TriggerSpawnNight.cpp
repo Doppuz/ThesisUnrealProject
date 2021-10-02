@@ -11,18 +11,10 @@
 // Sets default values
 ATriggerSpawnNight::ATriggerSpawnNight(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	LightOn = true;
 	AttenuationRadius = 1000.f;
-
-}
-
-
-// Called when the game starts or when spawned
-void ATriggerSpawnNight::BeginPlay(){
-	
-	Super::BeginPlay();
 
 }
 
@@ -51,11 +43,5 @@ void ATriggerSpawnNight::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 
 		}
 	}
-
-}
-
-// Called every frame
-void ATriggerSpawnNight::Tick(float DeltaTime){
-	Super::Tick(DeltaTime);
 
 }

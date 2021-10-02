@@ -52,10 +52,3 @@ void AMazeCell2::LineTracing(FVector Vector) {
 	}
 
 }
-
-// Called when the game starts or when spawned
-void AMazeCell2::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}

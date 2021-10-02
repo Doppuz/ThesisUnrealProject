@@ -8,7 +8,7 @@
 // Sets default values
 APuzzleButton::APuzzleButton(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
@@ -32,12 +32,6 @@ void APuzzleButton::BeginPlay(){
 	Trigger->OnComponentBeginOverlap.AddDynamic(this,&APuzzleButton::OnOverlap);
 }
 
-// Called every frame
-void APuzzleButton::Tick(float DeltaTime){
-	Super::Tick(DeltaTime);
-
-}
-
 void APuzzleButton::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 
@@ -50,10 +44,6 @@ void APuzzleButton::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Other
 				bDisableOverlap = true;
 				Mesh->SetMaterial(0,ButtonColor);
 				Overlap.Broadcast(this);
-			
-				//if(GetParentActor() != nullptr && GetParentActor()->IsA(APuzzleWith2Doors::StaticClass())){
-					
-				//}
 			
 			}
 			

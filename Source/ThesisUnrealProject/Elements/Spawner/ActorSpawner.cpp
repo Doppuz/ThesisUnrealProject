@@ -7,10 +7,9 @@
 AActorSpawner::AActorSpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	
 	bDestroyAfterSpawn = true;
-	//ActorTutotialSpawnPosition = z: 115;
 }
 
 AActor* AActorSpawner::SpawnActor() {

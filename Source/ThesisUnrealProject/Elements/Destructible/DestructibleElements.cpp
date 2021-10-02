@@ -9,7 +9,7 @@
 // Sets default values
 ADestructibleElements::ADestructibleElements(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
@@ -34,12 +34,6 @@ void ADestructibleElements::BeginPlay(){
 	Super::BeginPlay();
 
 	DestructibleMesh->OnComponentFracture.AddDynamic(this,&ADestructibleElements::OnComponentFracture);
-
-}
-
-// Called every frame
-void ADestructibleElements::Tick(float DeltaTime){
-	Super::Tick(DeltaTime);
 
 }
 

@@ -20,22 +20,13 @@
 // Sets default values
 AAIBull::AAIBull(){
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	/*Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = Root;*/
+	PrimaryActorTick.bCanEverTick = false;
 
 	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
 	RootComponent = Collider;//->SetupAttachment(RootComponent);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Collider);
-
-	/*HornCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("HornCollider"));
-	HornCollider->SetupAttachment(RootComponent);
-
-	HornMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HornMesh"));
-	HornMesh->SetupAttachment(RootComponent);*/
 
 	PawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("PawnMovement"));
 	PawnMovement->MaxSpeed = 300;
@@ -102,13 +93,6 @@ void AAIBull::BeginPlay()
 	Collider->OnComponentHit.AddDynamic(this, &AAIBull::OnHit);
 	Mesh->OnComponentHit.AddDynamic(this, &AAIBull::OnHit);
 
-}
-
-// Called every frame
-void AAIBull::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	//SetActorLocation(FVector(GetActorLocation().X,GetActorLocation().Y,42.f));
 }
 
 void AAIBull::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {

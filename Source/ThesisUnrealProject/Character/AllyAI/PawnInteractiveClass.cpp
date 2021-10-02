@@ -33,13 +33,6 @@ APawnInteractiveClass::APawnInteractiveClass()
 	QuestionAt = 200;
 }
 
-// Called when the game starts or when spawned
-void APawnInteractiveClass::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
 // Called every frame
 void APawnInteractiveClass::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
@@ -121,8 +114,6 @@ void APawnInteractiveClass::StartInteraction() {
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 	PlayerPawn->AllyNPC = this;
 	PlayerPawn->bStopMovement = true;
-
-	//Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),false);
 		
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameAndUI());
@@ -140,8 +131,6 @@ void APawnInteractiveClass::EndInteraction() {
 	PlayerPawn->SetMousePointer(false);
 	PlayerPawn->AllyNPC = nullptr;
 	PlayerPawn->bStopMovement = false;
-	
-	//Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsBool(TEXT("NotEIsPressed"),true);
 
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameOnly());
@@ -155,8 +144,9 @@ void APawnInteractiveClass::EndInteraction() {
 
 //It equips the object.
 void APawnInteractiveClass::Equipment() {
+	
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-//	PlayerPawn->EquipmentMesh->SetStaticMesh(MeshToEquip);
+
 }
 
 void APawnInteractiveClass::Choice(int Answer) {

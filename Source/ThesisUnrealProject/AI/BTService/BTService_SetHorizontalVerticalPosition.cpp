@@ -33,12 +33,4 @@ void UBTService_SetHorizontalVerticalPosition::TickNode(UBehaviorTreeComponent& 
 
     OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("NextLocation"),StartLocation + FVector(XValue,YValue,0));
 
-    /*if(PlayerPawn->GetActorLocation().Size() != (StartLocation + FVector(Horizontal,Vertical,0)).Size())
-        OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("NextLocation"),StartLocation + FVector(Horizontal,Vertical,0));
-    else{
-        Horizontal = -Horizontal;
-        Vertical = -Vertical;
-    }*/
-
-
 }

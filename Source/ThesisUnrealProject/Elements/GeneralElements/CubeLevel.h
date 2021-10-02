@@ -15,14 +15,6 @@ public:
 	// Sets default values for this actor's properties
 	ACubeLevel();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	class UBoxComponent* Collider;
 

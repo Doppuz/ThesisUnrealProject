@@ -17,17 +17,11 @@ public:
 	ATriggerEndGame();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 
 	//check if the trigger switch on or of fthe light.
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> UIEndGame;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };

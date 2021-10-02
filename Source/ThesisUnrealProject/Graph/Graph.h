@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "../GameManager/MazeCell.h"
 #include "Side.h"
 #include "Node.h"
 #include "CoreMinimal.h"

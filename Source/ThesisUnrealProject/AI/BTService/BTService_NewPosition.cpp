@@ -16,6 +16,8 @@ UBTService_NewPosition::UBTService_NewPosition() {
 
 void UBTService_NewPosition::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
 
+    Super::TickNode(OwnerComp,NodeMemory,DeltaSeconds);
+
     if(OwnerComp.GetAIOwner()->GetPawn()->Implements<UInterfaceMovableAI>()){
 
         IInterfaceMovableAI* AIPawn = Cast<IInterfaceMovableAI>(OwnerComp.GetAIOwner()->GetPawn());

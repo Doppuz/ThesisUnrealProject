@@ -63,6 +63,7 @@ AAIShotPawnObstacle::AAIShotPawnObstacle(){
 
 // Called when the game starts or when spawned
 void AAIShotPawnObstacle::BeginPlay(){
+	
 	Super::BeginPlay();
 	
 	TriggerLeft->OnComponentBeginOverlap.AddDynamic(this,&AAIShotPawnObstacle::OnOverlap);

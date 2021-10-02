@@ -23,11 +23,9 @@ void UBTService_CheckLineOfSight::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 
     if(AIController == nullptr)
         return;
-
-    //float Distance = (PlayerPawn->GetActorLocation() - AIPawn->GetActorLocation()).Size();
-
-    //float RandomDistance = Cast<ACharacterPawnQuad>(AIPawn)->MaxRandomDistance;
     
+    //Line tracing
+
     FVector End = AIController->GetPawn()->GetActorLocation() + AIController->GetPawn()->GetActorRotation().Vector() * 1500;
 
 	FCollisionQueryParams Params(NAME_None, true, AIController->GetPawn());
@@ -45,8 +43,7 @@ void UBTService_CheckLineOfSight::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 
     TArray<AActor*> Enemies = Cast<AAICharacterPawnQuad>(AIController->GetPawn())->Enemies;
 
-    if(Hit.GetActor() != nullptr)
-        UE_LOG(LogTemp,Warning,TEXT("%s"), *Hit.GetActor()->GetName());
+    //Check the result
 
     if(Hit.GetActor() != nullptr && Enemy != nullptr && Enemies.Contains(Hit.GetActor())){// || Distance > 1000.f){ //1000
         OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("CanISeeTheEnemy"),true);

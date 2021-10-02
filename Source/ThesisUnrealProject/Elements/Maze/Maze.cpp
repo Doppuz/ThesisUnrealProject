@@ -69,9 +69,3 @@ void AMaze::CreateObstacle(FTransform Transform) {
 
 }
 
-// Called when the game starts or when spawned
-void AMaze::BeginPlay(){
-
-	Super::BeginPlay();
-	
-}

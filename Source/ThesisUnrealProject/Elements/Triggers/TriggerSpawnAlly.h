@@ -10,8 +10,8 @@
 class AAICharacterPawnQuad;
 
 UCLASS()
-class THESISUNREALPROJECT_API ATriggerSpawnAlly : public ATrigger
-{
+class THESISUNREALPROJECT_API ATriggerSpawnAlly : public ATrigger{
+
 	GENERATED_BODY()
 	
 public:	
@@ -22,13 +22,5 @@ public:
 
 	UPROPERTY(EditAnywhere,  Category = "SpawnAlly")
 	TSubclassOf<AAICharacterPawnQuad> AllyClass;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };

@@ -13,7 +13,7 @@
 // Sets default values
 APawnInteractiveMove::APawnInteractiveMove(){
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	EquipmentMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EquipmentMesh"));
 	EquipmentMesh->SetupAttachment(RootComponent);
@@ -46,12 +46,6 @@ void APawnInteractiveMove::BeginPlay(){
 	Super::BeginPlay();
 
 	bFocus = false;
-}
-
-// Called every frame
-void APawnInteractiveMove::Tick(float DeltaTime){
-	Super::Tick(DeltaTime);
-
 }
 
 void APawnInteractiveMove::SetInitialValue(FVector Pos, int Contator, bool Direction,bool SameDirection) {

@@ -15,7 +15,7 @@
 // Sets default values
 ASquaredProjectile::ASquaredProjectile(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
 	RootComponent = Collider;
@@ -83,30 +83,17 @@ void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 
 			}	
 
-			/*if(ShooterPawn != nullptr && OtherPawn != nullptr && 
-				ShooterPawn->GetController() != nullptr && OtherPawn->GetController() != nullptr &&
-					!((ShooterPawn->GetController()->IsA(AAIController::StaticClass())) && 
-					OtherPawn->GetController()->IsA(AAIController::StaticClass()))){
-
-				OtherActor->TakeDamage(Damage, DamageEvent,ShooterPawn->GetController(),this);
-
-			}*/
 		}
-	}else if(OtherActor->IsA(ACrateElements::StaticClass())){
+
+	}else if(OtherActor->IsA(ACrateElements::StaticClass()) && MyOwner != nullptr &&  MyOwner->IsA(ACharacterPawnQuad::StaticClass())){
 		
-		Cast<ACrateElements>(OtherActor)->DestructibleComponent->ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 30000);	
+		Cast<ACrateElements>(OtherActor)->DestructibleComponent->ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 4000.f);	
 	
-	} else if(OtherActor->IsA(AGenericDestructibleElements::StaticClass())){
+	} else if(OtherActor->IsA(AGenericDestructibleElements::StaticClass()) && MyOwner != nullptr &&  MyOwner->IsA(ACharacterPawnQuad::StaticClass())){
 		
-		Cast<AGenericDestructibleElements>(OtherActor)->DestructibleMesh->ApplyDamage(1.f,Hit.ImpactPoint, Hit.ImpactNormal,500.f);// ApplyRadiusDamage(1.f,Hit.ImpactPoint,1000.f,1000,true); //ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 2000);	
+		Cast<AGenericDestructibleElements>(OtherActor)->DestructibleMesh->ApplyDamage(1.f,Hit.ImpactPoint, Hit.ImpactNormal,4000.f);// ApplyRadiusDamage(1.f,Hit.ImpactPoint,1000.f,1000,true); //ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 2000);	
 		
 	}
 
 	Destroy();
-}
-
-// Called every frame
-void ASquaredProjectile::Tick(float DeltaTime){
-	Super::Tick(DeltaTime);
-
 }

@@ -6,7 +6,6 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "MazeCell2.h"
-#include "RoomMaze.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Elements/Maze/Maze.h"
 #include "../Elements/GeneralElements/Doors/Door.h"
@@ -19,13 +18,8 @@
 #include "../Elements/Room/RoomKiller.h"
 #include "../Elements/Room/RoomAchiever.h"
 #include "../Elements/Room/RoomSocializer.h"
-#include "../Elements/Room/ArenaEnemies/ArenaEnemies.h"
-#include "../Elements/Room/RumbleArena/RumbleArenaDoorNpc.h"
-#include "../Elements/Room/UndergroundRoom/MazeArena/MazeArena.h"
-#include "../Elements/Room/UndergroundRoom/RiddleArena/RiddleArena.h"
 #include "../Elements/Triggers/Trigger.h"
 #include "../Elements/Triggers/TriggerSpawnNight.h"
-#include "../Elements/Stairs/Stair.h"
 #include "../Character/EnemyAI/AIBull.h"
 #include "../Character/EnemyAI/AIShooterPawn.h"
 #include "../Character/EnemyAI/PatrolAIPawn.h"
@@ -43,6 +37,8 @@
 #include "../Elements/Destructible/GenericDestructibleElements.h"
 #include "../Elements/Triggers/TriggerSpawnAlly.h"
 #include "../Elements/Hat/Hat.h"
+#include "../CheckPoints/CheckPointLevel1.h"
+#include "../CheckPoints/SaveGameLevel1.h"
 
 // Sets default values
 AMazeManager::AMazeManager(){
@@ -76,34 +72,45 @@ void AMazeManager::BeginPlay(){
     
 	Super::BeginPlay();
 
-    ArenaSpawnLocation.Add(FVector(100000.f,100000.f,0.f));
-    ArenaSpawnLocation.Add(FVector(-100000.f,100000.f,0.f));
-    ArenaSpawnLocation.Add(FVector(100000.f,-100000.f,0.f));
-    ArenaSpawnLocation.Add(FVector(-100000.f,-100000.f,0.f));  
-
-    LoadFromFile(Speech, "QuestionsSpeech");
-    LoadFromFile(Questions, "Questions");
-    LoadFromFile(BlockedSpeech, "BlockedSpeech");
-
-	//Initialize all the components for the maze creation.
-    MazeGraph = new Graph<AMazeCell2>();
-    MazeActor = GetWorld()->SpawnActor<AMaze>(MazeActorClass,FVector(0,0,Depth),FRotator::ZeroRotator);
-    
-    StandardMazeCreation();
-
-    DepthVisit(MazeGraph->GetCurrentNode());
-
-    if(PopulateMaze){
+    if (USaveGameLevel1* LoadedGame = Cast<USaveGameLevel1>(UGameplayStatics::LoadGameFromSlot("CheckpointLevel1", 0))){
         
-        //AddDoors(1);
+        for(int i = 0; i < LoadedGame->MazeTransformMap.Num(); i++){
+            
+            AMaze* Maze = GetWorld()->SpawnActor<AMaze>(MazeActorClass,FVector(0,0,Depth),FRotator::ZeroRotator);
+            Maze->FloorInstances->AddInstances(LoadedGame->MazeTransformMap[i].Transforms,false);
 
-        GenerateElements(MaxPath);
+        }
 
-        GenerateDoors();
+    }else{
 
-        //PopulateOtherPath();
+        ArenaSpawnLocation.Add(FVector(100000.f,100000.f,0.f));
+        ArenaSpawnLocation.Add(FVector(-100000.f,100000.f,0.f));
+        ArenaSpawnLocation.Add(FVector(100000.f,-100000.f,0.f));
+        ArenaSpawnLocation.Add(FVector(-100000.f,-100000.f,0.f));  
 
-        Populate(MaxPath);
+        LoadFromFile(Speech, "QuestionsSpeech");
+        LoadFromFile(Questions, "Questions");
+        LoadFromFile(BlockedSpeech, "BlockedSpeech");
+
+        //Initialize all the components for the maze creation.
+        MazeGraph = new Graph<AMazeCell2>();
+        MazeActor = GetWorld()->SpawnActor<AMaze>(MazeActorClass,FVector(0,0,Depth),FRotator::ZeroRotator);
+        
+        StandardMazeCreation();
+
+        DepthVisit(MazeGraph->GetCurrentNode());
+
+        if(PopulateMaze){
+            
+            GenerateElements(MaxPath);
+
+            //GenerateDoors();
+        
+            PortalType(FMath::RandRange(0,3),MaxPath[MaxPath.Num() - 2]);  
+
+            Populate(MaxPath);
+
+        }
 
     }
 
@@ -122,20 +129,12 @@ void AMazeManager::Tick(float DeltaTime)
 
 void AMazeManager::StandardMazeCreation() {
     InitializeMaze();
-    CreateRooms(3);
     CreateMaze(MazeGraph->GetCurrentNode(),nullptr);
-    //PrintMaze();
 }
 
 
 //Used to draw the line for the visual graph
 void AMazeManager::PrintMaze(TArray<AMazeCell2*> Nodes, FColor Color) {
-
-    /*for (AMazeCell2* Cell : Nodes) {
-		for(Side<AMazeCell2>* Edge: MazeGraph->GetSides(Cell)){
-			3
-		}
-    }*/
 
     for(int i = 0 ; i < Nodes.Num(); i++){
         
@@ -210,59 +209,6 @@ void AMazeManager::InitializeMaze() {
 
 }
 
-//Create the rooms based on the size passed by parameter.
-void AMazeManager::CreateRooms(int RoomSize) {
-    
-    for(int k = 0; k < MazeRooms; k++){
-
-        TArray<AMazeCell2*> Cells = MazeGraph->GetNodes();
-        int NumExtr;
-        
-        do{
-
-            NumExtr = FMath::RandRange(Length,Cells.Num() - Length * RoomSize);
-
-        //Check if I am in the first column and then check if there are at least 4 cells free.
-        }while(CheckRoomIntersection(Cells,NumExtr));
-
-        for(int i = 0; i < RoomSize; i++){
-
-            for(int j = 0; j < RoomSize; j++){
-
-                Cells[Length *i + NumExtr + j]->bIsRoom = true;
-                Cells[Length *i + NumExtr + j]->RoomNumber = k;
-                
-                if(j != RoomSize - 1){
-                
-                    Cells[Length *i + NumExtr + j]->DestroyWall(Cells[Length * i + NumExtr + j + 1]);
-                    MazeGraph->DeleteSide(Cells[Length *i + NumExtr + j],Cells[Length * i + NumExtr + j + 1]);
-
-                }
-
-                if(i != RoomSize - 1){
-
-                    Cells[Length *i + NumExtr + j]->DestroyWall(Cells[Length * (i + 1) + NumExtr + j]);
-                    MazeGraph->DeleteSide(Cells[Length *i + NumExtr + j],Cells[Length * (i + 1) + NumExtr + j]);
-
-                }
-
-                Cells[Length *i + NumExtr + j]->DestroyFloor();
-                
-                if(RoomSize * i + j == (int)((RoomSize * RoomSize) / 2)){
-                    
-                    RoomCenter.Add(k,Cells[Length *i + NumExtr + j]->GetActorLocation());
-                    RoomCenter[k].Z = -70.f;
-
-                }
-
-            }   
-
-        }
-    }
-
-}
-
-
 void AMazeManager::CreateMaze(AMazeCell2* Current,AMazeCell2* Previous) {
 
        if(!Current->bIsVisited){
@@ -305,35 +251,6 @@ void AMazeManager::CreateMaze(AMazeCell2* Current,AMazeCell2* Previous) {
 
 
 }
-
-//First I check If it is in the first column, then if there are at least 4 cells empty in the end. Finally I check the sourrindings cells.
-bool AMazeManager::CheckRoomIntersection(TArray<AMazeCell2*> Cells, int NumExtr) {
-
-    if(NumExtr % Length == 0)
-        return true;
-        
-    int a = (int)(NumExtr / Length + 1) * Length - NumExtr;
-
-    if((int)(NumExtr / Length + 1) * Length - NumExtr < 4)
-        return true;
-
-    int Start = NumExtr - Length - 1;
-
-    for(int i = 0; i < 5; i++){
-
-        for(int j = 0; j < 5; j++){
-
-            if(Cells[Length * i + Start + j]->bIsRoom)
-                return true;
-
-        }
-
-    }
-
-    return false;
-
-}
-
 
 #pragma endregion
 
@@ -401,6 +318,7 @@ void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
 
                     delete NewGraph;
 
+                    //Based on the number of cells I decide how to poplate them.
                     if(MazeCellMax.Num() > 4){
                         
                         GenerateElements(MazeCellMax);
@@ -409,9 +327,20 @@ void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
                         
                     }else{
 
-                        if(MazeCellMax.Num() > 1)
+                        //if cells are greater than 1 insert one last element
+                        if(MazeCellMax.Num() > 1){
+                            
+                            //if its value is 3 it added one cell element
+                            if(MazeCellMax.Num() > 2)
+                                SpawnSigleCellElem(FMath::RandRange(0,3),MazeCellMax[1]);
+
+                            //if its value is 4 it added one cell element
+                            if(MazeCellMax.Num() > 3)
+                                SpawnSigleCellElem(FMath::RandRange(0,3),MazeCellMax[2]);
+
                             SpawnExtraElem(3,MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
-                        else
+
+                        }else
                             SpawnExtraElem(3,MazeCellMax[MazeCellMax.Num() - 1],Path[i]);
 
                     }
@@ -455,8 +384,6 @@ void AMazeManager::DepthVisit(AMazeCell2* Start) {
     TArray<AMazeCell2*> NewPath;
     Graph<TArray<AMazeCell2*>> OtherGraph;
 
-    //PrintMaze(MaxPath, FColor(0.f,0.f,0.f));
-
 }
 
 void AMazeManager::DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMazeCell2*> CurrentVisitedCell,
@@ -475,13 +402,6 @@ void AMazeManager::DepthVisitWrapper(AMazeCell2* Current, float Cost, TArray<AMa
     if(CurrentVisitedCell.Num() > MazeCellMax.Num()) //&& (LastCell->I == 0 || LastCell->I == 12 ||
                                                     //    LastCell->J == 0 || LastCell->J == 12))
         MazeCellMax = CurrentVisitedCell;
-
-}
-
-void AMazeManager::SetDynamicVisitedToZero() {
-    
-    /*for(AMazeCell* Cell: OldPath)
-    	Cell->bDynamicIsVisited = false;*/
 
 }
 
@@ -505,233 +425,30 @@ void AMazeManager::CreateOtherPaths(Graph<AMazeCell2>* OtherGraph, AMazeCell2* C
 
     }
     
-    //The process is divided in 3 parts. First check if I am in a crossroad.
-    /*if(!MaxPath.Contains(Current) && Sides.Num() > 2){
-        
-        if(!(*NewPath).Contains(Current))
-            (*NewPath).Add(Current);
-
-        
-        TArray<AMazeCell2*>* Node = new TArray<AMazeCell2*>(*NewPath);
-        
-        if(!OtherGraph->Contains(Node)){
-            OtherGraph->AddNode(Node);
-
-            if(CurrentNode != nullptr)
-
-                OtherGraph->AddSide(CurrentNode,Node,0.f);
-
-        }
-        
-        (*NewPath).Empty();
-
-        for(Side<AMazeCell2>* S: Sides){
-                
-            if(!(*NewPath).Contains(Current))
-                (*NewPath).Add(Current);
-
-            if(S->To != MaxPath[MaxPathIndex + 1] && S->To != Previous){
-
-                CreateOtherPaths(NewPath, S->To,Current, MaxPathIndex,OtherGraph,Node);
-
-            }
-
-        }
-
-    //the if it is at the end of the street
-    }if(Sides.Num() == 1){
-
-        if(!(*NewPath).Contains(Current))
-            (*NewPath).Add(Current);
-
-        if(!Current->bIsRoom || Previous != MaxPath[MaxPathIndex]){
-
-            if((*NewPath).Num() > 1){
-            
-                TArray<AMazeCell2*>* Node = new TArray<AMazeCell2*>(*NewPath);
-
-                if(!OtherGraph->Contains(Node)){
-                    OtherGraph->AddNode(Node);
-
-                    if(CurrentNode != nullptr)
-
-                        OtherGraph->AddSide(CurrentNode,Node,0.f);
-
-                }
-            
-            }
-
-            (*NewPath).Empty();
-
-        }
-
-    //Any ohter cases.
-    }else{
-        
-        for(Side<AMazeCell2>* S: Sides){
-                
-            if(!(*NewPath).Contains(Current))
-                (*NewPath).Add(Current);
-
-            if(S->To != MaxPath[MaxPathIndex + 1] && S->To != Previous){
-
-                CreateOtherPaths(NewPath, S->To,Current, MaxPathIndex,OtherGraph,CurrentNode);
-
-            }
-
-        }
-
-    }
-
-    (*NewPath).Empty();
-
-    //If I am in maxpath I proceed along the maxpth path.
-    if(MaxPathIndex + 1 < MaxPath.Num() && MaxPath[MaxPathIndex] == Current){
-        
-        if(OtherGraph->GetNodes().Num() != 0){
-            OtherPaths.Add((*OtherGraph));
-            OtherGraph->DeleteAll();
-        }
-        CreateOtherPaths(NewPath, MaxPath[MaxPathIndex+1],Current, MaxPathIndex+1,OtherGraph,CurrentNode);
-
-
-    }*/
-
-}
-
-void AMazeManager::AddDoors(int Index) {
-
-    for(Side<AMazeCell2>* Sides: MazeGraph->GetSides(MaxPath[Index])){
-		
-		if(Sides->To->RoomNumber != -1){
-			
-			if(Index + 1 < MaxPath.Num()){
-
-                FVector Pos = (MaxPath[Index + 1]->GetActorLocation() + MaxPath[Index]->GetActorLocation()) / 2.f;
-                Pos.Z = 200.f;
-                FRotator Rot;
-
-                if(MaxPath[Index]->GetActorLocation().Y == MaxPath[Index + 1]->GetActorLocation().Y)
-                    Rot = FRotator(0.f,90.f,0.f);
-                else
-                    Rot = FRotator(0.f,0.f,0.f);
-                
-
-                //Spawn the doors
-				ADoor* Door = GetWorld()->SpawnActor<ADoor>(DoorClass,Pos,Rot);
-                Door->SetActorScale3D(FVector(1.7f,3.f,0.75f));
-
-                if(MaxPath[Index]->GetActorLocation().Y == Sides->To->GetActorLocation().Y)
-                    Rot = FRotator(0.f,90.f,0.f);
-                else
-                    Rot = FRotator(0.f,0.f,0.f);
-
-                Pos =  (Sides->To->GetActorLocation() + MaxPath[Index]->GetActorLocation()) / 2.f;
-                Pos.Z = 500.f;
-                ADoor* RoomDoor = GetWorld()->SpawnActor<ADoor>(DoorClass,Pos,Rot);
-                RoomDoor->SetActorScale3D(FVector(1.7f,3.f,0.75f));
-                RoomDoor->SetDoorDirection(true);
-
-                AddRoom(2,Door,RoomDoor,RoomCenter[Sides->To->RoomNumber],Sides->To); //FMath::RandRange(0,3)
-
-			}
-
-		}
-
-	}
-
-    if(Index + 1 < MaxPath.Num()){
-        AddDoors(++Index);
-    }
-    
-}
-
-void AMazeManager::AddRoom(int Index, ADoor* Door, ADoor* RoomDoor, FVector Pos, AMazeCell2* RoomCell) {
-
-    //Collected all the variable at the beginning because it gives me error if create a variable half way.
-    AGeneralRoomWithDoor* Arena;
-    FVector Location;
-    ATrigger* Trigger;
-    FVector MazeLocation;
-    FVector DoorPos;
-    int ExtrNum;
-    
-    FTransform ArenaLocAndRotation;
-    ArenaLocAndRotation.SetLocation(Pos);
-    ArenaLocAndRotation.SetRotation(FRotator::ZeroRotator.Quaternion()); 
-
-    switch(Index){
-
-        case 0:
-
-            Arena = GetWorld()->SpawnActor<AArenaEnemies>(EnemiesArenaClass,Pos,FRotator::ZeroRotator);
-            Arena->Door = Door;
-            
-            Location = RoomDoor->GetActorLocation();
-            Location.Z = 150.f;
-            Trigger = GetWorld()->SpawnActor<ATrigger>(TriggerClass,Location ,RoomDoor->GetActorRotation()); 
-		    Trigger->ChangeVisibility(true);
-            Trigger->SetActorScale3D(FVector(1.f,1.5f,2.f));
-
-            break;
-        
-        case 1:
-        
-            Arena = GetWorld()->SpawnActor<ARumbleArenaDoorNpc>(RumbleArenaClass,Pos,FRotator::ZeroRotator);
-            Arena->Door = Door;
-            Cast<ARumbleArenaDoorNpc>(Arena)->RoomDoor = RoomDoor;
-
-            break;
-
-        case 2:
-
-            Arena = GetWorld()->SpawnActorDeferred<AMazeArena>(MazeArenaClass, ArenaLocAndRotation);
-            Arena->Door = Door;
-            ExtrNum = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
-            Cast<AMazeArena>(Arena)->PortalPosition = ArenaSpawnLocation[ExtrNum];
-            ArenaSpawnLocation.RemoveAt(ExtrNum);
-            Arena->FinishSpawning(ArenaLocAndRotation);
-
-            break;
-
-        case 3:
-
-            Arena = GetWorld()->SpawnActorDeferred<ARiddleArena>(RiddleArenaClass, ArenaLocAndRotation);
-            ARiddleArena* CastedArena = Cast<ARiddleArena>(Arena);
-            CastedArena->Door = Door;
-            CastedArena->Questions = &Questions;
-            CastedArena->OldQuestions = &OldQuestions;
-            CastedArena->Speech = &Speech;
-            CastedArena->OldSpeech = &OldSpeech;
-            CastedArena->BlockedSpeech = &BlockedSpeech;
-            CastedArena->OldBlockedSpeech = &OldBlockedSpeech;
-            
-            ExtrNum = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
-            CastedArena->PortalPosition = ArenaSpawnLocation[ExtrNum];
-            ArenaSpawnLocation.RemoveAt(ExtrNum);
-
-            Arena->FinishSpawning(ArenaLocAndRotation);
-
-            CastedArena->GenerateRiddleDoors();
-            break;
-    }
-
 }
 
 void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
     
-    for(int i = 2; i < Path.Num() - 2; i += 4){ //MaxPath.Num() - 2
+    for(int i = 1; i < Path.Num() - 4; i += 4){ //MaxPath.Num() - 2
 
-        if(i == 2 || (i - 2) % 10 != 0){
+        if(i == 1 || (i - 1) % 12 != 0){
         
-            //AddEnemy(FMath::RandRange(0,3), MaxPath[i - 1]); //FMath::RandRange(0,3)
             if(FMath::RandRange(0,2) < 2)
-                AddEnemy(FMath::RandRange(0,3), Path[i - 1], Path);
+                AddEnemy(FMath::RandRange(0,3), Path[i], Path);
             else
-                AddFallenPlatforms(FMath::RandRange(0,3), Path[i - 1], Path);
+                AddFallenPlatforms(FMath::RandRange(0,3), Path[i], Path);
         
+        }else{
+            
+            AddDoor(FMath::RandRange(0,3),MaxPath[i]);  
+
+            GetWorld()->SpawnActor<ACheckPointLevel1>(CheckPointClass,(MaxPath[i + 1]->GetActorLocation() + MaxPath[i]->GetActorLocation()) / 2,
+                GetDoorRotation(MaxPath[i + 1], MaxPath[i]));
+
+            i -= 2; 
+
         }
-    }
+    } 
 
 }
 
@@ -874,27 +591,7 @@ void AMazeManager::TypeOfPatrols(int Index, int CellIndex, TArray<AMazeCell2*> P
         Transform.SetLocation(Path[CellIndex + 1]->GetActorLocation());
         MazeActor->CreateObstacle(Transform);
 
-        //Create 2 patrols for the second cell (Circular movement) in the opposite way.
-        for(int i = 0; i < 2; i ++){
-
-            //Here I create the enemy
-            if(i == 0)
-                Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyCircularClass,Path[CellIndex + 1]->GetActorLocation() + FVector(300.f,300.f,0.f), FRotator::ZeroRotator);
-            else
-                Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyCircularClass,Path[CellIndex + 1]->GetActorLocation() + FVector(-300.f,-300.f,0.f), FRotator::ZeroRotator);
-
-            Enemy->Positions.Add(Path[CellIndex + 1]->GetActorLocation() + FVector(300.f,300.f,0.f));
-            Enemy->Positions.Add(Path[CellIndex + 1]->GetActorLocation() + FVector(-300.f,300.f,0.f));
-            Enemy->Positions.Add(Path[CellIndex + 1]->GetActorLocation() + FVector(-300.f,-300.f,0.f));
-            Enemy->Positions.Add(Path[CellIndex + 1]->GetActorLocation() + FVector(300.f,-300.f,0.f));
-
-            //Set the initial value of the BTree.
-            if(i == 0)
-                Enemy->SetInitialValue(Cast<APawn>(Enemy)->GetActorLocation(),0,true, false);
-            else
-                Enemy->SetInitialValue(Cast<APawn>(Enemy)->GetActorLocation(),2,true, false);
-
-        }
+        AddDoubleCircularPatrol(Path[CellIndex + 1]);
         
         break;
 
@@ -904,7 +601,33 @@ void AMazeManager::TypeOfPatrols(int Index, int CellIndex, TArray<AMazeCell2*> P
 
     }
 
+}
+
+void AMazeManager::AddDoubleCircularPatrol(AMazeCell2* Cell) {
+
+    IInterfaceMovableAI* Enemy;
     
+    //Create 2 patrols for the second cell (Circular movement) in the opposite way.
+    for(int i = 0; i < 2; i ++){
+
+        //Here I create the enemy
+        if(i == 0)
+            Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyCircularClass,Cell->GetActorLocation() + FVector(300.f,300.f,0.f), FRotator::ZeroRotator);
+        else
+            Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(PatrolEnemyCircularClass,Cell->GetActorLocation() + FVector(-300.f,-300.f,0.f), FRotator::ZeroRotator);
+
+        Enemy->Positions.Add(Cell->GetActorLocation() + FVector(300.f,300.f,0.f));
+        Enemy->Positions.Add(Cell->GetActorLocation() + FVector(-300.f,300.f,0.f));
+        Enemy->Positions.Add(Cell->GetActorLocation() + FVector(-300.f,-300.f,0.f));
+        Enemy->Positions.Add(Cell->GetActorLocation() + FVector(300.f,-300.f,0.f));
+
+        //Set the initial value of the BTree.
+        if(i == 0)
+            Enemy->SetInitialValue(Cast<APawn>(Enemy)->GetActorLocation(),0,true, false);
+        else
+            Enemy->SetInitialValue(Cast<APawn>(Enemy)->GetActorLocation(),2,true, false);
+
+    }
 
 }
 
@@ -1178,19 +901,6 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2
 
 }
 
-void AMazeManager::GenerateDoors() {
-
-    for(int i = 2; i < MaxPath.Num() - 2; i += 10){ //MaxPath.Num() - 2
-
-        if(i != 2 && (i - 2) % 10 == 0)
-            AddDoor(FMath::RandRange(0,3),MaxPath[i]);   
-        
-    }
-    
-    PortalType(2,MaxPath[MaxPath.Num() - 2]);      
-
-}
-
 void AMazeManager::AddDoor(int Index, AMazeCell2* Cell) {
 
     int CellIndex = MaxPath.IndexOfByKey(Cell);
@@ -1339,10 +1049,7 @@ void AMazeManager::AddFallenPlatforms(int Index, AMazeCell2* Cell, TArray<AMazeC
 void AMazeManager::CreatePlatforms(AMazeCell2* Cell, float Value) {
     
     GetWorld()->SpawnActor<AShakingFallenPlatform>(ShakingFallenPlatform,Cell->GetActorLocation() + FVector(0.f,0.f,-60.f),Cell->GetActorRotation());
-    /*GetWorld()->SpawnActor<AShakingFallenPlatform>(ShakingFallenPlatform,Cell->GetActorLocation() + FVector(Value,Value,-60.f),Cell->GetActorRotation());
-    GetWorld()->SpawnActor<AShakingFallenPlatform>(ShakingFallenPlatform,Cell->GetActorLocation() + FVector(-Value,Value,-60.f),Cell->GetActorRotation());
-    GetWorld()->SpawnActor<AShakingFallenPlatform>(ShakingFallenPlatform,Cell->GetActorLocation() + FVector(-Value,-Value,-60.f),Cell->GetActorRotation());
-    */
+
 }
 
 void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
@@ -1475,44 +1182,6 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
     
 }
 
-void AMazeManager::PopulateOtherPath() {
-    
-    /*for(Graph<TArray<AMazeCell2*>> Path : OtherPaths){
-
-        AMazeCell2* CentralCell = (*Path.GetCurrentNode())[0];   
-        AMazeCell2* FirstCell = (*Path.GetCurrentNode())[1];
-
-        GetWorld()->SpawnActor<ADestructibleElements>(DestructibleShakeClass, (CentralCell->GetActorLocation() + FirstCell->GetActorLocation())/2,
-            GetDoorRotation(FirstCell,CentralCell));
-
-        TArray<TArray<AMazeCell2 *> *> Leaves = Path.GetLeaves();
-
-        for(TArray<AMazeCell2 *>* Leaf: Leaves){
-            
-            SpawnExtraElem(FMath::RandRange(0,2),(*Leaf)[Leaf->Num() - 1],(*Leaf)[Leaf->Num() - 2]);
-
-        }
-
-        TArray<AMazeCell2*> T;
-
-        for(TArray< AMazeCell2* >* Nodes : Path.GetNodes()){
-            
-            for(AMazeCell2* Nod : (*Nodes)){
-
-                if(!T.Contains(Nod))
-                    T.Add(Nod);
-
-            }
-
-        }
-
-        UE_LOG(LogTemp,Warning,TEXT("%i"), T.Num() - 1);
-
-
-    }*/
-
-}
-
 void AMazeManager::SpawnExtraElem(int Index, AMazeCell2* AfterCell, AMazeCell2* BeforeCell) {
 
     switch(Index){
@@ -1557,6 +1226,49 @@ void AMazeManager::SpawnExtraElem(int Index, AMazeCell2* AfterCell, AMazeCell2* 
 
     }
     
+}
+
+//Spawn used when there are from 3 to 4 cells free in other paths.
+void AMazeManager::SpawnSigleCellElem(int Index, AMazeCell2* CurrentCell) {
+    
+    IInterfaceMovableAI* Enemy;
+
+    switch (Index){
+
+    case 0:
+        //Spawn 4 barrels and an enemy.
+        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,CurrentCell->GetActorLocation() , FRotator::ZeroRotator)->bSpawnCoin = true;
+        GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,CurrentCell->GetActorLocation() + FVector(-260.f,260.f,-50.f),FRotator::ZeroRotator);
+        GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,CurrentCell->GetActorLocation() + FVector(260.f,-260.f,-50.f),FRotator::ZeroRotator);
+        GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,CurrentCell->GetActorLocation() + FVector(-260.f,-260.f,-50.f),FRotator::ZeroRotator);
+        GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,CurrentCell->GetActorLocation() + FVector(260.f,260.f,-50.f),FRotator::ZeroRotator);
+
+        break;
+    
+    case 1:
+
+        GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,CurrentCell->GetActorLocation() , FRotator::ZeroRotator);
+
+        break;
+
+    case 2:
+
+        AddDoubleCircularPatrol(CurrentCell);
+
+        break;
+
+    case 3:
+
+        Enemy = GetWorld()->SpawnActor<IInterfaceMovableAI>(MoveAIClass2,CurrentCell->GetActorLocation(), FRotator::ZeroRotator);
+        Enemy->SetInitialValue(CurrentCell->GetActorLocation(),1,true, true);
+
+        break;
+
+    default:
+        break;
+    
+    }
+
 }
 
 #pragma endregion

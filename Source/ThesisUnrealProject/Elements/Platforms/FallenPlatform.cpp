@@ -52,7 +52,6 @@ void AFallenPlatform::StartFalling() {
 
 void AFallenPlatform::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
 
-
 	if(OtherActor->IsA(APawn::StaticClass())){
 		if(Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass()) && !bIsFallen){
 			bFall = true;

@@ -16,8 +16,7 @@ class THESISUNREALPROJECT_API AQuadAIBull : public AAIController
 
 public:
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	AQuadAIBull();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	UBehaviorTree* BTree; 

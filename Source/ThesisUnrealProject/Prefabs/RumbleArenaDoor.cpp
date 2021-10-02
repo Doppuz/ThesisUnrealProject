@@ -4,7 +4,7 @@
 #include "RumbleArenaDoor.h"
 #include "../Elements/GeneralElements/Doors/Door.h"
 #include "../Elements/GeneralElements/CoinController.h"
-#include "../Elements/Room/RumbleArena/RumbleArena.h"
+//#include "../Elements/Room/RumbleArena/RumbleArena.h"
 #include "NPC1Door2.h"
 
 // Sets default values
@@ -42,8 +42,8 @@ void ARumbleArenaDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ARumbleArena* RumbleArena01 = Cast<ARumbleArena>(Cast<UChildActorComponent>(RumbleArena1)->GetChildActor());
-	RumbleArena01->EndArena.AddDynamic(this,&ARumbleArenaDoor::EndEvent);
+	//ARumbleArena* RumbleArena01 = Cast<ARumbleArena>(Cast<UChildActorComponent>(RumbleArena1)->GetChildActor());
+	//RumbleArena01->EndArena.AddDynamic(this,&ARumbleArenaDoor::EndEvent);
 
 	//Needed to set the turn number to 1.
 	ANPC1Door2* NPCDoor2 = Cast<ANPC1Door2>(PreChoice1->GetChildActor());
@@ -56,7 +56,7 @@ void ARumbleArenaDoor::EndEvent() {
 	ADoor* Door = Cast<ADoor>(Door1->GetChildActor());
 	Door->bOpenDoor = true;
 
-	ARumbleArena* RumbleArena01 =Cast<ARumbleArena>(RumbleArena1->GetChildActor());
+	/*ARumbleArena* RumbleArena01 =Cast<ARumbleArena>(RumbleArena1->GetChildActor());
 	
 	ANPC1Door2* PreChoice01 = Cast<ANPC1Door2>(PreChoice1->GetChildActor());;
 
@@ -64,13 +64,13 @@ void ARumbleArenaDoor::EndEvent() {
 			ACoinController* Coin = GetWorld()->SpawnActor<ACoinController>(RumbleArena01->RewardClass,RumbleArena01->RewardSpawnPosition->GetComponentLocation(),
 				RumbleArena01->RewardSpawnPosition->GetComponentRotation());
 			Coin->SetActorScale3D(FVector(0.4f,0.4f,0.4f));
-	}
+	}*/
 }
 
 void ARumbleArenaDoor::LeftChoice() {
 	
 
-	ARumbleArena* RumbleArena01 = Cast<ARumbleArena>(RumbleArena1->GetChildActor());
-	RumbleArena01->TurnNumbers = 0;
+	//ARumbleArena* RumbleArena01 = Cast<ARumbleArena>(RumbleArena1->GetChildActor());
+	//RumbleArena01->TurnNumbers = 0;
 
 }

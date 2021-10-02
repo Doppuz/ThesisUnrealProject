@@ -9,8 +9,6 @@
 #include "GameModeAbstract.h"
 #include "CustomGameMode.generated.h"
 
-class AMazeCell;
-class RoomMaze;
 class MazeGenerationCreation;
 class MazeGenerationPopulate;
 class AChestController;

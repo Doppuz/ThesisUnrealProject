@@ -17,10 +17,12 @@ UBTService_MyFocus::UBTService_MyFocus() {
 
 void UBTService_MyFocus::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
 
+    Super::TickNode(OwnerComp,NodeMemory,DeltaSeconds);
+    
     if(GetSelectedBlackboardKey().IsValid()){
 
         FVector Direction = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey()) - OwnerComp.GetAIOwner()->GetPawn()->GetActorLocation();
-        Direction.Z = 0;
+        Direction.Z = 0; //To avoid problems
         FRotator Rotator = Direction.Rotation();
         APawn* P = OwnerComp.GetAIOwner()->GetPawn();
             

@@ -21,13 +21,10 @@
 
 AAIShooterPawn::AAIShooterPawn() {
     
-    PrimaryActorTick.bCanEverTick = true;
-
-	/*Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = Root;*/
+    PrimaryActorTick.bCanEverTick = false;
 
 	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
-	RootComponent = Collider;//->SetupAttachment(RootComponent);
+	RootComponent = Collider;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Collider);
@@ -103,12 +100,6 @@ void AAIShooterPawn::BeginPlay() {
 		HealthWidget->HealthBar->SetPercent(1.f);
 	
     
-}
-
-void AAIShooterPawn::Tick(float DeltaTime) {
-    
-	Super::Tick(DeltaTime);
-
 }
 
 void AAIShooterPawn::Shoot() {

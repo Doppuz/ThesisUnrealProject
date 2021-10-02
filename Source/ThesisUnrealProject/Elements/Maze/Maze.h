@@ -41,8 +41,6 @@ public:
 	float ObstacleHeight;
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	float MeshLenght;
 
