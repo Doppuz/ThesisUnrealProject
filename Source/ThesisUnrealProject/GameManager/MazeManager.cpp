@@ -74,10 +74,79 @@ void AMazeManager::BeginPlay(){
 
     if (USaveGameLevel1* LoadedGame = Cast<USaveGameLevel1>(UGameplayStatics::LoadGameFromSlot("CheckpointLevel1", 0))){
         
+        //Load Maze Actors.
         for(int i = 0; i < LoadedGame->MazeTransformMap.Num(); i++){
             
-            AMaze* Maze = GetWorld()->SpawnActor<AMaze>(MazeActorClass,FVector(0,0,Depth),FRotator::ZeroRotator);
-            Maze->FloorInstances->AddInstances(LoadedGame->MazeTransformMap[i].Transforms,false);
+            AMaze* Maze = GetWorld()->SpawnActor<AMaze>(MazeActorClass,LoadedGame->MazeTransformMap[i].Position,FRotator::ZeroRotator);
+            Maze->FloorInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsFloor,false);
+            Maze->WallInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsWall,false);
+            Maze->ObstacleInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsObstacle,false);
+
+        }
+
+        //Load Destructible Elems
+        for(int i = 0; i < LoadedGame->DestructibleElem.Num(); i++){
+            
+            AGenericDestructibleElements* Elem = GetWorld()->SpawnActor<AGenericDestructibleElements>(
+                LoadedGame->DestructibleElem[i].ActorClass,
+                LoadedGame->DestructibleElem[i].Position,
+                FRotator::ZeroRotator);
+
+
+        }
+
+        //Load Coins
+        for(int i = 0; i < LoadedGame->CoinElem.Num(); i++){
+            
+            ACoinController* Elem = GetWorld()->SpawnActor<ACoinController>(
+                LoadedGame->CoinElem[i].ActorClass,
+                LoadedGame->CoinElem[i].Position,
+                FRotator::ZeroRotator);
+
+
+        }
+        
+        //Load Hats
+        for(int i = 0; i < LoadedGame->HatElem.Num(); i++){
+            
+            AHat* Elem = GetWorld()->SpawnActor<AHat>(
+                LoadedGame->HatElem[i].ActorClass,
+                LoadedGame->HatElem[i].Position,
+                FRotator::ZeroRotator);
+
+
+        }
+
+        //Load Trap
+        for(int i = 0; i < LoadedGame->TrapElem.Num(); i++){
+            
+            ATrap* Elem = GetWorld()->SpawnActor<ATrap>(
+                LoadedGame->TrapElem[i].ActorClass,
+                LoadedGame->TrapElem[i].Position,
+                FRotator::ZeroRotator);
+
+
+        }
+
+        //Load Heart
+        for(int i = 0; i < LoadedGame->HeartElem.Num(); i++){
+            
+            ATrap* Elem = GetWorld()->SpawnActor<ATrap>(
+                LoadedGame->HeartElem[i].ActorClass,
+                LoadedGame->HeartElem[i].Position,
+                FRotator::ZeroRotator);
+
+
+        }
+        
+        //Load Fallen Plat
+        for(int i = 0; i < LoadedGame->FallenPlatformElem.Num(); i++){
+            
+            AShakingFallenPlatform* Elem = GetWorld()->SpawnActor<AShakingFallenPlatform>(
+                LoadedGame->FallenPlatformElem[i].ActorClass,
+                LoadedGame->FallenPlatformElem[i].Position,
+                FRotator::ZeroRotator);
+
 
         }
 
@@ -111,6 +180,20 @@ void AMazeManager::BeginPlay(){
             Populate(MaxPath);
 
         }
+
+    }
+
+}
+
+void AMazeManager::GenerateGeneralActor(TArray<FGeneralActor> List) {
+    
+    for(int i = 0; i < List.Num(); i++){
+            
+        ACoinController* Maze = GetWorld()->SpawnActor<ACoinController>(
+            List[i].ActorClass,
+            List[i].Position,
+            FRotator::ZeroRotator);
+
 
     }
 
@@ -516,7 +599,7 @@ void AMazeManager::LineTracing(FHitResult& Hit,FVector StartPosition, FVector En
 }
 
 //It performs a ray tracing, If it doesn't find a wall, it doesn't create the obstacle.
-void AMazeManager::GenerateDecorations(FVector StartPos, FVector EndPos, FVector EndLineTracingPos, bool Spawn,TSubclassOf<AGeneralElem> SpawnActor) {
+void AMazeManager::GenerateDecorations(FVector StartPos, FVector EndPos, FVector EndLineTracingPos, bool Spawn,TSubclassOf<AGenericDestructibleElements> SpawnActor) {
     
     FTransform Transform;
     Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
@@ -529,7 +612,7 @@ void AMazeManager::GenerateDecorations(FVector StartPos, FVector EndPos, FVector
         if(!Spawn)
             MazeActor->CreateObstacle(Transform);
         else
-            GetWorld()->SpawnActor<AGeneralElem>(SpawnActor,Transform);      
+            GetWorld()->SpawnActor<AGenericDestructibleElements>(SpawnActor,Transform);      
         
     }
 
@@ -727,7 +810,7 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex, 
 }
 
 //Generate walls one beside the middle ad one in the angle.
-void AMazeManager::GenerateSideElements(int CellIndex, int i, float HeightOffset, float SideOffset, float OffsetValue, bool Spawn,TSubclassOf<AGeneralElem> SpawnActor, TArray<AMazeCell2*> Path) {
+void AMazeManager::GenerateSideElements(int CellIndex, int i, float HeightOffset, float SideOffset, float OffsetValue, bool Spawn,TSubclassOf<AGenericDestructibleElements> SpawnActor, TArray<AMazeCell2*> Path) {
     
     FVector Offset;
     SetOffsetVector(Path[CellIndex + 1 + i],Path[CellIndex + i],Offset,OffsetValue);
@@ -828,7 +911,7 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2
 
             //Create Crate Actors.
             for(int i = 0; i < 3; i++)       
-                GenerateSideElements(CellIndex + i,0, -50.f, -40.f, 290.f, true,CrateClass, Path);
+                GenerateSideElements(CellIndex + i,0, 5.f, 60.f, 290.f, true,DestrCrateClass, Path);
 
             break;
         
@@ -844,7 +927,7 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2
 
             //Create Crate Actors.
             for(int i = 0; i < 3; i++)       
-                GenerateSideElements(CellIndex + i,0, -50.f, -40.f, 290.f, true,CrateClass, Path);
+                GenerateSideElements(CellIndex + i,0, 5.f, 60.f, 290.f, true,DestrCrateClass, Path);
 
             break;
 
@@ -1001,7 +1084,7 @@ void AMazeManager::AddFallenPlatforms(int Index, AMazeCell2* Cell, TArray<AMazeC
 
         case 0:
 
-            GetWorld()->SpawnActor<AGeneralElem>(CrateClass,Path[CellIndex + 1]->GetActorLocation() - FVector(0.f,0.f,50.f),Path[CellIndex + 1]->GetActorRotation());
+            GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrCrateClass,Path[CellIndex + 1]->GetActorLocation() + FVector(0.f,0.f,5.f),Path[CellIndex + 1]->GetActorRotation());
             OffsetX = FMath::RandRange(100.f,200.f);
             OffsetY = FMath::RandRange(100.f,200.f);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex + 1]->GetActorLocation() + FVector(OffsetX,OffsetY,10.f),Path[CellIndex + 1]->GetActorRotation())->bSpawnCoin = true;

@@ -8,6 +8,7 @@
 #include "../Graph/Graph.h"
 #include "GameFramework/Actor.h"
 #include "../Character/InterfaceMovableAI.h"
+#include "../CheckPoints/SaveGameLevel1.h"
 #include "MazeManager.generated.h"
 
 class AMazeCell2;
@@ -138,6 +139,9 @@ protected:
 	void CreateObstacle(int ObstaclesNumber);
 	bool CheckRoomIntersection(TArray<AMazeCell2*>,int);
 	void CreateMaze(AMazeCell2*,AMazeCell2*);
+	
+	// InitialLoad
+	void GenerateGeneralActor(TArray<FGeneralActor>);
 
 	//Distance between 2 cells.
 	float Distance;
@@ -164,9 +168,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Populate")
 	TSubclassOf<ADoor> DoorClass;
-
-	UPROPERTY(EditAnywhere, Category = "Populate")
-	TSubclassOf<AGeneralElem> CrateClass;
 
 	UPROPERTY(EditAnywhere, Category = "Enemies")
 	TSubclassOf<AAIBull> BullEnemyClass;
@@ -261,6 +262,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ACheckPointLevel1> CheckPointClass;
 
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AGenericDestructibleElements> DestrCrateClass;
+
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
 
@@ -296,11 +300,11 @@ protected:
 
 	void LineTracing(FHitResult&,FVector, FVector);
 
-	void GenerateDecorations(FVector, FVector, FVector,bool,TSubclassOf<AGeneralElem>);
+	void GenerateDecorations(FVector, FVector, FVector,bool,TSubclassOf<AGenericDestructibleElements>);
 
 	void GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex, TArray<AMazeCell2*> Path);
 	
-	void GenerateSideElements(int CellIndex, int i, float HeightOffset, float SideOffset, float OffsetValue, bool, TSubclassOf<AGeneralElem>, TArray<AMazeCell2*> Path);
+	void GenerateSideElements(int CellIndex, int i, float HeightOffset, float SideOffset, float OffsetValue, bool, TSubclassOf<AGenericDestructibleElements>, TArray<AMazeCell2*> Path);
 
 // --- Type Of Enemies ---
 

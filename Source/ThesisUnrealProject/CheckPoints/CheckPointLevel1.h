@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Checkpoint.h"
+#include "SaveGameLevel1.h"
 #include "CheckPointLevel1.generated.h"
 
 /**
@@ -18,4 +19,8 @@ public:
 
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 	
+private:
+
+	TArray<FTransform> CreateTransformArray(UInstancedStaticMeshComponent* MeshInstances);
+
 };

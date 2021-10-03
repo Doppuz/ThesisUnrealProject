@@ -40,7 +40,7 @@ void ASquaredProjectile::BeginPlay(){
 
 void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
-	if(OtherActor->IsA(ADestructibleElements::StaticClass())){
+	/*if(OtherActor->IsA(ADestructibleElements::StaticClass())){
 
 		ADestructibleElements* Actor = Cast<ADestructibleElements>(OtherActor);
 		UDestructibleComponent* DC = Actor->DestructibleMesh;
@@ -54,7 +54,8 @@ void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 		if(MyController != nullptr && MyController->IsA(APlayerController::StaticClass()))
 			Actor->HitMesh(Hit);
 		
-	}else if(OtherActor->IsA(APawn::StaticClass())){
+	}else 
+	*/if(OtherActor->IsA(APawn::StaticClass())){
 		FPointDamageEvent DamageEvent(Damage,Hit,this->GetVelocity(),nullptr);
 		if(MyOwner != nullptr){
 			
@@ -91,7 +92,7 @@ void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 	
 	} else if(OtherActor->IsA(AGenericDestructibleElements::StaticClass()) && MyOwner != nullptr &&  MyOwner->IsA(ACharacterPawnQuad::StaticClass())){
 		
-		Cast<AGenericDestructibleElements>(OtherActor)->DestructibleMesh->ApplyDamage(1.f,Hit.ImpactPoint, Hit.ImpactNormal,4000.f);// ApplyRadiusDamage(1.f,Hit.ImpactPoint,1000.f,1000,true); //ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 2000);	
+		Cast<AGenericDestructibleElements>(OtherActor)->DestructibleMesh->ApplyRadiusDamage(1.f,Hit.ImpactPoint,1000.f,1000,true);// ApplyRadiusDamage(1.f,Hit.ImpactPoint,1000.f,1000,true); //ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 2000);	
 		
 	}
 
