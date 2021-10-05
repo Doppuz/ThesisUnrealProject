@@ -18,6 +18,9 @@ void ADoorRiddle::BeginPlay() {
     NPC = GetWorld()->SpawnActor<ARiddleNPC>( RiddleNpcClass, SpawnPos1->GetComponentLocation(), SpawnPos1->GetComponentRotation());
     NPC->Solved.AddDynamic(this,&ADoorRiddle::OpenDoor);
     NPC->EndDialog.AddDynamic(this,&ADoorRiddle::EndDialog);
+
+    FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
+    NPC->AttachToActor(this,TransformRules);
     
     //Select a speech.
     int SpeechNumber = FMath::RandRange(0,(*Speech).Num() - 1);

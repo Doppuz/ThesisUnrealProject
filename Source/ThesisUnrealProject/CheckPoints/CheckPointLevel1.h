@@ -7,9 +7,8 @@
 #include "SaveGameLevel1.h"
 #include "CheckPointLevel1.generated.h"
 
-/**
- * 
- */
+class AMazeManager;
+
 UCLASS()
 class THESISUNREALPROJECT_API ACheckPointLevel1 : public ACheckpoint{
 
@@ -17,10 +16,15 @@ class THESISUNREALPROJECT_API ACheckPointLevel1 : public ACheckpoint{
 
 public:
 
+	UPROPERTY(EditAnywhere)
+	AMazeManager* MazeManager;
+
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 	
 private:
 
 	TArray<FTransform> CreateTransformArray(UInstancedStaticMeshComponent* MeshInstances);
+
+	TArray<FSpeech> CreateSpeech(TArray<TArray<FString>> List);
 
 };

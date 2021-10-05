@@ -25,9 +25,14 @@ void ADoorExplorer::BeginPlay() {
     PuzzleActors.Add(GetWorld()->SpawnActor<APuzzleButton>(PuzzleClass,SpawnPos1->GetComponentLocation(),SpawnPos1->GetComponentRotation()));
     PuzzleActors.Add(GetWorld()->SpawnActor<APuzzleButton>(PuzzleClass,SpawnPos2->GetComponentLocation(),SpawnPos2->GetComponentRotation()));
     PuzzleActors.Add(GetWorld()->SpawnActor<APuzzleButton>(PuzzleClass,SpawnPos3->GetComponentLocation(),SpawnPos3->GetComponentRotation()));
- 
-    for(int i = 0; i < PuzzleActors.Num(); i++)
+     
+    FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
+    for(int i = 0; i < PuzzleActors.Num(); i++){
+        
         PuzzleActors[i]->Overlap.AddDynamic(this, &ADoorExplorer::PuzzleOverlap);
+        PuzzleActors[i]->AttachToActor(this,TransformRules);
+    
+    }
 
     Shuffle();
 

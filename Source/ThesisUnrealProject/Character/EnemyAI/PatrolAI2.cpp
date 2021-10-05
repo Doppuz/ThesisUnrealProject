@@ -53,6 +53,9 @@ APatrolAI2::APatrolAI2()
 	CapsuleTrigger->SetCapsuleHalfHeight(165.f);
 	CapsuleTrigger->SetCapsuleRadius(76.f);
 
+	StartIndex = 0;
+	StartDirection = true;
+
 }
 
 void APatrolAI2::SetInitialValue(FVector Pos, int Contator, bool Direction, bool SameDirection) {
@@ -70,6 +73,9 @@ void APatrolAI2::BeginPlay(){
 	Super::BeginPlay();
 
 	CapsuleTrigger->OnComponentBeginOverlap.AddDynamic(this,&APatrolAI2::OnOverlap);
+	
+    //Set the initial value of the BTree.
+    SetInitialValue(Positions[StartIndex],StartIndex,true, StartDirection);
 
 }
 

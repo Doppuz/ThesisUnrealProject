@@ -33,10 +33,40 @@ USTRUCT() struct FGeneralActor{
     GENERATED_BODY()
 
 	UPROPERTY()
-	FVector Position;
+	FTransform Transform;
 	
 	UPROPERTY()
 	TSubclassOf<AActor> ActorClass;
+
+};
+
+USTRUCT() struct FMoveActor{
+
+    GENERATED_BODY()
+
+	UPROPERTY()
+	FTransform Transform;
+	
+	UPROPERTY()
+	TSubclassOf<AActor> ActorClass;
+	
+	UPROPERTY()
+	TArray<FVector> Positions;
+
+	UPROPERTY()
+	int StartIndex;
+
+	UPROPERTY()
+	bool StartDirection;
+
+};
+
+USTRUCT() struct FSpeech{
+
+    GENERATED_BODY()
+
+	UPROPERTY()
+	TArray<FString> String;
 
 };
 
@@ -67,5 +97,38 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FGeneralActor> FallenPlatformElem;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FGeneralActor> Doors;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FGeneralActor> Enemies;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FGeneralActor> Allies;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FMoveActor> Patrols;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FMoveActor> MoveAllies;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FSpeech> Speech;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FSpeech> Questions;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FSpeech> BlockedSpeech;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FSpeech> OldSpeech;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FSpeech> OldQuestions;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FSpeech> OldBlockedSpeech;
 
 };

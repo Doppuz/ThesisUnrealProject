@@ -139,9 +139,6 @@ protected:
 	void CreateObstacle(int ObstaclesNumber);
 	bool CheckRoomIntersection(TArray<AMazeCell2*>,int);
 	void CreateMaze(AMazeCell2*,AMazeCell2*);
-	
-	// InitialLoad
-	void GenerateGeneralActor(TArray<FGeneralActor>);
 
 	//Distance between 2 cells.
 	float Distance;
@@ -163,6 +160,20 @@ public:
 	TArray<Graph<TArray<AMazeCell2*>>> OtherPaths;
 
 	void Populate(TArray<AMazeCell2*>);
+
+	//At the beginning empty, They will contain all the speech and quetion taken from a file.
+	TArray<TArray<FString>> Speech;
+	TArray<TArray<FString>> Questions;
+	//Used when the NPC is in the last cell of an other path.
+	TArray<TArray<FString>> BlockedSpeech;
+
+	//Memorize the questions and the speech already used.
+	TArray<TArray<FString>> OldSpeech;
+	TArray<TArray<FString>> OldQuestions;
+	TArray<TArray<FString>> OldBlockedSpeech;
+
+	//Need to convert the Array of FSpeech in Array<Array<FString>> (NestedLoop not permitted)
+	TArray<TArray<FString>> ConvertSpeechBack(TArray<FSpeech> List);
 
 protected:
 
@@ -267,17 +278,6 @@ protected:
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
-
-	//At the beginning empty, They will contain all the speech and quetion taken from a file.
-	TArray<TArray<FString>> Speech;
-	TArray<TArray<FString>> Questions;
-	//Used when the NPC is in the last cell of an other path.
-	TArray<TArray<FString>> BlockedSpeech;
-
-	//Memorize the questions and the speech already used.
-	TArray<TArray<FString>> OldSpeech;
-	TArray<TArray<FString>> OldQuestions;
-	TArray<TArray<FString>> OldBlockedSpeech;
 
 	void LoadFromFile(TArray<TArray<FString>>&, FString FileName);
 

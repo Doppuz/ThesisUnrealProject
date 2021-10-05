@@ -40,6 +40,12 @@ public:
 	//Set initial value in the blackboard;
 	virtual void SetInitialValue(FVector Pos, int Contator, bool Direction, bool SameDirection) override;
 
+	UPROPERTY(EditAnywhere)
+	int StartIndex;
+
+	UPROPERTY(EditAnywhere)
+	bool StartDirection;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -46,6 +46,8 @@ void APawnInteractiveMove::BeginPlay(){
 	Super::BeginPlay();
 
 	bFocus = false;
+
+	SetInitialValue(Positions[0], 0, true, true);
 }
 
 void APawnInteractiveMove::SetInitialValue(FVector Pos, int Contator, bool Direction,bool SameDirection) {

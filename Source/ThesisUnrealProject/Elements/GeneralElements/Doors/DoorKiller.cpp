@@ -57,6 +57,8 @@ void ADoorKiller::Tick(float DeltaTime) {
 
 				//Memorize all the enemies to be eliminated to pass the round
 				AEnemyAIAbstract* Enemy = Cast<AEnemyAIAbstract>(Spawner->SpawnActor());
+				FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
+        		Enemy->AttachToActor(this,TransformRules);
 				Enemies.Add(Enemy);
 			
 			}

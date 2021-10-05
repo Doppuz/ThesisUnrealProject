@@ -35,8 +35,13 @@ void ADoorAchiever::BeginPlay() {
     DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos3->GetComponentLocation(),SpawnPos3->GetComponentRotation()));
     DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos4->GetComponentLocation(),SpawnPos4->GetComponentRotation()));
 
+    FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
+    for(int i = 0; i < DestrActors.Num(); i++)
+        DestrActors[i]->AttachToActor(this,TransformRules);
+
     AEnemyAIAbstract* Enemy = GetWorld()->SpawnActor<AEnemyAIAbstract>(Enemies[FMath::RandRange(0, Enemies.Num() - 1)],SpawnPos0->GetComponentLocation(),SpawnPos0->GetComponentRotation());
     Enemy->bSpawnCoin = true;
+    Enemy->AttachToActor(this,TransformRules);
 
     int NumExtr = FMath::RandRange(0,DestrActors.Num() - 1);
     DestrActors[NumExtr]->SpawnActor = KeyClass;
