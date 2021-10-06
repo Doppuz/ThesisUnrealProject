@@ -10,6 +10,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEndDelegate,AEnemyAIAbstract*, Enem
 
 class ACoinController;
 
+
 UCLASS(Abstract)
 class THESISUNREALPROJECT_API AEnemyAIAbstract : public APawn
 {
@@ -18,6 +19,8 @@ class THESISUNREALPROJECT_API AEnemyAIAbstract : public APawn
 public:
 	// Sets default values for this pawn's properties
 	AEnemyAIAbstract();
+
+	static int IDCounter;
 
 protected:
 	// Called when the game starts or when spawned
@@ -49,5 +52,9 @@ public:
 	// End delegate
 	FEndDelegate End;
 
+	UPROPERTY(VisibleAnywhere)
+	int IDEnemy;
+
+	FVector InitialPos;
 
 };

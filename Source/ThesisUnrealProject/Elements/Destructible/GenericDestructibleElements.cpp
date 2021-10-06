@@ -6,6 +6,8 @@
 #include "../../GameModeTutorial.h"
 #include "Components/BoxComponent.h"
 
+int AGenericDestructibleElements::IDCounter = 0;
+
 // Sets default values
 AGenericDestructibleElements::AGenericDestructibleElements(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -24,6 +26,9 @@ AGenericDestructibleElements::AGenericDestructibleElements(){
 // Called when the game starts or when spawned
 void AGenericDestructibleElements::BeginPlay(){
 	Super::BeginPlay();
+
+	ID = IDCounter;
+	IDCounter = (IDCounter + 1) % 50000;
 
 	DestructibleMesh->OnComponentFracture.AddDynamic(this,&AGenericDestructibleElements::OnComponentFracture);
 

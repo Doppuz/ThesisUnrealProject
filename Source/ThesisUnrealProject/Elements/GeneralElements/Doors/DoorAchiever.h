@@ -42,17 +42,17 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	TSubclassOf<AKeyActor> KeyClass;
+	
+	TArray<AGenericDestructibleElements*> DestrActors;
+
+	int KeyPos;
+
+	UFUNCTION()
+	void SpawnKey(AActor* Elem);
 
 protected:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-private:
-
-	TArray<AGenericDestructibleElements*> DestrActors;
-
-	UFUNCTION()
-	void SpawnKey(AActor* Elem);
 
 };

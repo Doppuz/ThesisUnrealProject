@@ -15,6 +15,8 @@ public:
 	// Sets default values for this actor's properties
 	ADoor();
 
+	static int IDCount;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -39,7 +41,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Opening")
 	float Distance;
 
-	UPROPERTY(EditAnywhere, Category = "Opening")
+	UPROPERTY(VisibleAnywhere, Category = "Opening")
 	int ID;
 
 	void SetDoorDirection(bool);
@@ -47,13 +49,12 @@ public:
 	UFUNCTION()
 	void OpenDoor();
 
+	bool bCheckpoint = false;
+	
+	FVector FinalPosition;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-private:
-
-	FVector FinalPosition;
-
 
 };

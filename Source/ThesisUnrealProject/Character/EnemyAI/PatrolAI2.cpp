@@ -72,6 +72,8 @@ void APatrolAI2::BeginPlay(){
 
 	Super::BeginPlay();
 
+	InitialPos = GetActorLocation();
+
 	CapsuleTrigger->OnComponentBeginOverlap.AddDynamic(this,&APatrolAI2::OnOverlap);
 	
     //Set the initial value of the BTree.

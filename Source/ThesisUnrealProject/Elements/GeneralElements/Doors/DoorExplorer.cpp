@@ -22,19 +22,20 @@ void ADoorExplorer::BeginPlay() {
 
     Super::BeginPlay();
 
-    PuzzleActors.Add(GetWorld()->SpawnActor<APuzzleButton>(PuzzleClass,SpawnPos1->GetComponentLocation(),SpawnPos1->GetComponentRotation()));
-    PuzzleActors.Add(GetWorld()->SpawnActor<APuzzleButton>(PuzzleClass,SpawnPos2->GetComponentLocation(),SpawnPos2->GetComponentRotation()));
-    PuzzleActors.Add(GetWorld()->SpawnActor<APuzzleButton>(PuzzleClass,SpawnPos3->GetComponentLocation(),SpawnPos3->GetComponentRotation()));
-     
-    FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
-    for(int i = 0; i < PuzzleActors.Num(); i++){
+    //if needed when I spanwn elem from checkpoints.
+    if(!bOpenDoor){
+        PuzzleActors.Add(GetWorld()->SpawnActor<APuzzleButton>(PuzzleClass,SpawnPos1->GetComponentLocation(),SpawnPos1->GetComponentRotation()));
+        PuzzleActors.Add(GetWorld()->SpawnActor<APuzzleButton>(PuzzleClass,SpawnPos2->GetComponentLocation(),SpawnPos2->GetComponentRotation()));
+        PuzzleActors.Add(GetWorld()->SpawnActor<APuzzleButton>(PuzzleClass,SpawnPos3->GetComponentLocation(),SpawnPos3->GetComponentRotation()));
         
-        PuzzleActors[i]->Overlap.AddDynamic(this, &ADoorExplorer::PuzzleOverlap);
-        PuzzleActors[i]->AttachToActor(this,TransformRules);
-    
-    }
+        for(int i = 0; i < PuzzleActors.Num(); i++){
 
-    Shuffle();
+            PuzzleActors[i]->Overlap.AddDynamic(this, &ADoorExplorer::PuzzleOverlap);
+        
+        }
+
+        Shuffle();
+    }
 
 }
 

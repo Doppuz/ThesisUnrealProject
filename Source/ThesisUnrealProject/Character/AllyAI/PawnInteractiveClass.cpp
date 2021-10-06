@@ -12,6 +12,8 @@
 #include "../../Elements/GeneralElements/Doors/Door.h"
 #include "Components/BoxComponent.h"
 
+int APawnInteractiveClass::IDCount = 0;
+
 // Sets default values
 APawnInteractiveClass::APawnInteractiveClass()
 {
@@ -31,6 +33,15 @@ APawnInteractiveClass::APawnInteractiveClass()
 	bFocus = true;
 	bAlreadySpoken = false;
 	QuestionAt = 200;
+}
+
+void APawnInteractiveClass::BeginPlay(){
+
+	Super::BeginPlay();
+
+	ID = IDCount;
+	IDCount = (IDCount + 1) % 50000;
+
 }
 
 // Called every frame

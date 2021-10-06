@@ -13,7 +13,10 @@ class THESISUNREALPROJECT_API AGenericDestructibleElements : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
+
+	static int IDCounter;
+
 	// Sets default values for this actor's properties
 	AGenericDestructibleElements();
 
@@ -29,6 +32,9 @@ public:
 	TSubclassOf<AActor> SpawnActor;
 
 	FGeneralDestructionDelegate DestrDelegate;
+
+	UPROPERTY(VisibleANywhere)
+	int ID;
 
 protected:
 	// Called when the game starts or when spawned

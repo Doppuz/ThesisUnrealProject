@@ -4,6 +4,8 @@
 #include "Door.h"
 #include "Components/BoxComponent.h"
 
+int ADoor::IDCount = 0; 
+
 // Sets default values
 ADoor::ADoor(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -36,6 +38,9 @@ void ADoor::BeginPlay(){
 	FVector ActorPosition = GetActorLocation();
 
 	SetDoorDirection(bClose);
+
+	ID = IDCount;
+	IDCount = (IDCount + 1) % 50000;
 	
 }
 

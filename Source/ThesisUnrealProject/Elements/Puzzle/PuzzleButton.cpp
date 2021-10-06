@@ -5,6 +5,8 @@
 #include "Components/BoxComponent.h"
 #include "../../GameModeTutorial.h"
 
+int APuzzleButton::IDCounter = 0;
+
 // Sets default values
 APuzzleButton::APuzzleButton(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -28,8 +30,13 @@ APuzzleButton::APuzzleButton(){
 
 // Called when the game starts or when spawned
 void APuzzleButton::BeginPlay(){
+	
 	Super::BeginPlay();
 	Trigger->OnComponentBeginOverlap.AddDynamic(this,&APuzzleButton::OnOverlap);
+
+	ID = IDCounter;
+	IDCounter += 1;
+
 }
 
 void APuzzleButton::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {

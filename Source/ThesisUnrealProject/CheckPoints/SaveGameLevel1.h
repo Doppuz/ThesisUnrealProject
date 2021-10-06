@@ -4,10 +4,43 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "SaveGameLevel1.generated.h"
 
 class AMaze;
 class AGenericDestructibleElements;
+
+//To create an array of array of strings.
+USTRUCT() struct FSpeech{
+
+    GENERATED_BODY()
+
+	UPROPERTY()
+	TArray<FString> String;
+
+};
+
+//Include all the information about speech and question
+USTRUCT() struct FSpeakActor{
+
+    GENERATED_BODY()
+
+	UPROPERTY()
+	TArray<FString> Speech;
+
+	UPROPERTY()
+	FQuestion Questions;
+	
+	UPROPERTY()
+	int QuestionAt;
+
+	UPROPERTY()
+	int RightAnswerPos;
+
+	UPROPERTY()
+	bool bAlreadySpoken;
+};
+
 
 //Value to be saved to restore the maze actor.
 USTRUCT() struct FMazeValue{
@@ -28,7 +61,7 @@ USTRUCT() struct FMazeValue{
 
 };
 
-USTRUCT() struct FGeneralActor{
+USTRUCT() struct FGeneralActor : public FSpeakActor{
 
     GENERATED_BODY()
 
@@ -38,9 +71,24 @@ USTRUCT() struct FGeneralActor{
 	UPROPERTY()
 	TSubclassOf<AActor> ActorClass;
 
+	UPROPERTY()
+	int ID;
+
 };
 
-USTRUCT() struct FMoveActor{
+USTRUCT() struct FDoorActor : public FGeneralActor{
+
+    GENERATED_BODY()
+
+	UPROPERTY()
+	bool bOpenDoor;
+
+	UPROPERTY()
+	FVector FinalPosition;
+
+};
+
+USTRUCT() struct FMoveActor : public FSpeakActor{
 
     GENERATED_BODY()
 
@@ -61,14 +109,96 @@ USTRUCT() struct FMoveActor{
 
 };
 
-USTRUCT() struct FSpeech{
+// Destructible actor structure
+
+USTRUCT() struct FDestrActor : public FGeneralActor {
+	
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TSubclassOf<AActor> SpawnActor;
+
+};
+
+// Door Achiever
+
+USTRUCT() struct FDoorAchieverStruct : public FDoorActor{
+
+    GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere)
+	int IDKey;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<int> IDs;
+
+};
+
+// Door Killer
+
+USTRUCT() struct FDoorKillerStruct : public FDoorActor{
+
+    GENERATED_BODY()
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<int> IDs;
+
+};
+
+USTRUCT() struct FNightPortal{
 
     GENERATED_BODY()
 
 	UPROPERTY()
-	TArray<FString> String;
+	FTransform Transform;
+	
+	UPROPERTY()
+	TSubclassOf<AActor> ActorClass;
+
+	UPROPERTY()
+	FVector NewPosition;
 
 };
+
+USTRUCT() struct FPuzzlePortalStruct{
+
+    GENERATED_BODY()
+
+	UPROPERTY()
+	FTransform Transform;
+	
+	UPROPERTY()
+	TSubclassOf<AActor> ActorClass;
+
+	UPROPERTY()
+	FVector EndSpawnPosition;
+	
+	UPROPERTY()
+	int DoorID;
+
+};
+
+USTRUCT() struct FRoomKillerStruct{
+
+    GENERATED_BODY()
+
+	UPROPERTY()
+	FTransform Transform;
+	
+	UPROPERTY()
+	TSubclassOf<AActor> ActorClass;
+
+	UPROPERTY()
+	FVector StartPortalPos;
+	
+	UPROPERTY()
+	int DoorID;
+
+	UPROPERTY()
+	int NPCID;
+
+};
+
 
 UCLASS()
 class THESISUNREALPROJECT_API USaveGameLevel1 : public USaveGame{
@@ -81,7 +211,7 @@ public:
 	TMap<int, FMazeValue> MazeTransformMap;
 	
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
-	TArray<FGeneralActor> DestructibleElem;
+	TArray<FDestrActor> DestructibleElem;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FGeneralActor> CoinElem;
@@ -99,7 +229,19 @@ public:
 	TArray<FGeneralActor> FallenPlatformElem;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
-	TArray<FGeneralActor> Doors;
+	TArray<FDoorActor> Doors;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FDoorActor> DoorsRiddle;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FDoorAchieverStruct> DoorsAchiever;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FDoorKillerStruct> DoorsKiller;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FDoorActor> DoorsExplorer;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FGeneralActor> Enemies;
@@ -112,6 +254,18 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FMoveActor> MoveAllies;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FGeneralActor> Checkpoints;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FNightPortal> NightPortals;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FPuzzlePortalStruct> PuzzlePortals;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	FRoomKillerStruct RoomKillerStruct;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FSpeech> Speech;
@@ -130,5 +284,15 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FSpeech> OldBlockedSpeech;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int DestrID;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int EnemyID;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int AllyID;
+
 
 };

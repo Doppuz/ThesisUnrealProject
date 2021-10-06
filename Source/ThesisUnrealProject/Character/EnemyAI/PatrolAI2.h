@@ -46,6 +46,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool StartDirection;
 
+	FVector InitialPos;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -24,13 +24,9 @@ void ADoorKiller::BeginPlay() {
 	//Spawn the enemies spawners.
 	Spawners.Add(GetWorld()->SpawnActor<AActorSpawner>(SpawnerClass,SpawnPos1->GetComponentLocation(),
 		SpawnPos1->GetComponentRotation()));
-    FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
-	Spawners[0]->AttachToActor(this,TransformRules);
 
 	Spawners.Add(GetWorld()->SpawnActor<AActorSpawner>(SpawnerClass,SpawnPos2->GetComponentLocation(),
 		SpawnPos2->GetComponentRotation()));
-    TransformRules = FAttachmentTransformRules(EAttachmentRule::KeepWorld,true);
-	Spawners[1]->AttachToActor(this,TransformRules);
 
 }
 
@@ -38,7 +34,7 @@ void ADoorKiller::Tick(float DeltaTime) {
     
     Super::Tick(DeltaTime);
 
-    if(TurnNumbers > 0){
+    if(TurnNumbers > 0 && !bOpenDoor){
 		
 		if(CheckAllEnemyDeath()){
 			for(AActorSpawner* Spawner: Spawners){
@@ -57,10 +53,8 @@ void ADoorKiller::Tick(float DeltaTime) {
 
 				//Memorize all the enemies to be eliminated to pass the round
 				AEnemyAIAbstract* Enemy = Cast<AEnemyAIAbstract>(Spawner->SpawnActor());
-				FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
-        		Enemy->AttachToActor(this,TransformRules);
 				Enemies.Add(Enemy);
-			
+
 			}
 		}
 

@@ -25,6 +25,7 @@
 #include "../Character/EnemyAI/PatrolAI2.h"
 #include "../Character/AllyAI/PawnInteractiveClass.h"
 #include "../Character/AllyAI/PawnInteractiveMove.h"
+#include "../Character/AllyAI/RiddleNPC.h"
 #include "../Elements/GeneralElements/GeneralElem.h"
 #include "../Elements/Platforms/ShakingFallenPlatform.h"
 #include "../Elements/Portal/Portal.h"
@@ -40,6 +41,7 @@
 #include "../Elements/Hat/Hat.h"
 #include "../CheckPoints/CheckPointLevel1.h"
 #include "../CheckPoints/SaveGameLevel1.h"
+#include "EngineUtils.h"
 
 // Sets default values
 AMazeManager::AMazeManager(){
@@ -100,6 +102,8 @@ void AMazeManager::BeginPlay(){
                 LoadedGame->DestructibleElem[i].ActorClass,
                 LoadedGame->DestructibleElem[i].Transform);
 
+            Elem->ID = LoadedGame->DestructibleElem[i].ID;
+            Elem->SpawnActor = LoadedGame->DestructibleElem[i].SpawnActor;
 
         }
 
@@ -110,7 +114,6 @@ void AMazeManager::BeginPlay(){
                 LoadedGame->CoinElem[i].ActorClass,
                 LoadedGame->CoinElem[i].Transform);
 
-
         }
         
         //Load Hats
@@ -119,7 +122,6 @@ void AMazeManager::BeginPlay(){
             AHat* Elem = GetWorld()->SpawnActor<AHat>(
                 LoadedGame->HatElem[i].ActorClass,
                 LoadedGame->HatElem[i].Transform);
-
 
         }
 
@@ -130,7 +132,6 @@ void AMazeManager::BeginPlay(){
                 LoadedGame->TrapElem[i].ActorClass,
                 LoadedGame->TrapElem[i].Transform);
 
-
         }
 
         //Load Heart
@@ -139,7 +140,6 @@ void AMazeManager::BeginPlay(){
             AHeart* Elem = GetWorld()->SpawnActor<AHeart>(
                 LoadedGame->HeartElem[i].ActorClass,
                 LoadedGame->HeartElem[i].Transform);
-
 
         }
         
@@ -150,7 +150,6 @@ void AMazeManager::BeginPlay(){
                 LoadedGame->FallenPlatformElem[i].ActorClass,
                 LoadedGame->FallenPlatformElem[i].Transform);
 
-
         }
 
         //Load Enemies
@@ -160,6 +159,7 @@ void AMazeManager::BeginPlay(){
                 LoadedGame->Enemies[i].ActorClass,
                 LoadedGame->Enemies[i].Transform);
 
+            Elem->IDEnemy = LoadedGame->Enemies[i].ID;
 
         }
 
@@ -169,6 +169,11 @@ void AMazeManager::BeginPlay(){
             APawnInteractiveClass* Elem = GetWorld()->SpawnActor<APawnInteractiveClass>(
                 LoadedGame->Allies[i].ActorClass,
                 LoadedGame->Allies[i].Transform);
+
+            Elem->Speech = LoadedGame->Allies[i].Speech;
+            Elem->QuestionAt = LoadedGame->Allies[i].QuestionAt;
+            Elem->bAlreadySpoken = LoadedGame->Allies[i].bAlreadySpoken;
+            Elem->ID = LoadedGame->Allies[i].ID;
 
         }
         
@@ -198,26 +203,197 @@ void AMazeManager::BeginPlay(){
             
             Elem->FinishSpawning(LoadedGame->MoveAllies[i].Transform);
 
+            Elem->Speech = LoadedGame->MoveAllies[i].Speech;
+            Elem->QuestionAt = LoadedGame->MoveAllies[i].QuestionAt;
+            Elem->bAlreadySpoken = LoadedGame->MoveAllies[i].bAlreadySpoken;
         }
 
-        //Load Doors
+        //Load Door
         for(int i = 0; i < LoadedGame->Doors.Num(); i++){
-            
-            if(LoadedGame->Doors[i].ActorClass == DoorRiddleClass){
 
-                ADoorRiddle* Elem = GetWorld()->SpawnActorDeferred<ADoorRiddle>(DoorRiddleClass,LoadedGame->Doors[i].Transform);
-                Elem->Speech = &Speech;
-                Elem->OldSpeech = &OldSpeech;
-                Elem->Questions = &Questions;
-                Elem->OldQuestions = &OldQuestions;
-                Elem->FinishSpawning(LoadedGame->Doors[i].Transform);
+            ADoor* Elem = GetWorld()->SpawnActorDeferred<ADoor>(DoorClass,LoadedGame->Doors[i].Transform);
+            Elem->bOpenDoor = LoadedGame->Doors[i].bOpenDoor;
+            Elem->FinalPosition = LoadedGame->Doors[i].FinalPosition;
+            Elem->FinishSpawning(LoadedGame->Doors[i].Transform);
 
-            }else
-                ADoor* Elem = GetWorld()->SpawnActor<ADoor>(
-                    LoadedGame->Doors[i].ActorClass,
-                    LoadedGame->Doors[i].Transform);
+            Elem->ID = LoadedGame->Doors[i].ID;
 
         }
+
+        //Load Door Riddle
+        for(int i = 0; i < LoadedGame->DoorsRiddle.Num(); i++){
+
+            ADoorRiddle* Elem = GetWorld()->SpawnActorDeferred<ADoorRiddle>(DoorRiddleClass,LoadedGame->DoorsRiddle[i].Transform);
+            Elem->Speech = &Speech;
+            Elem->OldSpeech = &OldSpeech;
+            Elem->Questions = &Questions;
+            Elem->OldQuestions = &OldQuestions;
+            Elem->bOpenDoor = LoadedGame->DoorsRiddle[i].bOpenDoor;
+            Elem->FinalPosition = LoadedGame->DoorsRiddle[i].FinalPosition;
+            Elem->FinishSpawning(LoadedGame->DoorsRiddle[i].Transform);
+            
+            Elem->ID = LoadedGame->DoorsRiddle[i].ID;
+
+        }
+
+        //Load Door Explorer
+        for(int i = 0; i < LoadedGame->DoorsExplorer.Num(); i++){
+
+            ADoorExplorer* Elem = GetWorld()->SpawnActorDeferred<ADoorExplorer>(DoorExplorerClass,LoadedGame->DoorsExplorer[i].Transform);
+            Elem->bOpenDoor = LoadedGame->DoorsExplorer[i].bOpenDoor;
+            Elem->FinalPosition = LoadedGame->DoorsExplorer[i].FinalPosition;
+            Elem->FinishSpawning(LoadedGame->DoorsExplorer[i].Transform);
+            
+            Elem->ID = LoadedGame->DoorsExplorer[i].ID;
+        }
+
+        //Load Door Achiever
+        for(int i = 0; i < LoadedGame->DoorsAchiever.Num(); i++){
+
+            ADoorAchiever* Elem = GetWorld()->SpawnActorDeferred<ADoorAchiever>(DoorAchieverClass,LoadedGame->DoorsAchiever[i].Transform);
+            Elem->bCheckpoint = true;
+            Elem->FinalPosition = LoadedGame->DoorsAchiever[i].FinalPosition;
+            Elem->FinishSpawning(LoadedGame->DoorsAchiever[i].Transform);
+            Elem->ID = LoadedGame->DoorsAchiever[i].ID;
+
+            for(int j = 0; j < LoadedGame->DoorsAchiever[i].IDs.Num(); j++){
+                
+                for (TActorIterator<AGenericDestructibleElements> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+                    
+                    if((*ActorItr)->ID == LoadedGame->DoorsAchiever[i].IDs[j]){
+                        
+                        Elem->DestrActors.Add((*ActorItr));
+                        
+                        if((*ActorItr)->ID == LoadedGame->DoorsAchiever[i].IDKey)
+                            (*ActorItr)->DestrDelegate.AddDynamic(Elem, &ADoorAchiever::SpawnKey);
+                        
+                        break;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        //Load Door Killer
+        for(int i = 0; i < LoadedGame->DoorsKiller.Num(); i++){
+
+            ADoorKiller* Elem = GetWorld()->SpawnActorDeferred<ADoorKiller>(DoorKillerClass,LoadedGame->DoorsKiller[i].Transform);
+            Elem->bOpenDoor =  LoadedGame->DoorsKiller[i].bOpenDoor;
+            Elem->FinalPosition = LoadedGame->DoorsKiller[i].FinalPosition;
+            Elem->FinishSpawning(LoadedGame->DoorsKiller[i].Transform);
+            Elem->ID = LoadedGame->DoorsKiller[i].ID;
+
+            for(int j = 0; j < LoadedGame->DoorsKiller[i].IDs.Num(); j++){
+                
+                for (TActorIterator<AEnemyAIAbstract> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+                    
+                    if((*ActorItr)->IDEnemy == LoadedGame->DoorsKiller[i].IDs[j]){
+                        (*ActorItr)->Destroy();
+                        break;
+                    }
+
+                }
+
+            }
+
+        }
+
+        //Load Checkpoints
+        for(int i = 0; i < LoadedGame->Checkpoints.Num(); i++){
+            
+            ACheckPointLevel1* Elem = GetWorld()->SpawnActor<ACheckPointLevel1>(
+                LoadedGame->Checkpoints[i].ActorClass,
+                LoadedGame->Checkpoints[i].Transform);
+
+            Elem->MazeManager = this;
+
+        }
+
+        //Load Night portals
+        for(int i = 0; i < LoadedGame->NightPortals.Num(); i++){
+            
+            APortal* Elem = GetWorld()->SpawnActor<APortal>(
+                LoadedGame->NightPortals[i].ActorClass,
+                LoadedGame->NightPortals[i].Transform);
+
+            Elem->NewPosition = LoadedGame->NightPortals[i].NewPosition;
+
+        }
+
+        //Load Puzzle portals
+        for(int i = 0; i < LoadedGame->PuzzlePortals.Num(); i++){
+            
+            APuzzleButtonPortal* Elem = GetWorld()->SpawnActorDeferred<APuzzleButtonPortal>(
+                LoadedGame->PuzzlePortals[i].ActorClass,
+                LoadedGame->PuzzlePortals[i].Transform);
+
+            Elem->EndSpawnPosition = LoadedGame->PuzzlePortals[i].EndSpawnPosition;
+
+            for (TActorIterator<ADoor> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+                    
+                if((*ActorItr)->ID == LoadedGame->PuzzlePortals[i].DoorID){
+                    Elem->Door = (*ActorItr);
+                    break;
+                }
+
+            }
+
+            for (TActorIterator<APortalNight> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+
+                Elem->StartPortal = (*ActorItr);
+
+            }
+
+            Elem->FinishSpawning(LoadedGame->PuzzlePortals[i].Transform);
+
+        }
+
+        //Load Room Killer / Socializer
+        if(LoadedGame->RoomKillerStruct.ActorClass != nullptr){
+
+            ARoomKiller* Elem = GetWorld()->SpawnActorDeferred<ARoomKiller>(
+                LoadedGame->RoomKillerStruct.ActorClass,
+                LoadedGame->RoomKillerStruct.Transform);
+
+            Elem->StartPortalPos = LoadedGame->RoomKillerStruct.StartPortalPos;
+
+            for (TActorIterator<ADoor> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+                        
+                if((*ActorItr)->ID == LoadedGame->RoomKillerStruct.DoorID){
+                    Elem->Door = (*ActorItr);
+                    break;
+                }
+
+            }
+
+            for (TActorIterator<APawnInteractiveClass> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+                        
+                if(!(*ActorItr)->IsA(APawnInteractiveMove::StaticClass()) && !(*ActorItr)->IsA(ARiddleNPC::StaticClass()) &&
+                    (*ActorItr)->ID == LoadedGame->RoomKillerStruct.NPCID){
+                    
+                    (*ActorItr)->Destroy();
+                    break;
+
+                }
+
+            }
+
+            Elem->FinishSpawning(LoadedGame->RoomKillerStruct.Transform);
+
+        }
+
+
+        //Load Speech (Done again to reset the changes)
+        Speech = ConvertSpeechBack(LoadedGame->Speech);
+        OldSpeech = ConvertSpeechBack(LoadedGame->OldSpeech);
+
+        //Load ID Counters
+        AGenericDestructibleElements::IDCounter = LoadedGame->DestrID;
+        AEnemyAIAbstract::IDCounter = LoadedGame->EnemyID;
+        APawnInteractiveClass::IDCount = LoadedGame->AllyID;
 
     }else{
 
@@ -244,7 +420,7 @@ void AMazeManager::BeginPlay(){
 
             //GenerateDoors();
         
-            PortalType(FMath::RandRange(0,3),MaxPath[MaxPath.Num() - 2]);  
+            PortalType(2,MaxPath[MaxPath.Num() - 2]);  
 
             Populate(MaxPath);
 
@@ -593,7 +769,7 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
 
             DoorFrequency += 1;
         
-        }else{
+        }else if(Path == MaxPath){
             
             AddDoor(FMath::RandRange(0,3),MaxPath[i]);  
 
@@ -1282,7 +1458,6 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             //Create the door
             Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
                 GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
-            Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
  
             //Create the portal
             StartPortalNight = GetWorld()->SpawnActor<APortalNight>(PortalNightClass, MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f), FRotator::ZeroRotator);
@@ -1304,7 +1479,6 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             //Create the door
             Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
                 GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
-            Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
 
             //Extract a position and spawn the room
             NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
@@ -1329,7 +1503,6 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             //Create the door
             Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
                 GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
-            Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
 
             //Extract a position and spawn the room
             NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
@@ -1353,7 +1526,6 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             
             Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
                 GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
-            Door->SetActorScale3D(FVector(1.75f,1.f,0.75f));
 
             NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
             SpawnLocAndRotation.SetLocation(ArenaSpawnLocation[NumExtr]);

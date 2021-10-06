@@ -14,8 +14,11 @@ class THESISUNREALPROJECT_API APuzzleButton : public AActor
 	GENERATED_BODY()
 	
 public:	
+
 	// Sets default values for this actor's properties
 	APuzzleButton();
+
+	static int IDCounter;
 
 protected:
 	// Called when the game starts or when spawned
@@ -51,8 +54,7 @@ public:
 	//Called when pressed
 	FSelectedDelegate Overlap;
 
-private:
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ID, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere)
 	int ID;
+
 };

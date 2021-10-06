@@ -3,6 +3,8 @@
 
 #include "EnemyAIAbstract.h"
 
+int AEnemyAIAbstract::IDCounter = 0;
+
 // Sets default values
 AEnemyAIAbstract::AEnemyAIAbstract(){
 
@@ -18,6 +20,11 @@ AEnemyAIAbstract::AEnemyAIAbstract(){
 void AEnemyAIAbstract::BeginPlay(){
 	
 	Super::BeginPlay();
+
+	IDEnemy = IDCounter;
+	IDCounter = (IDCounter + 1) % 50000;
+
+	InitialPos = GetActorLocation();
 
 }
 

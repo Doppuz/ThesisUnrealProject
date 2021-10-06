@@ -30,22 +30,22 @@ void ADoorAchiever::BeginPlay() {
 
     Super::BeginPlay();
 
-    DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos1->GetComponentLocation(),SpawnPos1->GetComponentRotation()));
-    DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos2->GetComponentLocation(),SpawnPos2->GetComponentRotation()));
-    DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos3->GetComponentLocation(),SpawnPos3->GetComponentRotation()));
-    DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos4->GetComponentLocation(),SpawnPos4->GetComponentRotation()));
+    //If needed when I spawn it from checkpoints
+    if(!bCheckpoint){
+        DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos1->GetComponentLocation(),SpawnPos1->GetComponentRotation()));
+        DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos2->GetComponentLocation(),SpawnPos2->GetComponentRotation()));
+        DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos3->GetComponentLocation(),SpawnPos3->GetComponentRotation()));
+        DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos4->GetComponentLocation(),SpawnPos4->GetComponentRotation()));
 
-    FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
-    for(int i = 0; i < DestrActors.Num(); i++)
-        DestrActors[i]->AttachToActor(this,TransformRules);
+        AEnemyAIAbstract* Enemy = GetWorld()->SpawnActor<AEnemyAIAbstract>(Enemies[FMath::RandRange(0, Enemies.Num() - 1)],SpawnPos0->GetComponentLocation(),SpawnPos0->GetComponentRotation());
+        Enemy->bSpawnCoin = true;
 
-    AEnemyAIAbstract* Enemy = GetWorld()->SpawnActor<AEnemyAIAbstract>(Enemies[FMath::RandRange(0, Enemies.Num() - 1)],SpawnPos0->GetComponentLocation(),SpawnPos0->GetComponentRotation());
-    Enemy->bSpawnCoin = true;
-    Enemy->AttachToActor(this,TransformRules);
+        int NumExtr = FMath::RandRange(0,DestrActors.Num() - 1);
+        DestrActors[NumExtr]->SpawnActor = KeyClass;
+        DestrActors[NumExtr]->DestrDelegate.AddDynamic(this, &ADoorAchiever::SpawnKey);
 
-    int NumExtr = FMath::RandRange(0,DestrActors.Num() - 1);
-    DestrActors[NumExtr]->SpawnActor = KeyClass;
-    DestrActors[NumExtr]->DestrDelegate.AddDynamic(this, &ADoorAchiever::SpawnKey);
+        KeyPos = NumExtr;
+    }
     
 }
 
