@@ -27,6 +27,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* ObstacleInstances;
 
+	UPROPERTY(VisibleAnywhere)
+	UInstancedStaticMeshComponent* MetalCrateInstances;
+
 	void CreateFloor(FTransform);
 
 	void CreateWalls(FTransform);
@@ -36,6 +39,8 @@ public:
 	void CreateVerticalWall(FTransform);
 
 	void CreateObstacle(FTransform);
+
+	void CreateMetalCrate(FTransform);
 
 	float ObstacleSize;
 	float ObstacleHeight;

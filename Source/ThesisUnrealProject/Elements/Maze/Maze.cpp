@@ -24,6 +24,9 @@ AMaze::AMaze(){
 	ObstacleInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("ObstacleInstances"));
     ObstacleInstances->SetupAttachment(RootComponent);
 
+	MetalCrateInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("MetalCrateInstances"));
+	MetalCrateInstances->SetupAttachment(RootComponent);
+
 	MeshLenght = 768.f;
 	ObstacleSize = 100.f;
 	ObstacleHeight = 190.f;
@@ -65,7 +68,14 @@ void AMaze::CreateVerticalWall(FTransform Transform) {
 
 void AMaze::CreateObstacle(FTransform Transform) {
 	
-	int Index = ObstacleInstances->AddInstance(Transform);
+	ObstacleInstances->AddInstance(Transform);
 
 }
+
+void AMaze::CreateMetalCrate(FTransform Transform) {
+	
+	MetalCrateInstances->AddInstance(Transform);
+
+}
+
 

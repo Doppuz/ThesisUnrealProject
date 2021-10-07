@@ -58,6 +58,9 @@ USTRUCT() struct FMazeValue{
 	
 	UPROPERTY()
 	TArray<FTransform> TransformsObstacle;
+	
+	UPROPERTY()
+	TArray<FTransform> TransformsMetalCrate;
 
 };
 
@@ -199,6 +202,24 @@ USTRUCT() struct FRoomKillerStruct{
 
 };
 
+USTRUCT() struct FRoomAchieverStruct{
+
+    GENERATED_BODY()
+
+	UPROPERTY()
+	FTransform Transform;
+	
+	UPROPERTY()
+	TSubclassOf<AActor> ActorClass;
+
+	UPROPERTY()
+	FVector EndPos;
+	
+	UPROPERTY()
+	int DoorID;
+
+};
+
 
 UCLASS()
 class THESISUNREALPROJECT_API USaveGameLevel1 : public USaveGame{
@@ -266,6 +287,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	FRoomKillerStruct RoomKillerStruct;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	FRoomAchieverStruct RoomAchieverStruct;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FSpeech> Speech;
@@ -294,5 +318,7 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	int AllyID;
 
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	FVector PlayerPos;
 
 };

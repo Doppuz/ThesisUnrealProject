@@ -92,6 +92,7 @@ void AMazeManager::BeginPlay(){
             Maze->FloorInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsFloor,false);
             Maze->WallInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsWall,false);
             Maze->ObstacleInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsObstacle,false);
+            Maze->MetalCrateInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsMetalCrate,false);
 
         }
 
@@ -385,6 +386,31 @@ void AMazeManager::BeginPlay(){
 
         }
 
+        //Load Room Achiever
+        if(LoadedGame->RoomAchieverStruct.ActorClass != nullptr){
+
+            ARoomAchiever* Elem = GetWorld()->SpawnActorDeferred<ARoomAchiever>(
+                LoadedGame->RoomAchieverStruct.ActorClass,
+                LoadedGame->RoomAchieverStruct.Transform);
+
+            Elem->EndPos = LoadedGame->RoomAchieverStruct.EndPos;
+
+            for (TActorIterator<ADoor> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+                        
+                if((*ActorItr)->ID == LoadedGame->RoomAchieverStruct.DoorID){
+                    Elem->Door = (*ActorItr);
+                    break;
+                }
+
+            }
+
+            Elem->FinishSpawning(LoadedGame->RoomAchieverStruct.Transform);
+
+        }
+
+        //Player
+        APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
+        Player->SetActorLocation(LoadedGame->PlayerPos);
 
         //Load Speech (Done again to reset the changes)
         Speech = ConvertSpeechBack(LoadedGame->Speech);
@@ -420,7 +446,7 @@ void AMazeManager::BeginPlay(){
 
             //GenerateDoors();
         
-            PortalType(2,MaxPath[MaxPath.Num() - 2]);  
+            PortalType(FMath::RandRange(0,3),MaxPath[MaxPath.Num() - 2]);  
 
             Populate(MaxPath);
 
@@ -772,9 +798,32 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
         }else if(Path == MaxPath){
             
             AddDoor(FMath::RandRange(0,3),MaxPath[i]);  
+            FVector Offset;
+            ACheckPointLevel1* CheckPoint;
 
-            ACheckPointLevel1* CheckPoint = GetWorld()->SpawnActor<ACheckPointLevel1>(CheckPointClass,(MaxPath[i + 1]->GetActorLocation() + MaxPath[i]->GetActorLocation()) / 2,
-                GetDoorRotation(MaxPath[i + 1], MaxPath[i]));
+            //create the exact position for the checkpoint.
+            if(SetOffsetVector(MaxPath[i + 1], MaxPath[i], Offset, 0)){
+                
+                FRotator Rotator = GetDoorRotation(MaxPath[i + 1], MaxPath[i]);
+                if(Rotator == FRotator(0.f,180.f,0.f))
+                    Offset = FVector(0.f,100.f,0.f);
+                else
+                    Offset = FVector(0.f,-100.f,0.f);
+
+                CheckPoint = GetWorld()->SpawnActor<ACheckPointLevel1>(CheckPointClass,(MaxPath[i + 1]->GetActorLocation() + MaxPath[i]->GetActorLocation()) / 2 + Offset,
+                    GetDoorRotation(MaxPath[i + 1], MaxPath[i]));
+
+            }else{
+
+                FRotator Rotator = GetDoorRotation(MaxPath[i + 1], MaxPath[i]);
+                if(Rotator == FRotator(0.f,-90.f,0.f))
+                    Offset = FVector(-100.f,0.f,0.f);
+                else
+                    Offset = FVector(100.f,0.f,0.f);
+
+                CheckPoint = GetWorld()->SpawnActor<ACheckPointLevel1>(CheckPointClass,(MaxPath[i + 1]->GetActorLocation() + MaxPath[i]->GetActorLocation()) / 2 + Offset,
+                    GetDoorRotation(MaxPath[i + 1], MaxPath[i]));
+            }
 
             CheckPoint->MazeManager = this;
 
@@ -1112,6 +1161,7 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex, TArray<AMazeCell2*> P
     
     FVector Offset;
     FVector Pos;
+    FTransform Transform;
 
     switch(Index){
 
@@ -1148,9 +1198,16 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex, TArray<AMazeCell2*> P
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex]->GetActorLocation() , FRotator::ZeroRotator);
 
-            GetWorld()->SpawnActor<AActor>(MetalCrateClass,(Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation()) / 2 + FVector(0.f,0.f,-50.f), FRotator::ZeroRotator);
-            GetWorld()->SpawnActor<AActor>(MetalCrateClass,(Path[CellIndex + 1]->GetActorLocation() + Path[CellIndex + 2]->GetActorLocation()) / 2 + FVector(0.f,0.f,-50.f), FRotator::ZeroRotator);
-           
+            Transform.SetLocation((Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation()) / 2 + FVector(0.f,0.f,-50.f));
+            Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
+            Transform.SetScale3D(FVector(4.f,4.f,4.f));
+            MazeActor->CreateMetalCrate(Transform);
+
+            Transform.SetLocation((Path[CellIndex + 1]->GetActorLocation() + Path[CellIndex + 2]->GetActorLocation()) / 2 + FVector(0.f,0.f,-50.f));
+            Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
+            Transform.SetScale3D(FVector(4.f,4.f,4.f));
+            MazeActor->CreateMetalCrate(Transform);
+        
             GenerateSideElements(CellIndex,0, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
             GenerateSideElements(CellIndex,1, MazeActor->ObstacleHeight, -25.f, 320.f, false,  nullptr, Path);
             GenerateSideElements(CellIndex,2, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
@@ -1208,14 +1265,14 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2
                 //Create traps in 2 cells out of 3.
                 if(i != 1){
 
-                    GetWorld()->SpawnActor<ATrap>(TrapClass, Path[CellIndex + i]->GetActorLocation() + FVector(0.f,0.f,-50.f), FRotator::ZeroRotator);
-                    GetWorld()->SpawnActor<ATrap>(TrapClass, Path[CellIndex + i]->GetActorLocation() + FVector(260.f,260.f,-50.f), FRotator::ZeroRotator);
-                    GetWorld()->SpawnActor<ATrap>(TrapClass, Path[CellIndex + i]->GetActorLocation() + FVector(-260.f,260.f,-50.f), FRotator::ZeroRotator);
-                    GetWorld()->SpawnActor<ATrap>(TrapClass, Path[CellIndex + i]->GetActorLocation() + FVector(260.f,-260.f,-50.f), FRotator::ZeroRotator);
-                    GetWorld()->SpawnActor<ATrap>(TrapClass, Path[CellIndex + i]->GetActorLocation() + FVector(-260.f,-260.f,-50.f), FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<ATrap>(TrapClass, Path[CellIndex + i]->GetActorLocation() + FVector(0.f,0.f,-56.f), FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<ATrap>(TrapClass, Path[CellIndex + i]->GetActorLocation() + FVector(260.f,260.f,-56.f), FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<ATrap>(TrapClass, Path[CellIndex + i]->GetActorLocation() + FVector(-260.f,260.f,-56.f), FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<ATrap>(TrapClass, Path[CellIndex + i]->GetActorLocation() + FVector(260.f,-260.f,-56.f), FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<ATrap>(TrapClass, Path[CellIndex + i]->GetActorLocation() + FVector(-260.f,-260.f,-56.f), FRotator::ZeroRotator);
 
-                    TArray<FVector> Positions{FVector(0.f,260.f,-50.f),FVector(0.f,-260.f,-50.f),
-                        FVector(260.f,0.f,-50.f),FVector(-260.f,0.f,-50.f)};
+                    TArray<FVector> Positions{FVector(0.f,260.f,-56.f),FVector(0.f,-260.f,-56.f),
+                        FVector(260.f,0.f,-56.f),FVector(-260.f,0.f,-56.f)};
 
                     // Create others element in the space empty
                     for(int j = 0; j < Positions.Num(); j++){
@@ -1235,10 +1292,10 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2
                     
                     //Create 4 barrels and a coin in the 2 cell.
                     GetWorld()->SpawnActor<ACoinController>(CoinHorizontalClass, Path[CellIndex + i]->GetActorLocation(),FRotator::ZeroRotator);
-                    GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,Path[CellIndex + i]->GetActorLocation() + FVector(260.f,260.f,-50.f),FRotator::ZeroRotator);
-                    GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,Path[CellIndex + i]->GetActorLocation() + FVector(-260.f,260.f,-50.f),FRotator::ZeroRotator);
-                    GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,Path[CellIndex + i]->GetActorLocation() + FVector(260.f,-260.f,-50.f),FRotator::ZeroRotator);
-                    GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,Path[CellIndex + i]->GetActorLocation() + FVector(-260.f,-260.f,-50.f),FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,Path[CellIndex + i]->GetActorLocation() + FVector(260.f,260.f,-56.f),FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,Path[CellIndex + i]->GetActorLocation() + FVector(-260.f,260.f,-56.f),FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,Path[CellIndex + i]->GetActorLocation() + FVector(260.f,-260.f,-56.f),FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,Path[CellIndex + i]->GetActorLocation() + FVector(-260.f,-260.f,-56.f),FRotator::ZeroRotator);
 
                 }
 

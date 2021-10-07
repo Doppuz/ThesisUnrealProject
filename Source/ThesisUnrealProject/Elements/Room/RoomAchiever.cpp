@@ -29,6 +29,8 @@ void ARoomAchiever::BeginPlay() {
 
     ACoinController* Coin;
 
+    FAttachmentTransformRules Rules(EAttachmentRule::KeepWorld,false);
+
     for(int i = 0; i < 9; i++){
         
         for(int j = 0; j < 9; j++){
@@ -38,14 +40,16 @@ void ARoomAchiever::BeginPlay() {
             
                 Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass, FVector(StartSpawnPosition->GetComponentLocation().X - 310 * i,StartSpawnPosition->GetComponentLocation().Y - 310.f * j, 80.f), FRotator::ZeroRotator);
                 Coin->CollectedDelegate.AddDynamic(this,&ARoomAchiever::OnCoinCollect);
+                Coin->AttachToActor(this,Rules);
                 TotalCoins += 1;
 
             }else if(NumExtr < 9.7f)
-                GetWorld()->SpawnActor<AActor>(MetalCrateClass, FVector(StartSpawnPosition->GetComponentLocation().X - 310 * i,StartSpawnPosition->GetComponentLocation().Y - 310.f * j, 50.f), FRotator::ZeroRotator);
+                GetWorld()->SpawnActor<AActor>(MetalCrateClass, FVector(StartSpawnPosition->GetComponentLocation().X - 310 * i,StartSpawnPosition->GetComponentLocation().Y - 310.f * j, 50.f), FRotator::ZeroRotator)->AttachToActor(this,Rules);
             else{
             
                 AAIShooterPawn* Shooter = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterPawnClass, FVector(StartSpawnPosition->GetComponentLocation().X - 310 * i,StartSpawnPosition->GetComponentLocation().Y - 310.f * j, 110.f), FRotator::ZeroRotator);
                 Shooter->bSpawnCoin = true;
+                Shooter->AttachToActor(this,Rules);
 
             }
         }

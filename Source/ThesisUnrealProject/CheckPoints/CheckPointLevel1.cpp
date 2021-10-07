@@ -45,6 +45,7 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
             TArray<FDoorKillerStruct> DoorKiller;
             TArray<FPuzzlePortalStruct> PuzzlePortals;
             FRoomKillerStruct RoomKiller;
+            FRoomAchieverStruct RoomAchiever;
             FTransform Transform;
             
 // --- Maze Actor --
@@ -58,6 +59,7 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
                 T.TransformsFloor = CreateTransformArray((*ActorItr)->FloorInstances);
                 T.TransformsWall = CreateTransformArray((*ActorItr)->WallInstances);
                 T.TransformsObstacle = CreateTransformArray((*ActorItr)->ObstacleInstances);
+                T.TransformsMetalCrate = CreateTransformArray((*ActorItr)->MetalCrateInstances);
                 T.Position = ActorItr->GetActorLocation();
 
                 MazeTransformMap.Add(ActorNumber,T);
@@ -97,13 +99,15 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
         for (TActorIterator<ACoinController> ActorItr(GetWorld()); ActorItr; ++ActorItr){
             
-            FGeneralActor GeneralActor;
-            Transform.SetLocation(ActorItr->GetActorLocation());
-            Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
-            GeneralActor.Transform = Transform;
-            GeneralActor.ActorClass = ActorItr->GetClass();
-            
-            GeneralElem.Add(GeneralActor);
+            if(ActorItr->GetAttachParentActor() == nullptr){
+                FGeneralActor GeneralActor;
+                Transform.SetLocation(ActorItr->GetActorLocation());
+                Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
+                GeneralActor.Transform = Transform;
+                GeneralActor.ActorClass = ActorItr->GetClass();
+                
+                GeneralElem.Add(GeneralActor);
+            }
 
         }
 
@@ -487,6 +491,25 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
         }
 
         SaveGameInstance->RoomKillerStruct = RoomKiller;
+
+// --- Room Achiever ---
+
+        for (TActorIterator<ARoomAchiever> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+            
+            Transform.SetLocation(ActorItr->GetActorLocation());
+            Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
+            RoomAchiever.Transform = Transform;
+            RoomAchiever.ActorClass = ActorItr->GetClass();
+            RoomAchiever.EndPos = (*ActorItr)->EndPos;
+            RoomAchiever.DoorID = (*ActorItr)->Door->ID;
+
+        }
+
+        SaveGameInstance->RoomAchieverStruct = RoomAchiever;
+
+// --- Player ---
+
+        SaveGameInstance->PlayerPos = OtherActor->GetActorLocation();
 
 // --- Speech ---
 
