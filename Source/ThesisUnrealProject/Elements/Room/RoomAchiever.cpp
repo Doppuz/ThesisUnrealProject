@@ -49,7 +49,7 @@ void ARoomAchiever::BeginPlay() {
             
                 AAIShooterPawn* Shooter = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterPawnClass, FVector(StartSpawnPosition->GetComponentLocation().X - 310 * i,StartSpawnPosition->GetComponentLocation().Y - 310.f * j, 110.f), FRotator::ZeroRotator);
                 Shooter->bSpawnCoin = true;
-                Shooter->AttachToActor(this,Rules);
+                Shooters.Add(Shooter);
 
             }
         }

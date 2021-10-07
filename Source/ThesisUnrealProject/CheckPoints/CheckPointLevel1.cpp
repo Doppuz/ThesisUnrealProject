@@ -18,6 +18,7 @@
 #include "../Character/AllyAI/PawnInteractiveMove.h"
 #include "../Character/AllyAI/RiddleNPC.h"
 #include "../Character/EnemyAI/PatrolAI2.h"
+#include "../Character/EnemyAI/AIShooterPawn.h"
 #include "../Elements/GeneralElements/Doors/DoorRiddle.h"
 #include "../Elements/GeneralElements/Doors/DoorAchiever.h"
 #include "../Elements/GeneralElements/Doors/DoorKiller.h"
@@ -28,6 +29,7 @@
 #include "../Elements/Room/RoomSocializer.h"
 #include "../Elements/Room/RoomAchiever.h"
 #include "../Elements/Room/Room.h"
+#include "../Elements/Key/KeyActor.h"
 
 void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
@@ -99,7 +101,7 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
         for (TActorIterator<ACoinController> ActorItr(GetWorld()); ActorItr; ++ActorItr){
             
-            if(ActorItr->GetAttachParentActor() == nullptr){
+            if((*ActorItr)->GetAttachParentActor() == nullptr){
                 FGeneralActor GeneralActor;
                 Transform.SetLocation(ActorItr->GetActorLocation());
                 Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
@@ -267,7 +269,6 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
             Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
             GeneralActor.Transform = Transform;
             GeneralActor.ActorClass = ActorItr->GetClass();
-            GeneralActor.IDKey = (*ActorItr)->DestrActors[(*ActorItr)->KeyPos]->ID;
 
             GeneralActor.bOpenDoor = (*ActorItr)->bOpenDoor;
             GeneralActor.FinalPosition = (*ActorItr)->FinalPosition;
@@ -277,6 +278,10 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
             for(int i = 0; i < (*ActorItr)->DestrActors.Num(); i++){
 
                 IDs.Add((*ActorItr)->DestrActors[i]->ID);
+
+                if((*ActorItr)->DestrActors[i]->SpawnActor == (*ActorItr)->KeyClass)
+                    GeneralActor.IDKey = (*ActorItr)->DestrActors[i]->ID;
+                
 
             }
             
@@ -323,18 +328,16 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
         for (TActorIterator<AEnemyAIAbstract> ActorItr(GetWorld()); ActorItr; ++ActorItr){
             
             AActor* Parent = ActorItr->GetAttachParentActor();
-            if(ActorItr->GetAttachParentActor() == nullptr){
 
-                FGeneralActor GeneralActor;
-                Transform.SetLocation((*ActorItr)->InitialPos);
-                Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
-                GeneralActor.Transform = Transform;
-                GeneralActor.ActorClass = ActorItr->GetClass();
-                GeneralActor.ID = (*ActorItr)->IDEnemy;
+            FGeneralActor GeneralActor;
+            Transform.SetLocation((*ActorItr)->InitialPos);
+            Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
+            GeneralActor.Transform = Transform;
+            GeneralActor.ActorClass = ActorItr->GetClass();
+            GeneralActor.ID = (*ActorItr)->IDEnemy;
                 
-                GeneralElem.Add(GeneralActor);
+            GeneralElem.Add(GeneralActor);
 
-            }
 
         }
 
@@ -349,7 +352,7 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
             if(!ActorItr->IsA(ARiddleNPC::StaticClass()) && !ActorItr->IsA(APawnInteractiveMove::StaticClass())){
             
                 FGeneralActor GeneralActor;
-                Transform.SetLocation(ActorItr->GetActorLocation() + FVector(0.f,0.f,20.f));
+                Transform.SetLocation(ActorItr->GetActorLocation());
                 Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
                 GeneralActor.Transform = Transform;
                 GeneralActor.ActorClass = ActorItr->GetClass();
@@ -502,6 +505,9 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
             RoomAchiever.ActorClass = ActorItr->GetClass();
             RoomAchiever.EndPos = (*ActorItr)->EndPos;
             RoomAchiever.DoorID = (*ActorItr)->Door->ID;
+
+            for(int i = 0; i < (*ActorItr)->Shooters.Num(); i++)
+                RoomAchiever.EnemiesID.Add((*ActorItr)->Shooters[i]->IDEnemy);
 
         }
 

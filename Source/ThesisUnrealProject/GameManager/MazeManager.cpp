@@ -404,6 +404,17 @@ void AMazeManager::BeginPlay(){
 
             }
 
+            for(int i = 0; i < LoadedGame->RoomAchieverStruct.EnemiesID.Num(); i++){
+                for (TActorIterator<AAIShooterPawn> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+                            
+                    if((*ActorItr)->IDEnemy == LoadedGame->RoomAchieverStruct.EnemiesID[i]){
+                        (*ActorItr)->Destroy();
+                        break;
+                    }
+
+                }
+            }
+
             Elem->FinishSpawning(LoadedGame->RoomAchieverStruct.Transform);
 
         }
@@ -782,9 +793,14 @@ void AMazeManager::CreateOtherPaths(Graph<AMazeCell2>* OtherGraph, AMazeCell2* C
 
 void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
     
+    //Used to check what is the last index for path different from Maxpath.
+    int LastIndex = 0;
+
     //When is 3, I insert a Door.
     int DoorFrequency = 0;
     for(int i = 1; i < Path.Num() - 4; i += 4){ //MaxPath.Num() - 2
+
+        LastIndex = i;
 
         if(DoorFrequency < 3){
         
@@ -830,6 +846,41 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
             i -= 2; 
             DoorFrequency = 0;
 
+        }
+
+        //Just for others Path to fill some cells that are still empty.
+        if(Path != MaxPath){
+            int Difference =Path.Num() - 4 - LastIndex;
+
+            //Possible Value: 1,2,3, 4
+            switch(Difference){
+
+                case 1:
+
+                    // this perfect case
+
+                    break;
+
+                case 2:
+
+                    // Useless
+
+                    break;
+
+                case 3:
+
+                    SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 2]);
+
+                    break;
+
+                case 4:
+                    
+                    SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 2]);
+                    SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 3]);
+
+                    break;
+
+            }
         }
     } 
 

@@ -46,6 +46,8 @@ public:
 
 	ADoor* Door;
 
+	TArray<AAIShooterPawn*> Shooters;
+
 	UFUNCTION()
 	void OnCoinCollect();
 

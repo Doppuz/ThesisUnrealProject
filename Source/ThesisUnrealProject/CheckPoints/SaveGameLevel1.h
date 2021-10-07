@@ -218,6 +218,9 @@ USTRUCT() struct FRoomAchieverStruct{
 	UPROPERTY()
 	int DoorID;
 
+	UPROPERTY()
+	TArray<int> EnemiesID;
+
 };
 
 
