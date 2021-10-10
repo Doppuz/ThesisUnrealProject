@@ -9,6 +9,7 @@
 #include "GameFramework/Actor.h"
 #include "../Character/InterfaceMovableAI.h"
 #include "../CheckPoints/SaveGameLevel1.h"
+#include "../Enum/UsefulImport.h"
 #include "MazeManager.generated.h"
 
 class AMazeCell2;
@@ -47,6 +48,47 @@ class AGenericDestructibleElements;
 class ATriggerSpawnAlly;
 class AHat;
 class ACheckPointLevel1;
+
+//Just because nested loop not supported
+USTRUCT() struct FPath{
+
+	GENERATED_BODY()
+
+	FPath() {};
+
+	FPath(TArray<AMazeCell2*> Cells) {
+
+		Path = Cells;
+
+	};
+
+	TArray<AMazeCell2*> Path;
+
+};
+
+USTRUCT() struct FCellsToPopulate{
+
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TMap<AMazeCell2*,FPath> MainPath;
+
+	UPROPERTY()
+	TMap<AMazeCell2*,FPath> OtherPaths;
+
+	UPROPERTY()
+	TMap<AMazeCell2*,FPath> ExtrElem;
+
+	UPROPERTY()
+	TMap<AMazeCell2*,FPath> OneCellElem;
+
+	UPROPERTY()
+	TMap<AMazeCell2*,FPath> Door;
+	
+	UPROPERTY()
+	TMap<AMazeCell2*,AMazeCell2*> Couple;
+
+};
 
 UCLASS()
 class THESISUNREALPROJECT_API AMazeManager : public AActor{
@@ -320,7 +362,7 @@ protected:
 
 // --- BlockedDoor Elements ---
 
-	void AddDoor(int Index, AMazeCell2* Cell);
+	void AddDoor(int Index, AMazeCell2* Cell, TArray<AMazeCell2*> Path);
 
 	//Compare the position of the cells and return the right Rotation of the door.
 	FRotator GetDoorRotation(AMazeCell2* AheadCell, AMazeCell2* BehindCell);
@@ -339,6 +381,34 @@ protected:
 	void SpawnExtraElem(int, AMazeCell2*,AMazeCell2*);
 
 	void SpawnSigleCellElem(int, AMazeCell2*);
+
+// --- Have information about all the cells that need to be populated
+
+	FCellsToPopulate CellsToPopulate;
+
+// --- Method for generating elements based on the bartle's type
+
+	UPROPERTY(EditAnywhere, Category = "Bartle")
+	float Achiever = 50.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Bartle")
+	float Explorer = 50.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Bartle")
+	float Socializer = 50.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Bartle")
+	float Killer = 50.f;
+
+	void PopulateBartle();
+
+	//Support Methods
+	void CalculateTotalNumberOfCells(TMap<Type,int>& CellsNumberMap,TArray<Type> Keys);
+
+	//it Return the index to be assigned it Elements methods.
+	int ReturnTypeValue(int Index);
+
+	void CreateCheckpoint(AMazeCell2* Cell);
 
 #pragma endregion
 

@@ -461,6 +461,14 @@ void AMazeManager::BeginPlay(){
 
             Populate(MaxPath);
 
+            UE_LOG(LogTemp,Warning,TEXT("Main %i"), CellsToPopulate.MainPath.Num());
+            UE_LOG(LogTemp,Warning,TEXT("Other %i"), CellsToPopulate.OtherPaths.Num());
+            UE_LOG(LogTemp,Warning,TEXT("OneCell %i"), CellsToPopulate.OneCellElem.Num());
+            UE_LOG(LogTemp,Warning,TEXT("Extra %i"), CellsToPopulate.ExtrElem.Num());
+            UE_LOG(LogTemp,Warning,TEXT("Door %i"), CellsToPopulate.Door.Num());
+
+            PopulateBartle();
+
         }
 
     }
@@ -670,11 +678,13 @@ void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
                     delete NewGraph;
 
                     //Based on the number of cells I decide how to poplate them.
-                    if(MazeCellMax.Num() > 4){
+                    if(MazeCellMax.Num() > 5){
                         
                         GenerateElements(MazeCellMax);
 
-                        SpawnExtraElem(3,MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
+                        CellsToPopulate.ExtrElem.Add(MazeCellMax[MazeCellMax.Num() - 1], FPath(Path));
+                        CellsToPopulate.Couple.Add(MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
+                        //SpawnExtraElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
                         
                     }else{
 
@@ -682,18 +692,39 @@ void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
                         if(MazeCellMax.Num() > 1){
                             
                             //if its value is 3 it added one cell element
-                            if(MazeCellMax.Num() > 2)
-                                SpawnSigleCellElem(FMath::RandRange(0,3),MazeCellMax[1]);
-
+                            if(MazeCellMax.Num() > 2){
+                            
+                                //SpawnSigleCellElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 2]);
+                                CellsToPopulate.OneCellElem.Add(MazeCellMax[MazeCellMax.Num() - 2], FPath(Path));
+        
+                            }
                             //if its value is 4 it added one cell element
-                            if(MazeCellMax.Num() > 3)
-                                SpawnSigleCellElem(FMath::RandRange(0,3),MazeCellMax[2]);
+                            if(MazeCellMax.Num() > 3){
+                                //SpawnSigleCellElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 3]);
+                                CellsToPopulate.OneCellElem.Add(MazeCellMax[MazeCellMax.Num() - 3], FPath(Path));
 
-                            SpawnExtraElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
+                            //SpawnExtraElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
 
-                        }else
-                            SpawnExtraElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 1],Path[i]);
+                            }
+                            
+                            if(MazeCellMax.Num() > 3){
+                                //SpawnSigleCellElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 3]);
+                                CellsToPopulate.OneCellElem.Add(MazeCellMax[MazeCellMax.Num() - 4], FPath(Path));
 
+                            //SpawnExtraElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
+
+                            }
+
+                            CellsToPopulate.ExtrElem.Add(MazeCellMax[MazeCellMax.Num() - 1], FPath(Path));                        
+                            CellsToPopulate.Couple.Add(MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
+
+                        }else{
+
+                            //SpawnExtraElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 1],Path[i]);
+                            CellsToPopulate.ExtrElem.Add(MazeCellMax[MazeCellMax.Num() - 1], FPath(Path));
+                            CellsToPopulate.Couple.Add(MazeCellMax[MazeCellMax.Num() - 1],Path[i]);
+
+                        }
                     }
 
                     Populate(MazeCellMax);
@@ -803,17 +834,27 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
         LastIndex = i;
 
         if(DoorFrequency < 3){
-        
-            if(FMath::RandRange(0,2) < 2)
+
+            if(Path == MaxPath)
+
+                CellsToPopulate.MainPath.Add(Path[i], FPath(Path));
+
+            else
+
+                CellsToPopulate.OtherPaths.Add(Path[i], FPath(Path));
+            /*if(FMath::RandRange(0,2) < 2)
                 AddEnemy(FMath::RandRange(0,3), Path[i], Path);
             else
-                AddFallenPlatforms(FMath::RandRange(0,3), Path[i], Path);
+                AddFallenPlatforms(FMath::RandRange(0,3), Path[i], Path);*/
 
             DoorFrequency += 1;
         
-        }else if(Path == MaxPath){
+        }else{
+
+            CellsToPopulate.Door.Add(Path[i], FPath(Path));
+            CellsToPopulate.Couple.Add(Path[i], Path[i + 1]);
             
-            AddDoor(FMath::RandRange(0,3),MaxPath[i]);  
+            /*AddDoor(FMath::RandRange(0,3),MaxPath[i]);  
             FVector Offset;
             ACheckPointLevel1* CheckPoint;
 
@@ -841,7 +882,7 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
                     GetDoorRotation(MaxPath[i + 1], MaxPath[i]));
             }
 
-            CheckPoint->MazeManager = this;
+            CheckPoint->MazeManager = this;*/
 
             i -= 2; 
             DoorFrequency = 0;
@@ -850,7 +891,13 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
 
         //Just for others Path to fill some cells that are still empty.
         if(Path != MaxPath){
-            int Difference =Path.Num() - 4 - LastIndex;
+            int Difference = Path.Num() - 4 - LastIndex;
+
+            //Case
+            if(LastIndex == 0){
+                
+            }
+               
 
             //Possible Value: 1,2,3, 4
             switch(Difference){
@@ -869,14 +916,17 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
 
                 case 3:
 
-                    SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 2]);
+                    //SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 2]);
+                    CellsToPopulate.OneCellElem.Add(Path[Path.Num() - 2], FPath(Path));
 
                     break;
 
                 case 4:
                     
-                    SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 2]);
-                    SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 3]);
+                    CellsToPopulate.OneCellElem.Add(Path[Path.Num() - 2], FPath(Path));
+                    CellsToPopulate.OneCellElem.Add(Path[Path.Num() - 3], FPath(Path));
+                    //SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 2]);
+                    //SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 3]);
 
                     break;
 
@@ -907,7 +957,7 @@ void AMazeManager::AddEnemy(int Index, AMazeCell2* Cell, TArray<AMazeCell2*> Pat
     
     case 2:
         
-        TypeOfPatrols(FMath::RandRange(0,2),CellIndex, Path); //FMath::RandRange(0,1)
+        TypeOfPatrols(FMath::RandRange(0,2),CellIndex, Path);
 
         break;
 
@@ -1231,7 +1281,7 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex, TArray<AMazeCell2*> P
             SetOffsetVector(Path[CellIndex + 1],Path[CellIndex],Offset,220.f);
             Pos = (Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation()) / 2;
             GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset/2, FRotator::ZeroRotator);
-            GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
+            GetWorld()->SpawnActor<AAIBull>(BullEnemyClass,Path[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
             GenerateSideElements(CellIndex,0, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
             GenerateSideElements(CellIndex,1, MazeActor->ObstacleHeight, -25.f, 320.f, false,  nullptr, Path);
             GenerateSideElements(CellIndex,2, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
@@ -1300,7 +1350,7 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2
             
             Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset , FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
-            Enemy = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex + 2]->GetActorLocation(), FRotator::ZeroRotator);
+            Enemy = GetWorld()->SpawnActor<AAIBull>(BullEnemyClass,Path[CellIndex + 2]->GetActorLocation(), FRotator::ZeroRotator);
             Enemy->bSpawnCoin = true;
 
             //Create Crate Actors.
@@ -1362,46 +1412,49 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2
 
 }
 
-void AMazeManager::AddDoor(int Index, AMazeCell2* Cell) {
+void AMazeManager::AddDoor(int Index, AMazeCell2* Cell, TArray<AMazeCell2*> Path) {
 
-    int CellIndex = MaxPath.IndexOfByKey(Cell);
+    int CellIndex = Path.IndexOfByKey(Cell);
     ADoor* Actor;
     FTransform Transform;
 
     switch(Index){
         
-        //KillerDoor
+        //Achiever
         case 0:
             
-            GetWorld()->SpawnActor<ADoorKiller>(DoorKillerClass, (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                    GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
+            GetWorld()->SpawnActor<ADoorAchiever>(DoorAchieverClass, (Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation())/2,
+                    GetDoorRotation(Path[CellIndex + 1], Path[CellIndex]));
 
             break;
 
+        //Killer
         case 1:
 
-            Transform.SetLocation((MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2);
-            Transform.SetRotation(GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]).Quaternion());
+            GetWorld()->SpawnActor<ADoorKiller>(DoorKillerClass, (Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation())/2,
+            GetDoorRotation(Path[CellIndex + 1], Path[CellIndex]));
+
+            break;
+
+        //Explorer
+        case 2:
+
+            GetWorld()->SpawnActor<ADoorExplorer>(DoorExplorerClass, (Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation())/2,
+                GetDoorRotation(Path[CellIndex + 1], Path[CellIndex]));
+
+            break;
+
+        //Socializer
+        case 3:
+          
+            Transform.SetLocation((Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation())/2);
+            Transform.SetRotation(GetDoorRotation(Path[CellIndex + 1], Path[CellIndex]).Quaternion());
             Actor = GetWorld()->SpawnActorDeferred<ADoorRiddle>(DoorRiddleClass,Transform);
             Cast<ADoorRiddle>(Actor)->Speech = &Speech;
             Cast<ADoorRiddle>(Actor)->OldSpeech = &OldSpeech;
             Cast<ADoorRiddle>(Actor)->Questions = &Questions;
             Cast<ADoorRiddle>(Actor)->OldQuestions = &OldQuestions;
             Actor->FinishSpawning(Transform);
-
-            break;
-
-        case 2:
-
-            GetWorld()->SpawnActor<ADoorAchiever>(DoorAchieverClass, (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                    GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
-
-            break;
-
-        case 3:
-            
-            GetWorld()->SpawnActor<ADoorExplorer>(DoorExplorerClass, (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                    GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
 
             break;
 
@@ -1462,6 +1515,7 @@ void AMazeManager::AddFallenPlatforms(int Index, AMazeCell2* Cell, TArray<AMazeC
 
     switch(Index){
 
+        //Achiever
         case 0:
 
             GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrCrateClass,Path[CellIndex + 1]->GetActorLocation() + FVector(0.f,0.f,5.f),Path[CellIndex + 1]->GetActorRotation());
@@ -1471,6 +1525,7 @@ void AMazeManager::AddFallenPlatforms(int Index, AMazeCell2* Cell, TArray<AMazeC
 
             break;
         
+        //Killer
         case 1:
 
             OffsetX = FMath::RandRange(100.f,200.f);
@@ -1479,27 +1534,10 @@ void AMazeManager::AddFallenPlatforms(int Index, AMazeCell2* Cell, TArray<AMazeC
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex + 1]->GetActorLocation() + FVector(OffsetX,OffsetY,10.f),Path[CellIndex + 1]->GetActorRotation());
 
             break;
-
+        
+        //Explorer
         case 2:
-
-            OffsetX = FMath::RandRange(100.f,200.f);
-            OffsetY = FMath::RandRange(100.f,200.f);
-
-            //Done in this way to set the initial position in the vector POSITIONS.
-            Transform.SetLocation(Path[CellIndex + 1]->GetActorLocation() + FVector(OffsetX,OffsetY,10.f));
-            Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(MoveAIClass2,Transform);
-            Enemy->Positions.Add(Path[CellIndex + 1]->GetActorLocation());
-            Cast<APawn>(Enemy)->FinishSpawning(Transform);
-
-            Transform2.SetLocation(Path[CellIndex + 1]->GetActorLocation() + FVector(-OffsetX,-OffsetY,10.f));
-            Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(MoveAIClass2,Transform2);
-            Enemy->Positions.Add(Path[CellIndex + 1]->GetActorLocation());
-            Cast<APawn>(Enemy)->FinishSpawning(Transform2);
-
-            break;
-
-        case 3:
-
+            
             if(FMath::RandRange(0,1) == 0){
 
                 Transform.SetLocation(Path[CellIndex + 1]->GetActorLocation()  + FVector(250.f,250.f,-10.f));
@@ -1517,6 +1555,25 @@ void AMazeManager::AddFallenPlatforms(int Index, AMazeCell2* Cell, TArray<AMazeC
             }
 
             Cast<APawn>(Enemy)->FinishSpawning(Transform);
+
+            break;
+        
+        //Socializer
+        case 3:
+
+            OffsetX = FMath::RandRange(100.f,200.f);
+            OffsetY = FMath::RandRange(100.f,200.f);
+
+            //Done in this way to set the initial position in the vector POSITIONS.
+            Transform.SetLocation(Path[CellIndex + 1]->GetActorLocation() + FVector(OffsetX,OffsetY,10.f));
+            Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(MoveAIClass2,Transform);
+            Enemy->Positions.Add(Path[CellIndex + 1]->GetActorLocation());
+            Cast<APawn>(Enemy)->FinishSpawning(Transform);
+
+            Transform2.SetLocation(Path[CellIndex + 1]->GetActorLocation() + FVector(-OffsetX,-OffsetY,10.f));
+            Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(MoveAIClass2,Transform2);
+            Enemy->Positions.Add(Path[CellIndex + 1]->GetActorLocation());
+            Cast<APawn>(Enemy)->FinishSpawning(Transform2);
 
             break;
 
@@ -1547,8 +1604,55 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
 
     switch(Index){
 
-        //Create Maze for explorer.
+        //Achiever
         case 0 :
+            
+            Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
+                GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
+
+            NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
+            SpawnLocAndRotation.SetLocation(ArenaSpawnLocation[NumExtr]);
+            RoomAchiever = GetWorld()->SpawnActor<ARoomAchiever>(RoomAchieverClass, SpawnLocAndRotation);
+            RoomAchiever->EndPos = MaxPath[CellIndex]->GetActorLocation();
+            RoomAchiever->Door = Door;
+            ArenaSpawnLocation.RemoveAt(NumExtr);
+
+            //Create the portal
+            SpawnLocAndRotation.SetLocation(MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f));
+            SpawnLocAndRotation.SetRotation(FRotator::ZeroRotator.Quaternion());
+            StartPortal = GetWorld()->SpawnActorDeferred<APortal>(PortalClass, SpawnLocAndRotation);
+            StartPortal->NewPosition = RoomAchiever->StartSpawnPosition->GetComponentLocation();
+            StartPortal->FinishSpawning(SpawnLocAndRotation);
+            
+            break;
+
+        //Killer
+        case 1:
+
+            //Create the door
+            Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
+                GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
+
+            //Extract a position and spawn the room
+            NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
+            SpawnLocAndRotation.SetLocation(ArenaSpawnLocation[NumExtr]);
+            RoomKiller = GetWorld()->SpawnActor<ARoomKiller>(KillerRoomClass, SpawnLocAndRotation);
+            RoomKiller->Door = Door;
+            ArenaSpawnLocation.RemoveAt(NumExtr);
+
+            //Create the portal
+            SpawnLocAndRotation.SetLocation(MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f));
+            SpawnLocAndRotation.SetRotation(FRotator::ZeroRotator.Quaternion());
+            StartPortal = GetWorld()->SpawnActorDeferred<APortal>(PortalClass, SpawnLocAndRotation);
+            StartPortal->NewPosition = RoomKiller->SpawnPositions->GetComponentLocation() + FVector(-100.f,-100.f,+50.f);
+            StartPortal->FinishSpawning(SpawnLocAndRotation);
+
+            RoomKiller->StartPortalPos = StartPortal->GetActorLocation();
+
+            break;
+
+        //Explorer
+        case 2:
 
             //Create the maze
             MazeManager = GetWorld()->SpawnActorDeferred<AMazeManager>(this->GetClass(), SpawnLocAndRotation);
@@ -1580,33 +1684,11 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             ButtonPortal->EndSpawnPosition = MazeManager->MaxPath[MazeManager->MaxPath.Num() - 2]->GetActorLocation() - FVector(0.f,0.f,50.f);
             ButtonPortal->FinishSpawning(SpawnLocAndRotation);
 
-            break;
-
-        case 1:
-
-            //Create the door
-            Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
-
-            //Extract a position and spawn the room
-            NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
-            SpawnLocAndRotation.SetLocation(ArenaSpawnLocation[NumExtr]);
-            RoomKiller = GetWorld()->SpawnActor<ARoomKiller>(KillerRoomClass, SpawnLocAndRotation);
-            RoomKiller->Door = Door;
-            ArenaSpawnLocation.RemoveAt(NumExtr);
-
-            //Create the portal
-            SpawnLocAndRotation.SetLocation(MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f));
-            SpawnLocAndRotation.SetRotation(FRotator::ZeroRotator.Quaternion());
-            StartPortal = GetWorld()->SpawnActorDeferred<APortal>(PortalClass, SpawnLocAndRotation);
-            StartPortal->NewPosition = RoomKiller->SpawnPositions->GetComponentLocation() + FVector(-100.f,-100.f,+50.f);
-            StartPortal->FinishSpawning(SpawnLocAndRotation);
-
-            RoomKiller->StartPortalPos = StartPortal->GetActorLocation();
 
             break;
 
-        case 2:
+        //Socializer
+        case 3:
 
             //Create the door
             Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
@@ -1629,29 +1711,6 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             RoomSocializer->StartPortalPos = StartPortal->GetActorLocation();
 
             break;
-
-        case 3:
-            
-            Door = GetWorld()->SpawnActor<ADoor>(DoorClass,  (MaxPath[CellIndex]->GetActorLocation() + MaxPath[CellIndex + 1]->GetActorLocation())/2,
-                GetDoorRotation(MaxPath[CellIndex + 1], MaxPath[CellIndex]));
-
-            NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
-            SpawnLocAndRotation.SetLocation(ArenaSpawnLocation[NumExtr]);
-            RoomAchiever = GetWorld()->SpawnActor<ARoomAchiever>(RoomAchieverClass, SpawnLocAndRotation);
-            RoomAchiever->EndPos = MaxPath[CellIndex]->GetActorLocation();
-            RoomAchiever->Door = Door;
-            ArenaSpawnLocation.RemoveAt(NumExtr);
-
-            //Create the portal
-            SpawnLocAndRotation.SetLocation(MaxPath[CellIndex]->GetActorLocation() - FVector(0.f,0.f,+50.f));
-            SpawnLocAndRotation.SetRotation(FRotator::ZeroRotator.Quaternion());
-            StartPortal = GetWorld()->SpawnActorDeferred<APortal>(PortalClass, SpawnLocAndRotation);
-            StartPortal->NewPosition = RoomAchiever->StartSpawnPosition->GetComponentLocation();
-            StartPortal->FinishSpawning(SpawnLocAndRotation);
-
-            //RoomKiller->StartPortalPos = StartPortal->GetActorLocation();
-
-            break;
     }
     
 }
@@ -1660,29 +1719,9 @@ void AMazeManager::SpawnExtraElem(int Index, AMazeCell2* AfterCell, AMazeCell2* 
 
     switch(Index){
 
+        //Achiever
         case 0:
             
-            GetWorld()->SpawnActor<AStatueInteractElem>(StatueClass, AfterCell->GetActorLocation(),
-                GetDoorRotation(AfterCell,BeforeCell));
-
-            break;
-
-        case 1:
-            
-            GetWorld()->SpawnActor<AHeart>(HeartClass, AfterCell->GetActorLocation(),
-                GetDoorRotation(AfterCell,BeforeCell));
-
-            break;
-
-        case 2:
-
-            GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass, AfterCell->GetActorLocation(),
-                GetDoorRotation(AfterCell,BeforeCell));
-
-            break;
-
-        case 3:
-
             if(HatClasses.Num() > 0 && FMath::RandRange(0,9) > 2){
 
                 int NumExtr = FMath::RandRange(0,HatClasses.Num() - 1);
@@ -1697,6 +1736,31 @@ void AMazeManager::SpawnExtraElem(int Index, AMazeCell2* AfterCell, AMazeCell2* 
             }
 
             break;
+        
+        //Killer
+        case 1:
+            
+            GetWorld()->SpawnActor<AHeart>(HeartClass, AfterCell->GetActorLocation(),
+                GetDoorRotation(AfterCell,BeforeCell));
+
+            break;
+
+        //Explorer
+        case 2:
+
+
+            GetWorld()->SpawnActor<AStatueInteractElem>(StatueClass, AfterCell->GetActorLocation(),
+                GetDoorRotation(AfterCell,BeforeCell));
+
+            break;
+        
+        //Socializer
+        case 3:
+
+            GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass, AfterCell->GetActorLocation(),
+                GetDoorRotation(AfterCell,BeforeCell));
+
+            break;
 
     }
     
@@ -1709,9 +1773,10 @@ void AMazeManager::SpawnSigleCellElem(int Index, AMazeCell2* CurrentCell) {
     FTransform Transform;
 
     switch (Index){
-
+    
+    //Achiever
     case 0:
-        //Spawn 4 barrels and an enemy.
+    
         GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,CurrentCell->GetActorLocation() , FRotator::ZeroRotator)->bSpawnCoin = true;
         GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,CurrentCell->GetActorLocation() + FVector(-260.f,260.f,-50.f),FRotator::ZeroRotator);
         GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,CurrentCell->GetActorLocation() + FVector(260.f,-260.f,-50.f),FRotator::ZeroRotator);
@@ -1719,19 +1784,22 @@ void AMazeManager::SpawnSigleCellElem(int Index, AMazeCell2* CurrentCell) {
         GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem,CurrentCell->GetActorLocation() + FVector(260.f,260.f,-50.f),FRotator::ZeroRotator);
 
         break;
-    
+       
+    //Killer
     case 1:
 
         GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,CurrentCell->GetActorLocation() , FRotator::ZeroRotator);
 
         break;
 
+    //Explorer
     case 2:
 
         AddDoubleCircularPatrol(CurrentCell);
 
         break;
 
+    //Socializer
     case 3:
 
         Transform.SetLocation(CurrentCell->GetActorLocation());
@@ -1747,5 +1815,247 @@ void AMazeManager::SpawnSigleCellElem(int Index, AMazeCell2* CurrentCell) {
     }
 
 }
+
+void AMazeManager::PopulateBartle(){
+
+    //Calculate the total number of the cells in a TMap "Type" - Number of cells.
+    TMap<Type,int> CellsNumberMap;
+    TArray<Type> Keys;
+    CalculateTotalNumberOfCells(CellsNumberMap,Keys);
+
+    //Create a Map with all the cells and its relative path.
+    TMap<AMazeCell2*, FPath> Cells = CellsToPopulate.MainPath;
+    Cells.Append(CellsToPopulate.OtherPaths);
+    Cells.Append(CellsToPopulate.ExtrElem);
+    Cells.Append(CellsToPopulate.OneCellElem);
+    Cells.Append(CellsToPopulate.Door);
+
+    //Assign one Cell in the main path to every Types. (At least you are gonna see all the Types in the main path)
+    TArray<AMazeCell2*> TempArray;
+    CellsToPopulate.MainPath.GetKeys(TempArray);
+
+    //Just a copy to keep the initial value
+    TMap<Type,int> Types = CellsNumberMap;
+    int Times = Cells.Num();
+    
+    int Value;
+    //If very unlikely to not be verified.
+    if(CellsToPopulate.MainPath.Num() > 3){
+
+        for(int i = 0; i < Keys.Num(); i++){
+
+            int NumExtr = FMath::RandRange(0,TempArray.Num() - 1);
+
+            //Return the value to be assigned to determine which Type I estracted.
+            Value = ReturnTypeValue(Keys[i]);
+
+            //Add one possibile Element. The platfroms have half of the probability.
+            if(FMath::RandRange(0,2) < 2)
+                AddEnemy(Value, TempArray[NumExtr], CellsToPopulate.MainPath[TempArray[NumExtr]].Path);
+            else
+                AddFallenPlatforms(Value, TempArray[NumExtr], CellsToPopulate.MainPath[TempArray[NumExtr]].Path);
+
+            Cells.Remove(TempArray[NumExtr]);
+            TempArray.RemoveAt(NumExtr);
+
+            //Decrease the value for that Type and if it is 0, remove it.
+            Types[Keys[i]] -= 1;
+
+            if(Types[Keys[i]] == 0)
+                Types.Remove(Keys[i]);
+
+        }    
+
+    }
+
+    //for the reamins value I assign some cells.
+    for(int i = 0; i < Times; i++){
+
+        TArray<Type> TypesKeys;
+        Types.GetKeys(TypesKeys); 
+        int NumExtr = FMath::RandRange(0, TypesKeys.Num() - 1);
+        
+        //Return the value to be assigned to determine which Type I estracted.
+        Value = ReturnTypeValue(TypesKeys[NumExtr]);
+
+        Types[TypesKeys[NumExtr]] -= 1;
+
+        if(Types[TypesKeys[NumExtr]] == 0)
+            Types.Remove(TypesKeys[NumExtr]);
+
+        //Extract one possible cell.
+        TArray<AMazeCell2*> KeysCell;
+        Cells.GetKeys(KeysCell);
+        NumExtr = FMath::RandRange(0, Cells.Num() - 1);
+        AMazeCell2* Cell = KeysCell[NumExtr];
+        Cells.Remove(Cell);
+
+        if(CellsToPopulate.MainPath.Contains(Cell)){
+
+            if(FMath::RandRange(0,2) < 2)
+                AddEnemy(Value, Cell, CellsToPopulate.MainPath[Cell].Path);
+            else
+                AddFallenPlatforms(Value, Cell, CellsToPopulate.MainPath[Cell].Path);
+
+        }else if(CellsToPopulate.OtherPaths.Contains(Cell)){
+
+            if(FMath::RandRange(0,2) < 2)
+                AddEnemy(Value, Cell, CellsToPopulate.OtherPaths[Cell].Path);
+            else
+                AddFallenPlatforms(Value, Cell, CellsToPopulate.OtherPaths[Cell].Path);
+
+        }else if(CellsToPopulate.Door.Contains(Cell)){
+
+            AddDoor(Value,Cell,CellsToPopulate.Door[Cell].Path); 
+            CreateCheckpoint(Cell); 
+
+        }else if(CellsToPopulate.OneCellElem.Contains(Cell)){
+            
+            SpawnSigleCellElem(Value,Cell);
+
+        }else if(CellsToPopulate.ExtrElem.Contains(Cell)){
+
+            SpawnExtraElem(Value,Cell,CellsToPopulate.Couple[Cell]);
+            
+        }
+
+    }
+
+}
+
+
+void AMazeManager::CalculateTotalNumberOfCells(TMap<Type,int>& CellsNumberMap, TArray<Type> Keys){
+
+    int TotalCells = CellsToPopulate.MainPath.Num() +  CellsToPopulate.OtherPaths.Num() +
+        CellsToPopulate.OneCellElem.Num() + CellsToPopulate.ExtrElem.Num() + CellsToPopulate.Door.Num();
+    
+    //Create a TMap with all the cells before the round.
+    TMap<Type,float> CellsPreRounded = {{Type::Achiever,TotalCells * Achiever / 200}, {Type::Killer,TotalCells * Killer / 200},
+        {Type::Explorer,TotalCells * Explorer / 200}, {Type::Socializer,TotalCells * Socializer / 200}};
+
+    CellsPreRounded.ValueSort([](float A, float B) {
+        return A > B; // sort keys in reverse
+    });
+
+    CellsPreRounded.GetKeys(Keys);
+
+    //Round values to the nearest int.
+    CellsNumberMap = 
+        {{Keys[0],FGenericPlatformMath::RoundToInt(CellsPreRounded[Keys[0]])},
+        {Keys[1],FGenericPlatformMath::RoundToInt(CellsPreRounded[Keys[1]])},
+        {Keys[2],FGenericPlatformMath::RoundToInt(CellsPreRounded[Keys[2]])},
+        {Keys[3],FGenericPlatformMath::RoundToInt(CellsPreRounded[Keys[3]])}};
+
+    UE_LOG(LogTemp,Warning,TEXT("TotalCells %i"), TotalCells);
+    UE_LOG(LogTemp,Warning,TEXT("%i %i"), Keys[0], CellsNumberMap[Keys[0]]);
+    UE_LOG(LogTemp,Warning,TEXT("%i %i"), Keys[1], CellsNumberMap[Keys[1]]);
+    UE_LOG(LogTemp,Warning,TEXT("%i %i"), Keys[2], CellsNumberMap[Keys[2]]);
+    UE_LOG(LogTemp,Warning,TEXT("%i %i"), Keys[3], CellsNumberMap[Keys[3]]);
+
+    //if some value is 0, I eliminated it from the map.
+    for(int i = 0; i < 2; i++){
+
+        if(CellsNumberMap[Keys[i + 2]] == 0)
+            CellsPreRounded.Remove(Keys[i + 2]);
+    
+    }
+
+    //Check if after rounded the values, the number are equals.
+    CellsNumberMap.GetKeys(Keys);
+    int MyCells = 0;
+    for(int i = 0; i < Keys.Num(); i++){
+
+        MyCells += CellsNumberMap[Keys[i]];
+    
+    }
+
+    //if not subtract value starting from the lowest
+    if(TotalCells != MyCells){
+
+        int Difference = MyCells - TotalCells;
+
+        for(int i = 0; i < Difference; i++){
+
+            CellsNumberMap[Keys[(Keys.Num() - 1 - i)%Keys.Num()]] -= 1;
+
+        }
+
+    }
+
+    //if some value is 0, I eliminated it from the map.
+    for(int i = 0; i < 2; i++){
+
+        if(CellsNumberMap[Keys[i + 2]] == 0)
+            CellsPreRounded.Remove(Keys[i + 2]);
+    
+    }
+
+    //print
+    UE_LOG(LogTemp,Warning,TEXT("Post"));    
+    for(int i = 0; i < Keys.Num(); i++){
+ 
+        UE_LOG(LogTemp,Warning,TEXT("%i %i"), Keys[i], CellsNumberMap[Keys[i]]);
+    
+    }
+
+}
+
+//Return the value of the corrisponding type.
+int AMazeManager::ReturnTypeValue(int Index){
+
+    switch (Index){
+
+            case Type::Achiever:
+                return 0;
+        
+            case Type::Killer:
+                return 1;
+        
+            case Type::Explorer:
+                return 2;
+        
+            case Type::Socializer:
+                return 3;
+        
+            default:
+                return -1;
+        }
+
+}
+
+
+void AMazeManager::CreateCheckpoint(AMazeCell2* Cell){
+
+    FVector Offset;
+    ACheckPointLevel1* CheckPoint;
+
+    //create the exact position for the checkpoint.
+    if(SetOffsetVector(CellsToPopulate.Couple[Cell], Cell, Offset, 0)){
+                
+        FRotator Rotator = GetDoorRotation(CellsToPopulate.Couple[Cell], Cell);
+        if(Rotator == FRotator(0.f,180.f,0.f))
+            Offset = FVector(0.f,100.f,0.f);
+        else
+            Offset = FVector(0.f,-100.f,0.f);
+
+        CheckPoint = GetWorld()->SpawnActor<ACheckPointLevel1>(CheckPointClass,(CellsToPopulate.Couple[Cell]->GetActorLocation() + Cell->GetActorLocation()) / 2 + Offset,
+            GetDoorRotation(CellsToPopulate.Couple[Cell],Cell));
+
+    }else{
+
+        FRotator Rotator = GetDoorRotation(CellsToPopulate.Couple[Cell], Cell);
+        if(Rotator == FRotator(0.f,-90.f,0.f))
+            Offset = FVector(-100.f,0.f,0.f);
+        else
+            Offset = FVector(100.f,0.f,0.f);
+
+        CheckPoint = GetWorld()->SpawnActor<ACheckPointLevel1>(CheckPointClass,(CellsToPopulate.Couple[Cell]->GetActorLocation() + Cell->GetActorLocation()) / 2 + Offset,
+            GetDoorRotation(CellsToPopulate.Couple[Cell], Cell));
+    }
+
+    CheckPoint->MazeManager = this;
+
+}
+
 
 #pragma endregion

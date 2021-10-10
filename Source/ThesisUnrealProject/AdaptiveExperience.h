@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
-enum Type {Achiever, Killer, Socializer, Explorer};
+#include "Enum/UsefulImport.h"
 
 /**
  * 
