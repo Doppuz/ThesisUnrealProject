@@ -27,6 +27,9 @@ AMaze::AMaze(){
 	MetalCrateInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("MetalCrateInstances"));
 	MetalCrateInstances->SetupAttachment(RootComponent);
 
+	CeilingInstances = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("CeilingInstances"));
+	CeilingInstances->SetupAttachment(RootComponent);
+
 	MeshLenght = 768.f;
 	ObstacleSize = 100.f;
 	ObstacleHeight = 190.f;

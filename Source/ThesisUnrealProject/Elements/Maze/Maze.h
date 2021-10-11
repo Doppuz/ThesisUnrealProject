@@ -30,6 +30,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UInstancedStaticMeshComponent* MetalCrateInstances;
 
+	UPROPERTY(VisibleAnywhere)
+	UInstancedStaticMeshComponent* CeilingInstances;
+
 	void CreateFloor(FTransform);
 
 	void CreateWalls(FTransform);

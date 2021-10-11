@@ -42,6 +42,7 @@
 #include "../CheckPoints/CheckPointLevel1.h"
 #include "../CheckPoints/SaveGameLevel1.h"
 #include "EngineUtils.h"
+#include "../Elements/Light/CeilingLight.h"
 
 // Sets default values
 AMazeManager::AMazeManager(){
@@ -313,6 +314,15 @@ void AMazeManager::BeginPlay(){
 
         }
 
+        //Load Lights
+        for(int i = 0; i < LoadedGame->Lights.Num(); i++){
+            
+            ACeilingLight* Elem = GetWorld()->SpawnActor<ACeilingLight>(
+                LoadedGame->Lights[i].ActorClass,
+                LoadedGame->Lights[i].Transform);
+
+        }
+
         //Load Night portals
         for(int i = 0; i < LoadedGame->NightPortals.Num(); i++){
             
@@ -451,7 +461,26 @@ void AMazeManager::BeginPlay(){
 
         DepthVisit(MazeGraph->GetCurrentNode());
 
+
         if(PopulateMaze){
+
+            FVector Pos;
+            TArray<AMazeCell2*> Nodes = MazeGraph->GetNodes();
+            bool Dir = true;
+            for(int i = 0; i < Nodes.Num(); i += 2){
+
+                if(i % Length == 0)
+                    Dir = !Dir;
+                
+                if(!Dir)
+                    Pos = Nodes[i]->GetActorLocation();
+                else
+                    Pos = Nodes[i + 1]->GetActorLocation();
+                
+                Pos.Z = 400.f;
+                GetWorld()->SpawnActor<AActor>(LightClass,Pos,FRotator::ZeroRotator);
+
+            }
             
             GenerateElements(MaxPath);
 
@@ -690,12 +719,13 @@ void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
 
                         //if cells are greater than 1 insert one last element
                         if(MazeCellMax.Num() > 1){
-                            
+
+                           
                             //if its value is 3 it added one cell element
                             if(MazeCellMax.Num() > 2){
-                            
+
+                                CellsToPopulate.OneCellElem.Add(MazeCellMax[MazeCellMax.Num() - 2], FPath(Path));       
                                 //SpawnSigleCellElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 2]);
-                                CellsToPopulate.OneCellElem.Add(MazeCellMax[MazeCellMax.Num() - 2], FPath(Path));
         
                             }
                             //if its value is 4 it added one cell element
@@ -707,8 +737,8 @@ void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
 
                             }
                             
-                            if(MazeCellMax.Num() > 3){
-                                //SpawnSigleCellElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 3]);
+                            if(MazeCellMax.Num() > 4){
+                                //SpawnSigleCellElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 3]); 
                                 CellsToPopulate.OneCellElem.Add(MazeCellMax[MazeCellMax.Num() - 4], FPath(Path));
 
                             //SpawnExtraElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
@@ -829,7 +859,10 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
 
     //When is 3, I insert a Door.
     int DoorFrequency = 0;
-    for(int i = 1; i < Path.Num() - 4; i += 4){ //MaxPath.Num() - 2
+    int InitialIndex = 1;
+    if(Path == MaxPath)
+        InitialIndex = 3;
+    for(int i = InitialIndex; i < Path.Num() - 4; i += 4){ //MaxPath.Num() - 2
 
         LastIndex = i;
 
@@ -842,6 +875,7 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
             else
 
                 CellsToPopulate.OtherPaths.Add(Path[i], FPath(Path));
+
             /*if(FMath::RandRange(0,2) < 2)
                 AddEnemy(FMath::RandRange(0,3), Path[i], Path);
             else
@@ -897,7 +931,6 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
             if(LastIndex == 0){
                 
             }
-               
 
             //Possible Value: 1,2,3, 4
             switch(Difference){
@@ -922,9 +955,9 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
                     break;
 
                 case 4:
-                    
+                                        
                     CellsToPopulate.OneCellElem.Add(Path[Path.Num() - 2], FPath(Path));
-                    CellsToPopulate.OneCellElem.Add(Path[Path.Num() - 3], FPath(Path));
+                    CellsToPopulate.OneCellElem.Add(Path[Path.Num() - 3], FPath(Path)); 
                     //SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 2]);
                     //SpawnSigleCellElem(FMath::RandRange(0,3),Path[Path.Num() - 3]);
 
@@ -932,6 +965,7 @@ void AMazeManager::GenerateElements(TArray<AMazeCell2*> Path) {
 
             }
         }
+    
     } 
 
 }
@@ -1042,7 +1076,7 @@ void AMazeManager::TypeOfPatrols(int Index, int CellIndex, TArray<AMazeCell2*> P
 
             Enemy->Positions.Add(Path[CellIndex + i]->GetActorLocation());
 
-            GenerateSideElements(CellIndex,i, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
+            GenerateSideElements(CellIndex,i, 0.f, -25.f, 320.f, false, nullptr, Path);
 
         }
         
@@ -1219,7 +1253,7 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex, 
             }
 
             //Every cycle I insert an obstacle.
-            Transform.SetLocation(Path[CellIndex + i]->GetActorLocation() + FVector(0.f,0.f,MazeActor->ObstacleHeight));
+            Transform.SetLocation(Path[CellIndex + i]->GetActorLocation() + FVector(0.f,0.f,0.f));
             MazeActor->CreateObstacle(Transform);
 
         }
@@ -1236,7 +1270,7 @@ void AMazeManager::GenerateSideElements(int CellIndex, int i, float HeightOffset
     SetOffsetVector(Path[CellIndex + 1 + i],Path[CellIndex + i],Offset,OffsetValue);
 
     GenerateDecorations(Path[CellIndex + i]->GetActorLocation(),
-        Path[CellIndex + i]->GetActorLocation() + Offset + FVector(0.f,0.f,HeightOffset),
+        Path[CellIndex + i]->GetActorLocation() + Offset + FVector(0.f,0.f,0),
         Path[CellIndex + i]->GetActorLocation() + 2 * Offset ,
         Spawn,SpawnActor);
     
@@ -1245,15 +1279,15 @@ void AMazeManager::GenerateSideElements(int CellIndex, int i, float HeightOffset
     if(Value)
 
         GenerateDecorations(Path[CellIndex + i]->GetActorLocation(),
-            (Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation())/2 - Offset + FVector(0.f,SideOffset,HeightOffset),
-            (Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation())/2 - 2 * Offset + FVector(0.f,SideOffset,HeightOffset),
+            (Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation())/2 - Offset + FVector(0.f,SideOffset,0),
+            (Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation())/2 - 2 * Offset + FVector(0.f,SideOffset,0),
             Spawn,SpawnActor);
 
     else
         
         GenerateDecorations(Path[CellIndex + i]->GetActorLocation(),
-            (Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation())/2 - Offset + FVector(SideOffset,0.f,HeightOffset) ,
-            (Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation())/2 - 2 * Offset + FVector(SideOffset,0.f,HeightOffset),
+            (Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation())/2 - Offset + FVector(SideOffset,0.f,0) ,
+            (Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation())/2 - 2 * Offset + FVector(SideOffset,0.f,0),
             Spawn,SpawnActor);
 
 }
@@ -1270,9 +1304,9 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex, TArray<AMazeCell2*> P
 
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex]->GetActorLocation() , FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
-            GenerateSideElements(CellIndex,0, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
-            GenerateSideElements(CellIndex,1, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
-            GenerateSideElements(CellIndex,2, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
+            GenerateSideElements(CellIndex,0, 0.f, -25.f, 320.f, false, nullptr, Path);
+            GenerateSideElements(CellIndex,1, 0.f, -25.f, 320.f, false, nullptr, Path);
+            GenerateSideElements(CellIndex,2, 0.f, -25.f, 320.f, false, nullptr, Path);
 
             break;
         
@@ -1282,9 +1316,9 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex, TArray<AMazeCell2*> P
             Pos = (Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation()) / 2;
             GetWorld()->SpawnActor<AAIBull>(BullEnemyClass, Pos + Offset/2, FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIBull>(BullEnemyClass,Path[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
-            GenerateSideElements(CellIndex,0, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
-            GenerateSideElements(CellIndex,1, MazeActor->ObstacleHeight, -25.f, 320.f, false,  nullptr, Path);
-            GenerateSideElements(CellIndex,2, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
+            GenerateSideElements(CellIndex,0, 0.f, -25.f, 320.f, false, nullptr, Path);
+            GenerateSideElements(CellIndex,1, 0.f, -25.f, 320.f, false,  nullptr, Path);
+            GenerateSideElements(CellIndex,2, 0.f, -25.f, 320.f, false, nullptr, Path);
 
             break;
 
@@ -1309,9 +1343,9 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex, TArray<AMazeCell2*> P
             Transform.SetScale3D(FVector(4.f,4.f,4.f));
             MazeActor->CreateMetalCrate(Transform);
         
-            GenerateSideElements(CellIndex,0, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
-            GenerateSideElements(CellIndex,1, MazeActor->ObstacleHeight, -25.f, 320.f, false,  nullptr, Path);
-            GenerateSideElements(CellIndex,2, MazeActor->ObstacleHeight, -25.f, 320.f, false, nullptr, Path);
+            GenerateSideElements(CellIndex,0, 0.f, -25.f, 320.f, false, nullptr, Path);
+            GenerateSideElements(CellIndex,1, 0.f, -25.f, 320.f, false,  nullptr, Path);
+            GenerateSideElements(CellIndex,2, 0.f, -25.f, 320.f, false, nullptr, Path);
 
             break;
         
@@ -1836,7 +1870,6 @@ void AMazeManager::PopulateBartle(){
 
     //Just a copy to keep the initial value
     TMap<Type,int> Types = CellsNumberMap;
-    int Times = Cells.Num();
     
     int Value;
     //If very unlikely to not be verified.
@@ -1868,6 +1901,7 @@ void AMazeManager::PopulateBartle(){
 
     }
 
+    int Times = Cells.Num();
     //for the reamins value I assign some cells.
     for(int i = 0; i < Times; i++){
 
@@ -1960,7 +1994,7 @@ void AMazeManager::CalculateTotalNumberOfCells(TMap<Type,int>& CellsNumberMap, T
     
     }
 
-    //Check if after rounded the values, the number are equals.
+    //Check if after rounding the values, the number are equals.
     CellsNumberMap.GetKeys(Keys);
     int MyCells = 0;
     for(int i = 0; i < Keys.Num(); i++){
@@ -1969,14 +2003,28 @@ void AMazeManager::CalculateTotalNumberOfCells(TMap<Type,int>& CellsNumberMap, T
     
     }
 
-    //if not subtract value starting from the lowest
+    //if not, subtract or add value starting from the lowest
     if(TotalCells != MyCells){
 
         int Difference = MyCells - TotalCells;
 
-        for(int i = 0; i < Difference; i++){
+        if(Difference < 0){
 
-            CellsNumberMap[Keys[(Keys.Num() - 1 - i)%Keys.Num()]] -= 1;
+            Difference = FMath::Abs(Difference);
+
+            for(int i = 0; i < Difference; i++){
+
+                CellsNumberMap[Keys[i]] += 1;
+
+            }
+
+        }else{
+
+            for(int i = 0; i < Difference; i++){
+
+                CellsNumberMap[Keys[(Keys.Num() - 1 - i)%Keys.Num()]] -= 1;
+
+            }
 
         }
 

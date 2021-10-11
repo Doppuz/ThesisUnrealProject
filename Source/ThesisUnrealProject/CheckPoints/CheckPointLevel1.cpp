@@ -30,6 +30,7 @@
 #include "../Elements/Room/RoomAchiever.h"
 #include "../Elements/Room/Room.h"
 #include "../Elements/Key/KeyActor.h"
+#include "../Elements/Light/CeilingLight.h"
 
 void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
@@ -439,6 +440,24 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
         }
 
         SaveGameInstance->Checkpoints = GeneralElem;
+
+// --- Ceiling ---
+
+        GeneralElem.Empty();
+
+        for (TActorIterator<ACeilingLight> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+            
+            FGeneralActor GeneralActor;
+            Transform.SetLocation(ActorItr->GetActorLocation());
+            Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
+            GeneralActor.Transform = Transform;
+            GeneralActor.ActorClass = ActorItr->GetClass();
+            
+            GeneralElem.Add(GeneralActor);
+
+        }
+
+        SaveGameInstance->Lights = GeneralElem;
 
 // --- Night Portal ---
         

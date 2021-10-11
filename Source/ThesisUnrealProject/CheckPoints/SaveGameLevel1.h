@@ -283,6 +283,9 @@ public:
 	TArray<FGeneralActor> Checkpoints;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FGeneralActor> Lights;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FNightPortal> NightPortals;
 	
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")

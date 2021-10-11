@@ -222,6 +222,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Populate")
 	TSubclassOf<ADoor> DoorClass;
 
+	UPROPERTY(EditAnywhere, Category = "Populate")
+	TSubclassOf<AActor> LightClass;
+
 	UPROPERTY(EditAnywhere, Category = "Enemies")
 	TSubclassOf<AAIBull> BullEnemyClass;
 
