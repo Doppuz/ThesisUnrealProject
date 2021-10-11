@@ -254,6 +254,7 @@ void AMazeManager::BeginPlay(){
 
             ADoorAchiever* Elem = GetWorld()->SpawnActorDeferred<ADoorAchiever>(DoorAchieverClass,LoadedGame->DoorsAchiever[i].Transform);
             Elem->bCheckpoint = true;
+            Elem->bOpenDoor = LoadedGame->DoorsAchiever[i].bOpenDoor;
             Elem->FinalPosition = LoadedGame->DoorsAchiever[i].FinalPosition;
             Elem->FinishSpawning(LoadedGame->DoorsAchiever[i].Transform);
             Elem->ID = LoadedGame->DoorsAchiever[i].ID;

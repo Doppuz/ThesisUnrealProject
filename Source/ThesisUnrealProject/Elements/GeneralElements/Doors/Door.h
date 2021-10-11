@@ -22,14 +22,21 @@ public:
 
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	USceneComponent* Root;
-	
-	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
-	class UBoxComponent* Collider;
 
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	UStaticMeshComponent* DoorMesh;
 
+	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	UStaticMeshComponent* SubDoorLeftMesh;
+
+	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	UStaticMeshComponent* SubDoorRightMesh;
+
+	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	class UBoxComponent* Collision;
+
 	//True when I want to open/close the door.
+	UPROPERTY(EditAnywhere)
 	bool bOpenDoor;
 
 	UPROPERTY(EditAnywhere, Category = "Opening")
@@ -56,5 +63,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	FRotator Rot1;
+	FRotator Rot2;
 
 };

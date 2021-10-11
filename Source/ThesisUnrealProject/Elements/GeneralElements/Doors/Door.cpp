@@ -13,15 +13,27 @@ ADoor::ADoor(){
 	
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = Root;
-	
-	Collider = CreateDefaultSubobject<UBoxComponent>(TEXT("Collider"));
-	Collider->SetupAttachment(RootComponent);
 
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
-	DoorMesh->SetupAttachment(Collider);
+	DoorMesh->SetupAttachment(RootComponent);
+	DoorMesh->SetWorldLocation(FVector(0.f,0.f,-60.f));
+	DoorMesh->SetWorldRotation(FRotator(0.f,-90.f,0.f));
+	DoorMesh->SetWorldScale3D(FVector(1.25f,1.25f,1.f));
 
-	DoorMesh->SetWorldScale3D(FVector(0.65,0.65,0.65));
-	Collider->SetWorldScale3D(FVector(4.25,0.25,5.5));
+	SubDoorRightMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SubDoorRightMesh"));
+	SubDoorRightMesh->SetupAttachment(DoorMesh);
+	SubDoorRightMesh->SetWorldLocation(FVector(-10.f,130.f,0.f));
+	
+	SubDoorLeftMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SubDoorLeftMesh"));
+	SubDoorLeftMesh->SetupAttachment(DoorMesh);
+	SubDoorLeftMesh->SetWorldLocation(FVector(-10.f,-130.f,0.f));
+
+	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
+	Collision->SetupAttachment(Root);
+	Collision->SetWorldLocation(FVector(0.f,0.f,275.f));
+	Collision->SetWorldScale3D(FVector(1.75f, 12.f,11.f));
+	Collision->SetWorldRotation(FRotator(0.f,-90.f,0.f));
+	Collision->SetCollisionProfileName("BlockAll");
 
 	bOpenDoor = false;
 	bClose = false;
@@ -41,6 +53,9 @@ void ADoor::BeginPlay(){
 
 	ID = IDCount;
 	IDCount = (IDCount + 1) % 50000;
+
+	Rot1 = SubDoorLeftMesh->GetComponentRotation();
+	Rot2 = SubDoorRightMesh->GetComponentRotation();
 	
 }
 
@@ -50,9 +65,20 @@ void ADoor::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 	
 	if(bOpenDoor){
-		FVector ActorPosition = GetActorLocation();
-		FVector NewLocation = FMath::Lerp(ActorPosition,FinalPosition, DeltaTime * Speed);
-		SetActorLocation(NewLocation);
+		//FVector ActorPosition = GetActorLocation();
+		//FVector NewLocation = FMath::Lerp(ActorPosition,FinalPosition, DeltaTime * Speed);
+		//SetActorLocation(NewLocation);
+
+		Collision->SetCollisionProfileName("NoCollision");
+
+		FRotator LeftDoorRot = SubDoorLeftMesh->GetComponentRotation();
+		FRotator NewRotation = FMath::Lerp(LeftDoorRot,Rot1 + FRotator(0.f,90.f,0.f), DeltaTime * Speed);
+		SubDoorLeftMesh->SetWorldRotation(NewRotation);
+
+		FRotator RightDoorRot = SubDoorRightMesh->GetComponentRotation();
+		FRotator NewRotation2 = FMath::Lerp(RightDoorRot,Rot2 + FRotator(0.f,-90.f,0.f), DeltaTime * Speed);
+		SubDoorRightMesh->SetWorldRotation(NewRotation2);
+
 	}
 
 }
