@@ -48,6 +48,8 @@ class AGenericDestructibleElements;
 class ATriggerSpawnAlly;
 class AHat;
 class ACheckPointLevel1;
+class AStorm;
+class AFinalLevelActor;
 
 //Just because nested loop not supported
 USTRUCT() struct FPath{
@@ -320,6 +322,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AGenericDestructibleElements> DestrCrateClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AStorm> StormClassFire;
+	
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AStorm> StormClassThunder;
+		
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<AFinalLevelActor> FinalLevelActorClass;
 
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
@@ -347,7 +358,7 @@ protected:
 
 	void GenerateDecorations(FVector, FVector, FVector,bool,TSubclassOf<AGenericDestructibleElements>);
 
-	void GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex, TArray<AMazeCell2*> Path);
+	void GenerateSideActor(TSubclassOf<APawn> AIClass, TSubclassOf<APawn> AIClass2, int CellIndex, TArray<AMazeCell2*> Path, bool bObstacle, float OffsetValue);
 	
 	void GenerateSideElements(int CellIndex, int i, float HeightOffset, float SideOffset, float OffsetValue, bool, TSubclassOf<AGenericDestructibleElements>, TArray<AMazeCell2*> Path);
 

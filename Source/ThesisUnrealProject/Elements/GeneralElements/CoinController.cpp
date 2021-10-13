@@ -7,6 +7,7 @@
 #include "../../GameModeTutorial.h"
 #include "../../UI/UIWidgetDialog.h"
 #include "Components/TextBlock.h"
+#include "../../Character/CharacterPawnQuad.h"
 
 // Sets default values
 ACoinController::ACoinController(){
@@ -69,7 +70,7 @@ void ACoinController::OnBoxOverlap(UPrimitiveComponent * HitComponent, AActor * 
 
 void ACoinController::OnCoinOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	
-	if(OtherActor->IsA(APawn::StaticClass()) && Cast<APawn>(OtherActor)->GetController()->IsA(APlayerController::StaticClass())){
+	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 
 		bIsCollected = true;
 		CollectedDelegate.Broadcast();

@@ -283,7 +283,7 @@ public:
 	TArray<FGeneralActor> Checkpoints;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
-	TArray<FGeneralActor> Lights;
+	TArray<FMoveActor> Storms;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FNightPortal> NightPortals;
@@ -296,6 +296,9 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	FRoomAchieverStruct RoomAchieverStruct;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	FGeneralActor LastActor;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FSpeech> Speech;

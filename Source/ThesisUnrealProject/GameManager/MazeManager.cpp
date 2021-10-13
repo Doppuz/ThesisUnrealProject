@@ -43,6 +43,8 @@
 #include "../CheckPoints/SaveGameLevel1.h"
 #include "EngineUtils.h"
 #include "../Elements/Light/CeilingLight.h"
+#include "../Elements/Storm/Storm.h"
+#include "../Elements/FinalLevelActor.h"
 
 // Sets default values
 AMazeManager::AMazeManager(){
@@ -315,14 +317,36 @@ void AMazeManager::BeginPlay(){
 
         }
 
+        //Load LastActor
+        if(LoadedGame->LastActor.ActorClass != nullptr)
+            
+            GetWorld()->SpawnActor<AFinalLevelActor>(
+                LoadedGame->LastActor.ActorClass,
+                LoadedGame->LastActor.Transform);
+
+
+        //Load Storms
+        for(int i = 0; i < LoadedGame->Storms.Num(); i++){
+            
+            AStorm* Elem = GetWorld()->SpawnActorDeferred<AStorm>(
+                LoadedGame->Storms[i].ActorClass,
+                LoadedGame->Storms[i].Transform);
+
+                
+            Elem->Positions = LoadedGame->Storms[i].Positions;
+
+            Elem->FinishSpawning(LoadedGame->Storms[i].Transform);
+
+        }
+
         //Load Lights
-        for(int i = 0; i < LoadedGame->Lights.Num(); i++){
+       /*for(int i = 0; i < LoadedGame->Lights.Num(); i++){
             
             ACeilingLight* Elem = GetWorld()->SpawnActor<ACeilingLight>(
                 LoadedGame->Lights[i].ActorClass,
                 LoadedGame->Lights[i].Transform);
 
-        }
+        }*/
 
         //Load Night portals
         for(int i = 0; i < LoadedGame->NightPortals.Num(); i++){
@@ -479,7 +503,6 @@ void AMazeManager::BeginPlay(){
                     Pos = Nodes[i + 1]->GetActorLocation();
                 
                 Pos.Z = 400.f;
-                GetWorld()->SpawnActor<AActor>(LightClass,Pos,FRotator::ZeroRotator);
 
             }
             
@@ -498,6 +521,8 @@ void AMazeManager::BeginPlay(){
             UE_LOG(LogTemp,Warning,TEXT("Door %i"), CellsToPopulate.Door.Num());
 
             PopulateBartle();
+
+            GetWorld()->SpawnActor<AFinalLevelActor>(FinalLevelActorClass, MaxPath[MaxPath.Num() - 1]->GetActorLocation(), GetDoorRotation(MaxPath[MaxPath.Num() - 1],MaxPath[MaxPath.Num() - 2]));
 
         }
 
@@ -1087,7 +1112,7 @@ void AMazeManager::TypeOfPatrols(int Index, int CellIndex, TArray<AMazeCell2*> P
 
     case 1:
 
-        GenerateSideActor(PatrolEnemyClass,CellIndex,Path);
+        GenerateSideActor(PatrolEnemyClass,PatrolEnemyClass,CellIndex,Path, true, 220.f);
         break;
 
     case 2:
@@ -1178,7 +1203,7 @@ void AMazeManager::TypeOfMoveAlly(int Index, int CellIndex, TArray<AMazeCell2*> 
 
     case 1:
 
-        GenerateSideActor(MoveAIClass,CellIndex, Path);
+        GenerateSideActor(MoveAIClass,MoveAIClass,CellIndex, Path, true, 220.f);
         
         break;
 
@@ -1213,7 +1238,7 @@ void AMazeManager::TypeOfMoveAlly(int Index, int CellIndex, TArray<AMazeCell2*> 
 }
 
 //generate two actor in the sides of a cell and adds obstacles in the middle. (for 3 cells)
-void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex, TArray<AMazeCell2*> Path) {
+void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass1, TSubclassOf<APawn> AIClass2, int CellIndex, TArray<AMazeCell2*> Path, bool bObstacle, float OffsetValue) {
         
         IInterfaceMovableAI* Enemy;
         IInterfaceMovableAI* SecondEnemy;
@@ -1224,23 +1249,23 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex, 
         FTransform Transform2;
 
         //Generate an Offset based on the position of two cells.
-        SetOffsetVector(MaxPath[CellIndex + 1],Path[CellIndex],Offset,220.f);
+        SetOffsetVector(MaxPath[CellIndex + 1],Path[CellIndex],Offset,OffsetValue);
 
         //Generate two enemies.
         Transform1.SetLocation(Path[CellIndex]->GetActorLocation() + Offset);
         Transform1.SetRotation(FRotator::ZeroRotator.Quaternion());
-        Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(AIClass,Transform1);
+        Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(AIClass1,Transform1);
 
         Transform2.SetLocation(Path[CellIndex]->GetActorLocation() - Offset);
         Transform2.SetRotation(FRotator::ZeroRotator.Quaternion());
-        SecondEnemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(AIClass,Transform2);
+        SecondEnemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(AIClass2,Transform2);
 
         /*for the number of cells I consider (This case 3), I assign the new position to the patrol's array. The offset is used
         to arrange the position.*/
         for(int i = 0; i < 3; i++){
             LastOffset = Offset;
 
-            SetOffsetVector(Path[CellIndex + 1 + i],Path[CellIndex + i],Offset,220.f);
+            SetOffsetVector(Path[CellIndex + 1 + i],Path[CellIndex + i],Offset,OffsetValue);
             if(LastOffset != Offset){
 
                 Enemy->Positions.Add(Path[CellIndex + i]->GetActorLocation() + Offset + LastOffset);
@@ -1253,10 +1278,11 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass, int CellIndex, 
 
             }
 
-            //Every cycle I insert an obstacle.
-            Transform.SetLocation(Path[CellIndex + i]->GetActorLocation() + FVector(0.f,0.f,0.f));
-            MazeActor->CreateObstacle(Transform);
-
+            if(bObstacle){
+                //Every cycle I insert an obstacle.
+                Transform.SetLocation(Path[CellIndex + i]->GetActorLocation() + FVector(0.f,0.f,0.f));
+                MazeActor->CreateObstacle(Transform);
+            }
         }
 
         Cast<APawn>(Enemy)->FinishSpawning(Transform1);
@@ -1335,13 +1361,11 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex, TArray<AMazeCell2*> P
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex]->GetActorLocation() , FRotator::ZeroRotator);
 
             Transform.SetLocation((Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation()) / 2 + FVector(0.f,0.f,-50.f));
-            Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
-            Transform.SetScale3D(FVector(4.f,4.f,4.f));
+            Transform.SetRotation(GetDoorRotation(Path[CellIndex + 1], Path[CellIndex]).Quaternion());
             MazeActor->CreateMetalCrate(Transform);
 
             Transform.SetLocation((Path[CellIndex + 1]->GetActorLocation() + Path[CellIndex + 2]->GetActorLocation()) / 2 + FVector(0.f,0.f,-50.f));
-            Transform.SetRotation(FRotator::ZeroRotator.Quaternion());
-            Transform.SetScale3D(FVector(4.f,4.f,4.f));
+            Transform.SetRotation(GetDoorRotation(Path[CellIndex + 2], Path[CellIndex + 1]).Quaternion());
             MazeActor->CreateMetalCrate(Transform);
         
             GenerateSideElements(CellIndex,0, 0.f, -25.f, 320.f, false, nullptr, Path);
@@ -1396,7 +1420,7 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2
 
         case 2:
 
-            for(int i = 0; i < 3; i++){
+            /*for(int i = 0; i < 3; i++){
 
                 //Create traps in 2 cells out of 3.
                 if(i != 1){
@@ -1435,7 +1459,18 @@ void AMazeManager::TypeOfCoinEnemies(int Index, int CellIndex, TArray<AMazeCell2
 
                 }
 
-            }
+            }*/
+
+                GenerateSideActor(StormClassFire,StormClassThunder,CellIndex, Path, false, 150.f);
+
+                for(int i = 0; i < 3; i++){
+
+                    SetOffsetVector(Path[CellIndex + 1 + i],Path[CellIndex + i],Offset,220.f);
+                    GetWorld()->SpawnActor<ACoinController>(CoinHorizontalClass, Path[CellIndex + i]->GetActorLocation(),FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<ACoinController>(CoinHorizontalClass, (Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation())/2 + Offset,FRotator::ZeroRotator);
+                    GetWorld()->SpawnActor<ACoinController>(CoinHorizontalClass, (Path[CellIndex + i]->GetActorLocation() + Path[CellIndex + i + 1]->GetActorLocation())/2 - Offset,FRotator::ZeroRotator);
+
+                }
 
             break;
         
@@ -1990,8 +2025,8 @@ void AMazeManager::CalculateTotalNumberOfCells(TMap<Type,int>& CellsNumberMap, T
     //if some value is 0, I eliminated it from the map.
     for(int i = 0; i < 2; i++){
 
-        if(CellsNumberMap[Keys[i + 2]] == 0)
-            CellsPreRounded.Remove(Keys[i + 2]);
+        if(CellsNumberMap[Keys[Keys.Num() - 1 - i]] == 0)
+            CellsNumberMap.Remove(Keys[Keys.Num() - 1 - i]);
     
     }
 
@@ -2034,8 +2069,8 @@ void AMazeManager::CalculateTotalNumberOfCells(TMap<Type,int>& CellsNumberMap, T
     //if some value is 0, I eliminated it from the map.
     for(int i = 0; i < 2; i++){
 
-        if(CellsNumberMap[Keys[i + 2]] == 0)
-            CellsPreRounded.Remove(Keys[i + 2]);
+        if(CellsNumberMap[Keys[Keys.Num() - 1 - i]] == 0)
+            CellsNumberMap.Remove(Keys[Keys.Num() - 1 - i]);
     
     }
 

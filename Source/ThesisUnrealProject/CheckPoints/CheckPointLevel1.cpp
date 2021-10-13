@@ -31,6 +31,8 @@
 #include "../Elements/Room/Room.h"
 #include "../Elements/Key/KeyActor.h"
 #include "../Elements/Light/CeilingLight.h"
+#include "../Elements/FinalLevelActor.h"
+#include "../Elements/Storm/Storm.h"
 
 void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
@@ -441,9 +443,42 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
         SaveGameInstance->Checkpoints = GeneralElem;
 
+//Last Actor
+
+        for (TActorIterator<AFinalLevelActor> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+            
+            FGeneralActor GeneralActor;
+            Transform.SetLocation(ActorItr->GetActorLocation());
+            Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
+            GeneralActor.Transform = Transform;
+            GeneralActor.ActorClass = ActorItr->GetClass();
+
+            SaveGameInstance->LastActor = GeneralActor;
+
+        }
+
+//Storms
+
+        MoveElem.Empty();
+
+        for (TActorIterator<AStorm> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+            
+            FMoveActor MoveActor;
+            Transform.SetLocation(ActorItr->GetActorLocation());
+            Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
+            MoveActor.Positions = (*ActorItr)->Positions;      
+            MoveActor.Transform = Transform;
+            MoveActor.ActorClass = ActorItr->GetClass();
+            
+            MoveElem.Add(MoveActor);
+
+        }
+
+        SaveGameInstance->Storms = MoveElem;
+
 // --- Ceiling ---
 
-        GeneralElem.Empty();
+      /*  GeneralElem.Empty();
 
         for (TActorIterator<ACeilingLight> ActorItr(GetWorld()); ActorItr; ++ActorItr){
             
@@ -457,7 +492,7 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
         }
 
-        SaveGameInstance->Lights = GeneralElem;
+        SaveGameInstance->Lights = GeneralElem;*/
 
 // --- Night Portal ---
         
