@@ -4,7 +4,6 @@
 #include "MazeManager.h"
 #include "Containers/Array.h"
 #include "DrawDebugHelpers.h"
-#include "Kismet/GameplayStatics.h"
 #include "MazeCell2.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Elements/Maze/Maze.h"
@@ -91,12 +90,21 @@ void AMazeManager::BeginPlay(){
         //Load Maze Actors.
         for(int i = 0; i < LoadedGame->MazeTransformMap.Num(); i++){
             
-            AMaze* Maze = GetWorld()->SpawnActor<AMaze>(MazeActorClass,LoadedGame->MazeTransformMap[i].Position,FRotator::ZeroRotator);
-            Maze->FloorInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsFloor,false);
-            Maze->WallInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsWall,false);
-            Maze->ObstacleInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsObstacle,false);
-            Maze->MetalCrateInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsMetalCrate,false);
+            if(LoadedGame->MazeTransformMap[i].TransformsFloor.Num() < 1){
+                
+                AMaze* Maze = GetWorld()->SpawnActor<AMaze>(MazeActorClass,LoadedGame->MazeTransformMap[i].Position,FRotator::ZeroRotator);
+                Maze->FloorInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsFloor,false);
+                Maze->WallInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsWall,false);
+                Maze->ObstacleInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsObstacle,false);
+                Maze->MetalCrateInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsMetalCrate,false);
+        
+            }else{
 
+                AMaze* MazeFloor = GetWorld()->SpawnActor<AMaze>(MazeActorClass,LoadedGame->MazeTransformMap[i].Position,FRotator::ZeroRotator);
+                MazeFloor->FloorInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsFloor,false);        
+                UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(MazeFloor);
+            
+            }
         }
 
         //Load Destructible Elems
@@ -481,6 +489,9 @@ void AMazeManager::BeginPlay(){
         //Initialize all the components for the maze creation.
         MazeGraph = new Graph<AMazeCell2>();
         MazeActor = GetWorld()->SpawnActor<AMaze>(MazeActorClass,FVector(0,0,Depth),FRotator::ZeroRotator);
+        MazeActorFloor = GetWorld()->SpawnActor<AMaze>(MazeActorClass,FVector(30,0,Depth),FRotator::ZeroRotator);
+
+        UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(MazeActorFloor);
         
         StandardMazeCreation();
 
@@ -587,7 +598,8 @@ void AMazeManager::InitializeMaze() {
             CellActor->AttachToActor(MazeActor,TransformRules);
 
             Transform.SetLocation(Origin);
-            MazeActor->CreateFloor(Transform);
+            //MazeActor->CreateFloor(Transform);
+            MazeActorFloor->CreateFloor(Transform);
             MazeActor->CreateWalls(Transform);
 
             MazeGraph->AddNode(CellActor);
@@ -1717,7 +1729,7 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             StartPortal->NewPosition = RoomKiller->SpawnPositions->GetComponentLocation() + FVector(-100.f,-100.f,+50.f);
             StartPortal->FinishSpawning(SpawnLocAndRotation);
 
-            RoomKiller->StartPortalPos = StartPortal->GetActorLocation();
+            RoomKiller->StartPortalPos = MaxPath[CellIndex]->GetActorLocation();
 
             break;
 
@@ -1778,7 +1790,7 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             StartPortal->NewPosition = RoomSocializer->SpawnPositions->GetComponentLocation() + FVector(-100.f,-100.f,+50.f);
             StartPortal->FinishSpawning(SpawnLocAndRotation);
 
-            RoomSocializer->StartPortalPos = StartPortal->GetActorLocation();
+            RoomSocializer->StartPortalPos = MaxPath[CellIndex]->GetActorLocation();
 
             break;
     }

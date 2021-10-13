@@ -140,6 +140,7 @@ public:
 
 	//Maze meshes actor.
 	AMaze* MazeActor;
+	AMaze* MazeActorFloor;
 
 	//Graph of the maze
 	Graph<AMazeCell2>* MazeGraph;

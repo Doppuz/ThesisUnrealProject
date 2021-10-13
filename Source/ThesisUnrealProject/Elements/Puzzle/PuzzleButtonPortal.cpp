@@ -14,7 +14,8 @@ void APuzzleButtonPortal::BeginPlay() {
     
     Super::BeginPlay();
 
-    PortalStartPos = StartPortal->GetActorLocation();
+    if(StartPortal != nullptr)
+        PortalStartPos = StartPortal->GetActorLocation();
 
     Overlap.AddDynamic(this,&APuzzleButtonPortal::OpenDoorPuzzle);
 

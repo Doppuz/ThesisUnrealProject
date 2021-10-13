@@ -21,7 +21,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/SizeBox.h"
 #include "../UI/Elements/UIBox.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetMathLibrary.h"	
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -157,6 +157,7 @@ void ACharacterPawnQuad::InvisibleAnimation() {
 		EquipmentMesh->SetVisibility(bIsVisible);
 		bCharacterInvincible = false;
 	}
+
 }
 
 // Called every frame
@@ -166,8 +167,7 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 
 	//Move the player if it's not interacting with an NPC.
 	if(!VectorMovement.IsZero() && !bStopMovement){
-		FVector NewLocation = GetActorLocation() + (VectorMovement * DeltaTime * MovementSpeed);
-		AddActorLocalOffset(VectorMovement);
+		AddActorLocalOffset(VectorMovement,true);
 	}
 
 	//Add rotation
@@ -245,7 +245,7 @@ void ACharacterPawnQuad::MoveRight(float Axis) {
 
 	FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);*/
 
-	VectorMovement.Y = Axis  * MovementSpeed * GetWorld()->DeltaTimeSeconds;
+	VectorMovement.Y = FMath::Clamp(Axis,-1.f,+1.f)  * MovementSpeed * GetWorld()->DeltaTimeSeconds;
 }
 
 void ACharacterPawnQuad::RotatePitch(float Axis) {

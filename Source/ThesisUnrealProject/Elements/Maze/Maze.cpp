@@ -2,6 +2,7 @@
 
 
 #include "Maze.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMaze::AMaze(){

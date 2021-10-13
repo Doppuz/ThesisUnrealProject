@@ -38,7 +38,9 @@ void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Ot
 
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 	
-    		FString CompleteFilePath = FPaths::ProjectSavedDir() + "ThesisUnrealProject/TextFiles/CheckpointLevel1.txt"; 
+    		FString CompleteFilePath = FPaths::ProjectSavedDir() + "SaveGames/CheckpointLevel1.sav"; 
+
+			UE_LOG(LogTemp,Warning,TEXT("%s"), *CompleteFilePath);
 
 			if (!FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*CompleteFilePath)){
 

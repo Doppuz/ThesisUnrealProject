@@ -12,7 +12,6 @@
 #include "Camera/CameraComponent.h"
 #include "AllyAI/PawnInteractiveClass.h"
 #include "EnemyAI/EnemyAIAbstract.h"
-
 #include "CharacterPawnQuad.generated.h"
 
 class ASquaredProjectile;
@@ -116,6 +115,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	float CurrentHealth;
+
+	UPROPERTY(EditAnywhere)
+	AActor* Actor;
 
 
 // Hats

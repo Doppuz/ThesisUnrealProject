@@ -93,9 +93,9 @@ void ASecondPuzzle::BeginPlay()
 	Cast<AAIShooterPawn>(Enemy02->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
 	Cast<AAIShooterPawn>(Enemy03->SpawnActor())->End.AddDynamic(this,&ASecondPuzzle::EndEnemiesEvent);
 
-	Cast<APawnInteractiveMove>(NPC02->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
-	Cast<APawnInteractiveMove>(NPC03->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
-	Cast<APawnInteractiveMove>(NPC04->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
+	Cast<APawnInteractiveClass>(NPC02->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
+	Cast<APawnInteractiveClass>(NPC03->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
+	Cast<APawnInteractiveClass>(NPC04->SpawnActor())->EndDialog.AddDynamic(this,&ASecondPuzzle::SpokenAlliesEvent);
 	
 
 	NPCDoors->LeftChoice.AddDynamic(this,&ASecondPuzzle::LeftChoiceEvent);
