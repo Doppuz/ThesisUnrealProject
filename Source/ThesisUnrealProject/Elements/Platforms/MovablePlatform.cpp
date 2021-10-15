@@ -3,6 +3,7 @@
 
 #include "MovablePlatform.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMovablePlatform::AMovablePlatform()
@@ -40,6 +41,8 @@ void AMovablePlatform::BeginPlay(){
 	Super::BeginPlay();
 
 	PlatformCollider->OnComponentBeginOverlap.AddDynamic(this, &AMovablePlatform::OnOverlap);
+
+	UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(this);
 
 }
 

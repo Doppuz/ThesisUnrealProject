@@ -2,6 +2,7 @@
 
 
 #include "EnemyAIAbstract.h"
+#include "Kismet/GameplayStatics.h"
 
 int AEnemyAIAbstract::IDCounter = 0;
 
@@ -26,6 +27,8 @@ void AEnemyAIAbstract::BeginPlay(){
 
 	InitialPos = GetActorLocation();
 
+	UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(this);
+	
 }
 
 // Called every frame

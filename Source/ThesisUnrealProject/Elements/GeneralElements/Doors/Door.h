@@ -32,9 +32,6 @@ public:
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	UStaticMeshComponent* SubDoorRightMesh;
 
-	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
-	class UBoxComponent* Collision;
-
 	//True when I want to open/close the door.
 	UPROPERTY(EditAnywhere)
 	bool bOpenDoor;
@@ -59,6 +56,9 @@ public:
 	bool bCheckpoint = false;
 	
 	FVector FinalPosition;
+
+	FRotator LeftRotation;
+	FRotator RightRotation;
 
 protected:
 	// Called when the game starts or when spawned

@@ -21,7 +21,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/SizeBox.h"
 #include "../UI/Elements/UIBox.h"
-#include "Kismet/KismetMathLibrary.h"	
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){

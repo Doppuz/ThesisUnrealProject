@@ -3,6 +3,7 @@
 
 #include "FallenPlatform.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AFallenPlatform::AFallenPlatform()
@@ -34,6 +35,8 @@ void AFallenPlatform::BeginPlay(){
 	Super::BeginPlay();
 
 	PlatformCollider->OnComponentHit.AddDynamic(this, &AFallenPlatform::OnHit);
+
+	UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(this);
 
 }
 

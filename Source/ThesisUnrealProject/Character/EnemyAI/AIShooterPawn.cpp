@@ -73,11 +73,11 @@ float AAIShooterPawn::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 		
 		bIAmDestroyed = true;
 		End.Broadcast(this);
-		Destroy();
 		
 		if(bSpawnCoin)
 			GetWorld()->SpawnActor<ACoinController>(SpawnCoin, GetActorLocation(), FRotator::ZeroRotator);
 
+		Destroy();
 	}
 		
 	return DamageTaken;

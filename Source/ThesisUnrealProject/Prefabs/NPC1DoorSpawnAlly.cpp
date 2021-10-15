@@ -134,7 +134,7 @@ void ANPC1DoorSpawnAlly::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 			GetWorld()->SpawnActor<AAICharacterPawnQuad>(AllyClass,
 				FVector(Trigger->GetComponentLocation().X,Trigger->GetComponentLocation().Y,MyPawn->GetActorLocation().Z)
 				,GetActorRotation());
-			Destroy();
+			Trigger->SetCollisionProfileName("NoCollision");
 		}
 	}
 

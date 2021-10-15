@@ -96,12 +96,12 @@ void AMazeManager::BeginPlay(){
                 Maze->FloorInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsFloor,false);
                 Maze->WallInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsWall,false);
                 Maze->ObstacleInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsObstacle,false);
-                Maze->MetalCrateInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsMetalCrate,false);
         
             }else{
 
                 AMaze* MazeFloor = GetWorld()->SpawnActor<AMaze>(MazeActorClass,LoadedGame->MazeTransformMap[i].Position,FRotator::ZeroRotator);
-                MazeFloor->FloorInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsFloor,false);        
+                MazeFloor->FloorInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsFloor,false);
+                MazeFloor->MetalCrateInstances->AddInstances(LoadedGame->MazeTransformMap[i].TransformsMetalCrate,false);       
                 UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(MazeFloor);
             
             }
@@ -1374,11 +1374,11 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex, TArray<AMazeCell2*> P
 
             Transform.SetLocation((Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation()) / 2 + FVector(0.f,0.f,-50.f));
             Transform.SetRotation(GetDoorRotation(Path[CellIndex + 1], Path[CellIndex]).Quaternion());
-            MazeActor->CreateMetalCrate(Transform);
+            MazeActorFloor->CreateMetalCrate(Transform);
 
             Transform.SetLocation((Path[CellIndex + 1]->GetActorLocation() + Path[CellIndex + 2]->GetActorLocation()) / 2 + FVector(0.f,0.f,-50.f));
             Transform.SetRotation(GetDoorRotation(Path[CellIndex + 2], Path[CellIndex + 1]).Quaternion());
-            MazeActor->CreateMetalCrate(Transform);
+            MazeActorFloor->CreateMetalCrate(Transform);
         
             GenerateSideElements(CellIndex,0, 0.f, -25.f, 320.f, false, nullptr, Path);
             GenerateSideElements(CellIndex,1, 0.f, -25.f, 320.f, false,  nullptr, Path);
@@ -1747,6 +1747,7 @@ void AMazeManager::PortalType(int Index, AMazeCell2* Cell) {
             
             NumExtr = FMath::RandRange(0,ArenaSpawnLocation.Num()-1);
             MazeManager->MazeActor->SetActorLocation(ArenaSpawnLocation[NumExtr]);
+            MazeManager->MazeActorFloor->SetActorLocation(ArenaSpawnLocation[NumExtr]);
             ArenaSpawnLocation.RemoveAt(NumExtr);
 
             //Create the door

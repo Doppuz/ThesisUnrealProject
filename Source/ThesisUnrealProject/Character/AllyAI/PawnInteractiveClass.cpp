@@ -11,6 +11,7 @@
 #include "../../UI/Elements/UIBox.h"
 #include "../../Elements/GeneralElements/Doors/Door.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 int APawnInteractiveClass::IDCount = 0;
 
@@ -41,6 +42,8 @@ void APawnInteractiveClass::BeginPlay(){
 
 	ID = IDCount;
 	IDCount = (IDCount + 1) % 50000;
+
+	UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(this);
 
 }
 

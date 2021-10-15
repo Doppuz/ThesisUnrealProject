@@ -2,6 +2,7 @@
 
 
 #include "Room.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ARoom::ARoom(){
@@ -26,6 +27,8 @@ ARoom::ARoom(){
 void ARoom::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(this);
 	
 }
 

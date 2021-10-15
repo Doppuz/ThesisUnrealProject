@@ -65,9 +65,9 @@ float AAIBull::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 
 		bIAmDestroyed = true;
 		End.Broadcast(this);
-		Destroy();
 		if(bSpawnCoin)
 			GetWorld()->SpawnActor<ACoinController>(SpawnCoin, GetActorLocation(), FRotator::ZeroRotator);
+		Destroy();
 
 	}
 		

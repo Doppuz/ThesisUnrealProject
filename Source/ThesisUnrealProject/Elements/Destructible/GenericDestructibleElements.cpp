@@ -5,6 +5,7 @@
 #include "DestructibleComponent.h"
 #include "../../GameModeTutorial.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 int AGenericDestructibleElements::IDCounter = 0;
 
@@ -31,6 +32,8 @@ void AGenericDestructibleElements::BeginPlay(){
 	IDCounter = (IDCounter + 1) % 50000;
 
 	DestructibleMesh->OnComponentFracture.AddDynamic(this,&AGenericDestructibleElements::OnComponentFracture);
+	
+	UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(this);
 
 }
 

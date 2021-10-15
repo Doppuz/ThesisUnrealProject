@@ -4,6 +4,8 @@
 #include "PuzzleButton.h"
 #include "Components/BoxComponent.h"
 #include "../../GameModeTutorial.h"
+#include "Kismet/GameplayStatics.h"
+#include "../../Character/CharacterPawnQuad.h"
 
 int APuzzleButton::IDCounter = 0;
 
@@ -36,6 +38,9 @@ void APuzzleButton::BeginPlay(){
 
 	ID = IDCounter;
 	IDCounter += 1;
+	
+	ACharacterPawnQuad* PawnQuad = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+	PawnQuad->Collider->IgnoreComponentWhenMoving(Collider, true);
 
 }
 

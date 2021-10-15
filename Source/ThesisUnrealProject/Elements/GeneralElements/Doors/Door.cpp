@@ -28,18 +28,14 @@ ADoor::ADoor(){
 	SubDoorLeftMesh->SetupAttachment(DoorMesh);
 	SubDoorLeftMesh->SetWorldLocation(FVector(-10.f,-130.f,0.f));
 
-	Collision = CreateDefaultSubobject<UBoxComponent>(TEXT("Collision"));
-	Collision->SetupAttachment(Root);
-	Collision->SetWorldLocation(FVector(0.f,0.f,275.f));
-	Collision->SetWorldScale3D(FVector(1.75f, 12.f,11.f));
-	Collision->SetWorldRotation(FRotator(0.f,-90.f,0.f));
-	Collision->SetCollisionProfileName("BlockAll");
-
 	bOpenDoor = false;
 	bClose = false;
-	Speed = 0.4f;
+	Speed = 1.f;
 	Distance = 300.f;
 	ID = 0;
+	LeftRotation = FRotator(0.f,90.f,0.f);
+	RightRotation = FRotator(0.f,-90.f,0.f);
+
 }
 
 // Called when the game starts or when spawned
@@ -69,14 +65,12 @@ void ADoor::Tick(float DeltaTime){
 		//FVector NewLocation = FMath::Lerp(ActorPosition,FinalPosition, DeltaTime * Speed);
 		//SetActorLocation(NewLocation);
 
-		Collision->SetCollisionProfileName("NoCollision");
-
 		FRotator LeftDoorRot = SubDoorLeftMesh->GetComponentRotation();
-		FRotator NewRotation = FMath::Lerp(LeftDoorRot,Rot1 + FRotator(0.f,90.f,0.f), DeltaTime * Speed);
+		FRotator NewRotation = FMath::Lerp(LeftDoorRot,Rot1 + LeftRotation, DeltaTime * Speed);
 		SubDoorLeftMesh->SetWorldRotation(NewRotation);
 
 		FRotator RightDoorRot = SubDoorRightMesh->GetComponentRotation();
-		FRotator NewRotation2 = FMath::Lerp(RightDoorRot,Rot2 + FRotator(0.f,-90.f,0.f), DeltaTime * Speed);
+		FRotator NewRotation2 = FMath::Lerp(RightDoorRot,Rot2 + RightRotation, DeltaTime * Speed);
 		SubDoorRightMesh->SetWorldRotation(NewRotation2);
 
 	}
@@ -85,10 +79,10 @@ void ADoor::Tick(float DeltaTime){
 
 void ADoor::SetDoorDirection(bool bIsClosed) {
 	
-	if(bIsClosed)
-		FinalPosition = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - Distance);
-	else
-		FinalPosition = FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + Distance);
+	if(bIsClosed){
+		LeftRotation = FRotator(0.f,-90.f,0.f);
+		RightRotation = FRotator(0.f,90.f,0.f);
+	}
 
 }
 
