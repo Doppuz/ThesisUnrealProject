@@ -4,7 +4,7 @@
 #include "CoinController.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
-#include "../../GameModeTutorial.h"
+#include "../../GameModeAbstract.h"
 #include "../../UI/UIWidgetDialog.h"
 #include "Components/TextBlock.h"
 #include "../../Character/CharacterPawnQuad.h"
@@ -74,6 +74,10 @@ void ACoinController::OnCoinOverlap(UPrimitiveComponent * HitComponent, AActor *
 
 		bIsCollected = true;
 		CollectedDelegate.Broadcast();
+
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->IncreaseCoins();
+		UE_LOG(LogTemp,Warning,TEXT("Coins: %i"), GameMode->GetCoins());
 
 		Destroy();
 	}

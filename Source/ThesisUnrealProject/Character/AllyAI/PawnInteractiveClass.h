@@ -80,6 +80,10 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
 	bool bAlreadySpoken;
 
+	//Check if I need to increase the value for player state.
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = Speak)
+	bool bNoIncrease;
+
 #pragma endregion
 
 #pragma region Question

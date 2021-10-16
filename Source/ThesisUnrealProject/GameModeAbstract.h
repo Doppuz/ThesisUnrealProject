@@ -39,6 +39,18 @@ public:
 
 	//Array that keeps all the level that have been loaded.
 	TArray<FString> LoadedLevels;
+	
+	int GetCoins() const;
+	void IncreaseCoins();
+
+    int GetEnemies() const;
+	void IncreaseEnemies();
+
+    int GetAllies() const;
+	void IncreaseAllies();
+
+    int GetStatues() const;
+	void IncreaseStatues();
 
 protected:
 	

@@ -16,7 +16,10 @@ class THESISUNREALPROJECT_API ACustomGameState : public AGameStateBase
 
 public:
 	ACustomGameState();
-	int CoinNumber;
-	float MapPercentage;
+
+	int CoinsNumber;
+	int EnemiesDefeated;
+	int AlliesSpoken;
+	int StatueVisited;
 
 };

@@ -3,6 +3,7 @@
 
 #include "CubeLevel.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACubeLevel::ACubeLevel(){
@@ -15,5 +16,14 @@ ACubeLevel::ACubeLevel(){
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Collider);
+
+}
+
+	
+void ACubeLevel::BeginPlay(){
+
+	Super::BeginPlay();
+	
+	UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(this);
 
 }

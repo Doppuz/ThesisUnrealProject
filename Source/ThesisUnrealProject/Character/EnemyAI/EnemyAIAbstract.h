@@ -57,4 +57,8 @@ public:
 
 	FVector InitialPos;
 
+	//Check if I need to increase the value for player state.
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite)
+	bool bNoIncrease;
+
 };

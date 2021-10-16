@@ -4,7 +4,10 @@
 #include "CustomGameState.h"
 
 ACustomGameState::ACustomGameState() {
-    CoinNumber = 0;
-    MapPercentage = 0;
+    
+    CoinsNumber = 0;
+	EnemiesDefeated  = 0;
+	AlliesSpoken  = 0;
+	StatueVisited  = 0;
 
 }

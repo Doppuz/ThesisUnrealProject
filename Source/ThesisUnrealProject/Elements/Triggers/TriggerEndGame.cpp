@@ -9,6 +9,7 @@
 #include "Components/SpotLightComponent.h"
 #include "../../GameModeTutorial.h"
 #include "../../UI/UIEndScreen.h"
+#include "../../CheckPoints/SaveGameBartle.h"
 
 // Sets default values
 ATriggerEndGame::ATriggerEndGame(){
@@ -51,6 +52,18 @@ void ATriggerEndGame::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Oth
 				UE_LOG(LogTemp,Warning,TEXT("true %s"),*file);
 			}else {
 				UE_LOG(LogTemp,Warning,TEXT("%s"),*file);
+			}
+
+			if (USaveGameBartle* SaveGameInstance = Cast<USaveGameBartle>(UGameplayStatics::CreateSaveGameObject(USaveGameBartle::StaticClass()))){
+				
+				SaveGameInstance->Achiever = (GameMode->Update->Types[Type::Achiever] + GameMode->Update->TypesQuestionary[Type::Achiever]) / 2;
+				SaveGameInstance->Killer = (GameMode->Update->Types[Type::Killer] + GameMode->Update->TypesQuestionary[Type::Killer]) / 2;
+				SaveGameInstance->Explorer = (GameMode->Update->Types[Type::Explorer] + GameMode->Update->TypesQuestionary[Type::Explorer]) / 2;
+				SaveGameInstance->Socializer = (GameMode->Update->Types[Type::Socializer] + GameMode->Update->TypesQuestionary[Type::Socializer]) / 2;
+
+				// Start async save process.
+				UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Bartle", 0);
+
 			}
 
 		}

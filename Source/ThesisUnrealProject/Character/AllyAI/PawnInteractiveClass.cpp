@@ -12,6 +12,7 @@
 #include "../../Elements/GeneralElements/Doors/Door.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "../../Elements/Statue/StatueInteractElem.h"
 
 int APawnInteractiveClass::IDCount = 0;
 
@@ -33,6 +34,7 @@ APawnInteractiveClass::APawnInteractiveClass()
 
 	bFocus = true;
 	bAlreadySpoken = false;
+	bNoIncrease = false;
 	QuestionAt = 200;
 }
 
@@ -92,6 +94,22 @@ void APawnInteractiveClass::Speak() {
 			QuestionAt = -1;
 
 		EndDialog.Broadcast(this);
+
+		if(!bAlreadySpoken && !bNoIncrease){
+
+			if(this->IsA(AStatueInteractElem::StaticClass())){
+
+				GameMode->IncreaseStatues();
+				UE_LOG(LogTemp,Warning,TEXT("Statues: %i"), GameMode->GetStatues());
+
+			}else{
+
+				GameMode->IncreaseAllies();
+				UE_LOG(LogTemp,Warning,TEXT("Allies: %i"), GameMode->GetAllies());
+			
+			}
+
+		}
 
 		bAlreadySpoken = true;
 

@@ -13,7 +13,7 @@
 #include "Components/WidgetComponent.h"
 #include "../../UI/Elements/HealthBar.h"
 #include "Components/ProgressBar.h"
-#include "../../GameModeTutorial.h"
+#include "../../GameModeAbstract.h"
 #include "../../UI/UIWidgetDialog.h"
 #include "../../Elements/GeneralElements/CoinController.h"
 
@@ -59,14 +59,22 @@ float AAIBull::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, A
 	if(HealthWidget != nullptr)
 		HealthWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
 
-	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);
-
 	if(CurrentHealth == 0){
 
 		bIAmDestroyed = true;
 		End.Broadcast(this);
 		if(bSpawnCoin)
 			GetWorld()->SpawnActor<ACoinController>(SpawnCoin, GetActorLocation(), FRotator::ZeroRotator);
+
+		if(!bNoIncrease){
+		
+			AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+			GameMode->IncreaseEnemies();
+
+			UE_LOG(LogTemp,Warning,TEXT("Enemies: %i"), GameMode->GetEnemies());
+
+		}
+		
 		Destroy();
 
 	}

@@ -40,6 +40,7 @@
 #include "../Elements/Hat/Hat.h"
 #include "../CheckPoints/CheckPointLevel1.h"
 #include "../CheckPoints/SaveGameLevel1.h"
+#include "../CheckPoints/SaveGameBartle.h"
 #include "EngineUtils.h"
 #include "../Elements/Light/CeilingLight.h"
 #include "../Elements/Storm/Storm.h"
@@ -2011,10 +2012,25 @@ void AMazeManager::CalculateTotalNumberOfCells(TMap<Type,int>& CellsNumberMap, T
 
     int TotalCells = CellsToPopulate.MainPath.Num() +  CellsToPopulate.OtherPaths.Num() +
         CellsToPopulate.OneCellElem.Num() + CellsToPopulate.ExtrElem.Num() + CellsToPopulate.Door.Num();
+
+    TMap<Type,float> CellsPreRounded;
     
-    //Create a TMap with all the cells before the round.
-    TMap<Type,float> CellsPreRounded = {{Type::Achiever,TotalCells * Achiever / 200}, {Type::Killer,TotalCells * Killer / 200},
+    if (USaveGameBartle* LoadedGame = Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0))){
+
+        UE_LOG(LogTemp,Warning,TEXT("Values = %f, %f, %f, %f"),  LoadedGame->Achiever, LoadedGame->Killer, LoadedGame->Explorer, LoadedGame->Socializer);
+
+        //Create a TMap with all the cells before the round.
+        CellsPreRounded = {{Type::Achiever,TotalCells * LoadedGame->Achiever / 200}, {Type::Killer,TotalCells * LoadedGame->Killer / 200},
+        {Type::Explorer,TotalCells * LoadedGame->Explorer / 200}, {Type::Socializer,TotalCells * LoadedGame->Socializer / 200}};
+
+    }else{
+        
+        UE_LOG(LogTemp,Warning,TEXT("Values = %f, %f, %f, %f"), Achiever, Killer, Explorer, Socializer);
+
+        CellsPreRounded = {{Type::Achiever,TotalCells * Achiever / 200}, {Type::Killer,TotalCells * Killer / 200},
         {Type::Explorer,TotalCells * Explorer / 200}, {Type::Socializer,TotalCells * Socializer / 200}};
+
+    }
 
     CellsPreRounded.ValueSort([](float A, float B) {
         return A > B; // sort keys in reverse

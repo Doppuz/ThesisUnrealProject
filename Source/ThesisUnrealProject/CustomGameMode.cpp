@@ -34,20 +34,3 @@ void ACustomGameMode::BeginPlay() {
 }
 
 
-//--- Get and Set for the coins and world percentage.
-
-int ACustomGameMode::GetCoins() const{
-    return GetGameState<ACustomGameState>()->CoinNumber;
-}
-
-void ACustomGameMode::IncreaseCoins() {
-    GetGameState<ACustomGameState>()->CoinNumber += 1;
-}
-
-float ACustomGameMode::GetPercentage() const{
-    return GetGameState<ACustomGameState>()->MapPercentage;
-}
-
-void ACustomGameMode::IncreasePercentage() {
-    GetGameState<ACustomGameState>()->MapPercentage += MapIncrement;
-}

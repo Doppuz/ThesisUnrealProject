@@ -96,6 +96,7 @@ void ARoomKiller::Tick(float DeltaTime){
 
 					//Memorize all the enemies to be eliminated to pass the round
 					AEnemyAIAbstract* Enemy = Cast<AEnemyAIAbstract>(Spawner->SpawnActor());
+					Enemy->bNoIncrease = true;
 					Enemies.Add(Enemy);
 				
 				}

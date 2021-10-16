@@ -2,6 +2,7 @@
 
 
 #include "GameModeAbstract.h"
+#include "CustomGameState.h"
 
 
 AGameModeAbstract::AGameModeAbstract() {
@@ -44,4 +45,39 @@ void AGameModeAbstract::BeginPlay() {
 
     ChangeMenuWidget(StartingWidgetClass);
 
+}
+
+
+//--- Get and Set for the coins and world percentage.
+
+int AGameModeAbstract::GetCoins() const{
+    return GetGameState<ACustomGameState>()->CoinsNumber;
+}
+
+void AGameModeAbstract::IncreaseCoins() {
+    GetGameState<ACustomGameState>()->CoinsNumber += 1;
+}
+
+int AGameModeAbstract::GetEnemies() const{
+    return GetGameState<ACustomGameState>()->EnemiesDefeated;
+}
+
+void AGameModeAbstract::IncreaseEnemies() {
+    GetGameState<ACustomGameState>()->EnemiesDefeated += 1;
+}
+
+int AGameModeAbstract::GetAllies() const{
+    return GetGameState<ACustomGameState>()->AlliesSpoken;
+}
+
+void AGameModeAbstract::IncreaseAllies() {
+    GetGameState<ACustomGameState>()->AlliesSpoken += 1;
+}
+
+int AGameModeAbstract::GetStatues() const{
+    return GetGameState<ACustomGameState>()->StatueVisited;
+}
+
+void AGameModeAbstract::IncreaseStatues() {
+    GetGameState<ACustomGameState>()->StatueVisited += 1;
 }

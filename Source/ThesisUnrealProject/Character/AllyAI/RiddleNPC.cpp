@@ -11,6 +11,7 @@
 
 ARiddleNPC::ARiddleNPC() {
 	RightAnswerPos = 0;
+	bNoIncrease = true;
 }
 
 //Choose which doors to open

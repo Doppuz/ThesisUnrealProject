@@ -3,6 +3,7 @@
 
 #include "Hat.h"
 #include "../../Character/CharacterPawnQuad.h"
+#include "../../GameModeAbstract.h"
 
 // Sets default values
 AHat::AHat(){
@@ -34,6 +35,11 @@ void AHat::OnHatOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor,
 		Cast<ACharacterPawnQuad>(OtherActor)->EquipmentMesh->SetStaticMesh(Mesh->GetStaticMesh());
 		Cast<ACharacterPawnQuad>(OtherActor)->HatMaterials.Add(Mesh->GetMaterials());
 		Cast<ACharacterPawnQuad>(OtherActor)->ChangeHat();
+
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->IncreaseCoins();
+		UE_LOG(LogTemp,Warning,TEXT("Coins: %i"), GameMode->GetCoins());
+
 		Destroy();
 
 	}

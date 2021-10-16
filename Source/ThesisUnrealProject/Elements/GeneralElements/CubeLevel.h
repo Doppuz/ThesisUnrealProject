@@ -20,5 +20,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Mesh;
+
+protected:
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 	
 };

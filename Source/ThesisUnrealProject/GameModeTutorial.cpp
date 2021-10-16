@@ -94,11 +94,11 @@ void AGameModeTutorial::BeginPlay() {
 //--- Get and Set for the coins
 
 int AGameModeTutorial::GetCoins() const{
-    return GetGameState<ACustomGameState>()->CoinNumber;
+    return GetGameState<ACustomGameState>()->CoinsNumber;
 }
 
 void AGameModeTutorial::IncreaseCoins() {
-    GetGameState<ACustomGameState>()->CoinNumber += 1;
+    GetGameState<ACustomGameState>()->CoinsNumber += 1;
 }
 
 void AGameModeTutorial::OnLevelLoad() {

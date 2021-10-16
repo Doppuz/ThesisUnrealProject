@@ -17,6 +17,7 @@
 #include "../../UI/UIWidgetDialog.h"
 #include "../../Projectile/SquaredProjectile.h"
 #include "../../Elements/GeneralElements/CoinController.h"
+#include "../../GameModeAbstract.h"
 
 
 AAIShooterPawn::AAIShooterPawn() {
@@ -67,8 +68,6 @@ float AAIShooterPawn::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 	if(HealthWidget != nullptr)
 		HealthWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
 
-	UE_LOG(LogTemp,Warning,TEXT("%s: Health Left = %f"), *GetName(), CurrentHealth);
-
 	if(CurrentHealth == 0){
 		
 		bIAmDestroyed = true;
@@ -76,6 +75,15 @@ float AAIShooterPawn::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 		
 		if(bSpawnCoin)
 			GetWorld()->SpawnActor<ACoinController>(SpawnCoin, GetActorLocation(), FRotator::ZeroRotator);
+
+		if(!bNoIncrease){
+
+			AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+			GameMode->IncreaseEnemies();
+
+			UE_LOG(LogTemp,Warning,TEXT("Enemies: %i"), GameMode->GetEnemies());
+		
+		}
 
 		Destroy();
 	}

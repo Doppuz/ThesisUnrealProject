@@ -40,7 +40,9 @@ void APuzzleButton::BeginPlay(){
 	IDCounter += 1;
 	
 	ACharacterPawnQuad* PawnQuad = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-	PawnQuad->Collider->IgnoreComponentWhenMoving(Collider, true);
+	
+	if(PawnQuad != nullptr)
+		PawnQuad->Collider->IgnoreComponentWhenMoving(Collider, true);
 
 }
 

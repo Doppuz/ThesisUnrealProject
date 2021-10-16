@@ -25,12 +25,6 @@ public:
 	
 	ACustomGameMode();
     ~ACustomGameMode();
-	
-	int GetCoins() const;
-	void IncreaseCoins();
-
-    float GetPercentage() const;
-	void IncreasePercentage();
 
     float GetAchieverValue() const;
     float GetKillerValue() const;
