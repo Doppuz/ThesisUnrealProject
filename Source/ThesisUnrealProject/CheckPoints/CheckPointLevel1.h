@@ -16,8 +16,13 @@ class THESISUNREALPROJECT_API ACheckPointLevel1 : public ACheckpoint{
 
 public:
 
+	ACheckPointLevel1();
+
 	UPROPERTY(EditAnywhere)
 	AMazeManager* MazeManager;
+
+	UPROPERTY(EditAnywhere)
+	USceneComponent* SpawnPos;
 
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 	

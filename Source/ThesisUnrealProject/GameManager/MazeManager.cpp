@@ -45,6 +45,8 @@
 #include "../Elements/Light/CeilingLight.h"
 #include "../Elements/Storm/Storm.h"
 #include "../Elements/FinalLevelActor.h"
+#include "../GameModeAbstract.h"
+#include "../AdaptiveExperience.h"
 
 // Sets default values
 AMazeManager::AMazeManager(){
@@ -77,6 +79,18 @@ AMazeManager::~AMazeManager() {
 void AMazeManager::BeginPlay(){
     
 	Super::BeginPlay();
+
+    if (USaveGameBartle* LoadedGame = Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0))){
+
+        UE_LOG(LogTemp,Warning,TEXT("Values = %f, %f, %f, %f"),  LoadedGame->Achiever, LoadedGame->Killer, LoadedGame->Explorer, LoadedGame->Socializer);
+
+        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+        GameMode->Update->Types.Add(Type::Achiever, LoadedGame->Achiever);
+        GameMode->Update->Types.Add(Type::Killer, LoadedGame->Killer);
+        GameMode->Update->Types.Add(Type::Explorer, LoadedGame->Explorer);
+        GameMode->Update->Types.Add(Type::Socializer, LoadedGame->Socializer);
+
+    }
 
     if (USaveGameLevel1* LoadedGame = Cast<USaveGameLevel1>(UGameplayStatics::LoadGameFromSlot("CheckpointLevel1", 0))){
         
@@ -466,6 +480,17 @@ void AMazeManager::BeginPlay(){
         //Player
         APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
         Player->SetActorLocation(LoadedGame->PlayerPos);
+
+        //GameMode
+        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+        GameMode->SetCoins(LoadedGame->Coins);
+        GameMode->SetEnemies(LoadedGame->EnemiesDefeated);
+        GameMode->SetAllies(LoadedGame->SpokenAllies);
+        GameMode->SetStatues(LoadedGame->Statues);
+        GameMode->TotalCoins = LoadedGame->TotalCoins;
+        GameMode->TotalEnemies = LoadedGame->TotalEnemiesDefeated;
+        GameMode->TotalAllies = LoadedGame->TotalSpokenAllies;
+        GameMode->TotalStatues = LoadedGame->TotalStatues;
 
         //Load Speech (Done again to reset the changes)
         Speech = ConvertSpeechBack(LoadedGame->Speech);
@@ -2018,6 +2043,12 @@ void AMazeManager::CalculateTotalNumberOfCells(TMap<Type,int>& CellsNumberMap, T
     if (USaveGameBartle* LoadedGame = Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0))){
 
         UE_LOG(LogTemp,Warning,TEXT("Values = %f, %f, %f, %f"),  LoadedGame->Achiever, LoadedGame->Killer, LoadedGame->Explorer, LoadedGame->Socializer);
+
+        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+        GameMode->Update->Types.Add(Type::Achiever, LoadedGame->Achiever);
+        GameMode->Update->Types.Add(Type::Killer, LoadedGame->Killer);
+        GameMode->Update->Types.Add(Type::Explorer, LoadedGame->Explorer);
+        GameMode->Update->Types.Add(Type::Socializer, LoadedGame->Socializer);
 
         //Create a TMap with all the cells before the round.
         CellsPreRounded = {{Type::Achiever,TotalCells * LoadedGame->Achiever / 200}, {Type::Killer,TotalCells * LoadedGame->Killer / 200},

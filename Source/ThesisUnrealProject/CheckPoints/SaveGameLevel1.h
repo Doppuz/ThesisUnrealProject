@@ -330,4 +330,29 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	FVector PlayerPos;
 
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int Coins;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int EnemiesDefeated;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int SpokenAllies;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int Statues;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int TotalCoins;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int TotalEnemiesDefeated;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int TotalSpokenAllies;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int TotalStatues;
+
+
 };

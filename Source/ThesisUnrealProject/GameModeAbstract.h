@@ -41,16 +41,24 @@ public:
 	TArray<FString> LoadedLevels;
 	
 	int GetCoins() const;
+	void SetCoins(int);
 	void IncreaseCoins();
+	int TotalCoins;
 
     int GetEnemies() const;
+	void SetEnemies(int);
 	void IncreaseEnemies();
+	int TotalEnemies;
 
     int GetAllies() const;
+	void SetAllies(int);
 	void IncreaseAllies();
+	int TotalAllies;
 
     int GetStatues() const;
+	void SetStatues(int);
 	void IncreaseStatues();
+	int TotalStatues;
 
 protected:
 	

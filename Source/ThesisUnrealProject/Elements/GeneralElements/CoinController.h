@@ -63,6 +63,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool bCanMove;
 
+	bool bNoIncrease = false;
+
 private:
 
 	UFUNCTION()

@@ -425,13 +425,6 @@ protected:
 
 	void CreateCheckpoint(AMazeCell2* Cell);
 
-// --- Post game update ---
-
-	TArray<AEnemyAIAbstract*> Enemies;
-	TArray<AStatueInteractElem*> Statues;
-	TArray<APawnInteractiveClass> Allies;
-	TArray<AHat> Hat;
-
 #pragma endregion
 
 };

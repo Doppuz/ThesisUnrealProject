@@ -3,6 +3,7 @@
 
 #include "EnemyAIAbstract.h"
 #include "Kismet/GameplayStatics.h"
+#include "../../GameModeAbstract.h"
 
 int AEnemyAIAbstract::IDCounter = 0;
 
@@ -28,6 +29,13 @@ void AEnemyAIAbstract::BeginPlay(){
 	InitialPos = GetActorLocation();
 
 	UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(this);
+
+	if(!bNoIncrease){
+		
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->TotalEnemies += 1;
+
+	}
 	
 }
 

@@ -46,6 +46,11 @@ void ACoinController::BeginPlay(){
 	TopBox->OnComponentBeginOverlap.AddDynamic(this, &ACoinController::OnBoxOverlap);
 	BotBox->OnComponentBeginOverlap.AddDynamic(this, &ACoinController::OnBoxOverlap);
 	CoinCollider->OnComponentBeginOverlap.AddDynamic(this, &ACoinController::OnCoinOverlap);
+	
+	if(!bNoIncrease){
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->TotalCoins += 1;
+	}
 }
 
 // Called every frame

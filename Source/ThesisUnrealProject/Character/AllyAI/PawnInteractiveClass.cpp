@@ -47,6 +47,22 @@ void APawnInteractiveClass::BeginPlay(){
 
 	UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(this);
 
+	if(!bNoIncrease){
+		
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+
+		if(this->IsA(AStatueInteractElem::StaticClass())){
+
+				GameMode->TotalStatues += 1;
+
+			}else{
+
+				GameMode->TotalAllies += 1;
+			
+			}
+
+	}
+
 }
 
 // Called every frame

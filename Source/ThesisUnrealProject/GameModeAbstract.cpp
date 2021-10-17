@@ -11,12 +11,16 @@ AGameModeAbstract::AGameModeAbstract() {
 
     Update = new AdaptiveExperience();
 
+	TotalCoins = 0;
+    TotalEnemies = 0;
+    TotalAllies = 0;
+    TotalStatues = 0;
+
 }
 
 AGameModeAbstract::~AGameModeAbstract() {
     delete Update;
 }
-
 
 //Assign the UI widget passed as parameter to the screen.
 void AGameModeAbstract::ChangeMenuWidget(TSubclassOf<UUserWidget> NewWidgetClass) {
@@ -48,10 +52,14 @@ void AGameModeAbstract::BeginPlay() {
 }
 
 
-//--- Get and Set for the coins and world percentage.
+//--- Get and Set 
 
 int AGameModeAbstract::GetCoins() const{
     return GetGameState<ACustomGameState>()->CoinsNumber;
+}
+
+void AGameModeAbstract::SetCoins(int Coins){
+    GetGameState<ACustomGameState>()->CoinsNumber = Coins;
 }
 
 void AGameModeAbstract::IncreaseCoins() {
@@ -62,6 +70,10 @@ int AGameModeAbstract::GetEnemies() const{
     return GetGameState<ACustomGameState>()->EnemiesDefeated;
 }
 
+void AGameModeAbstract::SetEnemies(int Enemies){
+    GetGameState<ACustomGameState>()->EnemiesDefeated = Enemies;
+}
+
 void AGameModeAbstract::IncreaseEnemies() {
     GetGameState<ACustomGameState>()->EnemiesDefeated += 1;
 }
@@ -70,12 +82,20 @@ int AGameModeAbstract::GetAllies() const{
     return GetGameState<ACustomGameState>()->AlliesSpoken;
 }
 
+void AGameModeAbstract::SetAllies(int Allies){
+    GetGameState<ACustomGameState>()->AlliesSpoken = Allies;
+}
+
 void AGameModeAbstract::IncreaseAllies() {
     GetGameState<ACustomGameState>()->AlliesSpoken += 1;
 }
 
 int AGameModeAbstract::GetStatues() const{
     return GetGameState<ACustomGameState>()->StatueVisited;
+}
+
+void AGameModeAbstract::SetStatues(int Statues){
+    GetGameState<ACustomGameState>()->StatueVisited = Statues;
 }
 
 void AGameModeAbstract::IncreaseStatues() {

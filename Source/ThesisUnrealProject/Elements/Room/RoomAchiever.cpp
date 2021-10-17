@@ -37,8 +37,12 @@ void ARoomAchiever::BeginPlay() {
             
             float NumExtr = FMath::RandRange(0.f,10.f);
             if((i == 0 && j == 0) || NumExtr < 7.5f){
-            
-                Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass, FVector(StartSpawnPosition->GetComponentLocation().X - 310 * i,StartSpawnPosition->GetComponentLocation().Y - 310.f * j, 80.f), FRotator::ZeroRotator);
+                
+                FTransform Transform;
+                Transform.SetLocation(FVector(StartSpawnPosition->GetComponentLocation().X - 310 * i,StartSpawnPosition->GetComponentLocation().Y - 310.f * j, 80.f));
+                Coin = GetWorld()->SpawnActorDeferred<ACoinController>(CoinClass,Transform);
+                Coin->bNoIncrease = true;
+                Coin->FinishSpawning(Transform);
                 Coin->CollectedDelegate.AddDynamic(this,&ARoomAchiever::OnCoinCollect);
                 Coin->AttachToActor(this,Rules);
                 TotalCoins += 1;

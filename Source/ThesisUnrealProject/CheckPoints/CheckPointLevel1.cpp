@@ -33,6 +33,14 @@
 #include "../Elements/Light/CeilingLight.h"
 #include "../Elements/FinalLevelActor.h"
 #include "../Elements/Storm/Storm.h"
+#include "../GameModeAbstract.h"
+
+ACheckPointLevel1::ACheckPointLevel1(){
+    
+    SpawnPos = CreateDefaultSubobject<USceneComponent>(TEXT("SpawnPos"));
+	SpawnPos->SetupAttachment(RootComponent);
+
+}
 
 void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
@@ -569,7 +577,7 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
 // --- Player ---
 
-        SaveGameInstance->PlayerPos = OtherActor->GetActorLocation();
+        SaveGameInstance->PlayerPos = SpawnPos->GetComponentLocation();
 
 // --- Speech ---
 
@@ -584,6 +592,18 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
         SaveGameInstance->DestrID = AGenericDestructibleElements::IDCounter;
         SaveGameInstance->EnemyID = AEnemyAIAbstract::IDCounter;        
         SaveGameInstance->AllyID = APawnInteractiveClass::IDCount;
+
+        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+
+        SaveGameInstance->Coins = GameMode->GetCoins();
+        SaveGameInstance->EnemiesDefeated = GameMode->GetEnemies();
+        SaveGameInstance->SpokenAllies = GameMode->GetAllies();
+        SaveGameInstance->Statues = GameMode->GetStatues();
+
+        SaveGameInstance->TotalCoins = GameMode->TotalCoins;
+        SaveGameInstance->TotalEnemiesDefeated = GameMode->TotalEnemies;
+        SaveGameInstance->TotalSpokenAllies = GameMode->TotalAllies;
+        SaveGameInstance->TotalStatues = GameMode->TotalStatues;
 
         // Start async save process.;
 		UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "CheckpointLevel1", 0);
