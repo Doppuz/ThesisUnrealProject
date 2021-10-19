@@ -80,8 +80,7 @@ void ASixthPuzzle::BeginPlay()
 	//Set overlayed Text
 	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("Cross the platforms OR ...");
 	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
-	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("... OR Try a dark exploration.");
-	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("... OR enjoy a dark exploration.");
 
 	AFallenPlatform* FallenPlat = Cast<AFallenPlatform>(Cast<AShakeActorFallen>(FallenPlatform1->GetChildActor())->ShakingActor->GetChildActor());
 

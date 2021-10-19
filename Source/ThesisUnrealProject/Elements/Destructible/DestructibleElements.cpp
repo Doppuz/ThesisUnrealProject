@@ -42,7 +42,7 @@ void ADestructibleElements::HitMesh(const FHitResult& Hit) {
 	CurrentDamage += DamageValue;
 
 	if(Health == 0 || Health <= CurrentDamage){
-		DestructibleMesh->ApplyRadiusDamage(10.f,Hit.ImpactPoint,1000.f,1000,true); //ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 2000);	
+		DestructibleMesh->ApplyRadiusDamage(10.f,Hit.ImpactPoint,1.f,1.f,false); //ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 2000);	
 		DestructionDelegate.Broadcast(this);
 		bSolved = true;
 	}

@@ -43,7 +43,12 @@ void UUIEndScreen::SetQuestionaryValue(float AchieverValue, float ExplorerValue,
 }
 
 void UUIEndScreen::OnSendClicked() {
-    FPlatformProcess::LaunchURL(TEXT("https://forms.gle/Bxh3ifjAw7tBVCcz7"), NULL, NULL);
+    
+    //FPlatformProcess::LaunchURL(TEXT("https://forms.gle/Bxh3ifjAw7tBVCcz7"), NULL, NULL);
+    
+	//PlayerController->SetInputMode(FInputModeGameOnly());
+    UGameplayStatics::OpenLevel(GetWorld(), "Level1", false);
+
 }
 
 void UUIEndScreen::OnQuitClicked() {

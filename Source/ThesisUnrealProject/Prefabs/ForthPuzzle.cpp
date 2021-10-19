@@ -79,9 +79,9 @@ void AForthPuzzle::BeginPlay()
 	
 	//Set overlayed Text
 	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("Press all buttons OR ...");
-	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
+	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetColor(FLinearColor(1.f,1.f,1.f,1.f));
 	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("... OR talk to everyone.");
-	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetColor(FLinearColor(1.f,1.f,1.f,1.f));
 
 	TArray<USceneComponent*> NPCArray;
 	NPCs->GetChildrenComponents(false,NPCArray);

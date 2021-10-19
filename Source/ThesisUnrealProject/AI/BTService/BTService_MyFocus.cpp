@@ -25,8 +25,9 @@ void UBTService_MyFocus::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Node
         Direction.Z = 0; //To avoid problems
         FRotator Rotator = Direction.Rotation();
         APawn* P = OwnerComp.GetAIOwner()->GetPawn();
-            
-        OwnerComp.GetAIOwner()->GetPawn()->SetActorRotation(Direction.Rotation());
+        
+        if(IsValid(P))
+            OwnerComp.GetAIOwner()->GetPawn()->SetActorRotation(Direction.Rotation());
 
     }
 

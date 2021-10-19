@@ -69,6 +69,7 @@ void ALastPuzzle::BeginPlay()
 	//Set overlayed Text
 	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("Hit the boxes OR ...");
 	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("... OR talk to everyone.");
+	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetColor(FLinearColor(0.f,0.f,0.f,1.f));
 
 	TArray<USceneComponent*> NPCArray;
 	NPCs->GetChildrenComponents(false,NPCArray);
@@ -128,8 +129,8 @@ void ALastPuzzle::Destruction(ADestructibleElements* Elem) {
 	}
 	
 	FRotator Rotation = FRotator(0,0,0);
-	ACoinController* Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass,Elem->GetActorLocation(),Rotation);
-	Coin->SetActorScale3D(FVector(0.5f,0.5f,0.5f));
+	ACoinController* Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass,Elem->GetActorLocation() - FVector(0.f,0.f,30.f),Rotation);
+	Coin->SetActorScale3D(FVector(0.4f,0.4f,0.4f));
 	Coin->CollectedDelegate.AddDynamic(this, &ALastPuzzle::CoinCollected);
 	
 }
