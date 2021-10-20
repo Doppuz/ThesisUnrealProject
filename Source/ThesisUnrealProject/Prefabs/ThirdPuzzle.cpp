@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "../UI/Elements/OverlayedText.h"
 #include "Components/WidgetComponent.h"
+#include "../Elements/Destructible/GenericDestructibleElements.h"
 #include "ShakeActor.h"
 
 // Sets default values
@@ -105,8 +106,8 @@ void AThirdPuzzle::BeginPlay()
 	DestructibleGate->GetChildrenComponents(false,Gates);
 
 	for(int i = 0; i < Gates.Num(); i++){
-		AShakeActor* ShakeActor = Cast<AShakeActor>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
-		Cast<ADestructibleElements>(ShakeActor->ShakingActor->GetChildActor())->DestructionDelegate.AddDynamic(this,&AThirdPuzzle::Destruction);
+		AGenericDestructibleElements* ShakeActor = Cast<AGenericDestructibleElements>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
+		ShakeActor->DestrDelegate.AddDynamic(this,&AThirdPuzzle::Destruction);
 	}
 
 	TArray<USceneComponent*> CoinsArray;
@@ -125,7 +126,7 @@ void AThirdPuzzle::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AThirdPuzzle::Destruction(ADestructibleElements* Elem) {
+void AThirdPuzzle::Destruction(AActor* Elem) {
 	
 	ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 	ADoor* Door03 = Cast<ADoor>(Door3->GetChildActor());
@@ -153,9 +154,9 @@ void AThirdPuzzle::Destruction(ADestructibleElements* Elem) {
 
 void AThirdPuzzle::CoinCollected() {
 	
-	AShakeActor* ShakeActor = Cast<AShakeActor>(DestrGate1->GetChildActor());
-	if(Cast<ADestructibleElements>(ShakeActor->ShakingActor->GetChildActor())->bSolved)
-		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	//AGenericDestructibleElements* ShakeActor = Cast<AGenericDestructibleElements>(DestrGate1->GetChildActor());
+	//if(Cast<AGenericDestructibleElements>(ShakeActor->ShakingActor->GetChildActor())->bSolved)
+	//	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 
 	ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 	ADoor* Door02 = Cast<ADoor>(Door2->GetChildActor());

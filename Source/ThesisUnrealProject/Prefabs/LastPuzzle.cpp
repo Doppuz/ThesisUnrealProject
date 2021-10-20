@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "../UI/Elements/OverlayedText.h"
 #include "Components/WidgetComponent.h"
+#include "../Elements/Destructible/GenericDestructibleElements.h"
 
 // Sets default values
 ALastPuzzle::ALastPuzzle()
@@ -83,8 +84,8 @@ void ALastPuzzle::BeginPlay()
 	DestructibleGate->GetChildrenComponents(false,Gates);
 
 	for(int i = 0; i < Gates.Num(); i++){
-		ADestructibleElements* Gate = Cast<ADestructibleElements>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
-		Gate->DestructionDelegate.AddDynamic(this,&ALastPuzzle::Destruction);
+		AGenericDestructibleElements* Gate = Cast<AGenericDestructibleElements>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
+		Gate->DestrDelegate.AddDynamic(this,&ALastPuzzle::Destruction);
 	}
 
 }
@@ -119,7 +120,7 @@ void ALastPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 
 }
 
-void ALastPuzzle::Destruction(ADestructibleElements* Elem) {
+void ALastPuzzle::Destruction(AActor* Elem) {
 
 	if(CoinsCollected == 0){
 		
@@ -129,7 +130,7 @@ void ALastPuzzle::Destruction(ADestructibleElements* Elem) {
 	}
 	
 	FRotator Rotation = FRotator(0,0,0);
-	ACoinController* Coin = GetWorld()->SpawnActor<ACoinController>(CoinClass,Elem->GetActorLocation() - FVector(0.f,0.f,30.f),Rotation);
+	ACoinController* Coin = Cast<ACoinController>(Elem);
 	Coin->SetActorScale3D(FVector(0.4f,0.4f,0.4f));
 	Coin->CollectedDelegate.AddDynamic(this, &ALastPuzzle::CoinCollected);
 	

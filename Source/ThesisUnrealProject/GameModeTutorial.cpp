@@ -29,9 +29,9 @@ void AGameModeTutorial::BeginPlay() {
     DialogWidget->TextBox->BoxContainer->Visibility = ESlateVisibility::Hidden;
 
     ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-    //MyPawn->StopCharacter(false);
+    MyPawn->StopCharacter(false);
     
-    //UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(FInputModeGameOnly());
+    UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(FInputModeGameOnly());
 
     //if(MyPawn != nullptr)
     //    Cast<APlayerController>(MyPawn->GetController())->SetPause(true);

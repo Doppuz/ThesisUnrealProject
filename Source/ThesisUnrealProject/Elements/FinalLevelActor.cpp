@@ -70,17 +70,17 @@ void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Ot
 				UE_LOG(LogTemp,Warning,TEXT("Explorer = %f"), GameMode->Update->Types[Type::Explorer]);
 				UE_LOG(LogTemp,Warning,TEXT("Socializer = %f"), GameMode->Update->Types[Type::Socializer]);
 
-				if(FMath::Abs(Rates[RatesArray[0]] - Rates[RatesArray[3]]) > 20.f){
+				if(Rates[RatesArray[0]] < 100.f && Rates[RatesArray[3]] > 0.f && FMath::Abs(Rates[RatesArray[0]] - Rates[RatesArray[3]]) > 20.f){
 					
-					GameMode->Update->Types[RatesArray[0]] += 10.f;
-					GameMode->Update->Types[RatesArray[3]] -= 10.f;
+					GameMode->Update->Types[RatesArray[0]] = FMath::Min(100.f,GameMode->Update->Types[RatesArray[0]] + 10.f);
+					GameMode->Update->Types[RatesArray[3]] = FMath::Max(0.f,GameMode->Update->Types[RatesArray[3]] - 10.f);
 
 				}
 
-				if(FMath::Abs(Rates[RatesArray[1]] - Rates[RatesArray[2]]) > 20.f){
+				if(Rates[RatesArray[1]] < 100.f && Rates[RatesArray[2]] > 0.f && FMath::Abs(Rates[RatesArray[1]] - Rates[RatesArray[2]]) > 20.f){
 					
-					GameMode->Update->Types[RatesArray[1]] += 10.f;
-					GameMode->Update->Types[RatesArray[2]] -= 10.f;
+					GameMode->Update->Types[RatesArray[1]] = FMath::Min(100.f,GameMode->Update->Types[RatesArray[1]] + 10.f);
+					GameMode->Update->Types[RatesArray[2]] = FMath::Max(0.f,GameMode->Update->Types[RatesArray[2]] - 10.f);
 
 				}
 				

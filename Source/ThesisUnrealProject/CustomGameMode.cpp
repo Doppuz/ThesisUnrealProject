@@ -25,7 +25,10 @@ ACustomGameMode::~ACustomGameMode() {
 }
 
 void ACustomGameMode::BeginPlay() {
+
     Super::BeginPlay();
+
+    UGameplayStatics::GetPlayerController(GetWorld(),0)->SetInputMode(FInputModeGameOnly());
 
 	UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
     DialogWidget->HideSizeBox();

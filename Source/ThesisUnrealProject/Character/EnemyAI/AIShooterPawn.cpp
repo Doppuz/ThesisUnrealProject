@@ -97,9 +97,9 @@ void AAIShooterPawn::BeginPlay() {
     Super::BeginPlay();
 
 	//Need to to this here because when I spawn an actor the GetPawn() is nullptr
-	Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),FVector(GetActorLocation().X,
+	/*Cast<AAIController>(GetController())->GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),FVector(GetActorLocation().X,
                                                                                  GetActorLocation().Y,
-                                                                                 42.f));
+                                                                                 42.f));*/
 
 	//SetBarHealt
 	UHealthBar* HealthWidget =  Cast<UHealthBar>(HealthWidgetComponent->GetWidget());

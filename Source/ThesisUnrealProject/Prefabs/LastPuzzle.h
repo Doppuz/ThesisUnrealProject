@@ -76,7 +76,7 @@ private:
 // --- Destruction ---
 	
 	UFUNCTION()
-	void Destruction(ADestructibleElements* Elem);
+	void Destruction(AActor* Elem);
 
 // --- Coins ---
 
