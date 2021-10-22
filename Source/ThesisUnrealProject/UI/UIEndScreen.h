@@ -24,34 +24,10 @@ public:
 	class UUIBox* TextBox;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* Achiever;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* Explorer;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* Killer;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* Socializer;
-	
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* AchieverQ;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* ExplorerQ;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* KillerQ;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* SocializerQ;
-
-	UPROPERTY(meta = (BindWidget))
 	class UUIButton* Send;
 
-	UPROPERTY(meta = (BindWidget))
-	UUIButton* Quit;
+	UPROPERTY(EditAnywhere)
+	FName Level;
 
 // ---- Text ----
 

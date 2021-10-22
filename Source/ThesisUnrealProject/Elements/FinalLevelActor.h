@@ -29,6 +29,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* Particles;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> UIEndGame;
+
 
 protected:
 	// Called when the game starts or when spawned

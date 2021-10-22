@@ -559,7 +559,10 @@ void AMazeManager::BeginPlay(){
 
             PopulateBartle();
 
-            GetWorld()->SpawnActor<AFinalLevelActor>(FinalLevelActorClass, MaxPath[MaxPath.Num() - 1]->GetActorLocation(), GetDoorRotation(MaxPath[MaxPath.Num() - 1],MaxPath[MaxPath.Num() - 2]));
+            Pos = MaxPath[MaxPath.Num() - 1]->GetActorLocation();
+            Pos.Z = -54.f;
+
+            GetWorld()->SpawnActor<AFinalLevelActor>(FinalLevelActorClass, Pos, GetDoorRotation(MaxPath[MaxPath.Num() - 1],MaxPath[MaxPath.Num() - 2]));
 
         }
 

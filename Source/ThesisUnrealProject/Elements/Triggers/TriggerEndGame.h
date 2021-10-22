@@ -20,7 +20,6 @@ protected:
 
 	virtual void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 
-	//check if the trigger switch on or of fthe light.
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> UIEndGame;
 

@@ -32,14 +32,9 @@ void ATriggerEndGame::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Oth
 			Cast<APlayerController>(MyPawn->GetController())->SetPause(true);
 
 			GameMode->ChangeMenuWidget(UIEndGame);
-
-			UUIEndScreen* EndScreen = Cast<UUIEndScreen>(GameMode->GetCurrentWidgetUI());
 			
 			GameMode->Update->SaveFile("");
 
-			EndScreen->SetTestValue(GameMode->Update->Types[Type::Achiever],GameMode->Update->Types[Type::Explorer],GameMode->Update->Types[Type::Killer],GameMode->Update->Types[Type::Socializer]);
-			EndScreen->SetQuestionaryValue(GameMode->Update->TypesQuestionary[Type::Achiever],GameMode->Update->TypesQuestionary[Type::Explorer],GameMode->Update->TypesQuestionary[Type::Killer],GameMode->Update->TypesQuestionary[Type::Socializer]);
-			
 			FString file = FPaths::ProjectSavedDir();
     		file.Append(TEXT("SaveGames/Checkpoint.sav"));
 

@@ -42,8 +42,12 @@ void AGenericDestructibleElements::OnComponentFracture(const FVector& HitPoint, 
 
 	if(!bIAmDestroyed){
 		bIAmDestroyed = true;
-		AActor* Actor = GetWorld()->SpawnActor<AActor>(SpawnActor, GetActorLocation() + FVector(0.f,0.f,20.f), GetActorRotation());
-		DestrDelegate.Broadcast(Actor);
+		if (SpawnActor != nullptr) {
+			AActor* Actor = GetWorld()->SpawnActor<AActor>(SpawnActor, GetActorLocation() + FVector(0.f, 0.f, 20.f), GetActorRotation());
+			DestrDelegate.Broadcast(Actor);
+		}else
+			DestrDelegate.Broadcast(nullptr);
+
 	}
 
 }

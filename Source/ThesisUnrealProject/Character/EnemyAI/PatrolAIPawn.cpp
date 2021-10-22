@@ -96,13 +96,15 @@ void APatrolAIPawn::StopMovement() {
 	CurrentSpeed = Speed;
 	Speed = 0;
 	float TimeInterval = FMath::RandRange(1.f, 2.f);
-	GetWorld()->GetTimerManager().SetTimer(TimerStop, this, &APatrolAIPawn::StartMovement, TimeInterval, false);
+	if(GetWorld() != nullptr)
+		GetWorld()->GetTimerManager().SetTimer(TimerStop, this, &APatrolAIPawn::StartMovement, TimeInterval, false);
 }
 
 void APatrolAIPawn::StartMovement() {
 	Speed = CurrentSpeed;
 	float TimeInterval = FMath::RandRange(5.f, 10.f);
-	GetWorld()->GetTimerManager().SetTimer(TimerStop, this, &APatrolAIPawn::StopMovement, TimeInterval, false);
+	if (GetWorld() != nullptr)
+		GetWorld()->GetTimerManager().SetTimer(TimerStop, this, &APatrolAIPawn::StopMovement, TimeInterval, false);
 }
 
 #pragma region OnComponentEvent

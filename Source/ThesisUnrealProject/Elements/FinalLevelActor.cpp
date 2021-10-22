@@ -40,6 +40,9 @@ void AFinalLevelActor::BeginPlay(){
 void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit){
 
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+
+
+			ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(OtherActor);
 	
     		FString CompleteFilePath = FPaths::ProjectSavedDir() + "SaveGames/CheckpointLevel1.sav"; 
 
@@ -48,6 +51,12 @@ void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Ot
 			if (USaveGameBartle* SaveGameInstance = Cast<USaveGameBartle>(UGameplayStatics::CreateSaveGameObject(USaveGameBartle::StaticClass()))){
 
 				AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+
+				UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeUIOnly());
+				UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(true);
+				Cast<APlayerController>(MyPawn->GetController())->SetPause(true);
+
+				GameMode->ChangeMenuWidget(UIEndGame);
 
 				//Calculate rates
 				float AchieverRate = float(GameMode->GetCoins()) / float(GameMode->TotalCoins) * 100.f;

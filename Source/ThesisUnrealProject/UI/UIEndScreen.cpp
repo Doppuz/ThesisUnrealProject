@@ -17,28 +17,7 @@ void UUIEndScreen::NativeConstruct() {
     Send->Text->SetText(FText::FromString("Send"));
     Send->ButtonPlay->OnClicked.AddDynamic(this,&UUIEndScreen::OnSendClicked);
 
-    Quit->Text->SetText(FText::FromString("Quit"));
-    Quit->ButtonPlay->OnClicked.AddDynamic(this,&UUIEndScreen::OnQuitClicked);
-
-    TextBox->SetDialogText("Thanks for playing this test. Now I ask you to click on the \"Send\" button and upload the file \"Result\" (you can find it in the folder \"ThesisUnrealProject\" of the game folder) to the page that will open. alternatively you can take a screenshot and upload that. If you have any problems contact me :).");
-
-}
-
-void UUIEndScreen::SetTestValue(float AchieverValue, float ExplorerValue, float KillerValue, float SocializerValue) {
-
-    Achiever->SetText(FText::Format(NSLOCTEXT("CoinsKey","CoinsSource", "Achiever : {0}"), AchieverValue));
-    Explorer->SetText(FText::Format(NSLOCTEXT("CoinsKey","CoinsSource", "Explorer : {0}"), ExplorerValue));
-    Killer->SetText(FText::Format(NSLOCTEXT("CoinsKey","CoinsSource", "Killer : {0}"), KillerValue));
-    Socializer->SetText(FText::Format(NSLOCTEXT("CoinsKey","CoinsSource", "Socializer : {0}"), SocializerValue));
-
-}
-
-void UUIEndScreen::SetQuestionaryValue(float AchieverValue, float ExplorerValue, float KillerValue, float SocializerValue) {
-    
-    AchieverQ->SetText(FText::Format(NSLOCTEXT("CoinsKey","CoinsSource", "Achiever : {0}"), AchieverValue));
-    ExplorerQ->SetText(FText::Format(NSLOCTEXT("CoinsKey","CoinsSource", "Explorer : {0}"), ExplorerValue));
-    KillerQ->SetText(FText::Format(NSLOCTEXT("CoinsKey","CoinsSource", "Killer : {0}"), KillerValue));
-    SocializerQ->SetText(FText::Format(NSLOCTEXT("CoinsKey","CoinsSource", "Socializer : {0}"), SocializerValue));
+    TextBox->SetDialogText("This is the end of the tutorial! You are now going to play a custom dungeon based on the choices you have made so far. Your aim is to reach the end of the maze. Now click on the play Button and enjoy!");
 
 }
 
@@ -47,7 +26,7 @@ void UUIEndScreen::OnSendClicked() {
     //FPlatformProcess::LaunchURL(TEXT("https://forms.gle/Bxh3ifjAw7tBVCcz7"), NULL, NULL);
     
 	//PlayerController->SetInputMode(FInputModeGameOnly());
-    UGameplayStatics::OpenLevel(GetWorld(), "Level1", false);
+    UGameplayStatics::OpenLevel(GetWorld(), Level, false);
 
 }
 

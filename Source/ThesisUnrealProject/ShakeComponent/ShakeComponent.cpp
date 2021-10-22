@@ -49,14 +49,16 @@ void UShakeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 void UShakeComponent::EnableShake() {
     
 	bIsShaking = true;	
-	GetWorld()->GetTimerManager().SetTimer(ShakeTimer,this,&UShakeComponent::WaitShake,IntervalTime,false);
+	if (GetWorld() != nullptr)
+		GetWorld()->GetTimerManager().SetTimer(ShakeTimer,this,&UShakeComponent::WaitShake,IntervalTime,false);
 
 }
 
 void UShakeComponent::WaitShake() {
     
 	bIsShaking = false;	
-	GetWorld()->GetTimerManager().SetTimer(ShakeTimer,this,&UShakeComponent::EnableShake,IntervalTime,false);
+	if (GetWorld() != nullptr)
+		GetWorld()->GetTimerManager().SetTimer(ShakeTimer,this,&UShakeComponent::EnableShake,IntervalTime,false);
 
 }
 
