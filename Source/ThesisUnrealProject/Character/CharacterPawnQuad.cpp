@@ -80,7 +80,7 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	AllyNPC = nullptr;
 	MaxRange = 300.f;
 	InteractiveActor = nullptr;
-	bStopMovement = false;
+	bStopMovement = true;
 	NumberOfRepetitions = 0;
 	bIsVisible = true;
 	bIAmDodging = false;
@@ -91,6 +91,7 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 
 // Called when the game starts or when spawned
 void ACharacterPawnQuad::BeginPlay(){
+	
 	Super::BeginPlay();
 
 	SpotLight->Intensity = 0.f;	
@@ -134,8 +135,13 @@ float ACharacterPawnQuad::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 	}
 
 	if(CurrentHealth == 0){
-		/*if(GetController()->IsA(APlayerController::StaticClass()))
-			UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);*/
+		if(GetController()->IsA(APlayerController::StaticClass())){
+				
+			AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+			GameMode->StopGame(true);
+			UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+
+		}
 	}
 		
 	return Damage;

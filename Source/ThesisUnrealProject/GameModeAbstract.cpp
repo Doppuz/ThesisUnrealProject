@@ -2,7 +2,9 @@
 
 
 #include "GameModeAbstract.h"
+#include "Kismet/GameplayStatics.h"
 #include "CustomGameState.h"
+#include "Character/CharacterPawnQuad.h"
 
 
 AGameModeAbstract::AGameModeAbstract() {
@@ -51,6 +53,16 @@ void AGameModeAbstract::BeginPlay() {
 
 }
 
+void AGameModeAbstract::StopGame(bool Enable){
+
+    ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+    MyPawn->SetMousePointer(Enable);
+
+    APlayerController* Player = Cast<APlayerController>(MyPawn->GetController());
+	if(Player != nullptr)
+		Player->SetPause(Enable);
+
+}
 
 //--- Get and Set 
 

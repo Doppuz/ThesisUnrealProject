@@ -331,6 +331,9 @@ public:
 	FVector PlayerPos;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	FRotator PlayerRot;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	int Coins;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")

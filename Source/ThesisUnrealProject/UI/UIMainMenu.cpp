@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "../CheckPoints/SaveGameData.h"
+#include "../CheckPoints/SaveGameBartle.h"
 #include "GameFramework/PlayerStart.h"
 #include "../GameModeTutorial.h"
 #include "../Levels/MainMenu.h"
@@ -146,6 +147,11 @@ void UUIMainMenu::OnButtonPlayClicked() {
         Cast<AMainMenu>(LevelTemp->GetLevelScriptActor())->ChangeMenuWidget(nullptr);
 
         UGameplayStatics::OpenLevel(GetWorld(), "Tutorial", false);
+    }
+    else if (Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0))) {
+
+        UGameplayStatics::OpenLevel(GetWorld(), "Level1", false);
+
     }else
        Switcher->SetActiveWidgetIndex(1);
 

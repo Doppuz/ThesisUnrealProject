@@ -222,6 +222,8 @@ public:
 
 protected:
 
+	void StopGame();
+
 	UPROPERTY(EditAnywhere, Category = "Populate")
 	TSubclassOf<ADoor> DoorClass;
 
@@ -424,6 +426,8 @@ protected:
 	int ReturnTypeValue(int Index);
 
 	void CreateCheckpoint(AMazeCell2* Cell);
+
+	FTimerHandle StartTimer;
 
 #pragma endregion
 

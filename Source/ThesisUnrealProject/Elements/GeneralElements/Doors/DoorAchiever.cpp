@@ -40,6 +40,9 @@ void ADoorAchiever::BeginPlay() {
         AEnemyAIAbstract* Enemy = GetWorld()->SpawnActor<AEnemyAIAbstract>(Enemies[FMath::RandRange(0, Enemies.Num() - 1)],SpawnPos0->GetComponentLocation(),SpawnPos0->GetComponentRotation());
         Enemy->bSpawnCoin = true;
 
+        FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
+        Enemy->AttachToActor(this,TransformRules);
+
         int NumExtr = FMath::RandRange(0,DestrActors.Num() - 1);
         DestrActors[NumExtr]->SpawnActor = KeyClass;
         DestrActors[NumExtr]->DestrDelegate.AddDynamic(this, &ADoorAchiever::SpawnKey);

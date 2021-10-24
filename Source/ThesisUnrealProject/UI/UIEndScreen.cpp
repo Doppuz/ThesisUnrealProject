@@ -14,10 +14,10 @@ void UUIEndScreen::NativeConstruct() {
     
     Super::NativeConstruct();
 
-    Send->Text->SetText(FText::FromString("Send"));
+    Send->Text->SetText(FText::FromName(ButtonName));
     Send->ButtonPlay->OnClicked.AddDynamic(this,&UUIEndScreen::OnSendClicked);
 
-    TextBox->SetDialogText("This is the end of the tutorial! You are now going to play a custom dungeon based on the choices you have made so far. Your aim is to reach the end of the maze. Now click on the play Button and enjoy!");
+    TextBox->SetDialogText(Text.ToString());
 
 }
 

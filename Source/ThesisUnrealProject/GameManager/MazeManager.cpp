@@ -23,6 +23,7 @@
 #include "../Character/EnemyAI/AIShooterPawn.h"
 #include "../Character/EnemyAI/PatrolAI2.h"
 #include "../Character/AllyAI/PawnInteractiveClass.h"
+#include "../Character/CharacterPawnQuad.h"
 #include "../Character/AllyAI/PawnInteractiveMove.h"
 #include "../Character/AllyAI/RiddleNPC.h"
 #include "../Elements/GeneralElements/GeneralElem.h"
@@ -80,11 +81,12 @@ void AMazeManager::BeginPlay(){
     
 	Super::BeginPlay();
 
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+
     if (USaveGameBartle* LoadedGame = Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0))){
 
         UE_LOG(LogTemp,Warning,TEXT("Values = %f, %f, %f, %f"),  LoadedGame->Achiever, LoadedGame->Killer, LoadedGame->Explorer, LoadedGame->Socializer);
 
-        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
         GameMode->Update->Types.Add(Type::Achiever, LoadedGame->Achiever);
         GameMode->Update->Types.Add(Type::Killer, LoadedGame->Killer);
         GameMode->Update->Types.Add(Type::Explorer, LoadedGame->Explorer);
@@ -480,9 +482,9 @@ void AMazeManager::BeginPlay(){
         //Player
         APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
         Player->SetActorLocation(LoadedGame->PlayerPos);
+        Player->SetActorRotation(LoadedGame->PlayerRot);
 
         //GameMode
-        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
         GameMode->SetCoins(LoadedGame->Coins);
         GameMode->SetEnemies(LoadedGame->EnemiesDefeated);
         GameMode->SetAllies(LoadedGame->SpokenAllies);
@@ -546,8 +548,6 @@ void AMazeManager::BeginPlay(){
             GenerateElements(MaxPath);
 
             //GenerateDoors();
-        
-            PortalType(FMath::RandRange(0,3),MaxPath[MaxPath.Num() - 2]);  
 
             Populate(MaxPath);
 
@@ -559,6 +559,14 @@ void AMazeManager::BeginPlay(){
 
             PopulateBartle();
 
+            FTransform Transform;
+            Transform.SetLocation((MaxPath[0]->GetActorLocation() + MaxPath[1]->GetActorLocation())/2);
+            Transform.SetRotation(GetDoorRotation(MaxPath[1], MaxPath[0]).Quaternion());
+            //Add an extra checkpoint at the beginning
+            ACheckPointLevel1* Checkpoint = GetWorld()->SpawnActorDeferred<ACheckPointLevel1>(CheckPointClass,Transform);
+            Checkpoint->MazeManager = this;
+            Checkpoint->FinishSpawning(Transform);
+
             Pos = MaxPath[MaxPath.Num() - 1]->GetActorLocation();
             Pos.Z = -54.f;
 
@@ -567,6 +575,18 @@ void AMazeManager::BeginPlay(){
         }
 
     }
+
+    if(GetWorld() != nullptr){
+    
+        GetWorld()->GetTimerManager().SetTimer(StartTimer, this, &AMazeManager::StopGame, 0.2, false);
+    
+    }
+}
+
+void AMazeManager::StopGame(){
+
+	ACharacterPawnQuad* Player = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+    Player->bStopMovement = false;
 
 }
 
@@ -853,8 +873,12 @@ TArray<TArray<FString>> AMazeManager::ConvertSpeechBack(TArray<FSpeech> List){
 void AMazeManager::LoadFromFile(TArray<TArray<FString>>& List, FString FileName) {
     
     TArray<FString> StringArray;
-    FString CompleteFilePath = FPaths::GameSourceDir() + "ThesisUnrealProject/TextFiles/" + FileName +".txt"; 
+    FString CompleteFilePath = FPaths::ProjectContentDir() + "TextFiles/" + FileName +".txt";
+    UE_LOG(LogTemp, Warning, TEXT("%s"), *CompleteFilePath);
     FFileHelper::LoadFileToStringArray(StringArray,*CompleteFilePath);
+
+    if(StringArray.Num() == 0)
+        UE_LOG(LogTemp, Warning, TEXT("0 Strings"));
 
     for(FString String : StringArray){
         
@@ -1935,6 +1959,10 @@ void AMazeManager::PopulateBartle(){
     TArray<Type> Keys;
     CalculateTotalNumberOfCells(CellsNumberMap,Keys);
 
+    //Generate Last cell.
+    CellsNumberMap.GetKeys(Keys);
+    PortalType(Keys[0],MaxPath[MaxPath.Num() - 2]);  
+
     //Create a Map with all the cells and its relative path.
     TMap<AMazeCell2*, FPath> Cells = CellsToPopulate.MainPath;
     Cells.Append(CellsToPopulate.OtherPaths);
@@ -1951,7 +1979,7 @@ void AMazeManager::PopulateBartle(){
     
     int Value;
     //If very unlikely to not be verified.
-    if(CellsToPopulate.MainPath.Num() > 3){
+    /*if(CellsToPopulate.MainPath.Num() > 3){
 
         for(int i = 0; i < Keys.Num(); i++){
 
@@ -1977,7 +2005,7 @@ void AMazeManager::PopulateBartle(){
 
         }    
 
-    }
+    }*/
 
     int Times = Cells.Num();
     //for the reamins value I assign some cells.

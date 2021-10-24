@@ -36,4 +36,8 @@ void ACustomGameMode::BeginPlay() {
 
 }
 
+void ACustomGameMode::StopGame(bool Enable){
 
+    Super::StopGame(Enable);
+
+}

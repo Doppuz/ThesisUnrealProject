@@ -29,6 +29,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	FName Level;
 
+	UPROPERTY(EditAnywhere)
+	FName Text;
+
+	UPROPERTY(EditAnywhere)
+	FName ButtonName;
+
 // ---- Text ----
 
 	void SetTestValue(float, float, float, float);

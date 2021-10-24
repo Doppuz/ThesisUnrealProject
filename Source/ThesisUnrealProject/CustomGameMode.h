@@ -37,6 +37,9 @@ public:
     //NumberOfChest
     int NumberOfCoins; 
 
+    
+	virtual void StopGame(bool Enable);
+
  
 protected:
 

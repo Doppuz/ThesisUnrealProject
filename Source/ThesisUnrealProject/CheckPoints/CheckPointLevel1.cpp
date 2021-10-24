@@ -4,6 +4,7 @@
 #include "CheckPointLevel1.h"
 #include "../Character/CharacterPawnQuad.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "../Elements/Maze/Maze.h"
 #include "EngineUtils.h"
 #include "../Elements/Destructible/GenericDestructibleElements.h"
@@ -34,6 +35,8 @@
 #include "../Elements/FinalLevelActor.h"
 #include "../Elements/Storm/Storm.h"
 #include "../GameModeAbstract.h"
+#include "../UI/UIWidgetDialog.h"
+ #include "Components/ProgressBar.h"
 
 ACheckPointLevel1::ACheckPointLevel1(){
     
@@ -45,6 +48,13 @@ ACheckPointLevel1::ACheckPointLevel1(){
 void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 
     if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+
+        APawn* MyPawn = UGameplayStatics::GetPlayerPawn(GetWorld(),0); 
+        Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0))->CurrentHealth = Cast<ACharacterPawnQuad>(MyPawn)->MaxHealth;
+		
+        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+		DialogWidget->HealthBar->SetPercent(1.f);
 
         if (USaveGameLevel1* SaveGameInstance = Cast<USaveGameLevel1>(UGameplayStatics::CreateSaveGameObject(USaveGameLevel1::StaticClass()))){
 
@@ -310,23 +320,23 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
         for (TActorIterator<ADoorKiller> ActorItr(GetWorld()); ActorItr; ++ActorItr){
             
-            FDoorKillerStruct GeneralActor;
-            Transform.SetLocation(ActorItr->GetActorLocation());
-            Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
-            GeneralActor.Transform = Transform;
-            GeneralActor.ActorClass = ActorItr->GetClass();
-            GeneralActor.ID = (*ActorItr)->ID;
+                FDoorKillerStruct GeneralActor;
+                Transform.SetLocation(ActorItr->GetActorLocation());
+                Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
+                GeneralActor.Transform = Transform;
+                GeneralActor.ActorClass = ActorItr->GetClass();
+                GeneralActor.ID = (*ActorItr)->ID;
 
-            TArray<int> IDs;
-            for(AEnemyAIAbstract* Enemy : (*ActorItr)->Enemies)
-                IDs.Add(Enemy->IDEnemy);
+                TArray<int> IDs;
+                for(AEnemyAIAbstract* Enemy : (*ActorItr)->Enemies)
+                    IDs.Add(Enemy->IDEnemy);
 
-            GeneralActor.IDs = IDs;
+                GeneralActor.IDs = IDs;
 
-            GeneralActor.bOpenDoor = (*ActorItr)->bOpenDoor;
-            GeneralActor.FinalPosition = (*ActorItr)->FinalPosition;
-            
-            DoorKiller.Add(GeneralActor);
+                GeneralActor.bOpenDoor = (*ActorItr)->bOpenDoor;
+                GeneralActor.FinalPosition = (*ActorItr)->FinalPosition;
+                
+                DoorKiller.Add(GeneralActor);
 
         }
 
@@ -338,17 +348,20 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
         for (TActorIterator<AEnemyAIAbstract> ActorItr(GetWorld()); ActorItr; ++ActorItr){
             
-            AActor* Parent = ActorItr->GetAttachParentActor();
+            if((*ActorItr)->GetAttachParentActor() == nullptr){
+            
+                AActor* Parent = ActorItr->GetAttachParentActor();
 
-            FGeneralActor GeneralActor;
-            Transform.SetLocation((*ActorItr)->InitialPos);
-            Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
-            GeneralActor.Transform = Transform;
-            GeneralActor.ActorClass = ActorItr->GetClass();
-            GeneralActor.ID = (*ActorItr)->IDEnemy;
-                
-            GeneralElem.Add(GeneralActor);
-
+                FGeneralActor GeneralActor;
+                Transform.SetLocation((*ActorItr)->InitialPos);
+                Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
+                GeneralActor.Transform = Transform;
+                GeneralActor.ActorClass = ActorItr->GetClass();
+                GeneralActor.ID = (*ActorItr)->IDEnemy;
+                    
+                GeneralElem.Add(GeneralActor);
+            
+            }
 
         }
 
@@ -578,6 +591,7 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 // --- Player ---
 
         SaveGameInstance->PlayerPos = SpawnPos->GetComponentLocation();
+        SaveGameInstance->PlayerRot = UKismetMathLibrary::FindLookAtRotation(SpawnPos->GetComponentLocation(),GetActorLocation());
 
 // --- Speech ---
 
@@ -592,8 +606,6 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
         SaveGameInstance->DestrID = AGenericDestructibleElements::IDCounter;
         SaveGameInstance->EnemyID = AEnemyAIAbstract::IDCounter;        
         SaveGameInstance->AllyID = APawnInteractiveClass::IDCount;
-
-        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 
         SaveGameInstance->Coins = GameMode->GetCoins();
         SaveGameInstance->EnemiesDefeated = GameMode->GetEnemies();

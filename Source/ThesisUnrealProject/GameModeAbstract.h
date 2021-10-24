@@ -60,6 +60,8 @@ public:
 	void IncreaseStatues();
 	int TotalStatues;
 
+	virtual void StopGame(bool Enable);
+
 protected:
 	
 	// Called when the game starts or when spawned
