@@ -35,13 +35,16 @@ public:
 	//Store the two spawners
 	TArray<AActorSpawner*> Spawners;
 
-	//Store the enemies for each round to  be eliminated
-	TArray<AEnemyAIAbstract*> Enemies;
-
 	UPROPERTY(EditAnywhere, Category = "Spawn")
 	TArray<TSubclassOf<AEnemyAIAbstract>> ActorsToSpawn;
 
 	virtual void Tick(float DeltaTime) override;
+
+	//Number of enemies to be killed to pass the turn
+	TArray<AEnemyAIAbstract*> Enemies;
+
+	UFUNCTION()
+	void EndEnemies(AEnemyAIAbstract* Enemy);
 
 protected:
 

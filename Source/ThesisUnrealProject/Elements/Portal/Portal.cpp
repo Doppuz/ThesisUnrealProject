@@ -34,6 +34,7 @@ void APortal::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor,
 	
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 		OtherActor->SetActorLocation(NewPosition);
+		OtherActor->SetActorRotation(NewRotation);
 		Destroy();
 	}
 

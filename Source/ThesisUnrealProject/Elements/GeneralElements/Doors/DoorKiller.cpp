@@ -53,8 +53,14 @@ void ADoorKiller::Tick(float DeltaTime) {
 
 				//Memorize all the enemies to be eliminated to pass the round
 				AEnemyAIAbstract* Enemy = Cast<AEnemyAIAbstract>(Spawner->SpawnActor());
-				Enemy->bNoIncrease = true;
-				Enemies.Add(Enemy);
+
+				if(Enemy != nullptr){
+				
+					Enemies.Add(Enemy);
+					Enemy->End.AddDynamic(this,&ADoorKiller::EndEnemies);
+					Enemy->bNoIncrease = true;
+
+				}
 
 			}
 		}
@@ -71,14 +77,16 @@ void ADoorKiller::Tick(float DeltaTime) {
 
 }
 
+void ADoorKiller::EndEnemies(AEnemyAIAbstract* Enemy){
+
+	Enemies.Remove(Enemy);
+
+}
+
 bool ADoorKiller::CheckAllEnemyDeath() {
     
-    for(AEnemyAIAbstract* Enemy: Enemies){
-		if(!(Enemy == nullptr) && !Enemy->bIAmDestroyed)
-			return false;
-	}
-
-	Enemies.Empty();
+    if(Enemies.Num() != 0)
+		return false;
 
 	TurnNumbers -= 1;
 

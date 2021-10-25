@@ -69,6 +69,9 @@ public:
 	TArray<AActorSpawner*> Spawners;
 
 	TArray<AEnemyAIAbstract*> Enemies;
+	
+	UFUNCTION()
+	void EndEnemies(AEnemyAIAbstract* Enemy);
 
 	UPROPERTY(EditAnywhere, Category = "SpawnActor")
 	TArray<TSubclassOf<AEnemyAIAbstract>> ActorsToSpawn;

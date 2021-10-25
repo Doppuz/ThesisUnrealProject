@@ -28,6 +28,7 @@ public:
 
 	//SpawnPosition after entering the portal
 	FVector NewPosition;
+	FRotator NewRotation;
 
 protected:
 	// Called when the game starts or when spawned

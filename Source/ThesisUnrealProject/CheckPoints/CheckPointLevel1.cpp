@@ -294,6 +294,8 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
             GeneralActor.bOpenDoor = (*ActorItr)->bOpenDoor;
             GeneralActor.FinalPosition = (*ActorItr)->FinalPosition;
             GeneralActor.ID = (*ActorItr)->ID;
+            
+            GeneralActor.KeyPos = (*ActorItr)->KeyPosition;
 
             TArray<int> IDs;
             for(int i = 0; i < (*ActorItr)->DestrActors.Num(); i++){
@@ -592,6 +594,13 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
         SaveGameInstance->PlayerPos = SpawnPos->GetComponentLocation();
         SaveGameInstance->PlayerRot = UKismetMathLibrary::FindLookAtRotation(SpawnPos->GetComponentLocation(),GetActorLocation());
+        if(Cast<ACharacterPawnQuad>(OtherActor)->EquipmentMesh->GetStaticMesh() != nullptr){
+        
+            SaveGameInstance->PlayerHat = true;
+            SaveGameInstance->HatsID = Cast<ACharacterPawnQuad>(OtherActor)->HatsOwned;
+            SaveGameInstance->CurrentHatMaterial = Cast<ACharacterPawnQuad>(OtherActor)->CurrentHatMaterial;
+
+        }
 
 // --- Speech ---
 

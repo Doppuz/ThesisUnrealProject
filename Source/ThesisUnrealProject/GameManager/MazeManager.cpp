@@ -283,6 +283,7 @@ void AMazeManager::BeginPlay(){
             Elem->bCheckpoint = true;
             Elem->bOpenDoor = LoadedGame->DoorsAchiever[i].bOpenDoor;
             Elem->FinalPosition = LoadedGame->DoorsAchiever[i].FinalPosition;
+            Elem->KeyPosition = LoadedGame->DoorsAchiever[i].KeyPos;
             Elem->FinishSpawning(LoadedGame->DoorsAchiever[i].Transform);
             Elem->ID = LoadedGame->DoorsAchiever[i].ID;
 
@@ -483,6 +484,63 @@ void AMazeManager::BeginPlay(){
         APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
         Player->SetActorLocation(LoadedGame->PlayerPos);
         Player->SetActorRotation(LoadedGame->PlayerRot);
+        
+        //Load hats manually.
+        if(LoadedGame->PlayerHat){
+        
+            ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(Player);
+            MyPawn->EquipmentMesh->SetStaticMesh(HatsMesh);
+            MyPawn->HatsOwned = LoadedGame->HatsID;
+            MyPawn->CurrentHatMaterial = LoadedGame->CurrentHatMaterial;
+
+            //Copy the materials that I hade before in the player.
+            for(int i = 0; i < LoadedGame->HatsID.Num(); i++){
+                
+                TArray<UMaterialInterface *> Material;
+
+                //Switch case to combine the hat's colors
+                switch(LoadedGame->HatsID[i]){
+
+                    case 0:
+                        Material.Add(Hats[0]);
+                        Material.Add(Hats[1]);
+                        break;
+
+                    case 1:
+                        Material.Add(Hats[2]);
+                        Material.Add(Hats[6]);
+                        break;
+
+                    case 2:
+                        Material.Add(Hats[3]);
+                        Material.Add(Hats[4]);
+                        break;
+
+                    case 3:
+                        Material.Add(Hats[1]);
+                        Material.Add(Hats[6]);
+                        break;
+
+                    case 4:
+                        Material.Add(Hats[4]);
+                        Material.Add(Hats[5]);
+                        break;
+
+                    case 5:
+                        Material.Add(Hats[5]);
+                        Material.Add(Hats[6]);
+                        break;
+
+                }
+ 
+                MyPawn->HatMaterials.Add(Material);
+
+            }
+            
+		    MyPawn->EquipmentMesh->SetMaterial(0,MyPawn->HatMaterials[MyPawn->CurrentHatMaterial][0]);
+		    MyPawn->EquipmentMesh->SetMaterial(1,MyPawn->HatMaterials[MyPawn->CurrentHatMaterial][1]);
+        
+        }
 
         //GameMode
         GameMode->SetCoins(LoadedGame->Coins);
@@ -1262,6 +1320,7 @@ void AMazeManager::TypeOfMoveAlly(int Index, int CellIndex, TArray<AMazeCell2*> 
             Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(MoveAIClass2,Transform);
             Enemy->Positions.Add(Path[CellIndex + i]->GetActorLocation());
             Cast<APawn>(Enemy)->FinishSpawning(Transform);
+            AddSpeech(Cast<APawnInteractiveClass>(Enemy));
         }
 
         break;
@@ -1278,6 +1337,7 @@ void AMazeManager::TypeOfMoveAlly(int Index, int CellIndex, TArray<AMazeCell2*> 
         Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(MoveAIClass2,Transform);
         Enemy->Positions.Add((Path[CellIndex + 1]->GetActorLocation() + Path[CellIndex + 2]->GetActorLocation())/2);
         Cast<APawn>(Enemy)->FinishSpawning(Transform);
+        AddSpeech(Cast<APawnInteractiveClass>(Enemy));
     
         for(int i = 0; i < 3; i = i + 2){
     
@@ -1353,6 +1413,19 @@ void AMazeManager::GenerateSideActor(TSubclassOf<APawn> AIClass1, TSubclassOf<AP
         Cast<APawn>(Enemy)->FinishSpawning(Transform1);
         Cast<APawn>(SecondEnemy)->FinishSpawning(Transform2);
 
+        //AddSpeech if actors are APawnInteractiveClass
+        if(Cast<APawn>(Enemy)->IsA(APawnInteractiveClass::StaticClass())){
+
+            AddSpeech(Cast<APawnInteractiveClass>(Enemy));
+
+        }
+
+        if(Cast<APawn>(SecondEnemy)->IsA(APawnInteractiveClass::StaticClass())){
+
+            AddSpeech(Cast<APawnInteractiveClass>(SecondEnemy));
+
+        }
+
 }
 
 //Generate walls one beside the middle ad one in the angle.
@@ -1425,11 +1498,11 @@ void AMazeManager::TypeOfEnemies(int Index, int CellIndex, TArray<AMazeCell2*> P
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex + 2]->GetActorLocation() , FRotator::ZeroRotator);
             GetWorld()->SpawnActor<AAIShooterPawn>(ShooterEnemyClass,Path[CellIndex]->GetActorLocation() , FRotator::ZeroRotator);
 
-            Transform.SetLocation((Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation()) / 2 + FVector(0.f,0.f,-50.f));
+            Transform.SetLocation((Path[CellIndex]->GetActorLocation() + Path[CellIndex + 1]->GetActorLocation()) / 2 + FVector(0.f,0.f,-70.f));
             Transform.SetRotation(GetDoorRotation(Path[CellIndex + 1], Path[CellIndex]).Quaternion());
             MazeActorFloor->CreateMetalCrate(Transform);
 
-            Transform.SetLocation((Path[CellIndex + 1]->GetActorLocation() + Path[CellIndex + 2]->GetActorLocation()) / 2 + FVector(0.f,0.f,-50.f));
+            Transform.SetLocation((Path[CellIndex + 1]->GetActorLocation() + Path[CellIndex + 2]->GetActorLocation()) / 2 + FVector(0.f,0.f,-70.f));
             Transform.SetRotation(GetDoorRotation(Path[CellIndex + 2], Path[CellIndex + 1]).Quaternion());
             MazeActorFloor->CreateMetalCrate(Transform);
         
@@ -1704,11 +1777,14 @@ void AMazeManager::AddFallenPlatforms(int Index, AMazeCell2* Cell, TArray<AMazeC
             Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(MoveAIClass2,Transform);
             Enemy->Positions.Add(Path[CellIndex + 1]->GetActorLocation());
             Cast<APawn>(Enemy)->FinishSpawning(Transform);
+            AddSpeech(Cast<APawnInteractiveClass>(Enemy));
+
 
             Transform2.SetLocation(Path[CellIndex + 1]->GetActorLocation() + FVector(-OffsetX,-OffsetY,10.f));
             Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(MoveAIClass2,Transform2);
             Enemy->Positions.Add(Path[CellIndex + 1]->GetActorLocation());
             Cast<APawn>(Enemy)->FinishSpawning(Transform2);
+            AddSpeech(Cast<APawnInteractiveClass>(Enemy));
 
             break;
 
@@ -1893,8 +1969,9 @@ void AMazeManager::SpawnExtraElem(int Index, AMazeCell2* AfterCell, AMazeCell2* 
         //Socializer
         case 3:
 
-            GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass, AfterCell->GetActorLocation(),
-                GetDoorRotation(AfterCell,BeforeCell));
+            APawnInteractiveClass* Pawn = GetWorld()->SpawnActor<APawnInteractiveClass>(SpokenNpcClass, AfterCell->GetActorLocation(),
+                GetDoorRotation(AfterCell,BeforeCell));            
+            AddSpeech(Pawn);
 
             break;
 
@@ -1942,6 +2019,7 @@ void AMazeManager::SpawnSigleCellElem(int Index, AMazeCell2* CurrentCell) {
         Enemy = GetWorld()->SpawnActorDeferred<IInterfaceMovableAI>(MoveAIClass2,Transform);
         Enemy->Positions.Add(CurrentCell->GetActorLocation());
         Cast<APawn>(Enemy)->FinishSpawning(Transform);
+        AddSpeech(Cast<APawnInteractiveClass>(Enemy));
 
         break;
 
@@ -2232,5 +2310,21 @@ void AMazeManager::CreateCheckpoint(AMazeCell2* Cell){
 
 }
 
+
+void AMazeManager::AddSpeech(APawnInteractiveClass* NPC){
+
+    if(BlockedSpeech.Num() == 0){
+        BlockedSpeech = OldBlockedSpeech;
+        OldBlockedSpeech.Empty();
+    }
+
+
+    //Select a speech.
+    int SpeechNumber = FMath::RandRange(0,BlockedSpeech.Num() - 1);
+    NPC->Speech = BlockedSpeech[SpeechNumber];
+    OldBlockedSpeech.Add(BlockedSpeech[SpeechNumber]);
+    BlockedSpeech.RemoveAt(SpeechNumber);
+
+}
 
 #pragma endregion

@@ -135,6 +135,10 @@ USTRUCT() struct FDoorAchieverStruct : public FDoorActor{
 	UPROPERTY(VisibleAnywhere)
 	TArray<int> IDs;
 
+	
+	UPROPERTY(VisibleAnywhere)
+	FVector KeyPos;
+
 };
 
 // Door Killer
@@ -334,6 +338,15 @@ public:
 	FRotator PlayerRot;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	bool PlayerHat;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<int> HatsID;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	int CurrentHatMaterial;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	int Coins;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
@@ -356,6 +369,5 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	int TotalStatues;
-
 
 };

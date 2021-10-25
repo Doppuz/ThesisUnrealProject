@@ -335,6 +335,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AFinalLevelActor> FinalLevelActorClass;
 
+	UPROPERTY(EditAnywhere, Category = "Hat")
+	TArray<UMaterial*> Hats;
+
+	UPROPERTY(EditAnywhere, Category = "Hat")
+	UStaticMesh* HatsMesh;
+
 	//Arena spawn positions.
 	TArray<FVector> ArenaSpawnLocation;
 
@@ -428,6 +434,9 @@ protected:
 	void CreateCheckpoint(AMazeCell2* Cell);
 
 	FTimerHandle StartTimer;
+
+	//Method to select a speech for an Ally NPC.
+	void AddSpeech(APawnInteractiveClass*);
 
 #pragma endregion
 

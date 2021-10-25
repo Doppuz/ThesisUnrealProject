@@ -1,2 +1,16 @@
-What is your name?,Lorenzo,Diego,Lolle,22
-How are you?,Fine,not,be,like
+What has to be broken before you can use it?,Egg,Candle,Glass,Chair
+I’m tall when I’m young and I’m short when I’m old. What am I?,Candle,Sun,Fire,Flower
+What is full of holes but still holds water?,Sponge,Fish,Brain,Snow
+What is always in front of you but can’t be seen?,Future,Nose,Face,Mask
+What can you break even if you never pick it up or touch it?,Promise,Hand,Smile,Door
+What goes up but never comes down?,Age,Cleverness,Height,Sun
+What gets wet while drying?,Towel,Hair,Key,Rubber
+What can you keep after giving to someone?,Word,Tissue,Handshake,Playstation
+I shave every day but my beard stays the same. What am I?,Barber,Man,Bear,Dog
+What can’t talk but will reply when spoken to?,Echo,Alexa,Siri,Google
+David’s parents have three sons: Snap - Crackle - and what’s the name of the third son?,David,None,Snap,Crackle
+What has many keys but can’t open a single lock?,Piano,Door,Wardrobe,Handcuffs
+What gets bigger when more is taken away?,Hole,Sand,Water,Darkness
+I’m light as a feather yet the strongest person can’t hold me for five minutes. What am I?,Breath,Thought,Light,View
+Where does today come before yesterday?,Dictionary,Immagination,Book,Pluto
+What invention lets you look right through a wall?,Window,Eyes,Curtains,VR

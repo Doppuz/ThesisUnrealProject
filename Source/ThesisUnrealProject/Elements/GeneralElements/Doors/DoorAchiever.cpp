@@ -23,6 +23,8 @@ ADoorAchiever::ADoorAchiever() {
     
     SpawnPos4 = CreateDefaultSubobject<USceneComponent>(TEXT("SpawnPos4"));
 	SpawnPos4->SetupAttachment(RootComponent);
+
+    KeyPosition = FVector::ZeroVector;
     
 }
 
@@ -47,13 +49,19 @@ void ADoorAchiever::BeginPlay() {
         DestrActors[NumExtr]->SpawnActor = KeyClass;
         DestrActors[NumExtr]->DestrDelegate.AddDynamic(this, &ADoorAchiever::SpawnKey);
 
-        KeyPos = NumExtr;
+    }
+
+    //Very Unlikely to be used, usefull only when u destroy the barrel and don't pick up the key.
+    if(KeyPosition != FVector::ZeroVector && !bOpenDoor){
+        AKeyActor* Elem = GetWorld()->SpawnActor<AKeyActor>(KeyClass,KeyPosition, FRotator::ZeroRotator);
+        Cast<AKeyActor>(Elem)->KeyDelegate.AddDynamic(this,&ADoorAchiever::OpenDoor);
     }
     
 }
 
 void ADoorAchiever::SpawnKey(AActor* Elem) {
 
+    KeyPosition = Elem->GetActorLocation();
     Cast<AKeyActor>(Elem)->KeyDelegate.AddDynamic(this,&ADoorAchiever::OpenDoor);
     
 }

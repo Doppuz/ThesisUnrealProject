@@ -36,6 +36,12 @@ public:
 	UPROPERTY(VisibleANywhere)
 	int ID;
 
+	UPROPERTY(EditAnywhere)
+	FVector CoinOffset;
+
+	UPROPERTY(EditAnywhere)
+	float ForceApplied;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

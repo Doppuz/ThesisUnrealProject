@@ -127,6 +127,14 @@ public:
 
 	void ChangeHat();
 
+	TArray<int> HatsOwned;
+
+//Invincible section
+	
+	//Parameter to make the character invincible.
+	bool bCharacterInvincible;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -164,9 +172,6 @@ private:
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
 //Invincible Section
-
-	//Parameter to make the character invincible.
-	bool bCharacterInvincible;
 
 	//Method to make the character invisible
 	void InvisibleAnimation();

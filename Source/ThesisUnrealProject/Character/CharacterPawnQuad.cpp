@@ -333,10 +333,13 @@ void ACharacterPawnQuad::StopCharacter(bool Value) {
 void ACharacterPawnQuad::ChangeHat() {
 
 	if(HatMaterials.Num() > 0){
+
 		CurrentHatMaterial = (CurrentHatMaterial + 1) % HatMaterials.Num();
 		EquipmentMesh->SetMaterial(0,HatMaterials[CurrentHatMaterial][0]);
 		EquipmentMesh->SetMaterial(1,HatMaterials[CurrentHatMaterial][1]);
+		
 	}
+
 }
 
 void ACharacterPawnQuad::Speak() {

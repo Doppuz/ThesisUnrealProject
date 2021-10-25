@@ -77,7 +77,8 @@ void ASquaredProjectile::OnOverlap(UPrimitiveComponent * HitComponent, AActor * 
 	
 	} else if(OtherActor->IsA(AGenericDestructibleElements::StaticClass()) && MyOwner != nullptr &&  MyOwner->IsA(ACharacterPawnQuad::StaticClass())){
 		
-		Cast<AGenericDestructibleElements>(OtherActor)->DestructibleMesh->ApplyRadiusDamage(1.f,Hit.ImpactPoint,1000.f,1000,true);// ApplyRadiusDamage(1.f,Hit.ImpactPoint,1000.f,1000,true); //ApplyDamage(3.f,Hit.ImpactPoint, Hit.ImpactPoint, 2000);	
+		AGenericDestructibleElements* Actor = Cast<AGenericDestructibleElements>(OtherActor);
+		Actor->DestructibleMesh->ApplyRadiusDamage(1.f,Hit.ImpactPoint,10.f,Actor->ForceApplied,true);
 		
 	} else if(OtherActor->IsA(ADestructibleElements::StaticClass())){
 

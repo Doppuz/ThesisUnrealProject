@@ -162,6 +162,7 @@ void APawnInteractiveClass::StartInteraction() {
 	ACharacterPawnQuad* PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
 	PlayerPawn->AllyNPC = this;
 	PlayerPawn->bStopMovement = true;
+	PlayerPawn->bCharacterInvincible = true;
 		
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameAndUI());
@@ -179,6 +180,7 @@ void APawnInteractiveClass::EndInteraction() {
 	PlayerPawn->SetMousePointer(false);
 	PlayerPawn->AllyNPC = nullptr;
 	PlayerPawn->bStopMovement = false;
+	PlayerPawn->bCharacterInvincible = false;
 
 	APlayerController* PlayerController = Cast<APlayerController>(PlayerPawn->GetController());
 	PlayerController->SetInputMode(FInputModeGameOnly());

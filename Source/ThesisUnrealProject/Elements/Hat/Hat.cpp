@@ -35,6 +35,7 @@ void AHat::OnHatOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor,
 		Cast<ACharacterPawnQuad>(OtherActor)->EquipmentMesh->SetStaticMesh(Mesh->GetStaticMesh());
 		Cast<ACharacterPawnQuad>(OtherActor)->HatMaterials.Add(Mesh->GetMaterials());
 		Cast<ACharacterPawnQuad>(OtherActor)->ChangeHat();
+		Cast<ACharacterPawnQuad>(OtherActor)->HatsOwned.Add(HatID);
 
 		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 		GameMode->IncreaseCoins();

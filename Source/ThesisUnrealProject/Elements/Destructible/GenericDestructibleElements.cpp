@@ -22,6 +22,10 @@ AGenericDestructibleElements::AGenericDestructibleElements(){
 
 	bIAmDestroyed = false;
 
+	CoinOffset = FVector(0.f, 0.f, 20.f);
+
+	ForceApplied = 1000.f;
+
 }
 
 // Called when the game starts or when spawned
@@ -43,7 +47,7 @@ void AGenericDestructibleElements::OnComponentFracture(const FVector& HitPoint, 
 	if(!bIAmDestroyed){
 		bIAmDestroyed = true;
 		if (SpawnActor != nullptr) {
-			AActor* Actor = GetWorld()->SpawnActor<AActor>(SpawnActor, GetActorLocation() + FVector(0.f, 0.f, 20.f), GetActorRotation());
+			AActor* Actor = GetWorld()->SpawnActor<AActor>(SpawnActor, GetActorLocation() + CoinOffset, GetActorRotation());
 			DestrDelegate.Broadcast(Actor);
 		}else
 			DestrDelegate.Broadcast(nullptr);

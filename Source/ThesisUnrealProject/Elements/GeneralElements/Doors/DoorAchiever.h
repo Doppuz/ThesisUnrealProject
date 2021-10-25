@@ -44,11 +44,12 @@ public:
 	TSubclassOf<AKeyActor> KeyClass;
 	
 	TArray<AGenericDestructibleElements*> DestrActors;
-
-	int KeyPos;
-
+	
 	UFUNCTION()
 	void SpawnKey(AActor* Elem);
+
+	//Value != FVector.Zero if key is spawned
+	FVector KeyPosition;
 
 protected:
 

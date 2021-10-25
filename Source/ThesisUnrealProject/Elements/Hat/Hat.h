@@ -21,6 +21,10 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* Mesh;
 
+	//Only because I can't serialize pointers
+	UPROPERTY(EditAnywhere)
+	int HatID;
+
 protected:
 	
 	// Called when the game starts or when spawned
