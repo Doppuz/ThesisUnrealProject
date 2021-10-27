@@ -34,6 +34,7 @@
 #include "../Elements/Light/CeilingLight.h"
 #include "../Elements/FinalLevelActor.h"
 #include "../Elements/Storm/Storm.h"
+#include "../Elements/Triggers/TriggerMap.h"
 #include "../GameModeAbstract.h"
 #include "../UI/UIWidgetDialog.h"
  #include "Components/ProgressBar.h"
@@ -153,6 +154,24 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
         }
 
         SaveGameInstance->HatElem = GeneralElem;
+
+// --- TriggerMap ---
+        
+        GeneralElem.Empty();
+
+        for (TActorIterator<ATriggerMap> ActorItr(GetWorld()); ActorItr; ++ActorItr){
+            
+            FGeneralActor GeneralActor;
+            Transform.SetLocation(ActorItr->GetActorLocation());
+            Transform.SetRotation(ActorItr->GetActorRotation().Quaternion());
+            GeneralActor.Transform = Transform;
+            GeneralActor.ActorClass = ActorItr->GetClass();
+            
+            GeneralElem.Add(GeneralActor);
+
+        }
+
+        SaveGameInstance->TriggerMaps = GeneralElem;
 
 // --- Trap ---
         
@@ -594,6 +613,8 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 
         SaveGameInstance->PlayerPos = SpawnPos->GetComponentLocation();
         SaveGameInstance->PlayerRot = UKismetMathLibrary::FindLookAtRotation(SpawnPos->GetComponentLocation(),GetActorLocation());
+        SaveGameInstance->PlayerProjectileTimeout = Cast<ACharacterPawnQuad>(OtherActor)->ProjectileTimeout;
+
         if(Cast<ACharacterPawnQuad>(OtherActor)->EquipmentMesh->GetStaticMesh() != nullptr){
         
             SaveGameInstance->PlayerHat = true;
@@ -619,12 +640,12 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
         SaveGameInstance->Coins = GameMode->GetCoins();
         SaveGameInstance->EnemiesDefeated = GameMode->GetEnemies();
         SaveGameInstance->SpokenAllies = GameMode->GetAllies();
-        SaveGameInstance->Statues = GameMode->GetStatues();
+        SaveGameInstance->MapVisited = GameMode->GetMap();
 
         SaveGameInstance->TotalCoins = GameMode->TotalCoins;
         SaveGameInstance->TotalEnemiesDefeated = GameMode->TotalEnemies;
         SaveGameInstance->TotalSpokenAllies = GameMode->TotalAllies;
-        SaveGameInstance->TotalStatues = GameMode->TotalStatues;
+        SaveGameInstance->TotalMap = GameMode->TotalMap;
 
         // Start async save process.;
 		UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "CheckpointLevel1", 0);

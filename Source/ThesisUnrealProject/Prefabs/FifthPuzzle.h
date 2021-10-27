@@ -33,16 +33,7 @@ public:
 	UChildActorComponent* Door3;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
-	USceneComponent* DestructibleGate;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* DestrGate1;
-	
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* DestrGate2;
-
-	UPROPERTY(EditAnywhere, Category = "Components")
-	UChildActorComponent* DestrGate3;
+	class UBoxComponent* Trigger;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
 	USceneComponent* Coins;
@@ -84,9 +75,7 @@ private:
 
 // --- Gates ---
 	UFUNCTION()
-	void Destruction(ADestructibleElements* Elem);
-
-	int GatesDestructed;
+	void OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit);
 
 // --- Coins ---
 

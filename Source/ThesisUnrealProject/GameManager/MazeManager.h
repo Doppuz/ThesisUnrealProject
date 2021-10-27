@@ -50,6 +50,7 @@ class AHat;
 class ACheckPointLevel1;
 class AStorm;
 class AFinalLevelActor;
+class ATriggerMap;
 
 //Just because nested loop not supported
 USTRUCT() struct FPath{
@@ -224,10 +225,13 @@ protected:
 
 	void StopGame();
 
-	UPROPERTY(EditAnywhere, Category = "Populate")
+	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<ADoor> DoorClass;
 
-	UPROPERTY(EditAnywhere, Category = "Populate")
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	TSubclassOf<ATriggerMap> TriggerMapClass;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
 	TSubclassOf<AActor> LightClass;
 
 	UPROPERTY(EditAnywhere, Category = "Enemies")
@@ -437,6 +441,9 @@ protected:
 
 	//Method to select a speech for an Ally NPC.
 	void AddSpeech(APawnInteractiveClass*);
+
+	//Bonus added based on Bartle type
+	void BartleBonus(Type);
 
 #pragma endregion
 

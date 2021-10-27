@@ -188,7 +188,7 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 			CameraArmComponent->AddLocalRotation(CameraRotation);
 	}
 
-	if(GetController()->IsA(APlayerController::StaticClass())){
+	if(GetController() != nullptr && GetController()->IsA(APlayerController::StaticClass())){
 		FHitResult Hit;
 
 		FVector EndPosition = GetActorLocation() + GetActorRotation().Vector() * MaxRange;

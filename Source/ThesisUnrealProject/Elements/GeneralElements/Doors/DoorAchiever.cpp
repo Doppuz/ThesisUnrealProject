@@ -49,6 +49,14 @@ void ADoorAchiever::BeginPlay() {
         DestrActors[NumExtr]->SpawnActor = KeyClass;
         DestrActors[NumExtr]->DestrDelegate.AddDynamic(this, &ADoorAchiever::SpawnKey);
 
+    }else if (!bOpenDoor){
+
+        AEnemyAIAbstract* Enemy = GetWorld()->SpawnActor<AEnemyAIAbstract>(Enemies[FMath::RandRange(0, Enemies.Num() - 1)],SpawnPos0->GetComponentLocation(),SpawnPos0->GetComponentRotation());
+        Enemy->bSpawnCoin = true;
+        
+        FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
+        Enemy->AttachToActor(this,TransformRules);
+
     }
 
     //Very Unlikely to be used, usefull only when u destroy the barrel and don't pick up the key.

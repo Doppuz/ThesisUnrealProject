@@ -260,6 +260,9 @@ public:
 	TArray<FDoorActor> Doors;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	TArray<FGeneralActor> TriggerMaps;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	TArray<FDoorActor> DoorsRiddle;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
@@ -335,6 +338,9 @@ public:
 	FVector PlayerPos;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float PlayerProjectileTimeout;
+
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	FRotator PlayerRot;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
@@ -356,7 +362,7 @@ public:
 	int SpokenAllies;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
-	int Statues;
+	int MapVisited;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	int TotalCoins;
@@ -368,6 +374,6 @@ public:
 	int TotalSpokenAllies;
 
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
-	int TotalStatues;
+	int TotalMap;
 
 };

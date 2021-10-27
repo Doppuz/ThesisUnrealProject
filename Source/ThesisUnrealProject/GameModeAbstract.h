@@ -55,12 +55,14 @@ public:
 	void IncreaseAllies();
 	int TotalAllies;
 
-    int GetStatues() const;
-	void SetStatues(int);
-	void IncreaseStatues();
-	int TotalStatues;
+    int GetMap() const;
+	void SetMap(int);
+	void IncreaseMap();
+	int TotalMap;
 
 	virtual void StopGame(bool Enable);
+
+	Type ReturnBartleHighest();
 
 protected:
 	

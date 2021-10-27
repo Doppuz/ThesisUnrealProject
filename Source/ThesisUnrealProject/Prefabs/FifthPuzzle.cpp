@@ -37,17 +37,8 @@ AFifthPuzzle::AFifthPuzzle()
 	Door3->SetupAttachment(Doors);
 	Door3->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
-	DestructibleGate = CreateDefaultSubobject<USceneComponent>(TEXT("DestrGates"));
-	DestructibleGate->SetupAttachment(RootComponent);
-
-	DestrGate1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate1"));
-	DestrGate1->SetupAttachment(DestructibleGate);
-
-	DestrGate2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate2"));
-	DestrGate2->SetupAttachment(DestructibleGate);
-
-	DestrGate3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate3"));
-	DestrGate3->SetupAttachment(DestructibleGate);
+	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("DestrGates"));
+	Trigger->SetupAttachment(RootComponent);
 
 	Coins = CreateDefaultSubobject<USceneComponent>(TEXT("Coins"));
 	Coins->SetupAttachment(RootComponent);
@@ -76,7 +67,6 @@ AFifthPuzzle::AFifthPuzzle()
 	OverlayedTextWall = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextWall"));
 	OverlayedTextWall->SetupAttachment(UI);
 
-	GatesDestructed = 0;
 	CoinsCollected = 0;
 }
 
@@ -88,14 +78,6 @@ void AFifthPuzzle::BeginPlay()
 	//Set overlayed Text
 	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("Collects the coins OR ...");
 	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("... OR Explore the Dungeon!");
-
-	TArray<USceneComponent*> Gates;
-	DestructibleGate->GetChildrenComponents(false,Gates);
-
-	for(int i = 0; i < Gates.Num(); i++){
-		AShakeActor* ShakeActor = Cast<AShakeActor>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
-		Cast<ADestructibleElements>(ShakeActor->ShakingActor->GetChildActor())->DestructionDelegate.AddDynamic(this,&AFifthPuzzle::Destruction);
-	}
 
 	TArray<USceneComponent*> CoinsArray;
 	Coins->GetChildrenComponents(false,CoinsArray);
@@ -113,7 +95,7 @@ void AFifthPuzzle::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AFifthPuzzle::Destruction(ADestructibleElements* Elem) {
+void AFifthPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	
 	ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 	ADoor* Door03 = Cast<ADoor>(Door3->GetChildActor());
@@ -130,7 +112,6 @@ void AFifthPuzzle::Destruction(ADestructibleElements* Elem) {
 
 	}
 
-	GatesDestructed += 1;
 }
 
 void AFifthPuzzle::CoinCollected() {

@@ -16,7 +16,7 @@ AGameModeAbstract::AGameModeAbstract() {
 	TotalCoins = 0;
     TotalEnemies = 0;
     TotalAllies = 0;
-    TotalStatues = 0;
+    TotalMap = 0;
 
 }
 
@@ -64,6 +64,21 @@ void AGameModeAbstract::StopGame(bool Enable){
 
 }
 
+Type AGameModeAbstract::ReturnBartleHighest(){
+
+    TMap<Type,float> Types = Update->Types;
+
+    Types.ValueSort([] (float A, float B){
+        return A > B;
+    } );
+
+    TArray<Type> Keys;
+    Types.GetKeys(Keys);
+
+    return Keys[0];
+
+}
+
 //--- Get and Set 
 
 int AGameModeAbstract::GetCoins() const{
@@ -75,7 +90,10 @@ void AGameModeAbstract::SetCoins(int Coins){
 }
 
 void AGameModeAbstract::IncreaseCoins() {
+
     GetGameState<ACustomGameState>()->CoinsNumber += 1;
+    UE_LOG(LogTemp,Warning,TEXT("Coins = %i / %i"),GetCoins(),TotalCoins);
+
 }
 
 int AGameModeAbstract::GetEnemies() const{
@@ -87,7 +105,10 @@ void AGameModeAbstract::SetEnemies(int Enemies){
 }
 
 void AGameModeAbstract::IncreaseEnemies() {
+
     GetGameState<ACustomGameState>()->EnemiesDefeated += 1;
+    UE_LOG(LogTemp,Warning,TEXT("Enemies = %i / %i"),GetEnemies(),TotalEnemies);
+
 }
 
 int AGameModeAbstract::GetAllies() const{
@@ -99,17 +120,23 @@ void AGameModeAbstract::SetAllies(int Allies){
 }
 
 void AGameModeAbstract::IncreaseAllies() {
+
     GetGameState<ACustomGameState>()->AlliesSpoken += 1;
+    UE_LOG(LogTemp,Warning,TEXT("Allies = %i / %i"),GetAllies(),TotalAllies);
+
 }
 
-int AGameModeAbstract::GetStatues() const{
-    return GetGameState<ACustomGameState>()->StatueVisited;
+int AGameModeAbstract::GetMap() const{
+    return GetGameState<ACustomGameState>()->MapVisited;
 }
 
-void AGameModeAbstract::SetStatues(int Statues){
-    GetGameState<ACustomGameState>()->StatueVisited = Statues;
+void AGameModeAbstract::SetMap(int Map){
+    GetGameState<ACustomGameState>()->MapVisited = Map;
 }
 
-void AGameModeAbstract::IncreaseStatues() {
-    GetGameState<ACustomGameState>()->StatueVisited += 1;
+void AGameModeAbstract::IncreaseMap() {
+
+    GetGameState<ACustomGameState>()->MapVisited += 1;
+    UE_LOG(LogTemp,Warning,TEXT("Map = %i / %i"),GetMap(),TotalMap);
+
 }

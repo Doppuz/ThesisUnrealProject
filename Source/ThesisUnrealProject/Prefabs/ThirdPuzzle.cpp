@@ -12,7 +12,7 @@
 #include "../UI/Elements/OverlayedText.h"
 #include "Components/WidgetComponent.h"
 #include "../Elements/Destructible/GenericDestructibleElements.h"
-#include "ShakeActor.h"
+#include "../Character/CharacterPawnQuad.h"
 
 // Sets default values
 AThirdPuzzle::AThirdPuzzle()
@@ -38,26 +38,8 @@ AThirdPuzzle::AThirdPuzzle()
 	Door3->SetupAttachment(Doors);
 	Door3->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
-	DestructibleGate = CreateDefaultSubobject<USceneComponent>(TEXT("DestrGates"));
-	DestructibleGate->SetupAttachment(RootComponent);
-
-	DestrGate1 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate1"));
-	DestrGate1->SetupAttachment(DestructibleGate);
-
-	DestrGate2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate2"));
-	DestrGate2->SetupAttachment(DestructibleGate);
-
-	DestrGate3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate3"));
-	DestrGate3->SetupAttachment(DestructibleGate);
-
-	DestrGate4 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate4"));
-	DestrGate4->SetupAttachment(DestructibleGate);
-
-	DestrGate5 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate5"));
-	DestrGate5->SetupAttachment(DestructibleGate);
-		
-	DestrGate6 = CreateDefaultSubobject<UChildActorComponent>(TEXT("DestrGate6"));
-	DestrGate6->SetupAttachment(DestructibleGate);
+	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
+	Trigger->SetupAttachment(RootComponent);
 
 	Coins = CreateDefaultSubobject<USceneComponent>(TEXT("Coins"));
 	Coins->SetupAttachment(RootComponent);
@@ -89,7 +71,6 @@ AThirdPuzzle::AThirdPuzzle()
 	OverlayedTextWall = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverlayedTextWall"));
 	OverlayedTextWall->SetupAttachment(UI);
 
-	GatesDestructed = 0;
 	CoinsCollected = 0;
 }
 
@@ -99,16 +80,8 @@ void AThirdPuzzle::BeginPlay()
 	Super::BeginPlay();
 
 	//Set overlayed Text
-	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("Maybe you can destroy this wall OR ...");
+	Cast<UOverlayedText>(OverlayedTextWall->GetWidget())->SetText("You can explore this path OR ...");
 	Cast<UOverlayedText>(OverlayedTextCoins->GetWidget())->SetText("... OR collect these coins.");
-
-	TArray<USceneComponent*> Gates;
-	DestructibleGate->GetChildrenComponents(false,Gates);
-
-	for(int i = 0; i < Gates.Num(); i++){
-		AGenericDestructibleElements* ShakeActor = Cast<AGenericDestructibleElements>(Cast<UChildActorComponent>(Gates[i])->GetChildActor());
-		ShakeActor->DestrDelegate.AddDynamic(this,&AThirdPuzzle::Destruction);
-	}
 
 	TArray<USceneComponent*> CoinsArray;
 	Coins->GetChildrenComponents(false,CoinsArray);
@@ -118,38 +91,14 @@ void AThirdPuzzle::BeginPlay()
 		Coin->CollectedDelegate.AddDynamic(this, &AThirdPuzzle::CoinCollected);
 	}
 
+	Trigger->OnComponentBeginOverlap.AddDynamic(this,&AThirdPuzzle::OnOverlap);
+
 }
 
 // Called every frame
 void AThirdPuzzle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void AThirdPuzzle::Destruction(AActor* Elem) {
-	
-	ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
-	ADoor* Door03 = Cast<ADoor>(Door3->GetChildActor());
-
-	if(!Door01->bOpenDoor){
-
-		Door01->bOpenDoor = true;
-		Door03->bOpenDoor = true;
-		
-		FLatentActionInfo LatentInfo;
-	    UGameplayStatics::LoadStreamLevel(this, TEXT("ThirdChoice"), true, false, LatentInfo);
-		
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		
-		if(!GameMode->Levels.Contains("ThirdChoice"))
-			GameMode->Levels.Add("ThirdChoice");
-
-		//Update Bartle's values
-		GameMode->Update->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);
-	
-	}
-
-	GatesDestructed += 1;
 }
 
 void AThirdPuzzle::CoinCollected() {
@@ -184,3 +133,26 @@ void AThirdPuzzle::CoinCollected() {
 	CoinsCollected += 1;
 }
 
+void AThirdPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit){
+
+	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+		
+		FLatentActionInfo LatentInfo;
+	    UGameplayStatics::LoadStreamLevel(this, TEXT("ThirdChoice"), true, false, LatentInfo);
+		
+		ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
+		ADoor* Door03 = Cast<ADoor>(Door3->GetChildActor());
+		
+		Door01->bClose = false;
+			
+		Door01->bOpenDoor = true;
+		Door03->bOpenDoor = true;
+
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+
+		//Update Bartle's values
+		GameMode->Update->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);
+
+	}
+
+}

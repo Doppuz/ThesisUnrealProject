@@ -25,6 +25,9 @@ void AHat::BeginPlay(){
 	Super::BeginPlay();
 
 	Mesh->OnComponentBeginOverlap.AddDynamic(this,&AHat::OnHatOverlap);
+
+	AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+	GameMode->TotalCoins += 1;
 	
 }
 

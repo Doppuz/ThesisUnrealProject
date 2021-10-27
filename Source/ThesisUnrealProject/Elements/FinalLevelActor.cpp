@@ -60,9 +60,9 @@ void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Ot
 
 				//Calculate rates
 				float AchieverRate = float(GameMode->GetCoins()) / float(GameMode->TotalCoins) * 100.f;
-				float ExplorerRate = float(GameMode->GetEnemies()) / float(GameMode->TotalEnemies) * 100.f;
-				float KillerRate = float(GameMode->GetAllies()) / float(GameMode->TotalAllies) * 100.f;
-				float SocializerRate = float(GameMode->GetStatues()) / float(GameMode->TotalStatues) * 100.f;
+				float KillerRate = float(GameMode->GetEnemies()) / float(GameMode->TotalEnemies) * 100.f;
+				float SocializerRate = float(GameMode->GetAllies()) / float(GameMode->TotalAllies) * 100.f;
+				float ExplorerRate = float(GameMode->GetMap()) / float(GameMode->TotalMap) * 100.f;
 
 				TMap<Type,float> Rates = {{Type::Achiever,AchieverRate},{Type::Explorer,ExplorerRate},{Type::Killer,KillerRate},{Type::Socializer,SocializerRate}};
 				TArray<Type> RatesArray;

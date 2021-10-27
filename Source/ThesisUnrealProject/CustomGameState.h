@@ -20,6 +20,6 @@ public:
 	int CoinsNumber;
 	int EnemiesDefeated;
 	int AlliesSpoken;
-	int StatueVisited;
+	int MapVisited;
 
 };

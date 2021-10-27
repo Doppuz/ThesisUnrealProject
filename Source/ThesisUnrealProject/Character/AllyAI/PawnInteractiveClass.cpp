@@ -51,16 +51,8 @@ void APawnInteractiveClass::BeginPlay(){
 		
 		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 
-		if(this->IsA(AStatueInteractElem::StaticClass())){
-
-				GameMode->TotalStatues += 1;
-
-			}else{
-
-				GameMode->TotalAllies += 1;
+		GameMode->TotalAllies += 1;
 			
-			}
-
 	}
 
 }
@@ -113,18 +105,9 @@ void APawnInteractiveClass::Speak() {
 
 		if(!bAlreadySpoken && !bNoIncrease){
 
-			if(this->IsA(AStatueInteractElem::StaticClass())){
-
-				GameMode->IncreaseStatues();
-				UE_LOG(LogTemp,Warning,TEXT("Statues: %i"), GameMode->GetStatues());
-
-			}else{
-
-				GameMode->IncreaseAllies();
-				UE_LOG(LogTemp,Warning,TEXT("Allies: %i"), GameMode->GetAllies());
+			GameMode->IncreaseAllies();
+			UE_LOG(LogTemp,Warning,TEXT("Allies: %i"), GameMode->GetAllies());
 			
-			}
-
 		}
 
 		bAlreadySpoken = true;

@@ -6,9 +6,7 @@
 #include "../../Character/AllyAI/PawnInteractiveClass.h"
 #include "StatueInteractElem.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class THESISUNREALPROJECT_API AStatueInteractElem : public APawnInteractiveClass{
 	
@@ -17,5 +15,11 @@ class THESISUNREALPROJECT_API AStatueInteractElem : public APawnInteractiveClass
 public:
 
 	AStatueInteractElem();
+
+	static int ID;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 };

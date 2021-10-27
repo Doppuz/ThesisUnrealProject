@@ -8,6 +8,6 @@ ACustomGameState::ACustomGameState() {
     CoinsNumber = 0;
 	EnemiesDefeated  = 0;
 	AlliesSpoken  = 0;
-	StatueVisited  = 0;
+	MapVisited  = 0;
 
 }

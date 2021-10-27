@@ -18,6 +18,7 @@
 #include "../Elements/Room/RoomAchiever.h"
 #include "../Elements/Room/RoomSocializer.h"
 #include "../Elements/Triggers/Trigger.h"
+#include "../Elements/Triggers/TriggerMap.h"
 #include "../Elements/Triggers/TriggerSpawnNight.h"
 #include "../Character/EnemyAI/AIBull.h"
 #include "../Character/EnemyAI/AIShooterPawn.h"
@@ -87,10 +88,18 @@ void AMazeManager::BeginPlay(){
 
         UE_LOG(LogTemp,Warning,TEXT("Values = %f, %f, %f, %f"),  LoadedGame->Achiever, LoadedGame->Killer, LoadedGame->Explorer, LoadedGame->Socializer);
 
-        GameMode->Update->Types.Add(Type::Achiever, LoadedGame->Achiever);
-        GameMode->Update->Types.Add(Type::Killer, LoadedGame->Killer);
-        GameMode->Update->Types.Add(Type::Explorer, LoadedGame->Explorer);
-        GameMode->Update->Types.Add(Type::Socializer, LoadedGame->Socializer);
+        GameMode->Update->Types[Type::Achiever] = LoadedGame->Achiever;
+        GameMode->Update->Types[Type::Killer] = LoadedGame->Killer;
+        GameMode->Update->Types[Type::Explorer] = LoadedGame->Explorer;
+        GameMode->Update->Types[Type::Socializer] = LoadedGame->Socializer;
+
+    }else if (PopulateMaze){
+        
+        UE_LOG(LogTemp,Warning,TEXT("Values = %f, %f, %f, %f"), Achiever, Killer, Explorer, Socializer);
+        GameMode->Update->Types[Type::Achiever] = Achiever;
+        GameMode->Update->Types[Type::Killer] = Killer;
+        GameMode->Update->Types[Type::Explorer] = Explorer;
+        GameMode->Update->Types[Type::Socializer] = Socializer;
 
     }
 
@@ -151,6 +160,15 @@ void AMazeManager::BeginPlay(){
             AHat* Elem = GetWorld()->SpawnActor<AHat>(
                 LoadedGame->HatElem[i].ActorClass,
                 LoadedGame->HatElem[i].Transform);
+
+        }
+
+        //Load Hats
+        for(int i = 0; i < LoadedGame->TriggerMaps.Num(); i++){
+            
+            ATriggerMap* Elem = GetWorld()->SpawnActor<ATriggerMap>(
+                LoadedGame->TriggerMaps[i].ActorClass,
+                LoadedGame->TriggerMaps[i].Transform);
 
         }
 
@@ -484,6 +502,7 @@ void AMazeManager::BeginPlay(){
         APawn* Player = UGameplayStatics::GetPlayerPawn(GetWorld(),0);
         Player->SetActorLocation(LoadedGame->PlayerPos);
         Player->SetActorRotation(LoadedGame->PlayerRot);
+        Cast<ACharacterPawnQuad>(Player)->ProjectileTimeout = LoadedGame->PlayerProjectileTimeout;
         
         //Load hats manually.
         if(LoadedGame->PlayerHat){
@@ -531,6 +550,11 @@ void AMazeManager::BeginPlay(){
                         Material.Add(Hats[6]);
                         break;
 
+                    case 6:
+                        Material.Add(Hats[7]);
+                        Material.Add(Hats[2]);
+                        break;
+
                 }
  
                 MyPawn->HatMaterials.Add(Material);
@@ -546,11 +570,11 @@ void AMazeManager::BeginPlay(){
         GameMode->SetCoins(LoadedGame->Coins);
         GameMode->SetEnemies(LoadedGame->EnemiesDefeated);
         GameMode->SetAllies(LoadedGame->SpokenAllies);
-        GameMode->SetStatues(LoadedGame->Statues);
+        GameMode->SetMap(LoadedGame->MapVisited);
         GameMode->TotalCoins = LoadedGame->TotalCoins;
         GameMode->TotalEnemies = LoadedGame->TotalEnemiesDefeated;
         GameMode->TotalAllies = LoadedGame->TotalSpokenAllies;
-        GameMode->TotalStatues = LoadedGame->TotalStatues;
+        GameMode->TotalMap = LoadedGame->TotalMap;
 
         //Load Speech (Done again to reset the changes)
         Speech = ConvertSpeechBack(LoadedGame->Speech);
@@ -571,6 +595,8 @@ void AMazeManager::BeginPlay(){
         LoadFromFile(Speech, "QuestionsSpeech");
         LoadFromFile(Questions, "Questions");
         LoadFromFile(BlockedSpeech, "BlockedSpeech");
+
+        BartleBonus(GameMode->ReturnBartleHighest());
 
         //Initialize all the components for the maze creation.
         MazeGraph = new Graph<AMazeCell2>();
@@ -856,16 +882,21 @@ void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
                         
                         GenerateElements(MazeCellMax);
 
+                        GetWorld()->SpawnActor<ATriggerMap>(TriggerMapClass,(Path[i]->GetActorLocation() + MazeCellMax[0]->GetActorLocation())/2,GetDoorRotation(MazeCellMax[0],Path[i]));
+                        GetWorld()->SpawnActor<ATriggerMap>(TriggerMapClass,(MazeCellMax[MazeCellMax.Num() - 2]->GetActorLocation() + MazeCellMax[MazeCellMax.Num() - 3]->GetActorLocation())/2,GetDoorRotation(MazeCellMax[MazeCellMax.Num() - 2],MazeCellMax[MazeCellMax.Num() - 3]));
+
                         CellsToPopulate.ExtrElem.Add(MazeCellMax[MazeCellMax.Num() - 1], FPath(Path));
                         CellsToPopulate.Couple.Add(MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
+                        
                         //SpawnExtraElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
                         
                     }else{
 
+                        GetWorld()->SpawnActor<ATriggerMap>(TriggerMapClass,(Path[i]->GetActorLocation() + MazeCellMax[0]->GetActorLocation())/2,GetDoorRotation(MazeCellMax[0],Path[i]));
+
                         //if cells are greater than 1 insert one last element
                         if(MazeCellMax.Num() > 1){
 
-                           
                             //if its value is 3 it added one cell element
                             if(MazeCellMax.Num() > 2){
 
@@ -893,11 +924,16 @@ void AMazeManager::Populate(TArray<AMazeCell2*> Path) {
                             CellsToPopulate.ExtrElem.Add(MazeCellMax[MazeCellMax.Num() - 1], FPath(Path));                        
                             CellsToPopulate.Couple.Add(MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]);
 
+                            if(MazeCellMax.Num() > 2)
+                                GetWorld()->SpawnActor<ATriggerMap>(TriggerMapClass,(MazeCellMax[MazeCellMax.Num() - 1]->GetActorLocation() + MazeCellMax[MazeCellMax.Num() - 2]->GetActorLocation())/2,GetDoorRotation(MazeCellMax[MazeCellMax.Num() - 1],MazeCellMax[MazeCellMax.Num() - 2]));
+
+
                         }else{
 
                             //SpawnExtraElem(FMath::RandRange(0,3),MazeCellMax[MazeCellMax.Num() - 1],Path[i]);
                             CellsToPopulate.ExtrElem.Add(MazeCellMax[MazeCellMax.Num() - 1], FPath(Path));
-                            CellsToPopulate.Couple.Add(MazeCellMax[MazeCellMax.Num() - 1],Path[i]);
+                            CellsToPopulate.Couple.Add(MazeCellMax[MazeCellMax.Num() - 1],Path[i]);      
+             
 
                         }
                     }
@@ -931,6 +967,7 @@ TArray<TArray<FString>> AMazeManager::ConvertSpeechBack(TArray<FSpeech> List){
 void AMazeManager::LoadFromFile(TArray<TArray<FString>>& List, FString FileName) {
     
     TArray<FString> StringArray;
+    List.Empty();
     FString CompleteFilePath = FPaths::ProjectContentDir() + "TextFiles/" + FileName +".txt";
     UE_LOG(LogTemp, Warning, TEXT("%s"), *CompleteFilePath);
     FFileHelper::LoadFileToStringArray(StringArray,*CompleteFilePath);
@@ -2148,29 +2185,11 @@ void AMazeManager::CalculateTotalNumberOfCells(TMap<Type,int>& CellsNumberMap, T
         CellsToPopulate.OneCellElem.Num() + CellsToPopulate.ExtrElem.Num() + CellsToPopulate.Door.Num();
 
     TMap<Type,float> CellsPreRounded;
-    
-    if (USaveGameBartle* LoadedGame = Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0))){
 
-        UE_LOG(LogTemp,Warning,TEXT("Values = %f, %f, %f, %f"),  LoadedGame->Achiever, LoadedGame->Killer, LoadedGame->Explorer, LoadedGame->Socializer);
+    AGameModeAbstract*  GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 
-        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
-        GameMode->Update->Types.Add(Type::Achiever, LoadedGame->Achiever);
-        GameMode->Update->Types.Add(Type::Killer, LoadedGame->Killer);
-        GameMode->Update->Types.Add(Type::Explorer, LoadedGame->Explorer);
-        GameMode->Update->Types.Add(Type::Socializer, LoadedGame->Socializer);
-
-        //Create a TMap with all the cells before the round.
-        CellsPreRounded = {{Type::Achiever,TotalCells * LoadedGame->Achiever / 200}, {Type::Killer,TotalCells * LoadedGame->Killer / 200},
-        {Type::Explorer,TotalCells * LoadedGame->Explorer / 200}, {Type::Socializer,TotalCells * LoadedGame->Socializer / 200}};
-
-    }else{
-        
-        UE_LOG(LogTemp,Warning,TEXT("Values = %f, %f, %f, %f"), Achiever, Killer, Explorer, Socializer);
-
-        CellsPreRounded = {{Type::Achiever,TotalCells * Achiever / 200}, {Type::Killer,TotalCells * Killer / 200},
-        {Type::Explorer,TotalCells * Explorer / 200}, {Type::Socializer,TotalCells * Socializer / 200}};
-
-    }
+    CellsPreRounded = {{Type::Achiever,TotalCells * GameMode->Update->Types[Type::Achiever] / 200}, {Type::Killer,TotalCells * GameMode->Update->Types[Type::Killer] / 200},
+        {Type::Explorer,TotalCells * GameMode->Update->Types[Type::Explorer] / 200}, {Type::Socializer,TotalCells * GameMode->Update->Types[Type::Socializer] / 200}};
 
     CellsPreRounded.ValueSort([](float A, float B) {
         return A > B; // sort keys in reverse
@@ -2324,6 +2343,51 @@ void AMazeManager::AddSpeech(APawnInteractiveClass* NPC){
     NPC->Speech = BlockedSpeech[SpeechNumber];
     OldBlockedSpeech.Add(BlockedSpeech[SpeechNumber]);
     BlockedSpeech.RemoveAt(SpeechNumber);
+
+}
+
+void AMazeManager::BartleBonus(Type BartleType){
+
+    ACharacterPawnQuad* PlayerPawn;
+    TArray<UMaterialInterface *> Material;
+
+    switch(BartleType){
+
+        case Type::Achiever:
+
+            //Add an extra hat
+            PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+            PlayerPawn->EquipmentMesh->SetStaticMesh(HatsMesh);
+            PlayerPawn->CurrentHatMaterial = 0;
+            Material.Add(Hats[7]);
+		    Material.Add(Hats[2]);
+            PlayerPawn->HatMaterials.Add(Material);
+		    PlayerPawn->ChangeHat();
+		    PlayerPawn->HatsOwned.Add(6);
+
+            break;
+
+        case Type::Killer:
+
+            PlayerPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+            PlayerPawn->ProjectileTimeout = 0.3;
+
+            break;
+
+        case Type::Explorer:
+
+            Length = 12;
+            Height = 12;
+
+            break;
+
+        case Type::Socializer:
+
+            LoadFromFile(BlockedSpeech, "BlockedSpeechLonger");
+
+            break;
+
+    }
 
 }
 
