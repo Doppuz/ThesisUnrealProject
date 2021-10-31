@@ -79,17 +79,38 @@ void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Ot
 				UE_LOG(LogTemp,Warning,TEXT("Explorer = %f"), GameMode->Update->Types[Type::Explorer]);
 				UE_LOG(LogTemp,Warning,TEXT("Socializer = %f"), GameMode->Update->Types[Type::Socializer]);
 
+				float Value = 10.f;
 				if(Rates[RatesArray[0]] < 100.f && Rates[RatesArray[3]] > 0.f && FMath::Abs(Rates[RatesArray[0]] - Rates[RatesArray[3]]) > 20.f){
 					
-					GameMode->Update->Types[RatesArray[0]] = FMath::Min(100.f,GameMode->Update->Types[RatesArray[0]] + 10.f);
-					GameMode->Update->Types[RatesArray[3]] = FMath::Max(0.f,GameMode->Update->Types[RatesArray[3]] - 10.f);
+					//To keep the sum of the value to 200.
+					if(FMath::Min(100.f,GameMode->Update->Types[RatesArray[0]] + 10.f) == 100.f){
+
+						Value = 100.f - GameMode->Update->Types[RatesArray[0]];
+
+						if(FMath::Max(0.f,GameMode->Update->Types[RatesArray[3]] - 10.f) == 0.f)
+							Value = FMath::Min(Value,GameMode->Update->Types[RatesArray[3]]);
+
+					}
+
+					GameMode->Update->Types[RatesArray[0]] = FMath::Min(100.f,GameMode->Update->Types[RatesArray[0]] + Value);
+					GameMode->Update->Types[RatesArray[3]] = FMath::Max(0.f,GameMode->Update->Types[RatesArray[3]] - Value);
 
 				}
 
 				if(Rates[RatesArray[1]] < 100.f && Rates[RatesArray[2]] > 0.f && FMath::Abs(Rates[RatesArray[1]] - Rates[RatesArray[2]]) > 20.f){
+
+					//To keep the sum of the value to 200.
+					if(FMath::Min(100.f,GameMode->Update->Types[RatesArray[1]] + 10.f) == 100.f){
+
+						Value = 100.f - GameMode->Update->Types[RatesArray[1]];
+
+						if(FMath::Max(0.f,GameMode->Update->Types[RatesArray[2]] - 10.f) == 0.f)
+							Value = FMath::Min(Value,GameMode->Update->Types[RatesArray[2]]);
+
+					}
 					
-					GameMode->Update->Types[RatesArray[1]] = FMath::Min(100.f,GameMode->Update->Types[RatesArray[1]] + 10.f);
-					GameMode->Update->Types[RatesArray[2]] = FMath::Max(0.f,GameMode->Update->Types[RatesArray[2]] - 10.f);
+					GameMode->Update->Types[RatesArray[1]] = FMath::Min(100.f,GameMode->Update->Types[RatesArray[1]] + Value);
+					GameMode->Update->Types[RatesArray[2]] = FMath::Max(0.f,GameMode->Update->Types[RatesArray[2]] - Value);
 
 				}
 				
@@ -97,6 +118,23 @@ void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Ot
 				SaveGameInstance->Killer = GameMode->Update->Types[Type::Killer];
 				SaveGameInstance->Explorer = GameMode->Update->Types[Type::Explorer];
 				SaveGameInstance->Socializer = GameMode->Update->Types[Type::Socializer];
+
+				//Save the initial values
+				if (USaveGameBartle* LoadedGame = Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0))){
+
+					SaveGameInstance->OldAchiever = LoadedGame->OldAchiever;
+					SaveGameInstance->OldKiller = LoadedGame->OldKiller;
+					SaveGameInstance->OldExplorer = LoadedGame->OldExplorer;
+					SaveGameInstance->OldSocializer = LoadedGame->OldSocializer;
+
+				}else{
+
+					SaveGameInstance->OldAchiever = GameMode->Update->Types[Type::Achiever];
+					SaveGameInstance->OldKiller = GameMode->Update->Types[Type::Killer];
+					SaveGameInstance->OldExplorer = GameMode->Update->Types[Type::Explorer];
+					SaveGameInstance->OldSocializer = GameMode->Update->Types[Type::Socializer];
+
+				}
 
 				UE_LOG(LogTemp,Warning,TEXT("After"));
 				UE_LOG(LogTemp,Warning,TEXT("Achiever = %f"), GameMode->Update->Types[Type::Achiever]);

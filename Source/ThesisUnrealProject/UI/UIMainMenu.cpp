@@ -22,11 +22,38 @@ void UUIMainMenu::NativeConstruct() {
     
     Super::NativeConstruct();
 
-    ButtonPlay->Text->SetText(FText::FromString("Play"));
-    ButtonPlay->ButtonPlay->OnClicked.AddDynamic(this,&UUIMainMenu::OnButtonPlayClicked);
+    ButtonNewGame->Text->SetText(FText::FromString("New game"));
+    ButtonNewGame->ButtonPlay->OnClicked.AddDynamic(this,&UUIMainMenu::OnButtonPlayClicked);
+
+    ButtonContinue->Text->SetText(FText::FromString("Continue"));
+    ButtonContinue->ButtonPlay->OnClicked.AddDynamic(this,&UUIMainMenu::OnButtonContinueClicked);
+
+    if(Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0)) == nullptr)
+        ButtonContinue->ButtonPlay->SetIsEnabled(false);
+    
+    if(Cast<USaveGameData>(UGameplayStatics::LoadGameFromSlot("Checkpoint", 0)) != nullptr)
+        ButtonContinue->ButtonPlay->SetIsEnabled(true);
+
+    ButtonTypes->Text->SetText(FText::FromString("Player's types"));
+    ButtonTypes->ButtonPlay->OnClicked.AddDynamic(this,&UUIMainMenu::OnTypes);
+    
+    ButtonCommands->Text->SetText(FText::FromString("Commands"));
+    ButtonCommands->ButtonPlay->OnClicked.AddDynamic(this,&UUIMainMenu::OnCommands);
 
     ButtonQuit->Text->SetText(FText::FromString("Quit"));
     ButtonQuit->ButtonPlay->OnClicked.AddDynamic(this,&UUIMainMenu::OnButtonQuitClicked);
+
+    ButtonBack->Text->SetText(FText::FromString("Back"));
+    ButtonBack->ButtonPlay->OnClicked.AddDynamic(this,&UUIMainMenu::OnBack);
+
+    ButtonBack2->Text->SetText(FText::FromString("Back"));
+    ButtonBack2->ButtonPlay->OnClicked.AddDynamic(this,&UUIMainMenu::OnBack);
+    
+    ButtonBack3->Text->SetText(FText::FromString("Back"));
+    ButtonBack3->ButtonPlay->OnClicked.AddDynamic(this,&UUIMainMenu::OnBack);
+
+    ButtonDelete->Text->SetText(FText::FromString("Start"));
+    ButtonDelete->ButtonPlay->OnClicked.AddDynamic(this,&UUIMainMenu::OnDelete);
 
     Switcher->SetActiveWidgetIndex(0);
     
@@ -141,19 +168,25 @@ void UUIMainMenu::NativeConstruct() {
 
 void UUIMainMenu::OnButtonPlayClicked() {
 
-    //UGameplayStatics::OpenLevel(GetWorld(), "Tutorial");
-    if (USaveGameData* LoadedGame = Cast<USaveGameData>(UGameplayStatics::LoadGameFromSlot("Checkpoint", 0))) {
-        ULevel* LevelTemp = GetWorld()->GetCurrentLevel();
-        Cast<AMainMenu>(LevelTemp->GetLevelScriptActor())->ChangeMenuWidget(nullptr);
+    if (Cast<USaveGameData>(UGameplayStatics::LoadGameFromSlot("Checkpoint", 0)) == nullptr &&
+        Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0)) == nullptr) {
 
-        UGameplayStatics::OpenLevel(GetWorld(), "Tutorial", false);
-    }
-    else if (Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0))) {
-
-        UGameplayStatics::OpenLevel(GetWorld(), "Level1", false);
+       Switcher->SetActiveWidgetIndex(2);
 
     }else
        Switcher->SetActiveWidgetIndex(1);
+
+}
+
+void UUIMainMenu::OnButtonContinueClicked() {
+
+    ULevel* LevelTemp = GetWorld()->GetCurrentLevel();
+    Cast<AMainMenu>(LevelTemp->GetLevelScriptActor())->ChangeMenuWidget(nullptr);
+
+    if(Cast<USaveGameData>(UGameplayStatics::LoadGameFromSlot("Checkpoint", 0)) != nullptr)
+        UGameplayStatics::OpenLevel(GetWorld(), "Tutorial", false);
+    else
+        UGameplayStatics::OpenLevel(GetWorld(), "Level1", false);
 
 }
 
@@ -243,5 +276,55 @@ void UUIMainMenu::DialogInteraction(int Increase, int Decrease) {
         //UGameplayStatics::OpenLevel(GetWorld(),"Tutorial");
 
     }
+
+}
+
+void UUIMainMenu::OnBack() {
+    
+    Switcher->SetActiveWidgetIndex(0);
+
+}
+
+void UUIMainMenu::OnTypes() {
+
+    if (USaveGameBartle* LoadedGame = Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0))){
+
+        CAchiever->SetText(FText::Format(NSLOCTEXT("Key","Source", "Achiever : {0}"), LoadedGame->Achiever));
+        CKiller->SetText(FText::Format(NSLOCTEXT("Key","Source", "Killer : {0}"), LoadedGame->Killer));
+        CExplorer->SetText(FText::Format(NSLOCTEXT("Key","Source", "Explorer : {0}"), LoadedGame->Explorer));
+        CSocializer->SetText(FText::Format(NSLOCTEXT("Key","Source", "Socializer : {0}"), LoadedGame->Socializer));
+
+        OAchiever->SetText(FText::Format(NSLOCTEXT("Key","Source", "Achiever : {0}"), LoadedGame->OldAchiever));
+        OKiller->SetText(FText::Format(NSLOCTEXT("Key","Source", "Killer : {0}"), LoadedGame->OldKiller));
+        OExplorer->SetText(FText::Format(NSLOCTEXT("Key","Source", "Explorer : {0}"), LoadedGame->OldExplorer));
+        OSocializer->SetText(FText::Format(NSLOCTEXT("Key","Source", "Socializer : {0}"), LoadedGame->OldSocializer));
+
+    }
+    
+    Switcher->SetActiveWidgetIndex(3);
+
+}
+
+void UUIMainMenu::OnCommands() {
+    
+    Switcher->SetActiveWidgetIndex(4);
+
+}
+
+void UUIMainMenu::OnDelete() {
+    
+    FString CompleteFilePath = FPaths::ProjectSavedDir() + "SaveGames/CheckpointLevel1.sav"; 
+    FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*CompleteFilePath);
+
+    CompleteFilePath = FPaths::ProjectSavedDir() + "SaveGames/Checkpoint.sav"; 
+    FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*CompleteFilePath);
+
+    CompleteFilePath = FPaths::ProjectSavedDir() + "SaveGames/Bartle.sav"; 
+    FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*CompleteFilePath);
+    
+    CompleteFilePath = FPaths::ProjectSavedDir() + "SaveGames/Options.sav"; 
+    FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*CompleteFilePath);
+    
+    Switcher->SetActiveWidgetIndex(2);
 
 }

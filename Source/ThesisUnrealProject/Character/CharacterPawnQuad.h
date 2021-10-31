@@ -166,7 +166,7 @@ private:
 	void Speak();
 
 	//methos to respawn the player to the last checkpoint.
-	void Rewind();
+	void Pause();
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);

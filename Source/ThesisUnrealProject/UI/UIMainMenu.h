@@ -23,10 +23,31 @@ public:
 	void NativeConstruct() override;
 
 	UPROPERTY(meta = (BindWidget))
-	UUIButton* ButtonPlay;
+	UUIButton* ButtonNewGame;
+
+	UPROPERTY(meta = (BindWidget))
+	UUIButton* ButtonContinue;
+	
+	UPROPERTY(meta = (BindWidget))
+	UUIButton* ButtonTypes;
+	
+	UPROPERTY(meta = (BindWidget))
+	UUIButton* ButtonCommands;
 
 	UPROPERTY(meta = (BindWidget))
 	UUIButton* ButtonQuit;
+	
+	UPROPERTY(meta = (BindWidget))
+	UUIButton* ButtonBack;
+	
+	UPROPERTY(meta = (BindWidget))
+	UUIButton* ButtonBack2;
+
+	UPROPERTY(meta = (BindWidget))
+	UUIButton* ButtonBack3;
+
+	UPROPERTY(meta = (BindWidget))
+	UUIButton* ButtonDelete;
 
 	UPROPERTY(meta = (BindWidget))
 	class UWidgetSwitcher* Switcher;
@@ -54,8 +75,36 @@ public:
 
 	void DialogInteraction(int , int );
 
+	//Bartle's Texts
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* CAchiever;
+	
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* CKiller;
+	
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* CExplorer;
+	
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* CSocializer;
+	
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* OAchiever;
+	
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* OKiller;
+	
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* OExplorer;
+	
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* OSocializer;
+
 	UFUNCTION()
 	void OnButtonPlayClicked();
+	
+	UFUNCTION()
+	void OnButtonContinueClicked();
 	
 	UFUNCTION()
 	void OnButtonQuitClicked();
@@ -65,5 +114,17 @@ public:
 	
 	UFUNCTION()
 	void Answer2Clicked();
+
+	UFUNCTION()
+	void OnBack();
+
+	UFUNCTION()
+	void OnTypes();
+	
+	UFUNCTION()
+	void OnCommands();
+
+	UFUNCTION()
+	void OnDelete();
 
 };

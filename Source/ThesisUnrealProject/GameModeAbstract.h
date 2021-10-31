@@ -64,6 +64,13 @@ public:
 
 	Type ReturnBartleHighest();
 
+	void SetPause(bool Enable);
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> PauseWidget;
+
+	bool bIsPaused = false;
+
 protected:
 	
 	// Called when the game starts or when spawned

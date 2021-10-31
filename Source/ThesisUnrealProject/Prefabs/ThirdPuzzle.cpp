@@ -150,6 +150,9 @@ void AThirdPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 
+		if(!GameMode->Levels.Contains("ThirdChoice"))
+			GameMode->Levels.Add("ThirdChoice");
+
 		//Update Bartle's values
 		GameMode->Update->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);
 

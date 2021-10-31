@@ -51,6 +51,7 @@ void ACoinController::BeginPlay(){
 		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 		GameMode->TotalCoins += 1;
 	}
+
 }
 
 // Called every frame
@@ -80,9 +81,13 @@ void ACoinController::OnCoinOverlap(UPrimitiveComponent * HitComponent, AActor *
 		bIsCollected = true;
 		CollectedDelegate.Broadcast();
 
-		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
-		GameMode->IncreaseCoins();
-		UE_LOG(LogTemp,Warning,TEXT("Coins: %i"), GameMode->GetCoins());
+		if(!bNoIncrease){
+		
+			AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+			GameMode->IncreaseCoins();
+			UE_LOG(LogTemp,Warning,TEXT("Coins: %i"), GameMode->GetCoins());
+		
+		}
 
 		Destroy();
 	}

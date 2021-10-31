@@ -9,8 +9,8 @@
 #include "FinalLevelActor.generated.h"
 
 UCLASS()
-class THESISUNREALPROJECT_API AFinalLevelActor : public AActor
-{
+class THESISUNREALPROJECT_API AFinalLevelActor : public AActor{
+	
 	GENERATED_BODY()
 	
 public:	

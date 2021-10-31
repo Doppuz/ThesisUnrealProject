@@ -28,4 +28,16 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "SaveData")
 	float Socializer;
 
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float OldAchiever;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float OldKiller;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float OldExplorer;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SaveData")
+	float OldSocializer;
+
 };

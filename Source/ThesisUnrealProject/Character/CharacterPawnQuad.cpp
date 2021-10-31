@@ -22,6 +22,7 @@
 #include "Components/SizeBox.h"
 #include "../UI/Elements/UIBox.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "../Checkpoints/SaveGameOptions.h"
 
 // Sets default values
 ACharacterPawnQuad::ACharacterPawnQuad(){
@@ -76,7 +77,7 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 	bAmIShooting = false;
 	ProjectileTimeout = 0.5f;
 	CurrentHealth = 0;
-	MaxHealth = 30;
+	MaxHealth = 50;
 	AllyNPC = nullptr;
 	MaxRange = 300.f;
 	InteractiveActor = nullptr;
@@ -93,6 +94,12 @@ ACharacterPawnQuad::ACharacterPawnQuad(){
 void ACharacterPawnQuad::BeginPlay(){
 	
 	Super::BeginPlay();
+
+	if (USaveGameOptions* LoadedGame = Cast<USaveGameOptions>(UGameplayStatics::LoadGameFromSlot("Options", 0))){
+
+		RotationSpeed = LoadedGame->RotationSpeed;
+
+	}
 
 	SpotLight->Intensity = 0.f;	
 
@@ -228,7 +235,7 @@ void ACharacterPawnQuad::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction("Jump",IE_Pressed,this,&ACharacterPawnQuad::Jump);
 	PlayerInputComponent->BindAction("Speak",IE_Pressed,this, &ACharacterPawnQuad::Speak);
 	PlayerInputComponent->BindAction("Shoot",IE_Pressed,this, &ACharacterPawnQuad::Shoot);
-	PlayerInputComponent->BindAction("Rewind",IE_Pressed,this, &ACharacterPawnQuad::Rewind);
+	PlayerInputComponent->BindAction("Pause",IE_Pressed,this, &ACharacterPawnQuad::Pause);
 	PlayerInputComponent->BindAction("Dodge",IE_Pressed,this, &ACharacterPawnQuad::Dodge);
 	PlayerInputComponent->BindAction("Hat",IE_Pressed,this, &ACharacterPawnQuad::ChangeHat);
 
@@ -366,9 +373,14 @@ void ACharacterPawnQuad::Speak() {
 	}
 }
 
-void ACharacterPawnQuad::Rewind() {
+void ACharacterPawnQuad::Pause() {
 
-	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	if(InteractiveActor == nullptr){
+	
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->SetPause(true);
+	
+	}
 
 }
 

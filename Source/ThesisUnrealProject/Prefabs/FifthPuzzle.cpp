@@ -12,6 +12,7 @@
 #include "ShakeActor.h"
 #include "Components/WidgetComponent.h"
 #include "../UI/elements/OverlayedText.h"
+#include "../Character/CharacterPawnQuad.h"
 
 // Sets default values
 AFifthPuzzle::AFifthPuzzle()
@@ -87,6 +88,8 @@ void AFifthPuzzle::BeginPlay()
 		Coin->CollectedDelegate.AddDynamic(this, &AFifthPuzzle::CoinCollected);
 	}
 
+	Trigger->OnComponentBeginOverlap.AddDynamic(this,&AFifthPuzzle::OnOverlap);
+
 }
 
 // Called every frame
@@ -97,19 +100,24 @@ void AFifthPuzzle::Tick(float DeltaTime)
 
 void AFifthPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	
-	ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
-	ADoor* Door03 = Cast<ADoor>(Door3->GetChildActor());
+	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
+	
+		ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
+		Door01->bClose = true;
+		ADoor* Door03 = Cast<ADoor>(Door3->GetChildActor());
 
-	if(!Door01->bOpenDoor){
+		if(!Door01->bOpenDoor){
 
-		Door01->bOpenDoor = true;
-		Door03->bOpenDoor = true;
+			Door01->bOpenDoor = true;
+			Door03->bOpenDoor = true;
 
-		//Update Bartle's values
-		
-		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
-		GameMode->Update->DistributedUpdate(Type::Explorer,Type::Achiever);
+			//Update Bartle's values
+			
+			AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+			GameMode->Update->DistributedUpdate(Type::Explorer,Type::Achiever);
 
+		}
+	
 	}
 
 }

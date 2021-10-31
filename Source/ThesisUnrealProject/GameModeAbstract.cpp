@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "CustomGameState.h"
 #include "Character/CharacterPawnQuad.h"
+#include "UI/UIWidgetDialog.h"
+#include "UI/Elements/UIBox.h"
 
 
 AGameModeAbstract::AGameModeAbstract() {
@@ -77,6 +79,21 @@ Type AGameModeAbstract::ReturnBartleHighest(){
 
     return Keys[0];
 
+}
+
+void AGameModeAbstract::SetPause(bool Enable){
+
+    StopGame(Enable);
+
+    if(Enable)
+        ChangeMenuWidget(PauseWidget);
+    else{
+        ChangeMenuWidget(StartingWidgetClass);
+        UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(CurrentWidget);
+        DialogWidget->HideSizeBox();
+        DialogWidget->TextBox->BoxContainer->Visibility = ESlateVisibility::Hidden;
+    }
+    
 }
 
 //--- Get and Set 
