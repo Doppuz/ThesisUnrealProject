@@ -76,6 +76,9 @@ USTRUCT() struct FGeneralActor : public FSpeakActor{
 
 	UPROPERTY()
 	int ID;
+	
+	UPROPERTY()
+	bool bSpawnCoin;
 
 };
 

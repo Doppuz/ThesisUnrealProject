@@ -14,7 +14,7 @@ void UUIEndScreen::NativeConstruct() {
     
     Super::NativeConstruct();
 
-    Send->Text->SetText(FText::FromName(ButtonName));
+    Send->Text->SetText(FText::FromName("Play"));
     Send->ButtonPlay->OnClicked.AddDynamic(this,&UUIEndScreen::OnSendClicked);
 
     TextBox->SetDialogText(Text.ToString());

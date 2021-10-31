@@ -56,6 +56,13 @@ void ATriggerEndGame::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Oth
 				SaveGameInstance->Explorer = (GameMode->Update->Types[Type::Explorer] + GameMode->Update->TypesQuestionary[Type::Explorer]) / 2;
 				SaveGameInstance->Socializer = (GameMode->Update->Types[Type::Socializer] + GameMode->Update->TypesQuestionary[Type::Socializer]) / 2;
 
+				//Save the initial values
+
+				SaveGameInstance->OldAchiever = SaveGameInstance->Achiever;
+				SaveGameInstance->OldKiller = SaveGameInstance->Killer;
+				SaveGameInstance->OldExplorer = SaveGameInstance->Explorer;
+				SaveGameInstance->OldSocializer = SaveGameInstance->Socializer;
+
 				// Start async save process.
 				UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Bartle", 0);
 

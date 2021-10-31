@@ -79,6 +79,11 @@ void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Ot
 				UE_LOG(LogTemp,Warning,TEXT("Explorer = %f"), GameMode->Update->Types[Type::Explorer]);
 				UE_LOG(LogTemp,Warning,TEXT("Socializer = %f"), GameMode->Update->Types[Type::Socializer]);
 
+				SaveGameInstance->LastAchiever = GameMode->Update->Types[Type::Achiever];
+				SaveGameInstance->LastKiller = GameMode->Update->Types[Type::Killer];
+				SaveGameInstance->LastExplorer = GameMode->Update->Types[Type::Explorer];
+				SaveGameInstance->LastSocializer = GameMode->Update->Types[Type::Socializer];
+
 				float Value = 10.f;
 				if(Rates[RatesArray[0]] < 100.f && Rates[RatesArray[3]] > 0.f && FMath::Abs(Rates[RatesArray[0]] - Rates[RatesArray[3]]) > 20.f){
 					

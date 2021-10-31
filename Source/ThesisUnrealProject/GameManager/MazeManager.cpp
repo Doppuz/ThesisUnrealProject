@@ -207,6 +207,7 @@ void AMazeManager::BeginPlay(){
                 LoadedGame->Enemies[i].Transform);
 
             Elem->IDEnemy = LoadedGame->Enemies[i].ID;
+            Elem->bSpawnCoin = LoadedGame->Enemies[i].bSpawnCoin;
 
         }
 
@@ -596,7 +597,8 @@ void AMazeManager::BeginPlay(){
         LoadFromFile(Questions, "Questions");
         LoadFromFile(BlockedSpeech, "BlockedSpeech");
 
-        BartleBonus(GameMode->ReturnBartleHighest());
+        if(PopulateMaze)
+            BartleBonus(GameMode->ReturnBartleHighest());
 
         //Initialize all the components for the maze creation.
         MazeGraph = new Graph<AMazeCell2>();
@@ -1971,7 +1973,7 @@ void AMazeManager::SpawnExtraElem(int Index, AMazeCell2* AfterCell, AMazeCell2* 
         //Achiever
         case 0:
             
-            if(HatClasses.Num() > 0 && FMath::RandRange(0,9) > 2){
+            if(HatClasses.Num() > 0 && FMath::RandRange(0,9) > 4){
 
                 int NumExtr = FMath::RandRange(0,HatClasses.Num() - 1);
                 GetWorld()->SpawnActor<AHat>(HatClasses[NumExtr], AfterCell->GetActorLocation(), FRotator::ZeroRotator);

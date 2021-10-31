@@ -289,10 +289,10 @@ void UUIMainMenu::OnTypes() {
 
     if (USaveGameBartle* LoadedGame = Cast<USaveGameBartle>(UGameplayStatics::LoadGameFromSlot("Bartle", 0))){
 
-        CAchiever->SetText(FText::Format(NSLOCTEXT("Key","Source", "Achiever : {0}"), LoadedGame->Achiever));
-        CKiller->SetText(FText::Format(NSLOCTEXT("Key","Source", "Killer : {0}"), LoadedGame->Killer));
-        CExplorer->SetText(FText::Format(NSLOCTEXT("Key","Source", "Explorer : {0}"), LoadedGame->Explorer));
-        CSocializer->SetText(FText::Format(NSLOCTEXT("Key","Source", "Socializer : {0}"), LoadedGame->Socializer));
+        CAchiever->SetText(FText::Format(NSLOCTEXT("Key","Source", "Achiever : {0}"), LoadedGame->LastAchiever));
+        CKiller->SetText(FText::Format(NSLOCTEXT("Key","Source", "Killer : {0}"), LoadedGame->LastKiller));
+        CExplorer->SetText(FText::Format(NSLOCTEXT("Key","Source", "Explorer : {0}"), LoadedGame->LastExplorer));
+        CSocializer->SetText(FText::Format(NSLOCTEXT("Key","Source", "Socializer : {0}"), LoadedGame->LastSocializer));
 
         OAchiever->SetText(FText::Format(NSLOCTEXT("Key","Source", "Achiever : {0}"), LoadedGame->OldAchiever));
         OKiller->SetText(FText::Format(NSLOCTEXT("Key","Source", "Killer : {0}"), LoadedGame->OldKiller));

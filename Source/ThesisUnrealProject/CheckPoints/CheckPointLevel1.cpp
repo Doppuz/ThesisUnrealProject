@@ -379,6 +379,7 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
                 GeneralActor.Transform = Transform;
                 GeneralActor.ActorClass = ActorItr->GetClass();
                 GeneralActor.ID = (*ActorItr)->IDEnemy;
+                GeneralActor.bSpawnCoin = (*ActorItr)->bSpawnCoin;
                     
                 GeneralElem.Add(GeneralActor);
             
