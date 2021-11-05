@@ -2,6 +2,7 @@
 
 
 #include "DoorKiller.h"
+#include "../../../GameModeAbstract.h"
 
 ADoorKiller::ADoorKiller() {
 
@@ -59,6 +60,9 @@ void ADoorKiller::Tick(float DeltaTime) {
 					Enemies.Add(Enemy);
 					Enemy->End.AddDynamic(this,&ADoorKiller::EndEnemies);
 					Enemy->bNoIncrease = true;
+
+					AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+					GameMode->TotalEnemies -= 1;
 
 				}
 

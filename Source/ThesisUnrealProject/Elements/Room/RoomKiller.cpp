@@ -5,6 +5,7 @@
 #include "../../Character/AllyAI/PawnInteractiveClass.h"
 #include "../../Elements/GeneralElements/Doors/Door.h"
 #include "../../Elements/Portal/Portal.h"
+#include "../../GameModeAbstract.h"
 
 // Sets default values
 ARoomKiller::ARoomKiller()
@@ -51,7 +52,12 @@ void ARoomKiller::BeginPlay(){
 	Spawners.Add(GetWorld()->SpawnActor<AActorSpawner>(SpawnerClass,FourthSpawnPosition->GetComponentLocation(),
 		FourthSpawnPosition->GetComponentRotation()));
 
-	InteractiveActor = GetWorld()->SpawnActor<APawnInteractiveClass>(NpcClass,PortalSpawnPosition->GetComponentLocation() + FVector(0.f,0.f,+83.f),FRotator::ZeroRotator);
+	FTransform Transform;
+	Transform.SetLocation(PortalSpawnPosition->GetComponentLocation() + FVector(0.f,0.f,+83.f));
+	InteractiveActor = GetWorld()->SpawnActorDeferred<APawnInteractiveClass>(NpcClass,Transform);
+	InteractiveActor->bNoIncrease = true;
+	InteractiveActor->FinishSpawning(Transform);
+
 	InteractiveActor->LeftChoice.AddDynamic(this,&ARoomKiller::Start);
 	InteractiveActor->EndDialog.AddDynamic(this,&ARoomKiller::ReStartNpc);
 
@@ -102,6 +108,9 @@ void ARoomKiller::Tick(float DeltaTime){
 						Enemies.Add(Enemy);
 						Enemy->End.AddDynamic(this,&ARoomKiller::EndEnemies);
 						Enemy->bNoIncrease = true;
+
+						AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+						GameMode->TotalEnemies -= 1;
 
 					}
 	

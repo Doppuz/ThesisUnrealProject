@@ -21,6 +21,12 @@ void UUIPause::NativeConstruct() {
     ButtonRestart->Text->SetText(FText::FromString("Restart"));
     ButtonRestart->ButtonPlay->OnClicked.AddDynamic(this,&UUIPause::OnRestart);
 
+    ButtonRestartAll->Text->SetText(FText::FromString("Beginning"));
+    ButtonRestartAll->ButtonPlay->OnClicked.AddDynamic(this,&UUIPause::OnRestartAll);
+
+    ButtonRestartLast->Text->SetText(FText::FromString("Last"));
+    ButtonRestartLast->ButtonPlay->OnClicked.AddDynamic(this,&UUIPause::OnRestartLast);
+
     ButtonOptions->Text->SetText(FText::FromString("Options"));
     ButtonOptions->ButtonPlay->OnClicked.AddDynamic(this,&UUIPause::OnOptions);
 
@@ -29,6 +35,9 @@ void UUIPause::NativeConstruct() {
     
     ButtonBack2->Text->SetText(FText::FromString("Back"));
     ButtonBack2->ButtonPlay->OnClicked.AddDynamic(this,&UUIPause::OnBack);
+        
+    ButtonBack3->Text->SetText(FText::FromString("Back"));
+    ButtonBack3->ButtonPlay->OnClicked.AddDynamic(this,&UUIPause::OnBack);
 
     ButtonCommands->Text->SetText(FText::FromString("Commands"));
     ButtonCommands->ButtonPlay->OnClicked.AddDynamic(this,&UUIPause::OnCommands);
@@ -49,8 +58,26 @@ void UUIPause::OnResumeClicked(){
 
 }
 
+void UUIPause::OnRestartLast(){
+ 
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+
+}
+
 void UUIPause::OnRestart(){
  
+	Switcher->SetActiveWidgetIndex(3);
+
+}
+
+void UUIPause::OnRestartAll(){
+ 
+    FString CompleteFilePath = FPaths::ProjectSavedDir() + "SaveGames/CheckpointLevel1.sav"; 
+    FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*CompleteFilePath);
+
+    CompleteFilePath = FPaths::ProjectSavedDir() + "SaveGames/Checkpoint.sav"; 
+    FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*CompleteFilePath);
+
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 
 }

@@ -19,7 +19,7 @@ void UUIExplanation::NativeConstruct() {
     Start->Text->SetText(FText::FromString("Start"));
     Start->ButtonPlay->OnClicked.AddDynamic(this,&UUIExplanation::OnSendClicked);
 
-    TextBox->SetDialogText("Let's now jump into the test. First thing you need to know is that you can choose how to play the levels. There will be alway two different choices and you can choose what you prefer. Are you ready?");
+    TextBox->SetDialogText("Let's now jump into the test. First thing you need to know is that you can choose how to play the levels. There will be always two different choices and you can choose what you prefer. Are you ready?");
     TextBox->BorderBox->SetBrushColor(FLinearColor(0.072917f,0.072917f,0.072917f,0.8f));
     TextBox->SetNPCName("");
 }

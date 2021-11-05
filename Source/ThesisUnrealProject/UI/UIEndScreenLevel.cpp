@@ -27,8 +27,6 @@ void UUIEndScreenLevel::NativeConstruct() {
 void UUIEndScreenLevel::OnSendClicked() {
     
     FPlatformProcess::LaunchURL(TEXT("https://docs.google.com/forms/d/1VVtJ2usyEwiqMuUeagVUjSn6PIRTkQlz5x3cRH89NZU/edit?usp=drive_web"), NULL, NULL);
- 
-    UGameplayStatics::OpenLevel(GetWorld(), "MainMenu", false);
 
 }
 

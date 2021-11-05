@@ -5,6 +5,7 @@
 #include "../../Destructible/GenericDestructibleElements.h"
 #include "../../Key/KeyActor.h"
 #include "../../../Character/EnemyAI/EnemyAIAbstract.h"
+#include "../../../GameModeAbstract.h"
 
 
 ADoorAchiever::ADoorAchiever() {
@@ -39,8 +40,12 @@ void ADoorAchiever::BeginPlay() {
         DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos3->GetComponentLocation(),SpawnPos3->GetComponentRotation()));
         DestrActors.Add(GetWorld()->SpawnActor<AGenericDestructibleElements>(DestrElem[0],SpawnPos4->GetComponentLocation(),SpawnPos4->GetComponentRotation()));
 
-        AEnemyAIAbstract* Enemy = GetWorld()->SpawnActor<AEnemyAIAbstract>(Enemies[FMath::RandRange(0, Enemies.Num() - 1)],SpawnPos0->GetComponentLocation(),SpawnPos0->GetComponentRotation());
+        FTransform Transform;
+        Transform.SetLocation(SpawnPos0->GetComponentLocation());
+        Transform.SetRotation(SpawnPos0->GetComponentRotation().Quaternion());
+        AEnemyAIAbstract* Enemy = GetWorld()->SpawnActorDeferred<AEnemyAIAbstract>(Enemies[FMath::RandRange(0, Enemies.Num() - 1)],Transform);
         Enemy->bSpawnCoin = true;
+        Enemy->FinishSpawning(Transform);
 
         FAttachmentTransformRules TransformRules(EAttachmentRule::KeepWorld,true);
         Enemy->AttachToActor(this,TransformRules);
@@ -48,6 +53,10 @@ void ADoorAchiever::BeginPlay() {
         int NumExtr = FMath::RandRange(0,DestrActors.Num() - 1);
         DestrActors[NumExtr]->SpawnActor = KeyClass;
         DestrActors[NumExtr]->DestrDelegate.AddDynamic(this, &ADoorAchiever::SpawnKey);
+
+        AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+        GameMode->TotalCoins -= 1;
+
 
     }else if (!bOpenDoor){
 

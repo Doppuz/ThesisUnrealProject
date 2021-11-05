@@ -55,7 +55,8 @@ void ACheckPointLevel1::OnOverlap(UPrimitiveComponent * HitComponent, AActor * O
 		
         AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
 		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
-		DialogWidget->HealthBar->SetPercent(1.f);
+        if(DialogWidget != nullptr)
+		    DialogWidget->HealthBar->SetPercent(1.f);
 
         if (USaveGameLevel1* SaveGameInstance = Cast<USaveGameLevel1>(UGameplayStatics::CreateSaveGameObject(USaveGameLevel1::StaticClass()))){
 

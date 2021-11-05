@@ -31,6 +31,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> SpawnActor;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> CoinActor;
+
 	FGeneralDestructionDelegate DestrDelegate;
 
 	UPROPERTY(VisibleANywhere)

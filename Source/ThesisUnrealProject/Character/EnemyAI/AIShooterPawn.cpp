@@ -73,16 +73,25 @@ float AAIShooterPawn::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 		bIAmDestroyed = true;
 		End.Broadcast(this);
 		
-		if(bSpawnCoin)
-			GetWorld()->SpawnActor<ACoinController>(SpawnCoin, GetActorLocation(), FRotator::ZeroRotator);
+		if(bSpawnCoin) {
+
+			FTransform Transform;
+			Transform.SetLocation(GetActorLocation());
+			ACoinController* Coin = GetWorld()->SpawnActor<ACoinController>(SpawnCoin, Transform);
+
+		}
 
 		if(!bNoIncrease){
 
 			AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
-			GameMode->IncreaseEnemies();
+			
+			if(!bSpawnCoin){
+			
+				GameMode->IncreaseEnemies();
+				UE_LOG(LogTemp,Warning,TEXT("Enemies: %i"), GameMode->GetEnemies());
+			
+			}
 
-			UE_LOG(LogTemp,Warning,TEXT("Enemies: %i"), GameMode->GetEnemies());
-		
 		}
 
 		Destroy();

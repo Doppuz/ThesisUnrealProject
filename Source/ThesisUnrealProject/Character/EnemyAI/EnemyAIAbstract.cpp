@@ -33,7 +33,9 @@ void AEnemyAIAbstract::BeginPlay(){
 	if(!bNoIncrease){
 		
 		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
-		GameMode->TotalEnemies += 1;
+
+		if(!bSpawnCoin)
+			GameMode->TotalEnemies += 1;
 
 	}
 	

@@ -3,6 +3,9 @@
 
 #include "Portal.h"
 #include "../../Character/CharacterPawnQuad.h"
+#include "../../GameModeAbstract.h"
+#include "../../UI/UIWidgetDialog.h"
+ #include "Components/ProgressBar.h"
 
 // Sets default values
 APortal::APortal(){
@@ -35,6 +38,10 @@ void APortal::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor,
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 		OtherActor->SetActorLocation(NewPosition);
 		OtherActor->SetActorRotation(NewRotation);
+        Cast<ACharacterPawnQuad>(OtherActor)->CurrentHealth = Cast<ACharacterPawnQuad>(OtherActor)->MaxHealth;
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+		DialogWidget->HealthBar->SetPercent(1.f);
 		Destroy();
 	}
 

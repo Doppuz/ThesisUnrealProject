@@ -6,6 +6,7 @@
 #include "../../GameModeTutorial.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "../GeneralElements/CoinController.h"
 
 int AGenericDestructibleElements::IDCounter = 0;
 
@@ -39,6 +40,13 @@ void AGenericDestructibleElements::BeginPlay(){
 	
 	UGameplayStatics::GetPlayerPawn(GetWorld(),0)->MoveIgnoreActorAdd(this);
 
+	if(SpawnActor != nullptr && SpawnActor.Get()->IsChildOf( ACoinController::StaticClass())){
+	
+		AGameModeAbstract* GameMode = Cast<AGameModeAbstract>(GetWorld()->GetAuthGameMode());
+		GameMode->TotalCoins += 1;
+	
+	}
+
 }
 
 void AGenericDestructibleElements::OnComponentFracture(const FVector& HitPoint, const FVector& HitDirection) {
@@ -47,8 +55,24 @@ void AGenericDestructibleElements::OnComponentFracture(const FVector& HitPoint, 
 	if(!bIAmDestroyed){
 		bIAmDestroyed = true;
 		if (SpawnActor != nullptr) {
-			AActor* Actor = GetWorld()->SpawnActor<AActor>(SpawnActor, GetActorLocation() + CoinOffset, GetActorRotation());
-			DestrDelegate.Broadcast(Actor);
+		
+			if(SpawnActor != nullptr && SpawnActor.Get()->IsChildOf( ACoinController::StaticClass())){
+
+				FTransform Transform;
+				Transform.SetLocation(GetActorLocation() + CoinOffset);
+				ACoinController* Coin = Cast<ACoinController>(GetWorld()->SpawnActorDeferred<ACoinController>(SpawnActor, Transform));
+				Coin->bNoIncrease = true;
+				Coin->FinishSpawning(Transform);
+				Coin->bNoIncrease = false;
+				DestrDelegate.Broadcast(Coin);
+
+			}else{
+
+				AActor* Actor = GetWorld()->SpawnActor<AActor>(SpawnActor, GetActorLocation() + CoinOffset, GetActorRotation());
+				DestrDelegate.Broadcast(Actor);
+			
+			}
+		
 		}else
 			DestrDelegate.Broadcast(nullptr);
 

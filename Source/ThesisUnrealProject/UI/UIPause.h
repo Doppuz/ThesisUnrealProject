@@ -40,7 +40,16 @@ public:
 	UUIButton* ButtonBack2;
 
 	UPROPERTY(meta = (BindWidget))
+	UUIButton* ButtonBack3;
+
+	UPROPERTY(meta = (BindWidget))
 	UUIButton* ButtonMenu;
+
+	UPROPERTY(meta = (BindWidget))
+	UUIButton* ButtonRestartAll;
+
+	UPROPERTY(meta = (BindWidget))
+	UUIButton* ButtonRestartLast;
 
 	UPROPERTY(meta = (BindWidget))
 	class UWidgetSwitcher* Switcher;
@@ -54,6 +63,12 @@ private:
 
 	UFUNCTION()
 	void OnRestart();
+	
+	UFUNCTION()
+	void OnRestartLast();
+
+	UFUNCTION()
+	void OnRestartAll();
 
 	UFUNCTION()
 	void OnOptions();

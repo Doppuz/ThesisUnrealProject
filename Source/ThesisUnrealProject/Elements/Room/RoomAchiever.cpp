@@ -47,12 +47,15 @@ void ARoomAchiever::BeginPlay() {
                 Coin->AttachToActor(this,Rules);
                 TotalCoins += 1;
 
-            }else if(NumExtr < 9.7f)
+            }else if(NumExtr < 9.8f)
                 GetWorld()->SpawnActor<AActor>(MetalCrateClass, FVector(StartSpawnPosition->GetComponentLocation().X - 310 * i,StartSpawnPosition->GetComponentLocation().Y - 310.f * j, 50.f), FRotator::ZeroRotator)->AttachToActor(this,Rules);
             else{
             
-                AAIShooterPawn* Shooter = GetWorld()->SpawnActor<AAIShooterPawn>(ShooterPawnClass, FVector(StartSpawnPosition->GetComponentLocation().X - 310 * i,StartSpawnPosition->GetComponentLocation().Y - 310.f * j, 110.f), FRotator::ZeroRotator);
+                FTransform Transform;
+                Transform.SetLocation(FVector(StartSpawnPosition->GetComponentLocation().X - 310 * i,StartSpawnPosition->GetComponentLocation().Y - 310.f * j, 110.f));
+                AAIShooterPawn* Shooter = GetWorld()->SpawnActorDeferred<AAIShooterPawn>(ShooterPawnClass, Transform);
                 Shooter->bSpawnCoin = true;
+                Shooter->FinishSpawning(Transform);
                 Shooters.Add(Shooter);
 
             }

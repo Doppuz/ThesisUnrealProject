@@ -18,6 +18,6 @@ void AStatueInteractElem::BeginPlay(){
     TArray<FString> Text {"Statue #"+FString::FromInt(AStatueInteractElem::ID),"(I should find the others)"};
     Speech = Text;
 
-    AStatueInteractElem::ID += 1;
+    AStatueInteractElem::ID = (AStatueInteractElem::ID + 1) % 1000;
 
 }
