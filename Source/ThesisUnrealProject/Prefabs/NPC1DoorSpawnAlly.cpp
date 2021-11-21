@@ -78,13 +78,14 @@ void ANPC1DoorSpawnAlly::LeftChoiceEvent() {
 
 	bLeftChoice = true;
 
-	FLatentActionInfo LatentInfo;
-	UGameplayStatics::LoadStreamLevel(this, TEXT("SixthChoice"), true, false, LatentInfo);
-	
 	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	
+	/*FLatentActionInfo LatentInfo;
+	UGameplayStatics::LoadStreamLevel(this, TEXT("SixthChoice"), true, false, LatentInfo);
+	
+	
 	if(!GameMode->Levels.Contains("SixthChoice"))
-		GameMode->Levels.Add("SixthChoice");
+		GameMode->Levels.Add("SixthChoice");*/
 
 	//Update Bartle's values
 	GameMode->Update->DistributedUpdate(Type::Socializer,Type::Killer);
@@ -103,11 +104,12 @@ void ANPC1DoorSpawnAlly::RightChoiceEvent() {
 	
 	bRightChoice = true;
 	
-	FLatentActionInfo LatentInfo;
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	
+	/*FLatentActionInfo LatentInfo;
 	UGameplayStatics::LoadStreamLevel(this, TEXT("SixthChoice"), true, false, LatentInfo);
 
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->Levels.Add("SixthChoice");
+	GameMode->Levels.Add("SixthChoice");*/
 
 	//Update Bartle's values
 	GameMode->Update->DistributedUpdate(Type::Killer,Type::Socializer);

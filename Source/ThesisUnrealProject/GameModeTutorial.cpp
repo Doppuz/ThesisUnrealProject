@@ -77,15 +77,21 @@ void AGameModeTutorial::BeginPlay() {
 
     }else{
         
-        FLatentActionInfo LatentInfo;	
-        UGameplayStatics::LoadStreamLevel(this, "FirstPuzzle", true, false, LatentInfo);
+        if(Levels.Num() != 0){
+            FLatentActionInfo LatentInfo;	
+            UGameplayStatics::LoadStreamLevel(this, Levels[0], true, false, LatentInfo);
             
-        LevelContator += 1;
+            ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), Levels[0]);
+            Level->OnLevelLoaded.AddDynamic(this,&AGameModeTutorial::OnLevelLoad);
 
-        ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), "FirstPuzzle");
+            LevelContator += 1;
+
+        }
+
+        /*ULevelStreaming* Level = UGameplayStatics::GetStreamingLevel(GetWorld(), "FirstPuzzle");
         Level->OnLevelLoaded.AddDynamic(this,&AGameModeTutorial::OnLevelLoad);
 
-        Levels.Add("FirstPuzzle");
+        Levels.Add("FirstPuzzle");*/
 
     }
 
@@ -113,7 +119,15 @@ void AGameModeTutorial::OnLevelLoad() {
         LevelContator += 1;
         
     }else{
-        ACharacterPawnQuad* MyPawn = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
-        MyPawn->StopCharacter(true);
+        
+        GetWorld()->GetTimerManager().SetTimer(StartTimer, this, &AGameModeTutorial::StopGame, 0.5, false);
+
     }
+}
+
+void AGameModeTutorial::StopGame(){
+
+	ACharacterPawnQuad* Player = Cast<ACharacterPawnQuad>(UGameplayStatics::GetPlayerPawn(GetWorld(),0));
+    Player->StopCharacter(true);
+
 }

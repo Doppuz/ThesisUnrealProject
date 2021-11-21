@@ -63,6 +63,13 @@ void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Ot
 				float KillerRate = float(GameMode->GetEnemies()) / float(GameMode->TotalEnemies) * 100.f;
 				float SocializerRate = float(GameMode->GetAllies()) / float(GameMode->TotalAllies) * 100.f;
 				float ExplorerRate = float(GameMode->GetMap()) / float(GameMode->TotalMap) * 100.f;
+				
+				//Rates
+				UE_LOG(LogTemp,Warning,TEXT("Value"));
+				UE_LOG(LogTemp,Warning,TEXT("Achiever = %f"), AchieverRate);
+				UE_LOG(LogTemp,Warning,TEXT("Killer = %f"), KillerRate);
+				UE_LOG(LogTemp,Warning,TEXT("Explorer = %f"), ExplorerRate);
+				UE_LOG(LogTemp,Warning,TEXT("Socializer = %f"), SocializerRate);
 
 				TMap<Type,float> Rates = {{Type::Achiever,AchieverRate},{Type::Explorer,ExplorerRate},{Type::Killer,KillerRate},{Type::Socializer,SocializerRate}};
 				TArray<Type> RatesArray;
@@ -85,7 +92,7 @@ void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Ot
 				SaveGameInstance->LastSocializer = GameMode->Update->Types[Type::Socializer];
 
 				float Value = 10.f;
-				if(GameMode->Update->Types[RatesArray[0]] < 100.f && GameMode->Update->Types[RatesArray[3]] > 0.f && FMath::Abs(Rates[RatesArray[0]] - Rates[RatesArray[3]]) > 20.f){
+				if(GameMode->Update->Types[RatesArray[0]] < 100.f && GameMode->Update->Types[RatesArray[3]] > 0.f && FMath::Abs(Rates[RatesArray[0]] - Rates[RatesArray[3]]) > 25.f){
 					
 					//To keep the sum of the value to 200.
 					if(FMath::Min(100.f,GameMode->Update->Types[RatesArray[0]] + 10.f) == 100.f){
@@ -102,7 +109,7 @@ void AFinalLevelActor::OnOverlap(UPrimitiveComponent * HitComponent, AActor * Ot
 
 				}
 
-				if(GameMode->Update->Types[RatesArray[1]] < 100.f && GameMode->Update->Types[RatesArray[2]] > 0.f && FMath::Abs(Rates[RatesArray[1]] - Rates[RatesArray[2]]) > 20.f){
+				if(GameMode->Update->Types[RatesArray[1]] < 100.f && GameMode->Update->Types[RatesArray[2]] > 0.f && FMath::Abs(Rates[RatesArray[1]] - Rates[RatesArray[2]]) > 25.f){
 
 					//To keep the sum of the value to 200.
 					if(FMath::Min(100.f,GameMode->Update->Types[RatesArray[1]] + 10.f) == 100.f){

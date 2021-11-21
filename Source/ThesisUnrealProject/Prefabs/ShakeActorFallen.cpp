@@ -6,7 +6,7 @@
 
 void AShakeActorFallen::Shake(float DeltaTime) {
     
-    if(!Cast<AFallenPlatform>(ShakingActor->GetChildActor())->bFall){
+    if(ShakingActor->GetChildActor() != nullptr && !Cast<AFallenPlatform>(ShakingActor->GetChildActor())->bFall){
         if(bIsShaking){
             
             if(ShakeLeft)

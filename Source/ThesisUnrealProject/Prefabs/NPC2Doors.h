@@ -30,6 +30,9 @@ public:
 	UChildActorComponent* Door2;
 
 	UPROPERTY(EditAnywhere, Category = "Components")
+	UChildActorComponent* Door3;
+
+	UPROPERTY(EditAnywhere, Category = "Components")
 	USceneComponent* NPCs;
 
 	UPROPERTY(EditAnywhere, Category = "Components")

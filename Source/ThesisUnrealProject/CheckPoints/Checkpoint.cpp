@@ -11,6 +11,7 @@
 #include "Components/WidgetComponent.h"
 #include "../UI/UIWidgetDialog.h"
 #include "../UI/Elements/HealthBar.h"
+#include "../Character/CharacterPawnQuad.h"
 
 // Sets default values
 ACheckpoint::ACheckpoint(){
@@ -39,9 +40,7 @@ void ACheckpoint::BeginPlay()
 
 void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, int otherBodyIndex, bool fromsweep, const FHitResult & Hit) {
 	
-	if(OtherActor->IsA(APawn::StaticClass())){
-		APawn* MyPawn = Cast<APawn>(OtherActor);
-		if(MyPawn->GetController()->IsA(APlayerController::StaticClass())){
+	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 			
 			if (USaveGameData* SaveGameInstance = Cast<USaveGameData>(UGameplayStatics::CreateSaveGameObject(USaveGameData::StaticClass()))){
 
@@ -49,48 +48,54 @@ void ACheckpoint::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherAc
 
 				UE_LOG(LogTemp,Warning,TEXT("Data Saved"));
 
-				if(LevelToUnload != "None"){
+				/*if(LevelToUnload != "None"){
 					FLatentActionInfo LatentInfo;	
 					UGameplayStatics::UnloadStreamLevel(this, LevelToUnload, LatentInfo, true);
 					
 					AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-					GameMode->Levels.Remove(LevelToUnload);
+					if(GameMode != nullptr)
+						GameMode->Levels.Remove(LevelToUnload);
 
-				}
+				}*/
 
 				AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 
-				// Set data on the savegame object.
-				SaveGameInstance->PlayerLocation = MyPawn->GetActorLocation();
+				if(GameMode != nullptr){
 
-				SaveGameInstance->Achiever = GameMode->Update->GetBartleTypes()[Achiever];
-				SaveGameInstance->Killer = GameMode->Update->GetBartleTypes()[Killer];
-				SaveGameInstance->Explorer = GameMode->Update->GetBartleTypes()[Explorer];
-				SaveGameInstance->Socializer = GameMode->Update->GetBartleTypes()[Socializer];
+					// Set data on the savegame object.
+					FVector Location = OtherActor->GetActorLocation() + FVector(0.f,0.f,100.f);
+					SaveGameInstance->PlayerLocation = Location;
 
-				SaveGameInstance->AchieverQ = GameMode->Update->TypesQuestionary[Achiever];
-				SaveGameInstance->KillerQ = GameMode->Update->TypesQuestionary[Killer];
-				SaveGameInstance->ExplorerQ = GameMode->Update->TypesQuestionary[Explorer];
-				SaveGameInstance->SocializerQ = GameMode->Update->TypesQuestionary[Socializer];
-				
-				SaveGameInstance->Levels = GameMode->Levels;
+					SaveGameInstance->Achiever = GameMode->Update->GetBartleTypes()[Achiever];
+					SaveGameInstance->Killer = GameMode->Update->GetBartleTypes()[Killer];
+					SaveGameInstance->Explorer = GameMode->Update->GetBartleTypes()[Explorer];
+					SaveGameInstance->Socializer = GameMode->Update->GetBartleTypes()[Socializer];
 
-				SaveGameInstance->AttackSpeed = Cast<ACharacterPawnQuad>(MyPawn)->ProjectileTimeout;
-				SaveGameInstance->Hat = Cast<ACharacterPawnQuad>(MyPawn)->EquipmentMesh->GetStaticMesh();
+					SaveGameInstance->AchieverQ = GameMode->Update->TypesQuestionary[Achiever];
+					SaveGameInstance->KillerQ = GameMode->Update->TypesQuestionary[Killer];
+					SaveGameInstance->ExplorerQ = GameMode->Update->TypesQuestionary[Explorer];
+					SaveGameInstance->SocializerQ = GameMode->Update->TypesQuestionary[Socializer];
+					
+					SaveGameInstance->Levels = GameMode->Levels;
 
-				// Start async save process.
-				UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Checkpoint", 0);
+					SaveGameInstance->AttackSpeed = Cast<ACharacterPawnQuad>(OtherActor)->ProjectileTimeout;
+					SaveGameInstance->Hat = Cast<ACharacterPawnQuad>(OtherActor)->EquipmentMesh->GetStaticMesh();
 
-				Cast<ACharacterPawnQuad>(MyPawn)->CurrentHealth = Cast<ACharacterPawnQuad>(MyPawn)->MaxHealth;
-				
-				UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
-				DialogWidget->HealthBar->SetPercent(1.f);
+					// Start async save process.
+					UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Checkpoint", 0);
 
-				Trigger->SetCollisionProfileName("NoCollision");
+					Cast<ACharacterPawnQuad>(OtherActor)->CurrentHealth = Cast<ACharacterPawnQuad>(OtherActor)->MaxHealth;
+					
+					UUIWidgetDialog* DialogWidget = Cast<UUIWidgetDialog>(GameMode->GetCurrentWidgetUI());
+					if(DialogWidget != nullptr)
+						DialogWidget->HealthBar->SetPercent(1.f);
+
+					Trigger->SetCollisionProfileName("NoCollision");
+
+				}
 
 			}
 
-		}
 	}
 
 }

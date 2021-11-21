@@ -30,6 +30,7 @@ public:
 
 // ---------- Level loaded ------------
 
+	UPROPERTY(EditAnywhere)
 	TArray<FName> Levels;
 
 	UFUNCTION()
@@ -37,6 +38,9 @@ public:
 
 	//Used when I load the level after using a Checkpoint.
 	int LevelContator = 0;
+
+	void StopGame();
+	FTimerHandle StartTimer;
 
 protected:
 	

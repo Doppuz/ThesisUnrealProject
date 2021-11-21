@@ -212,9 +212,13 @@ void ACharacterPawnQuad::Tick(float DeltaTime){
 
 		if(Hit.GetActor() != nullptr){
 			
-			InteractiveActor = Cast<APawnInteractiveClass>(Hit.GetActor());
-
-			DialogWidget->ViewPopUp();
+			if(DialogWidget != nullptr){
+				
+				InteractiveActor = Cast<APawnInteractiveClass>(Hit.GetActor());
+				DialogWidget->ViewPopUp();
+			
+			}else			
+				InteractiveActor = nullptr;
 		
 		}else{
 			InteractiveActor = nullptr;

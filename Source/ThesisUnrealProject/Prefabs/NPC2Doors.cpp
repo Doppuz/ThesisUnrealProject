@@ -25,6 +25,10 @@ ANPC2Doors::ANPC2Doors()
 	Door1->SetupAttachment(Doors);
 	Door1->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
 
+	Door3 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door3"));
+	Door3->SetupAttachment(Doors);
+	Door3->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
+
 	Door2 = CreateDefaultSubobject<UChildActorComponent>(TEXT("Door2"));
 	Door2->SetupAttachment(Doors);
 	Door2->SetWorldScale3D(FVector(1.2f,1.2f,1.f));
@@ -58,16 +62,18 @@ void ANPC2Doors::Tick(float DeltaTime)
 void ANPC2Doors::LeftChoiceEvent() {
 	Cast<ADoor>(Door1->GetChildActor())->bOpenDoor = true;
 
-	FLatentActionInfo LatentInfo;
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	/*FLatentActionInfo LatentInfo;
 	UGameplayStatics::LoadStreamLevel(this, TEXT("ForthChoice"), true, false, LatentInfo);
 
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 
 	if(!GameMode->Levels.Contains("ForthChoice"))
-		GameMode->Levels.Add("ForthChoice");
+		GameMode->Levels.Add("ForthChoice");*/
 	
 	//Update Bartle's values
 	GameMode->Update->EquallyDistributedUpdate(Type::Explorer,Type::Socializer);
+
+	Cast<ADoor>(Door3->GetChildActor())->bOpenDoor = true;
 
 	APawnInteractiveClass* NPC = Cast<APawnInteractiveClass>(NPC1->GetChildActor());
 	NPC->SpeechContator += 1;
@@ -78,11 +84,12 @@ void ANPC2Doors::LeftChoiceEvent() {
 void ANPC2Doors::RightChoiceEvent() {
 	Cast<ADoor>(Door2->GetChildActor())->bOpenDoor = true;
 	
-	FLatentActionInfo LatentInfo;
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	
+	/*FLatentActionInfo LatentInfo;
 	UGameplayStatics::LoadStreamLevel(this, TEXT("ForthChoice"), true, false, LatentInfo);
 	
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-	GameMode->Levels.Add("ForthChoice");
+	GameMode->Levels.Add("ForthChoice");*/
 	
 
 	//Update Bartle's values

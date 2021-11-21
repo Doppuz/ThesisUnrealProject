@@ -107,13 +107,13 @@ void ANPC1Door::RightChoiceEvent() {
 
 void ANPC1Door::EndChoiceEvent(APawnInteractiveClass* SpokenActor) {
 	
-	FLatentActionInfo LatentInfo;
+	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+	/*FLatentActionInfo LatentInfo;
     UGameplayStatics::LoadStreamLevel(this, TEXT("SecondChoice"), true, false, LatentInfo);
 
-	AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 	
 	if(!GameMode->Levels.Contains("SecondChoice"))
-		GameMode->Levels.Add("SecondChoice");
+		GameMode->Levels.Add("SecondChoice");*/
 
 	ADoor* Door = Cast<ADoor>(Cast<UChildActorComponent>(Door1)->GetChildActor());
 	Door->bOpenDoor = true;

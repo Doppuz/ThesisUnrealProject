@@ -587,7 +587,7 @@ void AMazeManager::BeginPlay(){
         APawnInteractiveClass::IDCount = LoadedGame->AllyID;
 
     }else{
-
+            
         ArenaSpawnLocation.Add(FVector(100000.f,100000.f,0.f));
         ArenaSpawnLocation.Add(FVector(-100000.f,100000.f,0.f));
         ArenaSpawnLocation.Add(FVector(100000.f,-100000.f,0.f));
@@ -2053,8 +2053,7 @@ void AMazeManager::PopulateBartle(){
     CalculateTotalNumberOfCells(CellsNumberMap,Keys);
 
     //Generate Last cell.
-    CellsNumberMap.GetKeys(Keys);
-    PortalType(Keys[0],MaxPath[MaxPath.Num() - 2]);  
+    CellsNumberMap.GetKeys(Keys); 
 
     //Create a Map with all the cells and its relative path.
     TMap<AMazeCell2*, FPath> Cells = CellsToPopulate.MainPath;

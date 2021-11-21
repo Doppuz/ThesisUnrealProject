@@ -123,11 +123,11 @@ void AForthPuzzle::SpokenAlliesEvent(APawnInteractiveClass* SpokenActor) {
 		ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 		Door01->bOpenDoor = true;
 		
-		FLatentActionInfo LatentInfo;
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		/*FLatentActionInfo LatentInfo;
 		UGameplayStatics::LoadStreamLevel(this, TEXT("FifthChoice"), true, false, LatentInfo);
 
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
-		GameMode->Levels.Add("FifthChoice");
+		GameMode->Levels.Add("FifthChoice");*/
 
 		//Update Bartle's values
 		GameMode->Update->DistributedUpdate(Type::Socializer,Type::Explorer);
@@ -161,12 +161,12 @@ void AForthPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 					ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 					Door01->bOpenDoor = true;
 					
-					FLatentActionInfo LatentInfo;
+					AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+					/*FLatentActionInfo LatentInfo;
 					UGameplayStatics::LoadStreamLevel(this, TEXT("FifthChoice"), true, false, LatentInfo);
 
-					AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 					if(!GameMode->Levels.Contains("FifthChoice"))
-						GameMode->Levels.Add("FifthChoice");
+						GameMode->Levels.Add("FifthChoice");*/
 
 					//Update Bartle's values
 					GameMode->Update->DistributedUpdate(Type::Explorer,Type::Socializer);

@@ -117,13 +117,13 @@ void AThirdPuzzle::CoinCollected() {
 		Door01->bOpenDoor = true;
 		Door02->bOpenDoor = true;
 
-		FLatentActionInfo LatentInfo;
+		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
+		/*FLatentActionInfo LatentInfo;
 	    UGameplayStatics::LoadStreamLevel(this, TEXT("ThirdChoice"), true, false, LatentInfo);
 
-		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 		
 		if(!GameMode->Levels.Contains("ThirdChoice"))
-			GameMode->Levels.Add("ThirdChoice");
+			GameMode->Levels.Add("ThirdChoice");*/
 
 		//Update Bartle's values
 		GameMode->Update->EquallyDistributedUpdate(Type::Achiever,Type::Explorer);
@@ -137,8 +137,8 @@ void AThirdPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 
 	if(OtherActor->IsA(ACharacterPawnQuad::StaticClass())){
 		
-		FLatentActionInfo LatentInfo;
-	    UGameplayStatics::LoadStreamLevel(this, TEXT("ThirdChoice"), true, false, LatentInfo);
+		/*FLatentActionInfo LatentInfo;
+	    UGameplayStatics::LoadStreamLevel(this, TEXT("ThirdChoice"), true, false, LatentInfo);*/
 		
 		ADoor* Door01 = Cast<ADoor>(Door1->GetChildActor());
 		ADoor* Door03 = Cast<ADoor>(Door3->GetChildActor());
@@ -150,8 +150,8 @@ void AThirdPuzzle::OnOverlap(UPrimitiveComponent * HitComponent, AActor * OtherA
 
 		AGameModeTutorial* GameMode = Cast<AGameModeTutorial>(GetWorld()->GetAuthGameMode());
 
-		if(!GameMode->Levels.Contains("ThirdChoice"))
-			GameMode->Levels.Add("ThirdChoice");
+		/*if(!GameMode->Levels.Contains("ThirdChoice"))
+			GameMode->Levels.Add("ThirdChoice");*/
 
 		//Update Bartle's values
 		GameMode->Update->EquallyDistributedUpdate(Type::Explorer,Type::Achiever);

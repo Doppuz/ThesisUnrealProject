@@ -259,9 +259,7 @@ void UUIMainMenu::DialogInteraction(int Increase, int Decrease) {
 			SaveGameInstance->Explorer = 50.f;
 			SaveGameInstance->Socializer = 50.f;
 
-            TArray<FName> Level = {"FirstPuzzle"};
-
-			SaveGameInstance->Levels = Level;
+			SaveGameInstance->Levels = {"FirstPuzzle"};
 
 			// Start async save process.
 			UGameplayStatics::AsyncSaveGameToSlot(SaveGameInstance, "Checkpoint", 0);
