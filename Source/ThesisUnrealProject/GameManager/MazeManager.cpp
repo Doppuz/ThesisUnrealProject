@@ -686,8 +686,29 @@ void AMazeManager::Tick(float DeltaTime)
 #pragma region MazeCreation
 
 void AMazeManager::StandardMazeCreation() {
+    
     InitializeMaze();
     CreateMaze(MazeGraph->GetCurrentNode(),nullptr);
+
+    /*TArray<AMazeCell2*> Nodes = MazeGraph->GetNodes();
+
+    for(int i = 0 ; i < Nodes.Num(); i++){
+        
+        TArray<Side<AMazeCell2>*> Side = MazeGraph->GetSides(Nodes[i]);
+
+        for(int j = 0 ; j < Side.Num(); j++){
+
+            DrawDebugLine(GetWorld(),
+			FVector(Nodes[i]->GetActorLocation().X, Nodes[i]->GetActorLocation().Y, Nodes[i]->GetActorLocation().Z + 1100), //1100
+			FVector(Side[j]->To->GetActorLocation().X,Side[j]->To->GetActorLocation().Y,Side[j]->To->GetActorLocation().Z + 1100),
+			FColor(255.f,0.f,0.f),
+			true,
+			50.f,
+			0,
+			50.f);
+
+        }
+    }*/
 }
 
 
@@ -2108,7 +2129,7 @@ void AMazeManager::PopulateBartle(){
         int NumExtr = FMath::RandRange(0, TypesKeys.Num() - 1);
         
         //Return the value to be assigned to determine which Type I estracted.
-        Value = ReturnTypeValue(TypesKeys[NumExtr]);
+        Value = ReturnTypeValue(TypesKeys[NumExtr]); //TypesKeys[NumExtr]
 
         Types[TypesKeys[NumExtr]] -= 1;
 
